@@ -65,38 +65,13 @@ const Home: React.FC = () => {
               </div>
             </div>
             
-            {/* Right Side - Clock Tower Image with Gradient Fade */}
+            {/* Right Side - Clock Tower Image */}
             <div className="relative hidden lg:block">
-              <div className="relative w-full h-[600px] overflow-visible">
-                {/* Wrapper with rounded corners and transparent edge mask */}
-                <div 
-                  className="relative w-full h-full"
-                  style={{
-                    borderRadius: '16px',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {/* Image with rounded corners */}
-                  <img 
-                    src={`${import.meta.env.BASE_URL}Image1.png`}
-                    alt="Stabroek Market Clock Tower"
-                    className="w-full h-full object-contain object-right"
-                    style={{ 
-                      filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
-                      borderRadius: '16px',
-                      display: 'block'
-                    }}
-                  />
-                  {/* Gradient overlay to fade blue sky smoothly to white on the left */}
-                  <div 
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      borderRadius: '16px',
-                      background: 'linear-gradient(to left, #f6f8fb 0%, #f6f8fb 20%, rgba(246, 248, 251, 0.8) 40%, rgba(246, 248, 251, 0.4) 60%, rgba(246, 248, 251, 0.1) 80%, transparent 100%)'
-                    }}
-                  ></div>
-                </div>
-              </div>
+              <img 
+                src={`${import.meta.env.BASE_URL}Image1.png`}
+                alt="Stabroek Market Clock Tower"
+                className="w-full h-full object-contain object-right"
+              />
             </div>
           </div>
         </div>
