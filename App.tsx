@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -19,13 +19,33 @@ const ScrollToTop = () => {
 };
 
 const App: React.FC = () => {
+  const patternRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (patternRef.current) {
+        const scrollY = window.scrollY;
+        // Parallax effect: scroll at 30% speed (0.3 multiplier) for slower movement
+        const parallaxOffset = scrollY * 0.3;
+        patternRef.current.style.transform = `translateY(${parallaxOffset}px)`;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />
       {/* Global Background Texture */}
-      <div className="fixed inset-0 z-[-1] bg-[#f6f8fb] pointer-events-none">
-         {/* Sparse Orange Icons Pattern */}
-         <div className="absolute inset-0 bg-scatter-pattern-light opacity-100"></div>
+      <div className="fixed inset-0 z-[-1] bg-[#f6f8fb] pointer-events-none overflow-hidden">
+         {/* Sparse Orange Icons Pattern with Parallax */}
+         <div 
+           ref={patternRef}
+           className="absolute inset-0 bg-scatter-pattern-light opacity-60"
+           style={{ willChange: 'transform' }}
+         ></div>
          {/* Ambient Blobs */}
          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
          <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-orange-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
