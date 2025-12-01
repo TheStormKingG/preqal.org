@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import clockTowerImage from '../Image1.png';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -73,21 +72,25 @@ const Home: React.FC = () => {
                 <div 
                   className="relative w-full h-full"
                   style={{
-                    borderRadius: '16px'
+                    borderRadius: '16px',
+                    overflow: 'hidden'
                   }}
                 >
                   {/* Image with rounded corners and feathered edges */}
                   <img 
-                    src={clockTowerImage} 
+                    src="/Image1.png" 
                     alt="Stabroek Market Clock Tower"
                     className="w-full h-full object-contain object-right"
                     style={{ 
                       filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
                       borderRadius: '16px',
-                      maskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 4px), transparent 100%)',
-                      WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 4px), transparent 100%)',
+                      display: 'block',
+                      maskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 6px), transparent 100%)',
+                      WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 6px), transparent 100%)',
                       maskSize: '100% 100%',
-                      WebkitMaskSize: '100% 100%'
+                      WebkitMaskSize: '100% 100%',
+                      maskRepeat: 'no-repeat',
+                      WebkitMaskRepeat: 'no-repeat'
                     }}
                   />
                   {/* Gradient overlay to fade blue sky smoothly to white on the left */}
