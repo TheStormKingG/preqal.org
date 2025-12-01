@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
               <img 
-                src="/preqal.org/Preqal Logo Sep25-9.png"
+                src="/preqal.org/Preqal%20Logo%20Sep25-9.png"
                 alt="PREQAL Logo"
                 className="h-12 w-auto group-hover:opacity-90 transition-opacity duration-300"
               />
