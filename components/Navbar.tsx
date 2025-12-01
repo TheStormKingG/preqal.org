@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShieldCheck } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,11 +22,12 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2 group">
-              <div className="p-2 bg-gradient-to-br from-amber-500 to-amber-700 rounded-lg group-hover:from-amber-400 group-hover:to-amber-600 transition-all duration-300 shadow-md shadow-amber-900/10">
-                <ShieldCheck className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-neutral-900 tracking-tight">PREQAL</span>
+            <Link to="/" className="flex items-center group">
+              <img 
+                src="/preqal.org/Preqal Logo Sep25-9.png"
+                alt="PREQAL Logo"
+                className="h-12 w-auto group-hover:opacity-90 transition-opacity duration-300"
+              />
             </Link>
           </div>
 
