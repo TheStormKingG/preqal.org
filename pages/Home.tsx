@@ -76,7 +76,7 @@ const Home: React.FC = () => {
                     overflow: 'hidden'
                   }}
                 >
-                  {/* Image with rounded corners and feathered edges */}
+                  {/* Image with rounded corners */}
                   <img 
                     src={`${import.meta.env.BASE_URL}Image1.png`}
                     alt="Stabroek Market Clock Tower"
@@ -84,13 +84,7 @@ const Home: React.FC = () => {
                     style={{ 
                       filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
                       borderRadius: '16px',
-                      display: 'block',
-                      maskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 6px), transparent 100%)',
-                      WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 6px), transparent 100%)',
-                      maskSize: '100% 100%',
-                      WebkitMaskSize: '100% 100%',
-                      maskRepeat: 'no-repeat',
-                      WebkitMaskRepeat: 'no-repeat'
+                      display: 'block'
                     }}
                   />
                   {/* Gradient overlay to fade blue sky smoothly to white on the left */}
