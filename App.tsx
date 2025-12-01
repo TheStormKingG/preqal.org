@@ -22,12 +22,18 @@ const App: React.FC = () => {
   const patternRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Set initial transform with scale
+    if (patternRef.current) {
+      patternRef.current.style.transform = 'scale(0.75) translateY(0px)';
+    }
+
     const handleScroll = () => {
       if (patternRef.current) {
         const scrollY = window.scrollY;
         // Parallax effect: scroll at 30% speed (0.3 multiplier) for slower movement
+        // Combined with scale(0.75) for 25% smaller icons
         const parallaxOffset = scrollY * 0.3;
-        patternRef.current.style.transform = `translateY(${parallaxOffset}px)`;
+        patternRef.current.style.transform = `scale(0.75) translateY(${parallaxOffset}px)`;
       }
     };
 
