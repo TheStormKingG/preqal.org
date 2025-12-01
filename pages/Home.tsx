@@ -67,20 +67,11 @@ const Home: React.FC = () => {
             
             {/* Right Side - Clock Tower Image */}
             <div className="relative hidden lg:block">
-              <div className="relative w-full h-[600px]">
-                <img 
-                  src={`${import.meta.env.BASE_URL}Image1.png`}
-                  alt="Stabroek Market Clock Tower"
-                  className="w-full h-full object-contain object-right"
-                />
-                {/* Gradient overlay to fade black background smoothly to white on the left */}
-                <div 
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(to left, #f6f8fb 0%, #f6f8fb 15%, rgba(246, 248, 251, 0.9) 25%, rgba(246, 248, 251, 0.7) 35%, rgba(246, 248, 251, 0.4) 50%, rgba(246, 248, 251, 0.1) 70%, transparent 100%)'
-                  }}
-                ></div>
-              </div>
+              <img 
+                src="/preqal.org/Image1.png"
+                alt="Stabroek Market Clock Tower"
+                className="w-full h-full object-contain object-right"
+              />
             </div>
           </div>
         </div>
