@@ -68,21 +68,37 @@ const Home: React.FC = () => {
             
             {/* Right Side - Clock Tower Image with Gradient Fade */}
             <div className="relative hidden lg:block">
-              <div className="relative w-full h-[600px] overflow-hidden">
-                {/* Clock Tower Image */}
-                <img 
-                  src={clockTowerImage} 
-                  alt="Stabroek Market Clock Tower"
-                  className="w-full h-full object-contain object-right"
-                  style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' }}
-                />
-                {/* Gradient overlay to fade blue sky smoothly to white on the left */}
+              <div className="relative w-full h-[600px] overflow-visible">
+                {/* Wrapper with rounded corners and transparent edge mask */}
                 <div 
-                  className="absolute inset-0 pointer-events-none"
+                  className="relative w-full h-full"
                   style={{
-                    background: 'linear-gradient(to left, #f6f8fb 0%, #f6f8fb 20%, rgba(246, 248, 251, 0.8) 40%, rgba(246, 248, 251, 0.4) 60%, rgba(246, 248, 251, 0.1) 80%, transparent 100%)'
+                    borderRadius: '16px'
                   }}
-                ></div>
+                >
+                  {/* Image with rounded corners and feathered edges */}
+                  <img 
+                    src={clockTowerImage} 
+                    alt="Stabroek Market Clock Tower"
+                    className="w-full h-full object-contain object-right"
+                    style={{ 
+                      filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+                      borderRadius: '16px',
+                      maskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 4px), transparent 100%)',
+                      WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at center, black calc(100% - 4px), transparent 100%)',
+                      maskSize: '100% 100%',
+                      WebkitMaskSize: '100% 100%'
+                    }}
+                  />
+                  {/* Gradient overlay to fade blue sky smoothly to white on the left */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      borderRadius: '16px',
+                      background: 'linear-gradient(to left, #f6f8fb 0%, #f6f8fb 20%, rgba(246, 248, 251, 0.8) 40%, rgba(246, 248, 251, 0.4) 60%, rgba(246, 248, 251, 0.1) 80%, transparent 100%)'
+                    }}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
