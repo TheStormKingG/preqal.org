@@ -11,7 +11,7 @@ const BookScan: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    businessType: 'Poultry Farm',
+    businessType: '',
     concern: serviceName ? `I am interested in ${serviceName}` : '',
     sessionStyle: 'Virtual',
   });
@@ -128,17 +128,18 @@ const BookScan: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Business Type</label>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">Company Type</label>
                   <select
                     name="businessType"
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all appearance-none"
                     value={formData.businessType}
                     onChange={handleChange}
                   >
-                    <option>Poultry Farm</option>
-                    <option>Hatchery</option>
-                    <option>Processing Plant</option>
-                    <option>Eco-Hospitality</option>
+                    <option value="">Select...</option>
+                    <option>Small Business</option>
+                    <option>Medium Business</option>
+                    <option>Large Enterprise</option>
+                    <option>Startup</option>
                     <option>Other</option>
                   </select>
                 </div>
@@ -170,12 +171,12 @@ const BookScan: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-600 mb-1">Current Risk / Concern</label>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
                 <textarea
                   name="concern"
-                  rows={3}
+                  rows={4}
                   className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                  placeholder="e.g. Preparing for an audit, struggling with SOPs..."
+                  placeholder="Tell us about your project or how we can help..."
                   value={formData.concern}
                   onChange={handleChange}
                 ></textarea>
