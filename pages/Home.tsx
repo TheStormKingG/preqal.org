@@ -68,7 +68,7 @@ const Home: React.FC = () => {
             {/* Right Side - Clock Tower Image */}
             <div className="relative hidden lg:block">
               <img 
-                src="/preqal.org/Image1.png"
+                src={`${import.meta.env.BASE_URL}Image1.png`}
                 alt="Stabroek Market Clock Tower"
                 className="w-full h-full object-contain object-right"
               />
