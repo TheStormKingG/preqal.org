@@ -78,7 +78,7 @@ const Home: React.FC = () => {
                 >
                   {/* Image with rounded corners and feathered edges */}
                   <img 
-                    src="/Image1.png" 
+                    src={`${import.meta.env.BASE_URL}Image1.png`}
                     alt="Stabroek Market Clock Tower"
                     className="w-full h-full object-contain object-right"
                     style={{ 
@@ -224,8 +224,8 @@ const Home: React.FC = () => {
                 <h3 className="font-semibold text-neutral-200">Average Maturity Growth</h3>
                 <span className="text-amber-500 font-mono text-xs animate-pulse">● Live Projection</span>
               </div>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="h-64 w-full min-h-[256px]">
+                <ResponsiveContainer width="100%" height="100%" minHeight={256}>
                   <AreaChart data={data}>
                     <defs>
                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
