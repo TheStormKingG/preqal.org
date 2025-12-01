@@ -40,26 +40,143 @@ const Home: React.FC = () => {
       {/* Hero Section - Transparent to show App background */}
       <section className="relative text-neutral-900 py-24 lg:py-32 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-amber-500/30 text-amber-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-              <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Text Content */}
+            <div>
+              <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-amber-500/30 text-amber-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-neutral-900">
+                Quality, Safety & Compliance <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
+                We build evidence-driven management systems for Poultry, Agri-Food, and Eco-Hospitality businesses. Move from chaos to compliance.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
+                  Get a Risk Scan
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+                <Link to="/case-studies" className="inline-flex justify-center items-center px-8 py-4 bg-white/80 backdrop-blur hover:bg-white text-neutral-800 hover:text-black font-semibold rounded-lg border border-neutral-300 hover:border-amber-500 transition-all duration-300 shadow-sm">
+                  View Case Studies
+                </Link>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-neutral-900">
-              Quality, Safety & Compliance <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
-              We build evidence-driven management systems for Poultry, Agri-Food, and Eco-Hospitality businesses. Move from chaos to compliance.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
-                Get a Risk Scan
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link to="/case-studies" className="inline-flex justify-center items-center px-8 py-4 bg-white/80 backdrop-blur hover:bg-white text-neutral-800 hover:text-black font-semibold rounded-lg border border-neutral-300 hover:border-amber-500 transition-all duration-300 shadow-sm">
-                View Case Studies
-              </Link>
+            
+            {/* Right Side - Clock Tower Image with Gradient Fade */}
+            <div className="relative hidden lg:block">
+              <div className="relative w-full h-[600px] overflow-hidden">
+                {/* Clock Tower SVG */}
+                <svg 
+                  viewBox="0 0 400 600" 
+                  className="w-full h-full"
+                  preserveAspectRatio="xMidYMid meet"
+                  style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' }}
+                >
+                  <defs>
+                    {/* Sky Background with smooth gradient fade from blue (right) to white (left) */}
+                    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#f6f8fb" stopOpacity="1" />
+                      <stop offset="20%" stopColor="#E8F4F8" stopOpacity="1" />
+                      <stop offset="40%" stopColor="#D0E9F1" stopOpacity="1" />
+                      <stop offset="60%" stopColor="#B0E0E6" stopOpacity="1" />
+                      <stop offset="80%" stopColor="#87CEEB" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#5F9EA0" stopOpacity="1" />
+                    </linearGradient>
+                    {/* Overlay gradient to ensure smooth fade to white on left */}
+                    <linearGradient id="fadeOverlay" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#f6f8fb" stopOpacity="1" />
+                      <stop offset="30%" stopColor="#f6f8fb" stopOpacity="0.9" />
+                      <stop offset="50%" stopColor="#f6f8fb" stopOpacity="0.5" />
+                      <stop offset="70%" stopColor="#f6f8fb" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#f6f8fb" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="400" height="600" fill="url(#skyGradient)" />
+                  <rect width="400" height="600" fill="url(#fadeOverlay)" />
+                  
+                  {/* Clouds */}
+                  <g fill="white" opacity="0.9">
+                    <ellipse cx="80" cy="100" rx="40" ry="25" />
+                    <ellipse cx="100" cy="100" rx="35" ry="30" />
+                    <ellipse cx="90" cy="110" rx="30" ry="20" />
+                    
+                    <ellipse cx="320" cy="150" rx="35" ry="22" />
+                    <ellipse cx="340" cy="150" rx="30" ry="25" />
+                    <ellipse cx="330" cy="160" rx="25" ry="18" />
+                    
+                    <ellipse cx="200" cy="80" rx="30" ry="20" />
+                    <ellipse cx="215" cy="80" rx="25" ry="22" />
+                  </g>
+                  
+                  {/* Clock Tower - Main Structure */}
+                  <g stroke="#000" strokeWidth="3" fill="none">
+                    {/* Base/Arch */}
+                    <path d="M 150 550 Q 200 500 250 550" strokeWidth="4" fill="#8B4513" />
+                    <path d="M 160 550 Q 200 520 240 550" strokeWidth="2" fill="#A0522D" />
+                    
+                    {/* Tower Base */}
+                    <rect x="170" y="450" width="60" height="100" fill="#CD853F" stroke="#000" strokeWidth="3" />
+                    
+                    {/* Market Sign Section */}
+                    <rect x="160" y="400" width="80" height="50" fill="#F5DEB3" stroke="#000" strokeWidth="3" />
+                    <text x="200" y="430" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#000" fontFamily="Arial, sans-serif">STABROEK</text>
+                    <text x="200" y="445" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#000" fontFamily="Arial, sans-serif">MARKET</text>
+                    
+                    {/* Lattice work */}
+                    <g stroke="#CD853F" strokeWidth="2" opacity="0.6">
+                      <line x1="170" y1="410" x2="190" y2="440" />
+                      <line x1="190" y1="410" x2="170" y2="440" />
+                      <line x1="210" y1="410" x2="230" y2="440" />
+                      <line x1="230" y1="410" x2="210" y2="440" />
+                    </g>
+                    
+                    {/* Clock Face */}
+                    <circle cx="200" cy="350" r="35" fill="#F5DEB3" stroke="#000" strokeWidth="3" />
+                    <circle cx="200" cy="350" r="30" fill="white" stroke="#CD853F" strokeWidth="2" />
+                    
+                    {/* Clock Numbers */}
+                    <text x="200" y="330" textAnchor="middle" fontSize="8" fill="#000" fontFamily="Arial">12</text>
+                    <text x="225" y="355" textAnchor="middle" fontSize="8" fill="#000" fontFamily="Arial">3</text>
+                    <text x="200" y="380" textAnchor="middle" fontSize="8" fill="#000" fontFamily="Arial">6</text>
+                    <text x="175" y="355" textAnchor="middle" fontSize="8" fill="#000" fontFamily="Arial">9</text>
+                    
+                    {/* Clock Hands */}
+                    <line x1="200" y1="350" x2="200" y2="335" stroke="#000" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="200" y1="350" x2="210" y2="350" stroke="#000" strokeWidth="2" strokeLinecap="round" />
+                    
+                    {/* Upper Tower Section */}
+                    <rect x="180" y="280" width="40" height="70" fill="#CD853F" stroke="#000" strokeWidth="3" />
+                    <rect x="185" y="300" width="30" height="15" fill="#8B4513" stroke="#000" strokeWidth="1" />
+                    <rect x="185" y="325" width="30" height="15" fill="#8B4513" stroke="#000" strokeWidth="1" />
+                    
+                    {/* Tower Top/Roof */}
+                    <path d="M 170 280 L 200 240 L 230 280 Z" fill="#CD853F" stroke="#000" strokeWidth="3" />
+                    
+                    {/* Weather Vane */}
+                    <line x1="200" y1="240" x2="200" y2="220" stroke="#000" strokeWidth="2" />
+                    <path d="M 200 220 L 195 215 L 200 210 L 205 215 Z" fill="#000" />
+                    <circle cx="200" cy="220" r="3" fill="#000" />
+                  </g>
+                  
+                  {/* Side Market Building Elements */}
+                  <g stroke="#000" strokeWidth="2" fill="#CD853F">
+                    <rect x="100" y="480" width="50" height="70" fill="#CD853F" stroke="#000" strokeWidth="2" />
+                    <path d="M 100 480 L 125 450 L 150 480 Z" fill="#CD853F" stroke="#000" strokeWidth="2" />
+                    
+                    <rect x="250" y="480" width="50" height="70" fill="#CD853F" stroke="#000" strokeWidth="2" />
+                    <path d="M 250 480 L 275 450 L 300 480 Z" fill="#CD853F" stroke="#000" strokeWidth="2" />
+                  </g>
+                  
+                  {/* Street Light/Pole (Left) */}
+                  <g stroke="#000" strokeWidth="2" fill="#D3D3D3">
+                    <line x1="50" y1="580" x2="50" y2="400" stroke="#C0C0C0" strokeWidth="3" />
+                    <rect x="40" y="400" width="20" height="15" fill="#F5DEB3" stroke="#000" strokeWidth="2" rx="2" />
+                  </g>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
