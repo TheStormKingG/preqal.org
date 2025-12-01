@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
               <img 
                 src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
                 alt="PREQAL Logo"
-                className="h-36 w-auto group-hover:opacity-90 transition-opacity duration-300"
+                className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
               />
             </Link>
           </div>
