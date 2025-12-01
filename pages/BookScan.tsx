@@ -136,11 +136,27 @@ const BookScan: React.FC = () => {
                     onChange={handleChange}
                   >
                     <option value="">Select...</option>
-                    <option>Small Business</option>
-                    <option>Medium Business</option>
-                    <option>Large Enterprise</option>
-                    <option>Startup</option>
-                    <option>Other</option>
+                    <option>Market/Retail Vendor</option>
+                    <option>Wholesale & Distribution</option>
+                    <option>Automotive & Transportation</option>
+                    <option>Food & Beverage</option>
+                    <option>Agriculture & Agri-Food Production</option>
+                    <option>Construction & Engineering</option>
+                    <option>Hospitality & Tourism</option>
+                    <option>Education & Training</option>
+                    <option>Entertainment & Creative Arts</option>
+                    <option>Digital/Tech & Software</option>
+                    <option>Health Care & Medical Services</option>
+                    <option>Manufacturing & Industrial Production</option>
+                    <option>Financial Services & Insurance</option>
+                    <option>Real Estate & Property Management</option>
+                    <option>Logistics, Shipping & Supply Chain</option>
+                    <option>Energy, Utilities & Renewables</option>
+                    <option>Professional Services (Legal, Accounting, Consulting)</option>
+                    <option>Government, Public Administration & Defense</option>
+                    <option>Mining, Oil & Gas</option>
+                    <option>Environmental & Waste Management</option>
+                    <option>Nonprofit, NGOs & Social Impact Services</option>
                   </select>
                 </div>
               </div>
