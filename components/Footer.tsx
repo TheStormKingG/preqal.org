@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
               />
             </div>
             <p className="text-sm leading-relaxed mb-6 text-neutral-500">
-              Integrated Quality, Safety & Compliance Systems for Poultry, Agri-Food & Eco-Hospitality Businesses.
+              Integrated Quality, Safety & Compliance Systems for any business.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-amber-400 transition-colors duration-300"><Linkedin className="h-5 w-5" /></a>
