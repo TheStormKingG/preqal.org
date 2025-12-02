@@ -3,55 +3,97 @@ import { Link } from 'react-router-dom';
 import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb } from 'lucide-react';
 import { ServiceItem } from '../types';
 
-const services: ServiceItem[] = [
+const services: (ServiceItem & { features: string[] })[] = [
   {
     id: 'risk-scan',
     title: 'Quality Risk Scan™',
     tagline: 'Find your top compliance risks in 7 days',
     description: 'A rapid, on-site or virtual diagnostic to identify gaps in your current system compared to ISO, regulatory, or client requirements. You receive a prioritized "Red Flag Report" and a roadmap for strengthening controls across quality, safety, and environmental processes.',
-    icon: <AlertTriangle className="h-8 w-8 text-amber-600" />
+    icon: <AlertTriangle className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Gap Analysis & Risk Identification',
+      'Prioritized Red Flag Report',
+      'Compliance Roadmap',
+      '7-Day Rapid Assessment'
+    ]
   },
   {
     id: 'ims-design',
     title: 'IMS Design & Setup',
     tagline: 'Build an ISO-aligned management system',
     description: 'We architect your Integrated Management System (IMS) from the ground up. This includes policy formulation, process mapping, and establishing the digital backbone needed for your quality, safety, and environmental data to function as a unified system.',
-    icon: <Settings className="h-8 w-8 text-amber-600" />
+    icon: <Settings className="h-8 w-8 text-amber-600" />,
+    features: [
+      'System Architecture Design',
+      'Policy Formulation',
+      'Process Mapping & Integration',
+      'Digital Infrastructure Setup'
+    ]
   },
   {
     id: 'sop-dev',
     title: 'SOP & Procedure Development',
     tagline: 'Structured, visual, frontline-friendly documents',
     description: 'We replace text-heavy manuals with visual SOPs, flowcharts, and checklists that frontline teams can actually use. Includes mobile-friendly formats designed to support consistent execution of quality, environmental, and safety controls.',
-    icon: <FileText className="h-8 w-8 text-amber-600" />
+    icon: <FileText className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Visual SOP Development',
+      'Flowchart & Checklist Creation',
+      'Mobile-Friendly Formats',
+      'Frontline Usability Testing'
+    ]
   },
   {
     id: 'training',
     title: 'Training & Competency',
     tagline: 'Tailored for frontline teams at all skill levels',
     description: 'On-site workshops and digital modules focused on the "Why" behind the "What". We cover safe work practices, environmental care, incident prevention, and accurate data recording so teams understand their role in maintaining system discipline.',
-    icon: <Users className="h-8 w-8 text-amber-600" />
+    icon: <Users className="h-8 w-8 text-amber-600" />,
+    features: [
+      'On-Site Workshops',
+      'Digital Training Modules',
+      'Competency Assessment',
+      'Skill-Level Customization'
+    ]
   },
   {
     id: 'audit-prep',
     title: 'Audit Readiness Support',
     tagline: 'Prepare confidently for regulators',
     description: 'Mock audits and coaching sessions to prepare your team for external certification (ISO 9001, ISO 14001, ISO 45001) or regulatory inspections. We strengthen evidence trails, staff confidence, and system performance under audit pressure.',
-    icon: <ShieldCheck className="h-8 w-8 text-amber-600" />
+    icon: <ShieldCheck className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Mock Audit Sessions',
+      'Evidence Trail Strengthening',
+      'Staff Confidence Building',
+      'Performance Under Pressure'
+    ]
   },
   {
     id: 'complete-system',
     title: 'Preqal 360™ Transformation',
     tagline: 'The complete "Chaos to Certification" package',
     description: 'Our flagship turnkey solution. We act as your fractional Quality Department to execute the full lifecycle: Assessment, Design, Documentation, Implementation, Training, and Certification Audit support. Ideal for organizations seeking formal ISO compliance.',
-    icon: <Award className="h-8 w-8 text-amber-600" />
+    icon: <Award className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Full Lifecycle Execution',
+      'Fractional Quality Department',
+      'End-to-End Support',
+      'Certification Audit Preparation'
+    ]
   },
   {
     id: 'custom-advisory',
     title: 'Specialized Advisory & Crisis Support',
     tagline: 'Bespoke solutions for unique constraints',
     description: 'For challenges that don\'t fit a standard mold. Whether it\'s recovering from operational failures, navigating compliance disputes, or standing up new processes, we design a custom intervention plan that aligns with ISO principles and your organizational reality.',
-    icon: <Lightbulb className="h-8 w-8 text-amber-600" />
+    icon: <Lightbulb className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Custom Intervention Design',
+      'Crisis Recovery Planning',
+      'Compliance Dispute Resolution',
+      'Bespoke Solution Architecture'
+    ]
   },
 ];
 
@@ -95,22 +137,12 @@ const Services: React.FC = () => {
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <div className="flex items-center space-x-3 text-sm text-neutral-500">
-                  <CheckSquare className="h-4 w-4 text-amber-600" />
-                  <span>Problem Analysis</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-neutral-500">
-                  <CheckSquare className="h-4 w-4 text-amber-600" />
-                  <span>Evidence-Based Strategy</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-neutral-500">
-                  <CheckSquare className="h-4 w-4 text-amber-600" />
-                  <span>Implementation Roadmap</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-neutral-500">
-                  <CheckSquare className="h-4 w-4 text-amber-600" />
-                  <span>Success Metrics</span>
-                </div>
+                {service.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-center space-x-3 text-sm text-neutral-500">
+                    <CheckSquare className="h-4 w-4 text-amber-600" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="flex items-center">
