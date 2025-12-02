@@ -25,7 +25,8 @@ const Footer: React.FC = () => {
               <img 
                 src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-10.png`}
                 alt="PREQAL Logo"
-                className="h-10 w-auto"
+                className="w-auto"
+                style={{ height: 'calc(2.5rem * 1.75)' }}
               />
             </div>
             <p className="text-sm leading-relaxed mb-6 text-neutral-500">
