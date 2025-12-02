@@ -45,7 +45,14 @@ const Resources: React.FC = () => {
                 <Lock className="h-8 w-8 text-amber-500" />
               </div>
               <h2 className="text-2xl font-bold mb-2 text-neutral-900">Unlock the Library</h2>
-              <p className="text-neutral-500">Enter your email to access all 5 premium templates instantly.</p>
+              <p className="text-neutral-500 mb-4">Enter your email to access all 5 premium templates instantly.</p>
+              <ol className="text-left text-neutral-600 space-y-2 max-w-md mx-auto list-decimal list-inside">
+                <li>Document Masterlist</li>
+                <li>QHSE Policy</li>
+                <li>Document Control Procedure</li>
+                <li>Risk Register</li>
+                <li>Training & Competency Register</li>
+              </ol>
             </div>
             <div className="p-10 md:p-12 bg-white">
               <form onSubmit={handleUnlock} className="flex flex-col gap-4 max-w-md mx-auto">
