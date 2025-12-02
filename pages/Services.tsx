@@ -8,49 +8,49 @@ const services: ServiceItem[] = [
     id: 'risk-scan',
     title: 'Quality Risk Scan™',
     tagline: 'Find your top compliance risks in 7 days',
-    description: 'A rapid, on-site or virtual diagnostic to identify gaps in your current system compared to ISO, HACCP, or local standards. You receive a prioritized "Red Flag Report" and a roadmap for remediation.',
+    description: 'A rapid, on-site or virtual diagnostic to identify gaps in your current system compared to ISO, regulatory, or client requirements. You receive a prioritized "Red Flag Report" and a roadmap for strengthening controls across quality, safety, and environmental processes.',
     icon: <AlertTriangle className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'ims-design',
     title: 'IMS Design & Setup',
     tagline: 'Build an ISO-aligned management system',
-    description: 'We architect your Integrated Management System (IMS) from the ground up. This includes policy formulation, process mapping, and establishing the digital backbone for your quality data.',
+    description: 'We architect your Integrated Management System (IMS) from the ground up. This includes policy formulation, process mapping, and establishing the digital backbone needed for your quality, safety, and environmental data to function as a unified system.',
     icon: <Settings className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'sop-dev',
     title: 'SOP & Procedure Development',
-    tagline: 'Structured, visual, low-literacy-friendly documents',
-    description: 'We replace text-heavy manuals with visual SOPs, flowcharts, and checklists that frontline workers can actually use. Includes mobile-friendly formats.',
+    tagline: 'Structured, visual, frontline-friendly documents',
+    description: 'We replace text-heavy manuals with visual SOPs, flowcharts, and checklists that frontline teams can actually use. Includes mobile-friendly formats designed to support consistent execution of quality, environmental, and safety controls.',
     icon: <FileText className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'training',
     title: 'Training & Competency',
-    tagline: 'Tailored for low-literacy/frontline teams',
-    description: 'On-site workshops and digital training modules focused on the "Why" behind the "What". We cover hygiene, biosecurity, animal welfare, and data recording.',
+    tagline: 'Tailored for frontline teams at all skill levels',
+    description: 'On-site workshops and digital modules focused on the "Why" behind the "What". We cover safe work practices, environmental care, incident prevention, and accurate data recording so teams understand their role in maintaining system discipline.',
     icon: <Users className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'audit-prep',
     title: 'Audit Readiness Support',
     tagline: 'Prepare confidently for regulators',
-    description: 'Mock audits and coaching sessions to prepare your team for external certification (ISO 9001, FSSC 22000) or regulatory inspections.',
+    description: 'Mock audits and coaching sessions to prepare your team for external certification (ISO 9001, ISO 14001, ISO 45001) or regulatory inspections. We strengthen evidence trails, staff confidence, and system performance under audit pressure.',
     icon: <ShieldCheck className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'complete-system',
     title: 'Preqal 360™ Transformation',
     tagline: 'The complete "Chaos to Certification" package',
-    description: 'Our flagship turnkey solution. We act as your fractional Quality Department to execute the entire lifecycle: Assessment, Design, Documentation, Implementation, Training, and Certification Audit support. Ideal for farms seeking export readiness.',
+    description: 'Our flagship turnkey solution. We act as your fractional Quality Department to execute the full lifecycle: Assessment, Design, Documentation, Implementation, Training, and Certification Audit support. Ideal for organizations seeking formal ISO compliance.',
     icon: <Award className="h-8 w-8 text-amber-600" />
   },
   {
     id: 'custom-advisory',
     title: 'Specialized Advisory & Crisis Support',
     tagline: 'Bespoke solutions for unique constraints',
-    description: 'For challenges that don\'t fit a standard mold. Whether it\'s recovering from a disease outbreak, navigating a specific regulatory dispute, or setting up a new on-site lab, we design a custom intervention plan for your specific operational reality.',
+    description: 'For challenges that don\'t fit a standard mold. Whether it\'s recovering from operational failures, navigating compliance disputes, or standing up new processes, we design a custom intervention plan that aligns with ISO principles and your organizational reality.',
     icon: <Lightbulb className="h-8 w-8 text-amber-600" />
   },
 ];
