@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Linkedin, Mail } from 'lucide-react';
+import { Linkedin, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
@@ -21,9 +21,12 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <ShieldCheck className="h-6 w-6 text-amber-500" />
-              <span className="text-xl font-bold text-white tracking-tight">PREQAL</span>
+            <div className="mb-4">
+              <img 
+                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-10.png`}
+                alt="PREQAL Logo"
+                className="h-10 w-auto"
+              />
             </div>
             <p className="text-sm leading-relaxed mb-6 text-neutral-500">
               Integrated Quality, Safety & Compliance Systems for Poultry, Agri-Food & Eco-Hospitality Businesses.
