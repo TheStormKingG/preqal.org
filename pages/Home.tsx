@@ -134,9 +134,9 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Cards */}
             {[
-              { title: "Quality Risk Scan™", icon: <AlertTriangle />, desc: "Find your top compliance risks in 7 days. A rapid diagnostic to identify gaps before the auditors do.", link: "/book", linkText: "Book Scan" },
-              { title: "IMS Design & Setup", icon: <Settings />, desc: "Build an ISO-aligned management system from scratch. Tailored for poultry and eco-tourism workflows.", link: "/services", linkText: "Learn More" },
-              { title: "SOP Architecture", icon: <FileText />, desc: "Visual, low-literacy-friendly documentation that frontline workers actually understand and follow.", link: "/services", linkText: "Learn More" }
+              { title: "Quality Risk Scan™", icon: <AlertTriangle />, desc: "A rapid, on-site or virtual diagnostic to identify gaps in your current system compared to ISO, regulatory, or client requirements. You receive a prioritized \"Red Flag Report\" and a roadmap for strengthening controls across quality, safety, and environmental processes.", link: "/book", linkText: "Book Scan" },
+              { title: "IMS Design & Setup", icon: <Settings />, desc: "We architect your Integrated Management System (IMS) from the ground up. This includes policy formulation, process mapping, and establishing the digital backbone needed for your quality, safety, and environmental data to function as a unified system.", link: "/services", linkText: "Learn More" },
+              { title: "SOP & Procedure Development", icon: <FileText />, desc: "We replace text-heavy manuals with visual SOPs, flowcharts, and checklists that frontline teams can actually use. Includes mobile-friendly formats designed to support consistent execution of quality, environmental, and safety controls.", link: "/services", linkText: "Learn More" }
             ].map((card, i) => (
               <div key={i} className="bg-white/80 backdrop-blur rounded-2xl p-8 border border-neutral-200 hover:border-amber-500/50 hover:bg-white hover:shadow-2xl hover:shadow-amber-900/5 transition-all duration-300 group">
                 <div className="h-12 w-12 bg-neutral-50 rounded-lg shadow-sm border border-neutral-200 flex items-center justify-center mb-6 text-amber-600 group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
