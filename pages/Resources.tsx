@@ -44,8 +44,8 @@ const Resources: React.FC = () => {
               <div className="inline-flex items-center justify-center p-4 bg-white rounded-full mb-6 ring-4 ring-neutral-50 shadow-sm">
                 <Lock className="h-8 w-8 text-amber-500" />
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-neutral-900">Unlock the Library</h2>
-              <p className="text-neutral-500 mb-4">Enter your email to access all 5 premium templates instantly.</p>
+              <h2 className="font-bold mb-2 text-neutral-900" style={{ fontSize: 'calc(1.5rem * 1.07)' }}>Unlock the Library</h2>
+              <p className="text-neutral-500 mb-4" style={{ fontSize: 'calc(1rem * 1.07)' }}>Enter your email to access all 5 premium templates instantly.</p>
               <ol className="text-left text-neutral-600 space-y-2 max-w-md mx-auto list-decimal list-inside">
                 <li>Document Masterlist</li>
                 <li>QHSE Policy</li>
