@@ -222,7 +222,7 @@ const Home: React.FC = () => {
       <section className="py-24 relative text-neutral-900 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-3xl font-bold mb-4 text-neutral-900">Start Improving Today</h2>
-          <p className="text-neutral-600 mb-8 text-lg">Download our "IMS Essentials Toolkit for Poultry & Agri-Food Businesses" — a free PDF guide including a self-assessment checklist.</p>
+          <p className="text-neutral-600 mb-8 text-lg">Download our "Management Essentials Toolkit for Businesses" — a free PDF guide including a self-assessment checklist.</p>
           
           <form onSubmit={handleSubscribe} className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input 
