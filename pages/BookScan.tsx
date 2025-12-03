@@ -43,7 +43,7 @@ const BookScan: React.FC = () => {
     formTitle: "Project Inquiry"
   } : {
     title: "Book a Risk Scan",
-    subtitle: "Stop guessing about your compliance status. Get a professional diagnostic of your current systems against ISO, HACCP, or local regulatory standards.",
+    subtitle: "Stop guessing about your compliance status. Get a professional diagnostic of your current systems against regulatory standards.",
     stepsTitle: "What happens next?",
     steps: [
       { num: 1, title: "Initial Discovery", desc: "15-min call to understand your immediate pain points." },
