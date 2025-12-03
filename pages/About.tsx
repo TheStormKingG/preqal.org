@@ -26,8 +26,8 @@ const About: React.FC = () => {
               <div className="w-32 h-32 bg-neutral-100 rounded-full mx-auto mb-6 overflow-hidden border-4 border-amber-500/20 p-1">
                 <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`} alt="Stefan - Founder" className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500" />
               </div>
-              <h2 className="text-2xl font-bold text-center mb-1 text-neutral-900">Stefan</h2>
-              <p className="text-amber-600 text-center text-sm font-bold mb-6 uppercase tracking-widest">Medical Leadership → Systems Engineer</p>
+              <h2 className="text-2xl font-bold text-center mb-1 text-neutral-900">Dr. Gravesande</h2>
+              <p className="text-amber-600 text-center text-xs font-bold mb-6 uppercase tracking-wider whitespace-nowrap">Medical Leadership → Systems Engineer</p>
               
               <div className="space-y-4 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-6">
                 <p>
