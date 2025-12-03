@@ -108,6 +108,10 @@ const BookScan: React.FC = () => {
               <Phone className="h-4 w-4" />
               <span>Direct: +592 633 5874</span>
             </div>
+            
+            <div className="mt-6">
+              <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-6.png`} alt="Dr. Gravesande Signature" className="w-48 h-auto" />
+            </div>
           </div>
 
           {/* Form Side */}
