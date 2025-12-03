@@ -24,7 +24,7 @@ const About: React.FC = () => {
           <div className="md:col-span-4">
             <div className="bg-white border border-neutral-200 rounded-2xl p-8 sticky top-24 shadow-xl shadow-neutral-200/50 animate-fade-in-up delay-100">
               <div className="w-32 h-32 bg-neutral-100 rounded-full mx-auto mb-6 overflow-hidden border-4 border-amber-500/20 p-1">
-                <img src="https://picsum.photos/seed/doctor/400/400" alt="Stefan - Founder" className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500" />
+                <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`} alt="Stefan - Founder" className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-1 text-neutral-900">Stefan</h2>
               <p className="text-amber-600 text-center text-sm font-bold mb-6 uppercase tracking-widest">Medical → Systems Engineer</p>
