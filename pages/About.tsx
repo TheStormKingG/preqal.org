@@ -87,8 +87,11 @@ const About: React.FC = () => {
               <p className="text-neutral-700 mb-4 leading-relaxed">
                 Most consultants offer a one-size-fits-all template. We offer a prescription tailored to your specific risks.
               </p>
-              <p className="text-neutral-700 leading-relaxed">
+              <p className="text-neutral-700 mb-6 leading-relaxed">
                 We examine your processes with the same precision used in clinical assessment—symptoms, patterns, and underlying causes. This approach ensures solutions are not generic but targeted, restorative, and designed to strengthen long-term organizational resilience and performance.
+              </p>
+              <p className="text-lg font-bold text-amber-700 text-center">
+                We care for business
               </p>
             </div>
 
