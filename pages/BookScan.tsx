@@ -110,7 +110,7 @@ const BookScan: React.FC = () => {
             </div>
             
             <div className="mt-6">
-              <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-6.png`} alt="Dr. Gravesande Signature" className="w-48 h-auto" />
+              <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-6.png`} alt="Dr. Gravesande Signature" className="h-auto" style={{ width: '30rem' }} />
             </div>
           </div>
 
