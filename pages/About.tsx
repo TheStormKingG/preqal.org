@@ -27,17 +27,17 @@ const About: React.FC = () => {
                 <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`} alt="Stefan - Founder" className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-1 text-neutral-900">Stefan</h2>
-              <p className="text-amber-600 text-center text-sm font-bold mb-6 uppercase tracking-widest">Medical → Systems Engineer</p>
+              <p className="text-amber-600 text-center text-sm font-bold mb-6 uppercase tracking-widest">Medical Leadership → Systems Engineer</p>
               
               <div className="space-y-4 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-6">
                 <p>
-                  Transitioning from a medical background to industrial quality systems, Stefan brings a diagnostic, evidence-based approach to operational management.
+                  Transitioning from a strong medical foundation into industrial quality and systems engineering, Dr. Gravesande applies a diagnostic, evidence-based mindset to operational excellence. His clinical background strengthens his ability to analyze root causes, interpret complex data, and design interventions that improve performance across entire organizations.
                 </p>
                 <p>
-                  Former lead on building the Integrated Management System (IMS) from scratch at Bounty Farm.
+                  He currently leads the development of Integrated Management Systems (IMS) from the ground up for multiple firms, aligning operations with ISO 9001, ISO 14001, and ISO 45001.
                 </p>
                 <p>
-                  Developer of ESGAIMS multi-agent reporting system.
+                  He is also the creator of advanced multi-agent reporting systems and enterprise software tools that automate analysis, scoring, and decision-support for modern quality operations.
                 </p>
               </div>
             </div>
