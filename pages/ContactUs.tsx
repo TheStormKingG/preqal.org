@@ -97,8 +97,8 @@ const ContactUs: React.FC = () => {
           </div>
 
           {/* Contact Form Side */}
-          <div className="lg:col-span-2 animate-fade-in-up delay-200">
-            <div className="bg-white p-8 md:p-10 rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100">
+          <div className="lg:col-span-2 animate-fade-in-up delay-200 flex">
+            <div className="bg-white p-8 md:p-10 rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 flex-1 flex flex-col">
               <h2 className="text-2xl font-bold text-neutral-900 mb-6">Send a Message</h2>
               
               {status === 'success' ? (
@@ -118,7 +118,8 @@ const ContactUs: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
+                  <div className="flex-1 flex flex-col space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-neutral-600 mb-1">Your Name</label>
@@ -159,17 +160,17 @@ const ContactUs: React.FC = () => {
                     />
                   </div>
 
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
                     <textarea
                       name="message"
-                      rows={8}
                       required
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                      className="w-full flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
                       placeholder="Tell us more about your inquiry..."
                       value={formData.message}
                       onChange={handleChange}
                     ></textarea>
+                  </div>
                   </div>
 
                   <button
