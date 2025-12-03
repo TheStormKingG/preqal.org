@@ -106,7 +106,7 @@ const BookScan: React.FC = () => {
 
             <div className="flex items-center space-x-2 text-neutral-500 text-sm">
               <Phone className="h-4 w-4" />
-              <span>Direct: +592 (555) 123-4567</span>
+              <span>Direct: +592 633 5874</span>
             </div>
           </div>
 
@@ -240,7 +240,7 @@ const BookScan: React.FC = () => {
                 )}
               </button>
               <p className="text-xs text-center text-neutral-500">
-                Stefan will contact you within 24 hours.
+                Dr. Gravesande will contact you within 24 hours.
               </p>
             </form>
           </div>
