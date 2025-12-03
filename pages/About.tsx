@@ -82,10 +82,13 @@ const About: React.FC = () => {
             <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-xl p-8 shadow-sm">
               <h3 className="text-xl font-bold text-amber-700 mb-4">Why "Clinic on Quality"?</h3>
               <p className="text-neutral-700 mb-4 leading-relaxed">
-                Just as a doctor diagnoses a patient before prescribing medication, we diagnose your operational health before prescribing a system. 
+                Just as a doctor diagnoses a patient before prescribing medication, we diagnose your operational health before prescribing a system.
+              </p>
+              <p className="text-neutral-700 mb-4 leading-relaxed">
+                Most consultants offer a one-size-fits-all template. We offer a prescription tailored to your specific risks.
               </p>
               <p className="text-neutral-700 leading-relaxed">
-                Most consultants offer a "one-size-fits-all" template. We offer a prescription for your specific risks.
+                We examine your processes with the same precision used in clinical assessment—symptoms, patterns, and underlying causes. This approach ensures solutions are not generic but targeted, restorative, and designed to strengthen long-term organizational resilience and performance.
               </p>
             </div>
 
