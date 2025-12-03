@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb } from 'lucide-react';
+import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb, Code } from 'lucide-react';
 import { ServiceItem } from '../types';
 
 const services: (ServiceItem & { features: string[] })[] = [
@@ -80,6 +80,19 @@ const services: (ServiceItem & { features: string[] })[] = [
       'Fractional Quality Department',
       'End-to-End Support',
       'Certification Audit Preparation'
+    ]
+  },
+  {
+    id: 'webapp-dev',
+    title: 'Operational Web App Development',
+    tagline: 'Custom digital tools for your operations',
+    description: 'We build tailored web applications to streamline your operational workflows, automate reporting, and digitize quality management processes. From data collection interfaces to real-time dashboards, we create tools that integrate seamlessly with your existing systems.',
+    icon: <Code className="h-8 w-8 text-amber-600" />,
+    features: [
+      'Custom Web Application Development',
+      'Workflow Automation',
+      'Real-Time Dashboards',
+      'System Integration & API Development'
     ]
   },
   {
