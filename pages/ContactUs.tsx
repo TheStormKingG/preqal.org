@@ -163,7 +163,7 @@ const ContactUs: React.FC = () => {
                     <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
                     <textarea
                       name="message"
-                      rows={5}
+                      rows={8}
                       required
                       className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
                       placeholder="Tell us more about your inquiry..."
