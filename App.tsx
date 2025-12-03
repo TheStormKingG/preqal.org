@@ -1,14 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Services from './pages/Services';
-import CaseStudies from './pages/CaseStudies';
-import Resources from './pages/Resources';
-import About from './pages/About';
-import BookScan from './pages/BookScan';
-import ContactUs from './pages/ContactUs';
+import AnimatedRoutes from './components/AnimatedRoutes';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -59,16 +53,8 @@ const App: React.FC = () => {
 
       <div className="flex flex-col min-h-screen text-neutral-900 font-sans selection:bg-amber-500/30">
         <Navbar />
-        <main className="flex-grow pt-20">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/book" element={<BookScan />} />
-            <Route path="/contact" element={<ContactUs />} />
-          </Routes>
+        <main className="flex-grow pt-20 overflow-hidden">
+          <AnimatedRoutes />
         </main>
         <Footer />
       </div>
