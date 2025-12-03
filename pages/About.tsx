@@ -12,7 +12,7 @@ const About: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 text-center animate-fade-in-up relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Preqal — Clinic on Quality™</h1>
           <p className="text-xl text-neutral-400 leading-relaxed max-w-2xl mx-auto">
-            We specialize in Quality, Food Safety, Animal Welfare, and Compliance Systems for the Poultry, Eco-Hospitality, and Agri-Food sectors.
+            We specialize in Quality and Compliance Systems for all sectors, from small shops to large corporations.
           </p>
         </div>
       </div>
