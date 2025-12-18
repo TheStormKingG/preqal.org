@@ -34,19 +34,25 @@ const Home: React.FC = () => {
       
       try {
         // Send email with zip attachment via API
-        // Update this URL to point to your deployed serverless function
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://your-api-domain.com/api/send-templates';
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://api.preqal.org/api/send-templates';
+        
+        const form = e.target as HTMLFormElement;
+        const honeypot = (form.querySelector('input[name="website"]') as HTMLInputElement)?.value || '';
         
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ 
+            email: email.trim(),
+            honeypot: honeypot // Honeypot protection
+          }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to send email');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to send email');
         }
       } catch (error) {
         console.error('Error sending email:', error);
@@ -301,6 +307,15 @@ const Home: React.FC = () => {
             </div>
             <div className="p-10 md:p-12 bg-white">
               <form onSubmit={handleSubscribe} className="flex flex-col gap-4 max-w-md mx-auto">
+                {/* Honeypot field - hidden from users */}
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  style={{ position: 'absolute', left: '-9999px' }}
+                  aria-hidden="true"
+                />
                 <input
                   type="email"
                   required
