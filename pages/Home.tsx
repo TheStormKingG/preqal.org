@@ -19,7 +19,7 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
     </div>
     <h3 className="font-bold text-neutral-900 mb-1 group-hover:text-amber-600 transition-colors">{title}</h3>
     <p className="text-xs text-neutral-500 group-hover:text-neutral-600 transition-colors mb-2">{desc}</p>
-    <p className="text-sm text-neutral-600 leading-relaxed group-hover:text-neutral-700 transition-colors">{longDesc}</p>
+    <p className="text-xs text-neutral-600 leading-relaxed group-hover:text-neutral-700 transition-colors">{longDesc}</p>
   </div>
 );
 
@@ -111,42 +111,42 @@ const Home: React.FC = () => {
               <ProcessStep 
                 title="Assess" 
                 desc="Risk Scan" 
-                longDesc="We conduct comprehensive diagnostic assessments to identify critical gaps in your current quality, safety, and compliance systems compared to ISO standards and regulatory requirements."
+                longDesc="We conduct comprehensive diagnostic assessments to identify critical gaps in your quality, safety, and compliance systems."
                 icon={<AlertTriangle size={40} />} 
                 delay="delay-0" 
               />
               <ProcessStep 
                 title="Design" 
                 desc="IMS Architecture" 
-                longDesc="We architect your Integrated Management System from the ground up, creating a unified framework that aligns quality, environmental, and safety processes into one cohesive operational structure."
+                longDesc="We architect your Integrated Management System from the ground up, creating a unified framework that aligns quality, environmental, and safety processes."
                 icon={<Settings size={40} />} 
                 delay="delay-100" 
               />
               <ProcessStep 
                 title="Implement" 
                 desc="SOPs & Docs" 
-                longDesc="We develop clear, actionable Standard Operating Procedures and documentation that frontline teams can actually use, replacing text-heavy manuals with visual workflows and checklists."
+                longDesc="We develop clear, actionable Standard Operating Procedures and documentation that frontline teams can actually use effectively."
                 icon={<FileText size={40} />} 
                 delay="delay-200" 
               />
               <ProcessStep 
                 title="Train" 
                 desc="Competency" 
-                longDesc="We deliver targeted training programs designed to build competency across all levels of your organization, ensuring your team can confidently execute quality and compliance processes."
+                longDesc="We deliver targeted training programs designed to build competency across all levels of your organization effectively."
                 icon={<Users size={40} />} 
                 delay="delay-300" 
               />
               <ProcessStep 
                 title="Monitor" 
                 desc="Audit Prep" 
-                longDesc="We establish continuous monitoring systems and prepare your organization for external audits through mock inspections, evidence trail strengthening, and performance tracking dashboards."
+                longDesc="We establish continuous monitoring systems and prepare your organization for external audits through mock inspections and performance tracking."
                 icon={<BarChart3 size={40} />} 
                 delay="delay-400" 
               />
               <ProcessStep 
                 title="Improve" 
                 desc="Optimization" 
-                longDesc="We analyze performance data and implement continuous improvement initiatives that drive measurable enhancements in compliance rates, operational efficiency, and organizational resilience over time."
+                longDesc="We analyze performance data and implement continuous improvement initiatives that drive measurable enhancements in compliance and efficiency."
                 icon={<ArrowRight size={40} />} 
                 delay="delay-500" 
               />
