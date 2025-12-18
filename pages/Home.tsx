@@ -30,8 +30,6 @@ const Home: React.FC = () => {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      setSubscribed(true);
-      
       try {
         // Send email with zip attachment via API
         const apiUrl = import.meta.env.VITE_API_URL || 'https://api.preqal.org/api/send-templates';
@@ -51,17 +49,18 @@ const Home: React.FC = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Failed to send email');
+          const errorText = await response.text().catch(() => '');
+          throw new Error(`Send failed: ${response.status} ${errorText}`);
         }
+
+        // Only show success if API call succeeded
+        setSubscribed(true);
+        setEmail('');
       } catch (error) {
         console.error('Error sending email:', error);
-        // Still show success message to user even if API fails
-        // (you can handle this differently if needed)
+        // Don't show success message if API fails
+        alert('Failed to send email. Please try again later.');
       }
-      
-      // Keep success message visible
-      setEmail('');
     }
   };
 

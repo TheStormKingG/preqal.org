@@ -112,19 +112,31 @@ const getZipFile = async () => {
 
 // Main handler
 export default async function handler(req, res) {
-  // Set CORS headers for all responses
-  Object.entries(corsHeaders).forEach(([key, value]) => {
-    res.setHeader(key, value);
-  });
+  const origin = req.headers.origin;
 
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).json({});
+  const allowedOrigins = new Set([
+    "https://preqal.org",
+    "https://www.preqal.org",
+    // Optional (only if you test locally):
+    // "http://localhost:5173",
+  ]);
+
+  // CORS headers (set on every response)
+  if (allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Preflight
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
   }
 
   // Only allow POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   // Get client IP
