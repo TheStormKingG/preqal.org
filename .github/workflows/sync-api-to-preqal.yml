@@ -2,7 +2,7 @@ name: Sync API folder to preqal
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
       - "api/**"
       - ".github/workflows/sync-api-to-preqal.yml"
@@ -45,4 +45,3 @@ jobs:
         if: success()
         run: |
           curl -sS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
-
