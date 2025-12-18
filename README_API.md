@@ -54,7 +54,7 @@ If you prefer a simpler solution without a backend, you can use EmailJS:
 
 ## Email Service Configuration
 
-You'll need to configure your email service to send from `donotreply@preqal.com`. This typically requires:
+You'll need to configure your email service to send from `donotreply@preqal.org`. This typically requires:
 
 1. Domain verification (SPF, DKIM records)
 2. Email service account setup (SendGrid, Mailgun, AWS SES, etc.)
@@ -64,7 +64,7 @@ You'll need to configure your email service to send from `donotreply@preqal.com`
 
 The current code expects an API endpoint at `/api/send-templates` that:
 - Accepts POST requests with `{ email: string }`
-- Sends an email to that address from `donotreply@preqal.com`
+- Sends an email to that address from `donotreply@preqal.org`
 - Attaches `YOUR-Premium Templates.zip` from the `public` folder
 - Returns `{ success: true }` on success
 

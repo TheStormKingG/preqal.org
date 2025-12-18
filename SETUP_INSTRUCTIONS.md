@@ -9,7 +9,7 @@ In Vercel → Settings → Environment Variables, add:
    - Scope: Production (and Preview if you want to test)
 
 2. **FROM_EMAIL**
-   - Value: `donotreply@preqal.com`
+   - Value: `donotreply@preqal.org`
    - Scope: Production
 
 3. **ALLOWED_ORIGIN** (Optional)
@@ -24,7 +24,7 @@ In Vercel → Settings → Environment Variables, add:
 ## Resend Setup
 
 1. Sign up at https://resend.com
-2. Verify domain `preqal.com` in Resend dashboard
+2. Verify domain `preqal.org` in Resend dashboard
 3. Add DNS records (SPF, DKIM) as instructed by Resend
 4. Get your API key from Resend dashboard
 5. Add API key to Vercel environment variables

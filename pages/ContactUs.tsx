@@ -57,7 +57,7 @@ const ContactUs: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-neutral-500 mb-1">Email Us</p>
-                    <a href="mailto:info@preqal.com" className="text-neutral-900 font-semibold hover:text-amber-600 transition-colors">info@preqal.com</a>
+                    <a href="mailto:info@preqal.org" className="text-neutral-900 font-semibold hover:text-amber-600 transition-colors">info@preqal.org</a>
                   </div>
                 </div>
 
