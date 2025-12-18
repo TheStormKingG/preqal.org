@@ -12,13 +12,14 @@ const data = [
   { name: 'Month 6', score: 98 },
 ];
 
-const ProcessStep: React.FC<{ title: string; desc: string; icon: React.ReactNode; delay: string }> = ({ title, desc, icon, delay }) => (
+const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; icon: React.ReactNode; delay: string }> = ({ title, desc, longDesc, icon, delay }) => (
   <div className={`flex flex-col items-center text-center p-4 group cursor-pointer hover:bg-white/80 rounded-xl transition-all duration-300 animate-fade-in-up ${delay} hover:shadow-xl hover:shadow-neutral-200/50`}>
-    <div className="p-3 bg-white border border-neutral-200 text-amber-600 rounded-full mb-3 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 transition-all duration-300 shadow-sm">
+    <div className="p-4 bg-white border border-neutral-200 text-amber-600 rounded-full mb-4 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 transition-all duration-300 shadow-sm">
       {icon}
     </div>
     <h3 className="font-bold text-neutral-900 mb-1 group-hover:text-amber-600 transition-colors">{title}</h3>
-    <p className="text-xs text-neutral-500 group-hover:text-neutral-600 transition-colors">{desc}</p>
+    <p className="text-xs text-neutral-500 group-hover:text-neutral-600 transition-colors mb-2">{desc}</p>
+    <p className="text-sm text-neutral-600 leading-relaxed group-hover:text-neutral-700 transition-colors">{longDesc}</p>
   </div>
 );
 
@@ -104,15 +105,51 @@ const Home: React.FC = () => {
           
           <div className="relative">
             {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-[3.25rem] left-0 w-full h-0.5 bg-neutral-200 -z-10"></div>
+            <div className="hidden md:block absolute top-[4.5rem] left-0 w-full h-0.5 bg-neutral-200 -z-10"></div>
             
             <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-              <ProcessStep title="Assess" desc="Risk Scan" icon={<AlertTriangle size={20} />} delay="delay-0" />
-              <ProcessStep title="Design" desc="IMS Architecture" icon={<Settings size={20} />} delay="delay-100" />
-              <ProcessStep title="Implement" desc="SOPs & Docs" icon={<FileText size={20} />} delay="delay-200" />
-              <ProcessStep title="Train" desc="Competency" icon={<Users size={20} />} delay="delay-300" />
-              <ProcessStep title="Monitor" desc="Audit Prep" icon={<BarChart3 size={20} />} delay="delay-400" />
-              <ProcessStep title="Improve" desc="Optimization" icon={<ArrowRight size={20} />} delay="delay-500" />
+              <ProcessStep 
+                title="Assess" 
+                desc="Risk Scan" 
+                longDesc="We conduct comprehensive diagnostic assessments to identify critical gaps in your current quality, safety, and compliance systems compared to ISO standards and regulatory requirements."
+                icon={<AlertTriangle size={40} />} 
+                delay="delay-0" 
+              />
+              <ProcessStep 
+                title="Design" 
+                desc="IMS Architecture" 
+                longDesc="We architect your Integrated Management System from the ground up, creating a unified framework that aligns quality, environmental, and safety processes into one cohesive operational structure."
+                icon={<Settings size={40} />} 
+                delay="delay-100" 
+              />
+              <ProcessStep 
+                title="Implement" 
+                desc="SOPs & Docs" 
+                longDesc="We develop clear, actionable Standard Operating Procedures and documentation that frontline teams can actually use, replacing text-heavy manuals with visual workflows and checklists."
+                icon={<FileText size={40} />} 
+                delay="delay-200" 
+              />
+              <ProcessStep 
+                title="Train" 
+                desc="Competency" 
+                longDesc="We deliver targeted training programs designed to build competency across all levels of your organization, ensuring your team can confidently execute quality and compliance processes."
+                icon={<Users size={40} />} 
+                delay="delay-300" 
+              />
+              <ProcessStep 
+                title="Monitor" 
+                desc="Audit Prep" 
+                longDesc="We establish continuous monitoring systems and prepare your organization for external audits through mock inspections, evidence trail strengthening, and performance tracking dashboards."
+                icon={<BarChart3 size={40} />} 
+                delay="delay-400" 
+              />
+              <ProcessStep 
+                title="Improve" 
+                desc="Optimization" 
+                longDesc="We analyze performance data and implement continuous improvement initiatives that drive measurable enhancements in compliance rates, operational efficiency, and organizational resilience over time."
+                icon={<ArrowRight size={40} />} 
+                delay="delay-500" 
+              />
             </div>
           </div>
         </div>
