@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   return (
     <div className="w-full overflow-x-hidden">
       {/* Hero Section - Transparent to show App background */}
-      <section className="relative text-neutral-900 py-12 lg:py-16 overflow-hidden">
+      <section className="relative text-neutral-900 pt-7 pb-12 lg:pt-10 lg:pb-16 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
