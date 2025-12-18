@@ -112,14 +112,19 @@ const getZipFile = async () => {
 
 // Main handler
 export default async function handler(req, res) {
+  // Set CORS headers for all responses
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({}).setHeaders(corsHeaders);
+    return res.status(200).json({});
   }
 
   // Only allow POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' }).setHeaders(corsHeaders);
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   // Get client IP
@@ -136,13 +141,13 @@ export default async function handler(req, res) {
     // Honeypot protection (hidden field that should be empty)
     if (honeypot && honeypot !== '') {
       auditLog(email || 'unknown', ip, 'blocked_honeypot');
-      return res.status(200).json({ success: true, message: 'Email sent successfully' }).setHeaders(corsHeaders);
+      return res.status(200).json({ success: true, message: 'Email sent successfully' });
     }
 
     // Validate email
     if (!email || !isValidEmail(email)) {
       auditLog(email || 'unknown', ip, 'invalid_email');
-      return res.status(400).json({ error: 'Valid email address required' }).setHeaders(corsHeaders);
+      return res.status(400).json({ error: 'Valid email address required' });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -152,20 +157,20 @@ export default async function handler(req, res) {
       auditLog(normalizedEmail, ip, 'rate_limited');
       return res.status(429).json({ 
         error: 'Too many requests. Please try again later.' 
-      }).setHeaders(corsHeaders);
+      });
     }
 
     // Check environment variables
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY not configured');
       auditLog(normalizedEmail, ip, 'error', new Error('RESEND_API_KEY missing'));
-      return res.status(500).json({ error: 'Service configuration error' }).setHeaders(corsHeaders);
+      return res.status(500).json({ error: 'Service configuration error' });
     }
 
     if (!process.env.FROM_EMAIL) {
       console.error('FROM_EMAIL not configured');
       auditLog(normalizedEmail, ip, 'error', new Error('FROM_EMAIL missing'));
-      return res.status(500).json({ error: 'Service configuration error' }).setHeaders(corsHeaders);
+      return res.status(500).json({ error: 'Service configuration error' });
     }
 
     // Get zip file
@@ -175,7 +180,7 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error('Failed to load zip file:', error);
       auditLog(normalizedEmail, ip, 'error', error);
-      return res.status(500).json({ error: 'Service temporarily unavailable' }).setHeaders(corsHeaders);
+      return res.status(500).json({ error: 'Service temporarily unavailable' });
     }
 
     // Convert to base64
@@ -222,7 +227,7 @@ The Preqal Team`,
     if (resendError) {
       console.error('Resend error:', resendError);
       auditLog(normalizedEmail, ip, 'error', resendError);
-      return res.status(500).json({ error: 'Failed to send email' }).setHeaders(corsHeaders);
+      return res.status(500).json({ error: 'Failed to send email' });
     }
 
     // Success
@@ -230,7 +235,7 @@ The Preqal Team`,
     return res.status(200).json({ 
       success: true, 
       message: 'Email sent successfully' 
-    }).setHeaders(corsHeaders);
+    });
 
   } catch (error) {
     console.error('Unexpected error:', error);
@@ -238,6 +243,6 @@ The Preqal Team`,
     auditLog(email, ip, 'error', error);
     return res.status(500).json({ 
       error: 'An unexpected error occurred' 
-    }).setHeaders(corsHeaders);
+    });
   }
 }
