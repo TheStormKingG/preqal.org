@@ -2,7 +2,7 @@ name: Sync API folder to preqal
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
     paths:
       - "api/**"
       - ".github/workflows/sync-api-to-preqal.yml"
