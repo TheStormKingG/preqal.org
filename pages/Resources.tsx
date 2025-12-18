@@ -105,7 +105,7 @@ const Resources: React.FC = () => {
               We respect your privacy. No spam, just value.
             </p>
             {subscribed && (
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 animate-fade-in-up">
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 animate-fade-in-up text-center">
                 <span className="font-bold">Success!</span> Check your inbox for the premium templates.
               </div>
             )}
