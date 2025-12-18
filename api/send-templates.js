@@ -1,5 +1,6 @@
 // Production-ready serverless function for sending premium templates via email
 // Deploy to Vercel with Resend integration
+// Last updated: 2025-12-18
 
 import { Resend } from 'resend';
 import crypto from 'crypto';
