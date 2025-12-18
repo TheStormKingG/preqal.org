@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   return (
     <div className="w-full overflow-x-hidden">
       {/* Hero Section - Transparent to show App background */}
-      <section className="relative text-neutral-900 py-24 lg:py-32 overflow-hidden">
+      <section className="relative text-neutral-900 py-12 lg:py-16 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
@@ -78,7 +78,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Trust Indicators - Seamless Transparent Gradient Background with Pattern */}
-      <section className="relative py-16 bg-[linear-gradient(to_bottom,transparent_0%,#171717_20%,#171717_80%,transparent_100%)]">
+      <section className="relative py-8 bg-[linear-gradient(to_bottom,transparent_0%,#171717_20%,#171717_80%,transparent_100%)]">
         {/* Pattern Overlay */}
         <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
 
@@ -95,7 +95,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Methodology Diagram - Transparent for Global Pattern */}
-      <section className="py-24 relative">
+      <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">The Preqal System</h2>
@@ -119,7 +119,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Featured Service Tiles - Transparent to show Global Pattern */}
-      <section className="py-24 relative">
+      <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex justify-between items-end mb-12">
             <div>
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Portfolio/Metrics Teaser - Seamless Dark Gradient with Pattern */}
-      <section className="py-24 bg-[linear-gradient(to_bottom,transparent_0%,#171717_15%,#171717_85%,transparent_100%)] text-white overflow-hidden relative">
+      <section className="py-12 bg-[linear-gradient(to_bottom,transparent_0%,#171717_15%,#171717_85%,transparent_100%)] text-white overflow-hidden relative">
         {/* Pattern Overlay */}
         <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
 
@@ -219,7 +219,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Lead Magnet Section - Transparent */}
-      <section className="py-24 relative text-neutral-900 text-center">
+      <section className="py-12 relative text-neutral-900 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-3xl font-bold mb-4 text-neutral-900">Start Improving Today</h2>
           <p className="text-neutral-600 mb-8 text-lg">Download our "Management Essentials Toolkit for Businesses" — a free PDF guide<br />including a self-assessment checklist.</p>
