@@ -33,13 +33,12 @@ jobs:
           git config user.email "actions@github.com"
 
           if git diff --quiet; then
-            echo "No changes to sync."
-            exit 0
+            echo "No changes to sync, but will still trigger Vercel redeploy."
+          else
+            git add api
+            git commit -m "Sync api/ from preqal.org (source: $GITHUB_SHA)"
+            git push origin main
           fi
-
-          git add api
-          git commit -m "Sync api/ from preqal.org (source: $GITHUB_SHA)"
-          git push origin main
 
       - name: Trigger Vercel deploy hook
         if: success()
