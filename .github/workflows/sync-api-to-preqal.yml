@@ -1,0 +1,43 @@
+name: Sync API folder to preqal
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "api/**"
+      - ".github/workflows/sync-api-to-preqal.yml"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo (preqal.org)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone target repo (preqal)
+        run: |
+          git clone https://x-access-token:${{ secrets.PREQAL_SYNC_TOKEN }}@github.com/TheStormKingG/preqal.git target
+
+      - name: Replace api/ in target with api/ from source
+        run: |
+          rm -rf target/api
+          mkdir -p target/api
+          cp -R api/* target/api/
+
+      - name: Commit and push to target
+        run: |
+          cd target
+          git config user.name "preqal.org sync bot"
+          git config user.email "actions@github.com"
+
+          if git diff --quiet; then
+            echo "No changes to sync."
+            exit 0
+          fi
+
+          git add api
+          git commit -m "Sync api/ from preqal.org (source: $GITHUB_SHA)"
+          git push origin main
+
