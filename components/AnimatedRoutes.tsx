@@ -3,12 +3,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from '../pages/Home';
 import Services from '../pages/Services';
 import CaseStudies from '../pages/CaseStudies';
-import Resources from '../pages/Resources';
 import About from '../pages/About';
 import BookScan from '../pages/BookScan';
 import ContactUs from '../pages/ContactUs';
 
-const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book'];
+const routeOrder = ['/', '/services', '/case-studies', '/about', '/contact', '/book'];
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -55,7 +54,6 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/case-studies" element={<CaseStudies />} />
-        <Route path="/resources" element={<Resources />} />
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />
@@ -65,4 +63,7 @@ const AnimatedRoutes: React.FC = () => {
 };
 
 export default AnimatedRoutes;
+
+
+
 
