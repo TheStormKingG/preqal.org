@@ -31,9 +31,22 @@ const BookScan: React.FC = () => {
     }, 1500);
   };
 
+  // 60-word detailed descriptions for each service
+  const serviceDescriptions: Record<string, string> = {
+    'Quality Risk Scan™': 'Our Quality Risk Scan™ is a comprehensive seven-day diagnostic assessment that evaluates your current operational systems against ISO standards, regulatory requirements, and industry best practices. We conduct thorough gap analysis across quality, safety, and environmental processes, identifying critical vulnerabilities and compliance risks. You receive a prioritized Red Flag Report highlighting immediate concerns, along with a strategic roadmap outlining actionable steps to strengthen your controls and achieve full compliance alignment.',
+    'IMS Design & Setup': 'Our IMS Design & Setup service creates a unified Integrated Management System that seamlessly combines quality, environmental, and safety processes into one cohesive operational framework. We architect your system from the ground up, developing comprehensive policies, mapping interconnected processes, and establishing the digital infrastructure needed for effective data management. This foundation enables your organization to maintain consistent compliance, streamline operations, and demonstrate continuous improvement across all management disciplines.',
+    'SOP & Procedure Development': 'Our SOP & Procedure Development service transforms complex operational requirements into clear, actionable documentation that frontline teams can actually use. We replace text-heavy manuals with visual Standard Operating Procedures featuring flowcharts, checklists, and step-by-step guides designed for real-world application. Our mobile-friendly formats ensure your teams have access to critical procedures when and where they need them, supporting consistent execution of quality, environmental, and safety controls across all operational levels.',
+    'Training & Competency': 'Our Training & Competency programs build organizational capability through targeted workshops and digital modules that explain both the "why" and the "what" behind your quality systems. We deliver on-site training sessions and comprehensive digital learning modules covering safe work practices, environmental care, incident prevention, and accurate data recording. Our competency assessments ensure your team understands their role in maintaining system discipline, with content customized to different skill levels and operational responsibilities.',
+    'Audit Readiness Support': 'Our Audit Readiness Support prepares your organization for external certification audits and regulatory inspections through comprehensive mock audit sessions and strategic coaching. We conduct realistic audit simulations covering ISO 9001, ISO 14001, and ISO 45001 standards, helping your team build confidence and strengthen evidence trails. Our approach ensures your systems perform effectively under audit pressure, with staff trained to respond confidently to auditor questions and demonstrate compliance through clear documentation and process evidence.',
+    'Preqal 360™ Transformation': 'Our Preqal 360™ Transformation is a complete turnkey solution that acts as your fractional Quality Department, executing the full lifecycle from initial assessment through final certification. We handle every aspect of your quality transformation: comprehensive system assessment, strategic design, complete documentation development, full implementation support, comprehensive training programs, and certification audit preparation. This end-to-end approach is ideal for organizations seeking formal ISO compliance without the overhead of building an internal quality department from scratch.',
+    'Operational Web App Development': 'Our Operational Web App Development service creates custom digital tools that streamline your operational workflows, automate reporting processes, and digitize quality management systems. We build tailored web applications including data collection interfaces, real-time performance dashboards, automated compliance tracking systems, and integrated reporting platforms. Our solutions integrate seamlessly with your existing systems through API development, providing you with powerful operational tools that enhance efficiency, improve data accuracy, and support evidence-based decision-making across your organization.',
+    'Specialized Advisory & Crisis Support': 'Our Specialized Advisory & Crisis Support service provides bespoke solutions for unique operational challenges that don\'t fit standard consulting molds. Whether you\'re recovering from operational failures, navigating complex compliance disputes, standing up new processes under tight deadlines, or addressing crisis situations, we design custom intervention plans aligned with ISO principles and your organizational reality. Our approach combines deep technical expertise with practical problem-solving to deliver targeted solutions that address your specific constraints and operational context.'
+  };
+
   const content = serviceName ? {
     title: `Book ${serviceName}`,
     subtitle: `Ready to move forward with ${serviceName}? Fill out the details below to schedule your kickoff or consultation.`,
+    detailedDescription: serviceDescriptions[serviceName] || '',
     stepsTitle: "Next Steps",
     steps: [
       { num: 1, title: "Request Review", desc: "We analyze your submission within 24 hours." },
@@ -44,6 +57,7 @@ const BookScan: React.FC = () => {
   } : {
     title: "Book a Risk Scan",
     subtitle: "Stop guessing about your compliance status. Get a professional diagnostic of your current systems against regulatory standards.",
+    detailedDescription: 'Our Quality Risk Scan™ is a comprehensive seven-day diagnostic assessment that evaluates your current operational systems against ISO standards, regulatory requirements, and industry best practices. We conduct thorough gap analysis across quality, safety, and environmental processes, identifying critical vulnerabilities and compliance risks. You receive a prioritized Red Flag Report highlighting immediate concerns, along with a strategic roadmap outlining actionable steps to strengthen your controls and achieve full compliance alignment.',
     stepsTitle: "What happens next?",
     steps: [
       { num: 1, title: "Initial Discovery", desc: "15-min call to understand your immediate pain points." },
@@ -83,9 +97,14 @@ const BookScan: React.FC = () => {
           {/* Content Side */}
           <div className="animate-fade-in-up">
             <h1 className="text-4xl font-bold text-neutral-900 mb-6">{content.title}</h1>
-            <p className="text-xl text-neutral-600 mb-8 leading-relaxed">
+            <p className="text-xl text-neutral-600 mb-4 leading-relaxed">
               {content.subtitle}
             </p>
+            {content.detailedDescription && (
+              <p className="text-base text-neutral-600 mb-8 leading-relaxed">
+                {content.detailedDescription}
+              </p>
+            )}
             
             <div className="bg-white/90 backdrop-blur rounded-xl p-6 shadow-lg shadow-neutral-200/50 border border-neutral-200 mb-8">
               <h3 className="font-bold text-neutral-900 mb-4">{content.stepsTitle}</h3>
