@@ -50,7 +50,23 @@ jobs:
         run: npm ci
       
       - name: Build
-        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          # Verify environment variables are set (without exposing values)
+          if [ -z "$VITE_SUPABASE_URL" ]; then
+            echo "::error::VITE_SUPABASE_URL is not set"
+            exit 1
+          fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "::error::VITE_SUPABASE_ANON_KEY is not set"
+            exit 1
+          fi
+          echo "::notice::Environment variables loaded successfully"
+          echo "VITE_SUPABASE_URL is set: $(if [ -n "$VITE_SUPABASE_URL" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_SUPABASE_ANON_KEY is set: $(if [ -n "$VITE_SUPABASE_ANON_KEY" ]; then echo 'yes'; else echo 'no'; fi)"
+          npm run build
       
       - name: Setup Pages
         uses: actions/configure-pages@v4

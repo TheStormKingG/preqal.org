@@ -1,44 +1,122 @@
 import React, { useState } from 'react';
-import { Lock } from 'lucide-react';
+import { Lock, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabaseClient';
 
 const Resources: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    company: '',
+    job_title: '',
+    phone_number: '',
+    most_pressing_quality_problem: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(''); // Clear error on input change
+  };
+
+  const validateForm = () => {
+    if (!formData.first_name.trim()) {
+      setError('First name is required');
+      return false;
+    }
+    if (!formData.last_name.trim()) {
+      setError('Last name is required');
+      return false;
+    }
+    if (!formData.email.trim()) {
+      setError('Email is required');
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return false;
+    }
+    if (!formData.company.trim()) {
+      setError('Company is required');
+      return false;
+    }
+    if (!formData.job_title.trim()) {
+      setError('Job title is required');
+      return false;
+    }
+    if (!formData.phone_number.trim()) {
+      setError('Phone number is required');
+      return false;
+    }
+    if (!formData.most_pressing_quality_problem.trim()) {
+      setError('Please describe your most pressing quality problem');
+      return false;
+    }
+    return true;
+  };
+
+  const triggerDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/premium-templates.zip';
+    link.download = 'premium-templates.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      try {
-        // Send email with zip attachment via API
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://api.preqal.org/api/send-templates';
-        
-        const form = e.target as HTMLFormElement;
-        const honeypot = (form.querySelector('input[name="website"]') as HTMLInputElement)?.value || '';
-        
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            email: email.trim(),
-            honeypot: honeypot // Honeypot protection
-          }),
+    setError('');
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error: insertError } = await supabase
+        .from('template_leads')
+        .insert({
+          first_name: formData.first_name.trim(),
+          last_name: formData.last_name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          company: formData.company.trim(),
+          job_title: formData.job_title.trim(),
+          phone_number: formData.phone_number.trim(),
+          most_pressing_quality_problem: formData.most_pressing_quality_problem.trim(),
+          source_page: 'library_unlock',
         });
 
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => '');
-          throw new Error(`Send failed: ${response.status} ${errorText}`);
-        }
-
-        // Only show success if API call succeeded
-        setSubscribed(true);
-        setEmail('');
-      } catch (error) {
-        console.error('Error sending email:', error);
-        // Don't show success message if API fails
-        alert('Failed to send email. Please try again later.');
+      if (insertError) {
+        throw insertError;
       }
+
+      // Success - trigger download and show success message
+      triggerDownload();
+      setSuccess(true);
+      
+      // Reset form
+      setFormData({
+        first_name: '',
+        last_name: '',
+        email: '',
+        company: '',
+        job_title: '',
+        phone_number: '',
+        most_pressing_quality_problem: '',
+      });
+
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (err: any) {
+      console.error('Error saving lead:', err);
+      setError(err.message || 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -65,7 +143,7 @@ const Resources: React.FC = () => {
               <Lock className="h-8 w-8 text-amber-500" />
             </div>
             <h2 className="font-bold mb-2 text-neutral-900" style={{ fontSize: 'calc(1.5rem * 1.07)' }}>Unlock the Library</h2>
-            <p className="text-neutral-500 mb-4" style={{ fontSize: 'calc(1rem * 1.07)' }}>Enter your email to access all 5 premium templates instantly.</p>
+            <p className="text-neutral-500 mb-4" style={{ fontSize: 'calc(1rem * 1.07)' }}>Enter your details to access all 5 premium templates instantly.</p>
             <ol className="text-left text-neutral-600 space-y-2 max-w-md mx-auto list-decimal list-inside">
               <li>Document Masterlist</li>
               <li>QHSE Policy</li>
@@ -75,38 +153,126 @@ const Resources: React.FC = () => {
             </ol>
           </div>
           <div className="p-10 md:p-12 bg-white">
-            <form onSubmit={handleSubscribe} className="flex flex-col gap-4 max-w-md mx-auto">
-              {/* Honeypot field - hidden from users */}
-              <input
-                type="text"
-                name="website"
-                tabIndex={-1}
-                autoComplete="off"
-                style={{ position: 'absolute', left: '-9999px' }}
-                aria-hidden="true"
-              />
-              <input
-                type="email"
-                required
-                placeholder="name@company.com"
-                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">First Name *</label>
+                  <input
+                    type="text"
+                    name="first_name"
+                    required
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    placeholder="John"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">Last Name *</label>
+                  <input
+                    type="text"
+                    name="last_name"
+                    required
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                  placeholder="name@company.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Company *</label>
+                <input
+                  type="text"
+                  name="company"
+                  required
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                  placeholder="Company Name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Job Title *</label>
+                <input
+                  type="text"
+                  name="job_title"
+                  required
+                  value={formData.job_title}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                  placeholder="Quality Manager"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
+                <input
+                  type="tel"
+                  name="phone_number"
+                  required
+                  value={formData.phone_number}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Most Pressing Quality Problem *</label>
+                <textarea
+                  name="most_pressing_quality_problem"
+                  required
+                  rows={4}
+                  value={formData.most_pressing_quality_problem}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
+                  placeholder="Describe your most pressing quality or compliance challenge..."
+                />
+              </div>
+
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={subscribed}
-                className="w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+                className="w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {subscribed ? 'Email Sent!' : 'Unlock Access'}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Unlock Access'
+                )}
               </button>
             </form>
             <p className="text-xs text-center text-neutral-500 mt-6">
               We respect your privacy. No spam, just value.
             </p>
-            {subscribed && (
+            {success && (
               <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 animate-fade-in-up text-center">
-                <span className="font-bold">Success!</span> Check your inbox for the premium templates.
+                <span className="font-bold">Download started.</span> Check your downloads folder.
               </div>
             )}
           </div>
@@ -117,4 +283,3 @@ const Resources: React.FC = () => {
 };
 
 export default Resources;
-
