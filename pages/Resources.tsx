@@ -170,19 +170,44 @@ const Resources: React.FC = () => {
 
       // Send email notification via EmailJS
       try {
+        const jobTitle = formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim();
+        const qualityProblem = formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim();
+        
         await emailjs.send(
           import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
           import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
           {
+            subject: 'Preqal Lead',
             first_name: formData.first_name.trim(),
             last_name: formData.last_name.trim(),
+            full_name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
             email: formData.email.trim().toLowerCase(),
             company: formData.company.trim(),
-            job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
+            job_title: jobTitle,
             phone_number: formData.phone.trim(),
-            country_iso: formData.country_iso,
+            country_iso: formData.country_iso.toUpperCase(),
             dial_code: formData.dial_code,
-            most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
+            most_pressing_quality_problem: qualityProblem,
+            source_page: 'library_unlock',
+            submitted_at: new Date().toLocaleString('en-US', { 
+              dateStyle: 'full', 
+              timeStyle: 'long',
+              timeZone: 'UTC'
+            }),
+            // Formatted data for email template
+            formatted_phone: `${formData.dial_code} ${formData.phone.trim()}`,
+            formatted_data: `
+New Lead Submission
+
+Name: ${formData.first_name.trim()} ${formData.last_name.trim()}
+Email: ${formData.email.trim().toLowerCase()}
+Company: ${formData.company.trim()}
+Job Title: ${jobTitle}
+Phone: ${formData.dial_code} ${formData.phone.trim()} (${formData.country_iso.toUpperCase()})
+Quality Problem: ${qualityProblem}
+Source: Library Unlock Form
+Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
+            `.trim(),
           },
           import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
         );
