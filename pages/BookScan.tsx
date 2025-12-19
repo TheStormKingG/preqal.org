@@ -42,7 +42,7 @@ const BookScan: React.FC = () => {
             service_name: serviceName || 'Quality Risk Scan™',
             name: formData.name.trim(),
             email: formData.email.trim().toLowerCase(),
-            phone: formData.phone.trim(),
+            phone: `${formData.dial_code} ${formData.phone.trim()}`,
             company: formData.company.trim() || 'Not provided',
             business_type: formData.businessType || 'Not specified',
             message: formData.concern.trim(),
