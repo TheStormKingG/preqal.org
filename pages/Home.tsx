@@ -74,6 +74,7 @@ const Home: React.FC = () => {
     dial_code: '+1',
     most_pressing_quality_problem: '',
     custom_quality_problem: '',
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -197,37 +198,38 @@ const Home: React.FC = () => {
         
         await emailjs.send(
           import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-          import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+          import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
           {
-            subject: 'Preqal Lead',
-            first_name: formData.first_name.trim(),
-            last_name: formData.last_name.trim(),
-            full_name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
+            subject: 'Service Request',
+            service_name: 'Library Unlock - Premium Templates',
+            name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
             email: formData.email.trim().toLowerCase(),
+            phone: `${formData.dial_code} ${formData.phone.trim()}`,
             company: formData.company.trim(),
-            job_title: jobTitle,
-            phone_number: formData.phone.trim(),
-            country_iso: formData.country_iso.toUpperCase(),
-            dial_code: formData.dial_code,
-            most_pressing_quality_problem: qualityProblem,
-            source_page: 'library_unlock',
+            business_type: jobTitle,
+            message: formData.message.trim() || qualityProblem,
+            session_style: 'N/A',
             submitted_at: new Date().toLocaleString('en-US', { 
               dateStyle: 'full', 
               timeStyle: 'long',
               timeZone: 'UTC'
             }),
-            // Formatted data for email template
-            formatted_phone: `${formData.dial_code} ${formData.phone.trim()}`,
+            // Additional fields for context
+            first_name: formData.first_name.trim(),
+            last_name: formData.last_name.trim(),
+            job_title: jobTitle,
+            most_pressing_quality_problem: qualityProblem,
             formatted_data: `
-New Lead Submission
+Service Request - Library Unlock
 
+Service: Library Unlock - Premium Templates
 Name: ${formData.first_name.trim()} ${formData.last_name.trim()}
 Email: ${formData.email.trim().toLowerCase()}
+Phone: ${formData.dial_code} ${formData.phone.trim()}
 Company: ${formData.company.trim()}
 Job Title: ${jobTitle}
-Phone: ${formData.dial_code} ${formData.phone.trim()} (${formData.country_iso.toUpperCase()})
 Quality Problem: ${qualityProblem}
-Source: Library Unlock Form
+Message: ${formData.message.trim() || 'N/A'}
 Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
             `.trim(),
           },
@@ -255,6 +257,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         dial_code: '+1',
         most_pressing_quality_problem: '',
         custom_quality_problem: '',
+        message: '',
       });
       setShowCustomJobTitle(false);
       setShowCustomQualityProblem(false);
@@ -642,6 +645,18 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                       placeholder="Describe your most pressing quality or compliance challenge..."
                     />
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
+                  <textarea
+                    name="message"
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
+                    placeholder="Tell us about your project or how we can help..."
+                  />
                 </div>
 
                 {error && (
