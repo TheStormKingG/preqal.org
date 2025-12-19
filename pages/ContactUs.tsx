@@ -356,7 +356,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
                     <PhoneInput
-                      defaultCountry="us"
+                      defaultCountry="gy"
                       value={formData.phone}
                       onChange={(phone, { country, dialCode }) => {
                         setFormData({
