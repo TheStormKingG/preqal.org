@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf, Loader2 } from 'lucide-react';
+import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { supabase } from '../lib/supabaseClient';
-import { PhoneInput } from 'react-international-phone';
-import 'react-international-phone/style.css';
-import emailjs from '@emailjs/browser';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -28,249 +24,6 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
 );
 
 const Home: React.FC = () => {
-  const jobTitles = [
-    'Quality Manager',
-    'Quality Assurance Manager',
-    'Quality Control Manager',
-    'Compliance Manager',
-    'QHSE Manager',
-    'HSE Manager',
-    'Operations Manager',
-    'Production Manager',
-    'Quality Engineer',
-    'Quality Assurance Engineer',
-    'Compliance Officer',
-    'Quality Analyst',
-    'Quality Specialist',
-    'Regulatory Affairs Manager',
-    'Director of Quality',
-    'VP of Quality',
-    'Chief Quality Officer',
-    'Other'
-  ];
-
-  const qualityProblems = [
-    'Inconsistent process execution',
-    'Poor document & change control',
-    'Unsafe behaviors + weak supervision',
-    'Inadequate risk assessments/controls',
-    'Training/competency gaps',
-    'Cash flow instability',
-    'Weak financial controls',
-    'Inventory and material flow issues',
-    'Lack of strategic alignment',
-    'Other'
-  ];
-
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    company: '',
-    job_title: '',
-    custom_job_title: '',
-    phone: '',
-    country_iso: 'us',
-    dial_code: '+1',
-    most_pressing_quality_problem: '',
-    custom_quality_problem: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-  const [showCustomJobTitle, setShowCustomJobTitle] = useState(false);
-  const [showCustomQualityProblem, setShowCustomQualityProblem] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    
-    if (name === 'job_title') {
-      if (value === 'Other') {
-        setShowCustomJobTitle(true);
-        setFormData({ ...formData, job_title: 'Other', custom_job_title: '' });
-      } else {
-        setShowCustomJobTitle(false);
-        setFormData({ ...formData, job_title: value, custom_job_title: '' });
-      }
-    } else if (name === 'most_pressing_quality_problem') {
-      if (value === 'Other') {
-        setShowCustomQualityProblem(true);
-        setFormData({ ...formData, most_pressing_quality_problem: 'Other', custom_quality_problem: '' });
-      } else {
-        setShowCustomQualityProblem(false);
-        setFormData({ ...formData, most_pressing_quality_problem: value, custom_quality_problem: '' });
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-    setError('');
-  };
-
-  const validateForm = () => {
-    if (!formData.first_name.trim()) {
-      setError('First name is required');
-      return false;
-    }
-    if (!formData.last_name.trim()) {
-      setError('Last name is required');
-      return false;
-    }
-    if (!formData.email.trim()) {
-      setError('Email is required');
-      return false;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return false;
-    }
-    if (!formData.company.trim()) {
-      setError('Company is required');
-      return false;
-    }
-    if (!formData.job_title.trim()) {
-      setError('Job title is required');
-      return false;
-    }
-    if (formData.job_title === 'Other' && !formData.custom_job_title.trim()) {
-      setError('Please enter your job title');
-      return false;
-    }
-    if (!formData.phone.trim()) {
-      setError('Phone number is required');
-      return false;
-    }
-    if (!formData.most_pressing_quality_problem.trim()) {
-      setError('Please select or describe your most pressing quality problem');
-      return false;
-    }
-    if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) {
-      setError('Please describe your most pressing quality problem');
-      return false;
-    }
-    return true;
-  };
-
-  const triggerDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/premium-templates.zip';
-    link.download = 'premium-templates.zip';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const { error: insertError } = await supabase
-        .from('template_leads')
-        .insert({
-          first_name: formData.first_name.trim(),
-          last_name: formData.last_name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          company: formData.company.trim(),
-          job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
-          phone_number: formData.phone.trim(),
-          country_iso: formData.country_iso,
-          dial_code: formData.dial_code,
-          most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
-          source_page: 'library_unlock',
-        });
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      // Send email notification via EmailJS
-      try {
-        const jobTitle = formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim();
-        const qualityProblem = formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim();
-        
-        await emailjs.send(
-          import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-          import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
-          {
-            subject: 'Preqal Lead',
-            first_name: formData.first_name.trim(),
-            last_name: formData.last_name.trim(),
-            full_name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
-            email: formData.email.trim().toLowerCase(),
-            company: formData.company.trim(),
-            job_title: jobTitle,
-            phone_number: formData.phone.trim(),
-            formatted_phone: `${formData.dial_code} ${formData.phone.trim()}`,
-            dial_code: formData.dial_code,
-            country_iso: formData.country_iso.toUpperCase(),
-            most_pressing_quality_problem: qualityProblem,
-            message: formData.message.trim() || 'N/A',
-            source_page: 'library_unlock',
-            submitted_at: new Date().toLocaleString('en-US', { 
-              dateStyle: 'full', 
-              timeStyle: 'long',
-              timeZone: 'UTC'
-            }),
-            formatted_data: `
-New Lead Submission
-
-Name: ${formData.first_name.trim()} ${formData.last_name.trim()}
-Email: ${formData.email.trim().toLowerCase()}
-Company: ${formData.company.trim()}
-Job Title: ${jobTitle}
-Phone: ${formData.dial_code} ${formData.phone.trim()} (${formData.country_iso.toUpperCase()})
-Quality Problem: ${qualityProblem}
-Message: ${formData.message.trim() || 'N/A'}
-Source: Library Unlock Form
-Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
-            `.trim(),
-          },
-          import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
-        );
-      } catch (emailError) {
-        console.error('EmailJS error:', emailError);
-        // Don't fail the form submission if email fails
-      }
-
-      // Success - trigger download and show success message
-      triggerDownload();
-      setSuccess(true);
-      
-      // Reset form
-      setFormData({
-        first_name: '',
-        last_name: '',
-        email: '',
-        company: '',
-        job_title: '',
-        custom_job_title: '',
-        phone: '',
-        country_iso: 'us',
-        dial_code: '+1',
-        most_pressing_quality_problem: '',
-        custom_quality_problem: '',
-        message: '',
-      });
-      setShowCustomJobTitle(false);
-      setShowCustomQualityProblem(false);
-
-      // Clear success message after 5 seconds
-      setTimeout(() => setSuccess(false), 5000);
-    } catch (err: any) {
-      console.error('Error saving lead:', err);
-      setError(err.message || 'Failed to submit. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div className="w-full overflow-x-hidden">
@@ -491,204 +244,46 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         </div>
       </section>
 
-      {/* Lead Magnet Section - Unlock Premium Templates */}
-      <section className="py-12 relative text-neutral-900 text-center">
+      {/* Lead Magnet Section - Document Templates CTA */}
+      <section className="py-16 relative text-neutral-900 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-hidden animate-fade-in-up">
-            <div className="bg-gradient-to-r from-neutral-100 to-white p-10 text-center border-b border-neutral-100 relative">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
-              <div className="inline-flex items-center justify-center p-4 bg-white rounded-full mb-6 ring-4 ring-neutral-50 shadow-sm">
-                <svg className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="font-bold mb-2 text-neutral-900" style={{ fontSize: 'calc(1.5rem * 1.07)' }}>Unlock the Library</h2>
-              <p className="text-neutral-500 mb-4" style={{ fontSize: 'calc(1rem * 1.07)' }}>Enter your details to access all 5 premium templates instantly.</p>
-              <ol className="text-left text-neutral-600 space-y-2 max-w-md mx-auto list-decimal list-inside">
-                <li>Document Masterlist</li>
-                <li>QHSE Policy</li>
-                <li>Document Control Procedure</li>
-                <li>Risk Register</li>
-                <li>Training & Competency Register</li>
-              </ol>
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-hidden animate-fade-in-up p-12">
+            {/* Document Animation */}
+            <div className="relative h-48 mb-8 flex items-center justify-center">
+              <style>{`
+                @keyframes float {
+                  0%, 100% { transform: translateY(0px) rotate(0deg); }
+                  50% { transform: translateY(-20px) rotate(5deg); }
+                }
+                @keyframes floatReverse {
+                  0%, 100% { transform: translateY(0px) rotate(0deg); }
+                  50% { transform: translateY(-15px) rotate(-5deg); }
+                }
+                @keyframes floatSlow {
+                  0%, 100% { transform: translateY(0px) rotate(0deg); }
+                  50% { transform: translateY(-25px) rotate(3deg); }
+                }
+                .doc-float-1 { animation: float 3s ease-in-out infinite; animation-delay: 0s; }
+                .doc-float-2 { animation: floatReverse 3.5s ease-in-out infinite; animation-delay: 0.5s; }
+                .doc-float-3 { animation: floatSlow 4s ease-in-out infinite; animation-delay: 1s; }
+                .doc-float-4 { animation: float 3.2s ease-in-out infinite; animation-delay: 1.5s; }
+                .doc-float-5 { animation: floatReverse 3.8s ease-in-out infinite; animation-delay: 2s; }
+              `}</style>
+              <FileText className="absolute h-16 w-16 text-amber-500/40 doc-float-1" style={{ left: '10%', top: '20%' }} />
+              <FileText className="absolute h-20 w-20 text-amber-500/50 doc-float-2" style={{ left: '25%', top: '10%' }} />
+              <FileText className="absolute h-24 w-24 text-amber-600/60 doc-float-3" style={{ left: '50%', top: '5%', transform: 'translateX(-50%)' }} />
+              <FileText className="absolute h-18 w-18 text-amber-500/45 doc-float-4" style={{ right: '25%', top: '15%' }} />
+              <FileText className="absolute h-16 w-16 text-amber-500/40 doc-float-5" style={{ right: '10%', top: '25%' }} />
             </div>
-            <div className="p-10 md:p-12 bg-white">
-              <form onSubmit={handleSubscribe} className="max-w-md mx-auto space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-600 mb-1">First Name *</label>
-                    <input
-                      type="text"
-                      name="first_name"
-                      required
-                      value={formData.first_name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                      placeholder="John"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-600 mb-1">Last Name *</label>
-                    <input
-                      type="text"
-                      name="last_name"
-                      required
-                      value={formData.last_name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                      placeholder="Doe"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Email *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                    placeholder="name@company.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Company *</label>
-                  <input
-                    type="text"
-                    name="company"
-                    required
-                    value={formData.company}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                    placeholder="Company Name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Job Title *</label>
-                  <select
-                    name="job_title"
-                    required
-                    value={formData.job_title}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  >
-                    <option value="">Select a job title</option>
-                    {jobTitles.map((title) => (
-                      <option key={title} value={title}>
-                        {title}
-                      </option>
-                    ))}
-                  </select>
-                  {showCustomJobTitle && (
-                    <input
-                      type="text"
-                      name="custom_job_title"
-                      required
-                      value={formData.custom_job_title}
-                      onChange={handleChange}
-                      className="w-full mt-3 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                      placeholder="Enter your job title"
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
-                  <PhoneInput
-                    defaultCountry="us"
-                    value={formData.phone}
-                    onChange={(phone, { country, dialCode }) => {
-                      setFormData({
-                        ...formData,
-                        phone,
-                        country_iso: country?.iso2?.toLowerCase() || 'us',
-                        dial_code: dialCode || '+1',
-                      });
-                      setError('');
-                    }}
-                    className="w-full"
-                    inputClassName="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                    countrySelectorStyleProps={{
-                      buttonClassName: "px-3 py-3 bg-neutral-50 border border-neutral-200 rounded-l-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent",
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Most Pressing Quality Problem *</label>
-                  <select
-                    name="most_pressing_quality_problem"
-                    required
-                    value={formData.most_pressing_quality_problem}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  >
-                    <option value="">Select a quality problem</option>
-                    {qualityProblems.map((problem) => (
-                      <option key={problem} value={problem}>
-                        {problem}
-                      </option>
-                    ))}
-                  </select>
-                  {showCustomQualityProblem && (
-                    <textarea
-                      name="custom_quality_problem"
-                      required
-                      rows={4}
-                      value={formData.custom_quality_problem}
-                      onChange={handleChange}
-                      className="w-full mt-3 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
-                      placeholder="Describe your most pressing quality or compliance challenge..."
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
-                    placeholder="Tell us about your project or how we can help..."
-                  />
-                </div>
-
-                {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                    {error}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Unlock Access'
-                  )}
-                </button>
-              </form>
-              <p className="text-xs text-center text-neutral-500 mt-6">
-                We respect your privacy. No spam, just value.
-              </p>
-              {success && (
-                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 animate-fade-in-up text-center">
-                  <span className="font-bold">Download started.</span> Check your downloads folder.
-                </div>
-              )}
-            </div>
+            
+            {/* Button */}
+            <Link 
+              to="/resources" 
+              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-lg rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1"
+            >
+              Get Free Document Templates
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </div>
         </div>
       </section>
