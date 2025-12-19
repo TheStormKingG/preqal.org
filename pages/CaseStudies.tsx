@@ -23,7 +23,7 @@ const caseStudies = [
     sector: "Development of Stashway™",
     icon: null, // Special case: will use logo image instead
     logo: "stashway-logo.png",
-    challenge: "Managing personal finances in Guyana required tracking bank accounts, physical cash denominations, receipts, and spending patterns without GYD-specific tools.",
+    challenge: "Managing personal finances in Guyana required tracking bank accounts, cash, receipts, and spending patterns without GYD-specific tools.",
     solution: "Developed Stashway™ with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
     result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
     color: "border-l-purple-500",
@@ -111,7 +111,18 @@ const CaseStudies: React.FC = () => {
                   ) : (
                     <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100">{study.icon}</div>
                   )}
-                  <h3 className="font-bold text-neutral-900 text-lg">{study.sector}</h3>
+                  {study.externalLink ? (
+                    <a 
+                      href={study.externalLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="font-bold text-neutral-900 text-lg group/title transition-all duration-300 hover:scale-110 hover:rotate-3 active:scale-95 inline-block"
+                    >
+                      {study.sector}
+                    </a>
+                  ) : (
+                    <h3 className="font-bold text-neutral-900 text-lg">{study.sector}</h3>
+                  )}
                 </div>
               </div>
               
