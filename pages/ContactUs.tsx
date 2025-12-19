@@ -5,16 +5,59 @@ import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 
 const ContactUs: React.FC = () => {
+  const jobTitles = [
+    'Quality Manager',
+    'Quality Assurance Manager',
+    'Quality Control Manager',
+    'Compliance Manager',
+    'QHSE Manager',
+    'HSE Manager',
+    'Operations Manager',
+    'Production Manager',
+    'Quality Engineer',
+    'Quality Assurance Engineer',
+    'Compliance Officer',
+    'Quality Analyst',
+    'Quality Specialist',
+    'Regulatory Affairs Manager',
+    'Director of Quality',
+    'VP of Quality',
+    'Chief Quality Officer',
+    'Other'
+  ];
+
+  const qualityProblems = [
+    'Inconsistent process execution',
+    'Poor document & change control',
+    'Unsafe behaviors + weak supervision',
+    'Inadequate risk assessments/controls',
+    'Training/competency gaps',
+    'Cash flow instability',
+    'Weak financial controls',
+    'Inventory and material flow issues',
+    'Lack of strategic alignment',
+    'Other'
+  ];
+
   const [formData, setFormData] = useState({
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     company: '',
-    subject: '',
-    message: ''
+    job_title: '',
+    custom_job_title: '',
+    phone: '',
+    country_iso: 'us',
+    dial_code: '+1',
+    most_pressing_quality_problem: '',
+    custom_quality_problem: '',
+    message: '',
   });
   
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [error, setError] = useState('');
+  const [showCustomJobTitle, setShowCustomJobTitle] = useState(false);
+  const [showCustomQualityProblem, setShowCustomQualityProblem] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
