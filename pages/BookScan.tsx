@@ -265,7 +265,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                     setFormData({
                       ...formData,
                       phone,
-                      country_iso: country?.iso2?.toLowerCase() || 'us',
+                      country_iso: country?.iso2?.toLowerCase() || 'gy',
                       dial_code: dialCode || '+592',
                     });
                   }}
