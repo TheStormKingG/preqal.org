@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, Activity, CheckCircle, Smartphone } from 'lucide-react';
+import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, Activity, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const caseStudies = [
@@ -21,11 +21,13 @@ const caseStudies = [
   },
   {
     sector: "Development of Stashway.app",
-    icon: <Smartphone className="h-6 w-6 text-purple-600" />,
+    icon: null, // Special case: will use logo image instead
+    logo: "/stashway-logo.png",
     challenge: "Managing personal finances in Guyana required tracking bank accounts, physical cash denominations, receipts, and spending patterns without GYD-specific tools.",
-    solution: "Developed Stashway.app with denomination-level cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
+    solution: "Developed Stashway.app with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
     result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
-    color: "border-l-purple-500"
+    color: "border-l-purple-500",
+    externalLink: "https://stashway.app"
   },
   {
     sector: "Oil & Gas Services Contractor",
@@ -93,7 +95,22 @@ const CaseStudies: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100">{study.icon}</div>
+                  {study.logo ? (
+                    <a 
+                      href={study.externalLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 bg-neutral-50 rounded-lg border border-neutral-100 group"
+                    >
+                      <img 
+                        src={study.logo} 
+                        alt="Stashway Logo" 
+                        className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
+                      />
+                    </a>
+                  ) : (
+                    <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100">{study.icon}</div>
+                  )}
                   <h3 className="font-bold text-neutral-900 text-lg">{study.sector}</h3>
                 </div>
               </div>
@@ -105,7 +122,23 @@ const CaseStudies: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Our Solution</h4>
-                  <p className="text-neutral-600 text-sm leading-relaxed">{study.solution}</p>
+                  <p className="text-neutral-600 text-sm leading-relaxed">
+                    {study.solution.split('Stashway.app').map((part, idx, arr) => 
+                      idx === arr.length - 1 ? part : (
+                        <React.Fragment key={idx}>
+                          {part}
+                          <a 
+                            href={study.externalLink || '#'} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-amber-600 hover:text-amber-500 font-semibold underline"
+                          >
+                            Stashway.app
+                          </a>
+                        </React.Fragment>
+                      )
+                    )}
+                  </p>
                 </div>
               </div>
 
@@ -113,7 +146,23 @@ const CaseStudies: React.FC = () => {
                 <h4 className="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2">The Result</h4>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <p className="text-neutral-900 font-medium text-sm leading-relaxed">{study.result}</p>
+                  <p className="text-neutral-900 font-medium text-sm leading-relaxed">
+                    {study.result.split('Stashway.app').map((part, idx, arr) => 
+                      idx === arr.length - 1 ? part : (
+                        <React.Fragment key={idx}>
+                          {part}
+                          <a 
+                            href={study.externalLink || '#'} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-amber-600 hover:text-amber-500 font-semibold underline"
+                          >
+                            Stashway.app
+                          </a>
+                        </React.Fragment>
+                      )
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
