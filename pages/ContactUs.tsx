@@ -97,38 +97,37 @@ const ContactUs: React.FC = () => {
       // Send contact form email via EmailJS
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-        import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
           {
-            subject: 'Service Request',
-            service_name: 'General Inquiry',
-            name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
+            subject: 'Preqal Lead',
+            first_name: formData.first_name.trim(),
+            last_name: formData.last_name.trim(),
+            full_name: `${formData.first_name.trim()} ${formData.last_name.trim()}`,
             email: formData.email.trim().toLowerCase(),
-            phone: `${formData.dial_code} ${formData.phone.trim()}`,
             company: formData.company.trim(),
-            business_type: jobTitle,
-            message: formData.message.trim() || qualityProblem,
-            session_style: 'N/A',
+            job_title: jobTitle,
+            phone_number: formData.phone.trim(),
+            formatted_phone: `${formData.dial_code} ${formData.phone.trim()}`,
+            dial_code: formData.dial_code,
+            country_iso: formData.country_iso.toUpperCase(),
+            most_pressing_quality_problem: qualityProblem,
+            source_page: 'contact_us',
             submitted_at: new Date().toLocaleString('en-US', { 
               dateStyle: 'full', 
               timeStyle: 'long',
               timeZone: 'UTC'
             }),
-            // Additional fields for context
-            first_name: formData.first_name.trim(),
-            last_name: formData.last_name.trim(),
-            job_title: jobTitle,
-            most_pressing_quality_problem: qualityProblem,
             formatted_data: `
-Service Request - General Inquiry
+New Lead Submission
 
-Service: General Inquiry
 Name: ${formData.first_name.trim()} ${formData.last_name.trim()}
 Email: ${formData.email.trim().toLowerCase()}
-Phone: ${formData.dial_code} ${formData.phone.trim()}
 Company: ${formData.company.trim()}
 Job Title: ${jobTitle}
+Phone: ${formData.dial_code} ${formData.phone.trim()} (${formData.country_iso.toUpperCase()})
 Quality Problem: ${qualityProblem}
 Message: ${formData.message.trim() || 'N/A'}
+Source: Contact Us Form
 Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
           `.trim(),
           },
