@@ -363,7 +363,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                           ...formData,
                           phone,
                           country_iso: country?.iso2?.toLowerCase() || 'us',
-                          dial_code: dialCode || '+1',
+                          dial_code: dialCode || '+592',
                         });
                       }}
                       className="w-full"
