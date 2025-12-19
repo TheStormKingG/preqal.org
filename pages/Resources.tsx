@@ -25,15 +25,15 @@ const Resources: React.FC = () => {
   ];
 
   const qualityProblems = [
-    'Inconsistent process execution (different shifts/sites doing it differently; variation drives defects and complaints)',
-    'Poor document & change control (outdated SOPs, uncontrolled forms, changes not risk-assessed or trained)',
-    'Unsafe behaviors + weak supervision (rules exist but aren\'t enforced; shortcuts normalize risk)',
-    'Inadequate risk assessments/controls (JHAs stale, controls missing, poor permit-to-work and isolation discipline)',
-    'Training/competency gaps (people signed off without practical competence; contractors not controlled)',
-    'Cash flow instability (late receivables, poor forecasting, working-capital squeeze)',
-    'Weak financial controls (inaccurate reporting, weak approvals, leakage/fraud risk, inconsistent budgeting)',
-    'Inventory and material flow issues (stockouts/overstock, poor layout, slow picking, unclear ownership)',
-    'Lack of strategic alignment (unclear priorities/KPIs; teams pull in different directions)',
+    'Inconsistent process execution',
+    'Poor document & change control',
+    'Unsafe behaviors + weak supervision',
+    'Inadequate risk assessments/controls',
+    'Training/competency gaps',
+    'Cash flow instability',
+    'Weak financial controls',
+    'Inventory and material flow issues',
+    'Lack of strategic alignment',
     'Other'
   ];
 
