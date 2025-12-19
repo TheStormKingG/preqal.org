@@ -23,6 +23,7 @@ All service booking form data is available in your EmailJS template. Use these v
 - `{{name}}` - Full name
 - `{{email}}` - Email address
 - `{{phone}}` - Phone number (or "Not provided" for contact form)
+- `{{company}}` - Company name (or "Not provided")
 - `{{business_type}}` - Company/industry type (or "Not specified")
 
 ### Message Details
@@ -92,6 +93,10 @@ Here's a beautiful HTML template for service requests:
                     <td style="padding: 8px 0; color: #171717; font-size: 14px;">{{phone}}</td>
                   </tr>
                   <tr>
+                    <td style="padding: 8px 0; color: #525252; font-size: 14px;"><strong>Company:</strong></td>
+                    <td style="padding: 8px 0; color: #171717; font-size: 14px;">{{company}}</td>
+                  </tr>
+                  <tr>
                     <td style="padding: 8px 0; color: #525252; font-size: 14px;"><strong>Company Type:</strong></td>
                     <td style="padding: 8px 0; color: #171717; font-size: 14px;">{{business_type}}</td>
                   </tr>
@@ -149,6 +154,7 @@ CONTACT INFORMATION
 Name: {{name}}
 Email: {{email}}
 Phone: {{phone}}
+Company: {{company}}
 Company Type: {{business_type}}
 
 MESSAGE

@@ -6,6 +6,7 @@ const ContactUs: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    company: '',
     subject: '',
     message: ''
   });
@@ -25,41 +26,43 @@ const ContactUs: React.FC = () => {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
         import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
-        {
-          subject: formData.subject.trim() || 'Contact Form Submission',
-          service_name: 'General Inquiry',
-          name: formData.name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          phone: 'Not provided',
-          business_type: 'Not specified',
-          message: formData.message.trim(),
-          session_style: 'N/A',
-          submitted_at: new Date().toLocaleString('en-US', { 
-            dateStyle: 'full', 
-            timeStyle: 'long',
-            timeZone: 'UTC'
-          }),
-          // Formatted data for email template
-          formatted_data: `
+          {
+            subject: formData.subject.trim() || 'Contact Form Submission',
+            service_name: 'General Inquiry',
+            name: formData.name.trim(),
+            email: formData.email.trim().toLowerCase(),
+            phone: 'Not provided',
+            company: formData.company.trim() || 'Not provided',
+            business_type: 'Not specified',
+            message: formData.message.trim(),
+            session_style: 'N/A',
+            submitted_at: new Date().toLocaleString('en-US', { 
+              dateStyle: 'full', 
+              timeStyle: 'long',
+              timeZone: 'UTC'
+            }),
+            // Formatted data for email template
+            formatted_data: `
 Contact Form Submission
 
 Subject: ${formData.subject.trim() || 'No subject'}
 Name: ${formData.name.trim()}
 Email: ${formData.email.trim().toLowerCase()}
+Company: ${formData.company.trim() || 'Not provided'}
 Message: ${formData.message.trim()}
 Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
           `.trim(),
-        },
+          },
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
       );
 
       setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
     } catch (error) {
       console.error('Error sending contact form:', error);
       // Still show success to user even if email fails
       setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
     }
   };
 
@@ -183,6 +186,18 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                         onChange={handleChange}
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-600 mb-1">Company Name</label>
+                    <input
+                      type="text"
+                      name="company"
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                      placeholder="Company Name"
+                      value={formData.company}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div>

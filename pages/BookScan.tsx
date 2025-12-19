@@ -12,6 +12,7 @@ const BookScan: React.FC = () => {
     name: '',
     email: '',
     phone: '',
+    company: '',
     businessType: '',
     concern: serviceName ? `I am interested in ${serviceName}` : '',
     sessionStyle: 'Virtual',
@@ -32,34 +33,36 @@ const BookScan: React.FC = () => {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
         import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
-        {
-          subject: 'Service Request',
-          service_name: serviceName || 'Quality Risk Scan™',
-          name: formData.name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          phone: formData.phone.trim(),
-          business_type: formData.businessType || 'Not specified',
-          message: formData.concern.trim(),
-          session_style: formData.sessionStyle,
-          submitted_at: new Date().toLocaleString('en-US', { 
-            dateStyle: 'full', 
-            timeStyle: 'long',
-            timeZone: 'UTC'
-          }),
-          // Formatted data for email template
-          formatted_data: `
+          {
+            subject: 'Service Request',
+            service_name: serviceName || 'Quality Risk Scan™',
+            name: formData.name.trim(),
+            email: formData.email.trim().toLowerCase(),
+            phone: formData.phone.trim(),
+            company: formData.company.trim() || 'Not provided',
+            business_type: formData.businessType || 'Not specified',
+            message: formData.concern.trim(),
+            session_style: formData.sessionStyle,
+            submitted_at: new Date().toLocaleString('en-US', { 
+              dateStyle: 'full', 
+              timeStyle: 'long',
+              timeZone: 'UTC'
+            }),
+            // Formatted data for email template
+            formatted_data: `
 Service Request
 
 Service: ${serviceName || 'Quality Risk Scan™'}
 Name: ${formData.name.trim()}
 Email: ${formData.email.trim().toLowerCase()}
 Phone: ${formData.phone.trim()}
+Company: ${formData.company.trim() || 'Not provided'}
 Company Type: ${formData.businessType || 'Not specified'}
 Preferred Session: ${formData.sessionStyle}
 Message: ${formData.concern.trim()}
 Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
           `.trim(),
-        },
+          },
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
       );
 
