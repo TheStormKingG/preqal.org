@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Send, CheckCircle2, Phone, Calendar, Loader2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 const BookScan: React.FC = () => {
   const location = useLocation();
@@ -12,6 +14,8 @@ const BookScan: React.FC = () => {
     name: '',
     email: '',
     phone: '',
+    country_iso: 'us',
+    dial_code: '+1',
     company: '',
     businessType: '',
     concern: serviceName ? `I am interested in ${serviceName}` : '',
@@ -55,7 +59,7 @@ Service Request
 Service: ${serviceName || 'Quality Risk Scan™'}
 Name: ${formData.name.trim()}
 Email: ${formData.email.trim().toLowerCase()}
-Phone: ${formData.phone.trim()}
+Phone: ${formData.dial_code} ${formData.phone.trim()}
 Company: ${formData.company.trim() || 'Not provided'}
 Company Type: ${formData.businessType || 'Not specified'}
 Preferred Session: ${formData.sessionStyle}
