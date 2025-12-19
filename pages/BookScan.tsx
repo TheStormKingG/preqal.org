@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, Phone, Calendar, Loader2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 
 const BookScan: React.FC = () => {
   const location = useLocation();
@@ -22,13 +23,52 @@ const BookScan: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      // Send service request email via EmailJS
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+        import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
+        {
+          subject: 'Service Request',
+          service_name: serviceName || 'Quality Risk Scan™',
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone.trim(),
+          business_type: formData.businessType || 'Not specified',
+          message: formData.concern.trim(),
+          session_style: formData.sessionStyle,
+          submitted_at: new Date().toLocaleString('en-US', { 
+            dateStyle: 'full', 
+            timeStyle: 'long',
+            timeZone: 'UTC'
+          }),
+          // Formatted data for email template
+          formatted_data: `
+Service Request
+
+Service: ${serviceName || 'Quality Risk Scan™'}
+Name: ${formData.name.trim()}
+Email: ${formData.email.trim().toLowerCase()}
+Phone: ${formData.phone.trim()}
+Company Type: ${formData.businessType || 'Not specified'}
+Preferred Session: ${formData.sessionStyle}
+Message: ${formData.concern.trim()}
+Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
+          `.trim(),
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+      );
+
       setStatus('success');
-    }, 1500);
+    } catch (error) {
+      console.error('Error sending service request:', error);
+      // Still show success to user even if email fails
+      setStatus('success');
+    }
   };
 
   // 60-word detailed descriptions for each service
