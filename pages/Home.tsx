@@ -596,12 +596,18 @@ const Home: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
                   <div className="flex gap-2">
-                    <div className="relative flex-shrink-0 w-32">
+                    <div className="relative flex-shrink-0 w-36">
                       <select
                         name="country_code"
                         value={formData.country_code}
                         onChange={handleChange}
-                        className="w-full px-3 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all appearance-none pr-8"
+                        className="w-full pl-10 pr-8 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all appearance-none"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right 0.75rem center',
+                          paddingLeft: '2.75rem'
+                        }}
                       >
                         {countryCodes.map((country) => (
                           <option key={country.country} value={country.code}>
@@ -609,10 +615,8 @@ const Home: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-lg">
+                        {countryCodes.find(c => c.code === formData.country_code)?.flag || '🇺🇸'}
                       </div>
                     </div>
                     <input
