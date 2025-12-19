@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -69,31 +81,55 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Backdrop Blur Overlay */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-neutral-200 animate-fade-in-up shadow-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
+        <div 
+          className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 md:hidden animate-fade-in"
+          onClick={() => setIsOpen(false)}
+          style={{
+            animation: 'fadeIn 0.3s ease-out',
+          }}
+        />
+      )}
+
+      {/* Mobile Menu with Glass Effect */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 top-20 z-50 overflow-y-auto"
+          style={{
+            animation: 'slideDown 0.3s ease-out',
+          }}
+        >
+          <div 
+            className="bg-white/80 backdrop-blur-xl border-t border-white/20 shadow-2xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 100%)',
+              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-3 py-4 rounded-md text-base font-medium transition-all duration-200 ${
+                    isActive(link.path)
+                      ? 'bg-amber-50/80 text-amber-600 border-l-4 border-amber-500 shadow-sm'
+                      : 'text-neutral-600 hover:bg-white/60 hover:text-black'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
               <Link
-                key={link.name}
-                to={link.path}
+                to="/book"
                 onClick={() => setIsOpen(false)}
-                className={`block px-3 py-4 rounded-md text-base font-medium transition-colors ${
-                  isActive(link.path)
-                    ? 'bg-neutral-50 text-amber-600 border-l-4 border-amber-500'
-                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-black'
-                }`}
+                className="block w-full text-center mt-4 px-5 py-3 rounded-md bg-orange-600 text-white font-bold hover:bg-orange-500 transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50"
               >
-                {link.name}
+                Book a Diagnostic
               </Link>
-            ))}
-            <Link
-              to="/book"
-              onClick={() => setIsOpen(false)}
-              className="block w-full text-center mt-4 px-5 py-3 rounded-md bg-orange-600 text-white font-bold hover:bg-orange-500 transition-colors"
-            >
-              Book a Diagnostic
-            </Link>
+            </div>
           </div>
         </div>
       )}
