@@ -438,4 +438,3 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
 };
 
 export default ContactUs;
-export default ContactUs;
