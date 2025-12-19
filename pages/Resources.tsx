@@ -3,21 +3,56 @@ import { Lock, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
 const Resources: React.FC = () => {
+  const jobTitles = [
+    'Quality Manager',
+    'Quality Assurance Manager',
+    'Quality Control Manager',
+    'Compliance Manager',
+    'QHSE Manager',
+    'HSE Manager',
+    'Operations Manager',
+    'Production Manager',
+    'Quality Engineer',
+    'Quality Assurance Engineer',
+    'Compliance Officer',
+    'Quality Analyst',
+    'Quality Specialist',
+    'Regulatory Affairs Manager',
+    'Director of Quality',
+    'VP of Quality',
+    'Chief Quality Officer',
+    'Other'
+  ];
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     company: '',
     job_title: '',
+    custom_job_title: '',
     phone_number: '',
     most_pressing_quality_problem: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [showCustomJobTitle, setShowCustomJobTitle] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === 'job_title') {
+      if (value === 'Other') {
+        setShowCustomJobTitle(true);
+        setFormData({ ...formData, job_title: 'Other', custom_job_title: '' });
+      } else {
+        setShowCustomJobTitle(false);
+        setFormData({ ...formData, job_title: value, custom_job_title: '' });
+      }
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
     setError(''); // Clear error on input change
   };
 
@@ -45,6 +80,10 @@ const Resources: React.FC = () => {
     }
     if (!formData.job_title.trim()) {
       setError('Job title is required');
+      return false;
+    }
+    if (formData.job_title === 'Other' && !formData.custom_job_title.trim()) {
+      setError('Please enter your job title');
       return false;
     }
     if (!formData.phone_number.trim()) {
@@ -85,7 +124,7 @@ const Resources: React.FC = () => {
           last_name: formData.last_name.trim(),
           email: formData.email.trim().toLowerCase(),
           company: formData.company.trim(),
-          job_title: formData.job_title.trim(),
+          job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
           phone_number: formData.phone_number.trim(),
           most_pressing_quality_problem: formData.most_pressing_quality_problem.trim(),
           source_page: 'library_unlock',
@@ -106,9 +145,11 @@ const Resources: React.FC = () => {
         email: '',
         company: '',
         job_title: '',
+        custom_job_title: '',
         phone_number: '',
         most_pressing_quality_problem: '',
       });
+      setShowCustomJobTitle(false);
 
       // Clear success message after 5 seconds
       setTimeout(() => setSuccess(false), 5000);
@@ -209,15 +250,31 @@ const Resources: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">Job Title *</label>
-                <input
-                  type="text"
+                <select
                   name="job_title"
                   required
                   value={formData.job_title}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                  placeholder="Quality Manager"
-                />
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                >
+                  <option value="">Select a job title</option>
+                  {jobTitles.map((title) => (
+                    <option key={title} value={title}>
+                      {title}
+                    </option>
+                  ))}
+                </select>
+                {showCustomJobTitle && (
+                  <input
+                    type="text"
+                    name="custom_job_title"
+                    required
+                    value={formData.custom_job_title}
+                    onChange={handleChange}
+                    className="w-full mt-3 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    placeholder="Enter your job title"
+                  />
+                )}
               </div>
 
               <div>
