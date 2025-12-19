@@ -45,48 +45,56 @@ const ContactUs: React.FC = () => {
 
     try {
       // Validate required fields
+      setError('');
+      
       if (!formData.first_name.trim()) {
-        alert('First name is required');
+        setError('First name is required');
         setStatus('idle');
         return;
       }
       if (!formData.last_name.trim()) {
-        alert('Last name is required');
+        setError('Last name is required');
         setStatus('idle');
         return;
       }
       if (!formData.email.trim()) {
-        alert('Email is required');
+        setError('Email is required');
+        setStatus('idle');
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setError('Please enter a valid email address');
         setStatus('idle');
         return;
       }
       if (!formData.company.trim()) {
-        alert('Company is required');
+        setError('Company is required');
         setStatus('idle');
         return;
       }
       if (!formData.job_title.trim()) {
-        alert('Job title is required');
+        setError('Job title is required');
         setStatus('idle');
         return;
       }
       if (formData.job_title === 'Other' && !formData.custom_job_title.trim()) {
-        alert('Please enter your job title');
+        setError('Please enter your job title');
         setStatus('idle');
         return;
       }
       if (!formData.phone.trim()) {
-        alert('Phone number is required');
+        setError('Phone number is required');
         setStatus('idle');
         return;
       }
       if (!formData.most_pressing_quality_problem.trim()) {
-        alert('Most pressing quality problem is required');
+        setError('Most pressing quality problem is required');
         setStatus('idle');
         return;
       }
       if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) {
-        alert('Please describe your quality problem');
+        setError('Please describe your quality problem');
         setStatus('idle');
         return;
       }
@@ -192,63 +200,13 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* Contact Info Side */}
-          <div className="lg:col-span-1 space-y-8 animate-fade-in-up delay-100">
-            <div className="bg-white/80 backdrop-blur p-8 rounded-2xl border border-neutral-200 shadow-lg shadow-neutral-200/50">
-              <h3 className="text-lg font-bold text-neutral-900 mb-6">Contact Information</h3>
-              
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-50 p-3 rounded-lg text-amber-600">
-                    <Mail className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-500 mb-1">Email Us</p>
-                    <a href="mailto:info@preqal.org" className="text-neutral-900 font-semibold hover:text-amber-600 transition-colors">info@preqal.org</a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-50 p-3 rounded-lg text-amber-600">
-                    <Phone className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-500 mb-1">Call Us</p>
-                    <p className="text-neutral-900 font-semibold">+592 (555) 123-4567</p>
-                    <p className="text-xs text-neutral-500 mt-1">Mon-Fri, 8am - 5pm AST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-50 p-3 rounded-lg text-amber-600">
-                    <MapPin className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-500 mb-1">Location</p>
-                    <p className="text-neutral-900 font-semibold">Georgetown, Guyana</p>
-                    <p className="text-xs text-neutral-500 mt-1">Serving the Caribbean Region</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-neutral-900 p-8 rounded-2xl text-white shadow-xl">
-              <h3 className="font-bold mb-4">Looking for a Diagnostic?</h3>
-              <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
-                If you need a formal assessment of your compliance systems, use our booking tool for a structured intake.
-              </p>
-              <a href="#/book" className="inline-block w-full text-center bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 rounded-lg transition-colors">
-                Book a Risk Scan
-              </a>
-            </div>
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-hidden animate-fade-in-up delay-100">
+          <div className="bg-gradient-to-r from-neutral-100 to-white p-10 text-center border-b border-neutral-100 relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
+            <h2 className="text-2xl font-bold text-neutral-900 mb-2">Contact Us</h2>
+            <p className="text-neutral-500">Get in touch with us</p>
           </div>
-
-          {/* Contact Form Side */}
-          <div className="lg:col-span-2 animate-fade-in-up delay-200 flex">
-            <div className="bg-white p-8 md:p-10 rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 flex-1 flex flex-col">
-              <h2 className="text-2xl font-bold text-neutral-900 mb-6">Send a Message</h2>
+          <div className="p-10 md:p-12 bg-white">
               
               {status === 'success' ? (
                 <div className="text-center py-12">
@@ -267,8 +225,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 flex-1 flex flex-col">
-                  <div className="flex-1 flex flex-col space-y-4">
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-neutral-600 mb-1">First Name *</label>
@@ -412,22 +369,28 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                       placeholder="Tell us about your project or how we can help..."
                     />
                   </div>
-                  </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === 'submitting'}
-                    className="w-full flex justify-center items-center py-4 px-6 rounded-lg shadow-lg text-white bg-neutral-900 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 font-bold text-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed transform hover:-translate-y-1"
-                  >
-                    {status === 'submitting' ? (
-                      <Loader2 className="h-6 w-6 animate-spin" />
-                    ) : (
-                      <>
-                        Send Message <Send className="ml-2 h-5 w-5" />
-                      </>
-                    )}
-                  </button>
-                </form>
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === 'submitting'}
+                className="w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-amber-500/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {status === 'submitting' ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Submit'
+                )}
+              </button>
+            </form>
               )}
             </div>
           </div>
