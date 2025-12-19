@@ -190,6 +190,7 @@ const Resources: React.FC = () => {
             dial_code: formData.dial_code,
             country_iso: formData.country_iso.toUpperCase(),
             most_pressing_quality_problem: qualityProblem,
+            message: formData.message.trim() || 'N/A',
             source_page: 'library_unlock',
             submitted_at: new Date().toLocaleString('en-US', { 
               dateStyle: 'full', 
