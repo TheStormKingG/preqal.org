@@ -417,6 +417,18 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                 )}
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Message</label>
+                <textarea
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
+                  placeholder="Tell us about your project or how we can help..."
+                />
+              </div>
+
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                   {error}
