@@ -115,13 +115,20 @@ const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Backdrop Blur Overlay - Only below the menu with Glass Animation */}
+      {/* Backdrop Blur Overlay - Covers all page content below navbar with Glass Animation */}
       {isOpen && (
         <div 
-          className="fixed top-20 left-0 right-0 bottom-0 z-40 md:hidden glass-backdrop"
+          className="fixed top-20 left-0 right-0 bottom-0 z-[45] md:hidden glass-backdrop"
           onClick={() => setIsOpen(false)}
           style={{
             animation: 'fadeIn 0.3s ease-out',
+            position: 'fixed',
+            top: '80px', // 20 * 4 = 80px (h-20)
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: 'calc(100vh - 80px)',
           }}
         />
       )}
