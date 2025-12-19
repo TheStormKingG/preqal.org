@@ -258,13 +258,22 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
 
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">Phone / WhatsApp</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  required
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                <PhoneInput
+                  defaultCountry="us"
                   value={formData.phone}
-                  onChange={handleChange}
+                  onChange={(phone, { country, dialCode }) => {
+                    setFormData({
+                      ...formData,
+                      phone,
+                      country_iso: country?.iso2?.toLowerCase() || 'us',
+                      dial_code: dialCode || '+1',
+                    });
+                  }}
+                  className="w-full"
+                  inputClassName="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                  countrySelectorStyleProps={{
+                    buttonClassName: "px-3 py-3 bg-neutral-50 border border-neutral-200 rounded-l-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+                  }}
                 />
               </div>
 
