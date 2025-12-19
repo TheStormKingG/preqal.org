@@ -81,21 +81,10 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Backdrop Blur Overlay with Glass Animation */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-40 md:hidden glass-backdrop"
-          onClick={() => setIsOpen(false)}
-          style={{
-            animation: 'fadeIn 0.3s ease-out',
-          }}
-        />
-      )}
-
       {/* Mobile Menu - Clear, no blur */}
       {isOpen && (
         <div 
-          className="md:hidden bg-white border-t border-neutral-200 animate-fade-in-up shadow-lg relative z-50"
+          className="md:hidden bg-white border-t border-neutral-200 shadow-lg relative z-50"
           style={{
             animation: 'slideDown 0.3s ease-out',
           }}
@@ -124,6 +113,17 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
         </div>
+      )}
+
+      {/* Backdrop Blur Overlay - Only below the menu with Glass Animation */}
+      {isOpen && (
+        <div 
+          className="fixed top-20 left-0 right-0 bottom-0 z-40 md:hidden glass-backdrop"
+          onClick={() => setIsOpen(false)}
+          style={{
+            animation: 'fadeIn 0.3s ease-out',
+          }}
+        />
       )}
     </nav>
   );

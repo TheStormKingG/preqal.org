@@ -132,10 +132,10 @@
 
       @keyframes glassShine {
         0% {
-          background-position: -200% center;
+          transform: translateX(-100%) skewX(-20deg);
         }
         100% {
-          background-position: 200% center;
+          transform: translateX(200%) skewX(-20deg);
         }
       }
 
@@ -156,16 +156,18 @@
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
-        width: 100%;
+        left: 0;
+        width: 50%;
         height: 100%;
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.3) 50%,
           transparent
         );
         animation: glassShine 3s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
       }
 
       .glass-backdrop::after {
@@ -182,6 +184,7 @@
           rgba(255, 255, 255, 0.05) 100%
         );
         pointer-events: none;
+        z-index: 0;
       }
 
       /* Custom Scrollbar for Light Theme */
