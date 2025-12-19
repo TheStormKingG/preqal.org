@@ -68,7 +68,9 @@ const Home: React.FC = () => {
       </section>
 
       {/* Trust Indicators - Seamless Transparent Gradient Background with Pattern */}
-      <section className="relative py-8 bg-[linear-gradient(to_bottom,transparent_0%,#171717_20%,#171717_80%,transparent_100%)]">
+      <section className="relative py-8">
+        {/* Gradient Background - ends before top text, starts after bottom text */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,transparent_15%,#171717_25%,#171717_75%,transparent_85%,transparent_100%)]"></div>
         {/* Pattern Overlay */}
         <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
 
