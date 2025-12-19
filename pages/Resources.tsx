@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
-import PhoneInput from 'react-international-phone';
+import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 
 const Resources: React.FC = () => {
