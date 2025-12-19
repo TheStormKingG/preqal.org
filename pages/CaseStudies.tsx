@@ -20,11 +20,11 @@ const caseStudies = [
     color: "border-l-blue-500"
   },
   {
-    sector: "Development of Stashway.app",
+    sector: "Development of Stashway™",
     icon: null, // Special case: will use logo image instead
     logo: "stashway-logo.png",
     challenge: "Managing personal finances in Guyana required tracking bank accounts, physical cash denominations, receipts, and spending patterns without GYD-specific tools.",
-    solution: "Developed Stashway.app with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
+    solution: "Developed Stashway™ with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
     result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
     color: "border-l-purple-500",
     externalLink: "https://stashway.app"
@@ -123,7 +123,7 @@ const CaseStudies: React.FC = () => {
                 <div>
                   <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Our Solution</h4>
                   <p className="text-neutral-600 text-sm leading-relaxed">
-                    {study.solution.split('Stashway.app').map((part, idx, arr) => 
+                    {study.solution.split('Stashway™').map((part, idx, arr) => 
                       idx === arr.length - 1 ? part : (
                         <React.Fragment key={idx}>
                           {part}
@@ -131,9 +131,9 @@ const CaseStudies: React.FC = () => {
                             href={study.externalLink || '#'} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-amber-600 hover:text-amber-500 font-semibold underline"
+                            className="inline-block text-amber-600 hover:text-amber-500 font-semibold underline transition-all duration-300 hover:scale-110 hover:rotate-3 active:scale-95"
                           >
-                            Stashway.app
+                            Stashway<sup className="text-[0.6em]">™</sup>
                           </a>
                         </React.Fragment>
                       )
@@ -147,7 +147,7 @@ const CaseStudies: React.FC = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
                   <p className="text-neutral-900 font-medium text-sm leading-relaxed">
-                    {study.result.split('Stashway.app').map((part, idx, arr) => 
+                    {study.result.split('Stashway™').map((part, idx, arr) => 
                       idx === arr.length - 1 ? part : (
                         <React.Fragment key={idx}>
                           {part}
@@ -155,9 +155,9 @@ const CaseStudies: React.FC = () => {
                             href={study.externalLink || '#'} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-amber-600 hover:text-amber-500 font-semibold underline"
+                            className="inline-block text-amber-600 hover:text-amber-500 font-semibold underline transition-all duration-300 hover:scale-110 hover:rotate-3 active:scale-95"
                           >
-                            Stashway.app
+                            Stashway<sup className="text-[0.6em]">™</sup>
                           </a>
                         </React.Fragment>
                       )
