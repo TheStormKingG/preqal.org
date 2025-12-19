@@ -37,6 +37,35 @@ const Resources: React.FC = () => {
     'Other'
   ];
 
+  const countryCodes = [
+    { code: '+1', country: 'US', flag: '🇺🇸', name: 'United States' },
+    { code: '+1', country: 'CA', flag: '🇨🇦', name: 'Canada' },
+    { code: '+44', country: 'GB', flag: '🇬🇧', name: 'United Kingdom' },
+    { code: '+61', country: 'AU', flag: '🇦🇺', name: 'Australia' },
+    { code: '+64', country: 'NZ', flag: '🇳🇿', name: 'New Zealand' },
+    { code: '+27', country: 'ZA', flag: '🇿🇦', name: 'South Africa' },
+    { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
+    { code: '+33', country: 'FR', flag: '🇫🇷', name: 'France' },
+    { code: '+39', country: 'IT', flag: '🇮🇹', name: 'Italy' },
+    { code: '+34', country: 'ES', flag: '🇪🇸', name: 'Spain' },
+    { code: '+31', country: 'NL', flag: '🇳🇱', name: 'Netherlands' },
+    { code: '+32', country: 'BE', flag: '🇧🇪', name: 'Belgium' },
+    { code: '+41', country: 'CH', flag: '🇨🇭', name: 'Switzerland' },
+    { code: '+46', country: 'SE', flag: '🇸🇪', name: 'Sweden' },
+    { code: '+47', country: 'NO', flag: '🇳🇴', name: 'Norway' },
+    { code: '+45', country: 'DK', flag: '🇩🇰', name: 'Denmark' },
+    { code: '+358', country: 'FI', flag: '🇫🇮', name: 'Finland' },
+    { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' },
+    { code: '+65', country: 'SG', flag: '🇸🇬', name: 'Singapore' },
+    { code: '+852', country: 'HK', flag: '🇭🇰', name: 'Hong Kong' },
+    { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
+    { code: '+81', country: 'JP', flag: '🇯🇵', name: 'Japan' },
+    { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
+    { code: '+91', country: 'IN', flag: '🇮🇳', name: 'India' },
+    { code: '+55', country: 'BR', flag: '🇧🇷', name: 'Brazil' },
+    { code: '+52', country: 'MX', flag: '🇲🇽', name: 'Mexico' },
+  ];
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -44,6 +73,7 @@ const Resources: React.FC = () => {
     company: '',
     job_title: '',
     custom_job_title: '',
+    country_code: '+1',
     phone_number: '',
     most_pressing_quality_problem: '',
     custom_quality_problem: '',
@@ -152,7 +182,7 @@ const Resources: React.FC = () => {
           email: formData.email.trim().toLowerCase(),
           company: formData.company.trim(),
           job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
-          phone_number: formData.phone_number.trim(),
+          phone_number: `${formData.country_code} ${formData.phone_number.trim()}`,
           most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
           source_page: 'library_unlock',
         });
@@ -173,6 +203,7 @@ const Resources: React.FC = () => {
         company: '',
         job_title: '',
         custom_job_title: '',
+        country_code: '+1',
         phone_number: '',
         most_pressing_quality_problem: '',
         custom_quality_problem: '',
@@ -308,15 +339,36 @@ const Resources: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
-                <input
-                  type="tel"
-                  name="phone_number"
-                  required
-                  value={formData.phone_number}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                  placeholder="+1 (555) 123-4567"
-                />
+                <div className="flex gap-2">
+                  <div className="relative flex-shrink-0 w-32">
+                    <select
+                      name="country_code"
+                      value={formData.country_code}
+                      onChange={handleChange}
+                      className="w-full px-3 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all appearance-none pr-8"
+                    >
+                      {countryCodes.map((country) => (
+                        <option key={country.country} value={country.code}>
+                          {country.flag} {country.code}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    type="tel"
+                    name="phone_number"
+                    required
+                    value={formData.phone_number}
+                    onChange={handleChange}
+                    className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    placeholder="440-555-1234"
+                  />
+                </div>
               </div>
 
               <div>
