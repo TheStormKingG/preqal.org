@@ -67,23 +67,30 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Trust Indicators - Seamless Transparent Gradient Background with Pattern */}
-      <section className="relative py-8">
-        {/* Gradient Background - ends before top text, starts after bottom text */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,transparent_15%,#171717_25%,#171717_75%,transparent_85%,transparent_100%)]"></div>
-        {/* Pattern Overlay */}
-        <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <p className="text-sm font-semibold text-neutral-500 uppercase tracking-widest mb-10">Aligned with Global Standards & Trusted by Industry Leaders</p>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-90 hover:opacity-100 transition-all duration-500">
-             <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 9001</span></div>
-             <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 45001</span></div>
-             <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 14001</span></div>
-             <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>HACCP</span></div>
-             <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><Leaf className="text-amber-500"/><span>Climate-Friendliness</span></div>
+      {/* Trust Indicators - Text on Black with Gradients Above and Below */}
+      <section className="relative py-0">
+        {/* Top Gradient - fades from white to black */}
+        <div className="h-16 bg-[linear-gradient(to_bottom,#f6f8fb_0%,transparent_0%,#171717_100%)]"></div>
+        
+        {/* Middle Section - Solid Black Background with Text */}
+        <div className="relative bg-[#171717] py-8">
+          {/* Pattern Overlay */}
+          <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <p className="text-sm font-semibold text-neutral-500 uppercase tracking-widest mb-10">Aligned with Global Standards & Trusted by Industry Leaders</p>
+            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-90 hover:opacity-100 transition-all duration-500">
+               <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 9001</span></div>
+               <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 45001</span></div>
+               <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>ISO 14001</span></div>
+               <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><CheckCircle2 className="text-amber-500"/><span>HACCP</span></div>
+               <div className="flex items-center space-x-2 text-xl font-bold text-neutral-300 hover:text-amber-500 transition-colors cursor-default"><Leaf className="text-amber-500"/><span>Climate-Friendliness</span></div>
+            </div>
           </div>
         </div>
+        
+        {/* Bottom Gradient - fades from black to white */}
+        <div className="h-16 bg-[linear-gradient(to_bottom,#171717_0%,transparent_0%,#f6f8fb_100%)]"></div>
       </section>
 
       {/* Methodology Diagram - Transparent for Global Pattern */}
