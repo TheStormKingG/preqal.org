@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, Activity, CheckCircle } from 'lucide-react';
+import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, Activity, CheckCircle, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const caseStudies = [
@@ -20,12 +20,12 @@ const caseStudies = [
     color: "border-l-blue-500"
   },
   {
-    sector: "Livestock Transport Fleet",
-    icon: <Activity className="h-6 w-6 text-red-600" />,
-    challenge: "Welfare and loss issues during bird transportation, lack of loading procedures, and informal driver handling practices.",
-    solution: "Introduced OIE/NCC-aligned transport procedures, audit checklists, and handling training for drivers and loaders.",
-    result: "Notable reduction in bird losses, visibly improved handling practices, and compliance alignment strengthened.",
-    color: "border-l-red-500"
+    sector: "Development of Stashway.app",
+    icon: <Smartphone className="h-6 w-6 text-purple-600" />,
+    challenge: "Managing personal finances in Guyana required tracking bank accounts, physical cash denominations, receipts, and spending patterns without GYD-specific tools.",
+    solution: "Developed Stashway.app with denomination-level cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
+    result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
+    color: "border-l-purple-500"
   },
   {
     sector: "Oil & Gas Services Contractor",
