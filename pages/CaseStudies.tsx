@@ -22,7 +22,7 @@ const caseStudies = [
   {
     sector: "Development of Stashway.app",
     icon: null, // Special case: will use logo image instead
-    logo: "/stashway-logo.png",
+    logo: "stashway-logo.png",
     challenge: "Managing personal finances in Guyana required tracking bank accounts, physical cash denominations, receipts, and spending patterns without GYD-specific tools.",
     solution: "Developed Stashway.app with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
     result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
@@ -103,7 +103,7 @@ const CaseStudies: React.FC = () => {
                       className="p-2 bg-neutral-50 rounded-lg border border-neutral-100 group"
                     >
                       <img 
-                        src={study.logo} 
+                        src={`${import.meta.env.BASE_URL}${study.logo}`}
                         alt="Stashway Logo" 
                         className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
                       />
