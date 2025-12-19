@@ -30,7 +30,8 @@ All form data is available in your EmailJS template. Use these variables:
 
 ### Lead Details
 - `{{most_pressing_quality_problem}}` - Selected or custom quality problem
-- `{{source_page}}` - Source page (always "library_unlock")
+- `{{message}}` - Additional message from the user (optional, may be "N/A" if not provided)
+- `{{source_page}}` - Source page ("library_unlock" or "contact_us")
 - `{{submitted_at}}` - Formatted submission timestamp
 
 ### Pre-formatted Content
@@ -97,6 +98,12 @@ Here's a beautiful HTML template you can use in EmailJS:
                 <p style="margin: 0; color: #171717; font-size: 14px; line-height: 1.6; background-color: #f9fafb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">{{most_pressing_quality_problem}}</p>
               </div>
               
+              <!-- Message -->
+              <div style="margin-bottom: 30px;">
+                <h2 style="margin: 0 0 20px 0; color: #171717; font-size: 20px; font-weight: 600; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">Message</h2>
+                <p style="margin: 0; color: #171717; font-size: 14px; line-height: 1.6; background-color: #f9fafb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; white-space: pre-wrap;">{{message}}</p>
+              </div>
+              
               <!-- Metadata -->
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -146,6 +153,10 @@ Phone: {{formatted_phone}} ({{country_iso}})
 MOST PRESSING QUALITY PROBLEM
 ------------------------------
 {{most_pressing_quality_problem}}
+
+MESSAGE
+-------
+{{message}}
 
 METADATA
 --------
