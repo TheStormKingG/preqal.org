@@ -46,6 +46,19 @@ const Home: React.FC = () => {
     'Other'
   ];
 
+  const qualityProblems = [
+    'Inconsistent process execution (different shifts/sites doing it differently; variation drives defects and complaints)',
+    'Poor document & change control (outdated SOPs, uncontrolled forms, changes not risk-assessed or trained)',
+    'Unsafe behaviors + weak supervision (rules exist but aren\'t enforced; shortcuts normalize risk)',
+    'Inadequate risk assessments/controls (JHAs stale, controls missing, poor permit-to-work and isolation discipline)',
+    'Training/competency gaps (people signed off without practical competence; contractors not controlled)',
+    'Cash flow instability (late receivables, poor forecasting, working-capital squeeze)',
+    'Weak financial controls (inaccurate reporting, weak approvals, leakage/fraud risk, inconsistent budgeting)',
+    'Inventory and material flow issues (stockouts/overstock, poor layout, slow picking, unclear ownership)',
+    'Lack of strategic alignment (unclear priorities/KPIs; teams pull in different directions)',
+    'Other'
+  ];
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -55,11 +68,13 @@ const Home: React.FC = () => {
     custom_job_title: '',
     phone_number: '',
     most_pressing_quality_problem: '',
+    custom_quality_problem: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [showCustomJobTitle, setShowCustomJobTitle] = useState(false);
+  const [showCustomQualityProblem, setShowCustomQualityProblem] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -71,6 +86,14 @@ const Home: React.FC = () => {
       } else {
         setShowCustomJobTitle(false);
         setFormData({ ...formData, job_title: value, custom_job_title: '' });
+      }
+    } else if (name === 'most_pressing_quality_problem') {
+      if (value === 'Other') {
+        setShowCustomQualityProblem(true);
+        setFormData({ ...formData, most_pressing_quality_problem: 'Other', custom_quality_problem: '' });
+      } else {
+        setShowCustomQualityProblem(false);
+        setFormData({ ...formData, most_pressing_quality_problem: value, custom_quality_problem: '' });
       }
     } else {
       setFormData({ ...formData, [name]: value });
@@ -113,6 +136,10 @@ const Home: React.FC = () => {
       return false;
     }
     if (!formData.most_pressing_quality_problem.trim()) {
+      setError('Please select or describe your most pressing quality problem');
+      return false;
+    }
+    if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) {
       setError('Please describe your most pressing quality problem');
       return false;
     }
@@ -148,7 +175,7 @@ const Home: React.FC = () => {
           company: formData.company.trim(),
           job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
           phone_number: formData.phone_number.trim(),
-          most_pressing_quality_problem: formData.most_pressing_quality_problem.trim(),
+          most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
           source_page: 'library_unlock',
         });
 
@@ -170,8 +197,10 @@ const Home: React.FC = () => {
         custom_job_title: '',
         phone_number: '',
         most_pressing_quality_problem: '',
+        custom_quality_problem: '',
       });
       setShowCustomJobTitle(false);
+      setShowCustomQualityProblem(false);
 
       // Clear success message after 5 seconds
       setTimeout(() => setSuccess(false), 5000);
@@ -522,15 +551,31 @@ const Home: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">Most Pressing Quality Problem *</label>
-                  <textarea
+                  <select
                     name="most_pressing_quality_problem"
                     required
-                    rows={4}
                     value={formData.most_pressing_quality_problem}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
-                    placeholder="Describe your most pressing quality or compliance challenge..."
-                  />
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                  >
+                    <option value="">Select a quality problem</option>
+                    {qualityProblems.map((problem) => (
+                      <option key={problem} value={problem}>
+                        {problem}
+                      </option>
+                    ))}
+                  </select>
+                  {showCustomQualityProblem && (
+                    <textarea
+                      name="custom_quality_problem"
+                      required
+                      rows={4}
+                      value={formData.custom_quality_problem}
+                      onChange={handleChange}
+                      className="w-full mt-3 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400 resize-none"
+                      placeholder="Describe your most pressing quality or compliance challenge..."
+                    />
+                  )}
                 </div>
 
                 {error && (
