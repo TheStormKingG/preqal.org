@@ -3,6 +3,7 @@ import { Lock, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import emailjs from '@emailjs/browser';
 
 const Resources: React.FC = () => {
   const jobTitles = [
@@ -165,6 +166,29 @@ const Resources: React.FC = () => {
 
       if (insertError) {
         throw insertError;
+      }
+
+      // Send email notification via EmailJS
+      try {
+        await emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+          {
+            first_name: formData.first_name.trim(),
+            last_name: formData.last_name.trim(),
+            email: formData.email.trim().toLowerCase(),
+            company: formData.company.trim(),
+            job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
+            phone_number: formData.phone.trim(),
+            country_iso: formData.country_iso,
+            dial_code: formData.dial_code,
+            most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
+          },
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+        );
+      } catch (emailError) {
+        console.error('EmailJS error:', emailError);
+        // Don't fail the form submission if email fails
       }
 
       // Success - trigger download and show success message

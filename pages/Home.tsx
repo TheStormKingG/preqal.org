@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { supabase } from '../lib/supabaseClient';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import emailjs from '@emailjs/browser';
 
 const data = [
   { name: 'Month 1', score: 45 },

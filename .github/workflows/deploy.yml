@@ -53,6 +53,9 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
+          VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
+          VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
         run: |
           # Verify environment variables are set (without exposing values)
           if [ -z "$VITE_SUPABASE_URL" ]; then
@@ -66,6 +69,9 @@ jobs:
           echo "::notice::Environment variables loaded successfully"
           echo "VITE_SUPABASE_URL is set: $(if [ -n "$VITE_SUPABASE_URL" ]; then echo 'yes'; else echo 'no'; fi)"
           echo "VITE_SUPABASE_ANON_KEY is set: $(if [ -n "$VITE_SUPABASE_ANON_KEY" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_EMAILJS_PUBLIC_KEY is set: $(if [ -n "$VITE_EMAILJS_PUBLIC_KEY" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_EMAILJS_SERVICE_ID is set: $(if [ -n "$VITE_EMAILJS_SERVICE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_EMAILJS_TEMPLATE_ID is set: $(if [ -n "$VITE_EMAILJS_TEMPLATE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
           npm run build
       
       - name: Setup Pages
