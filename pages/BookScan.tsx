@@ -194,6 +194,31 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">Company Name</label>
+                  <input
+                    type="text"
+                    name="company"
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    value={formData.company}
+                    onChange={handleChange}
+                    placeholder="Company Name"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">Company Type</label>
                   <select
                     name="businessType"
@@ -227,29 +252,16 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">Phone / WhatsApp</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">Phone / WhatsApp</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
+                  value={formData.phone}
+                  onChange={handleChange}
+                />
               </div>
 
               <div>
