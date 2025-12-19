@@ -393,7 +393,6 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
               </button>
             </form>
               )}
-            </div>
           </div>
         </div>
       </div>
