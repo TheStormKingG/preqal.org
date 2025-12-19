@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[linear-gradient(to_bottom,transparent_0%,#171717_50%,#000000_100%)] text-neutral-400 pt-16 pb-12 relative overflow-hidden">
+    <footer className="bg-[linear-gradient(to_bottom,transparent_0%,#171717_87.5%,#000000_100%)] text-neutral-400 pt-16 pb-12 relative overflow-hidden">
       {/* Pattern Overlay */}
       <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
 

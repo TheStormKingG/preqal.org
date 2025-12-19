@@ -247,7 +247,7 @@ const Home: React.FC = () => {
       {/* Lead Magnet Section - Document Templates CTA */}
       <section className="py-16 relative text-neutral-900 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-hidden animate-fade-in-up p-12">
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-visible animate-fade-in-up p-6 md:p-12">
             {/* Document Animation */}
             <div className="relative h-48 mb-4 flex items-center justify-center">
               <style>{`
@@ -279,10 +279,10 @@ const Home: React.FC = () => {
             {/* Button */}
             <Link 
               to="/resources" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-lg rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1 whitespace-nowrap"
+              className="inline-flex items-center justify-center px-4 py-3 md:px-8 md:py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm md:text-lg rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1 whitespace-nowrap w-full md:w-auto"
             >
               Get Free Document Templates
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
             </Link>
           </div>
         </div>
