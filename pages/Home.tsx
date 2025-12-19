@@ -249,7 +249,7 @@ const Home: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 overflow-hidden animate-fade-in-up p-12">
             {/* Document Animation */}
-            <div className="relative h-48 mb-8 flex items-center justify-center">
+            <div className="relative h-48 mb-4 flex items-center justify-center">
               <style>{`
                 @keyframes float {
                   0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -269,17 +269,17 @@ const Home: React.FC = () => {
                 .doc-float-4 { animation: float 3.2s ease-in-out infinite; animation-delay: 1.5s; }
                 .doc-float-5 { animation: floatReverse 3.8s ease-in-out infinite; animation-delay: 2s; }
               `}</style>
-              <FileText className="absolute h-16 w-16 text-amber-500/40 doc-float-1" style={{ left: '10%', top: '20%' }} />
-              <FileText className="absolute h-20 w-20 text-amber-500/50 doc-float-2" style={{ left: '25%', top: '10%' }} />
-              <FileText className="absolute h-24 w-24 text-amber-600/60 doc-float-3" style={{ left: '50%', top: '5%', transform: 'translateX(-50%)' }} />
-              <FileText className="absolute h-18 w-18 text-amber-500/45 doc-float-4" style={{ right: '25%', top: '15%' }} />
-              <FileText className="absolute h-16 w-16 text-amber-500/40 doc-float-5" style={{ right: '10%', top: '25%' }} />
+              <FileText className="absolute h-14 w-14 text-amber-500/40 doc-float-1" style={{ left: '5%', top: '30%' }} />
+              <FileText className="absolute h-16 w-16 text-amber-500/50 doc-float-2" style={{ left: '20%', top: '20%' }} />
+              <FileText className="absolute h-20 w-20 text-amber-600/60 doc-float-3" style={{ left: '50%', top: '15%', transform: 'translateX(-50%)' }} />
+              <FileText className="absolute h-16 w-16 text-amber-500/45 doc-float-4" style={{ right: '20%', top: '25%' }} />
+              <FileText className="absolute h-14 w-14 text-amber-500/40 doc-float-5" style={{ right: '5%', top: '35%' }} />
             </div>
             
             {/* Button */}
             <Link 
               to="/resources" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-lg rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1"
+              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-lg rounded-lg transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:-translate-y-1 whitespace-nowrap"
             >
               Get Free Document Templates
               <ArrowRight className="ml-2 h-5 w-5" />
