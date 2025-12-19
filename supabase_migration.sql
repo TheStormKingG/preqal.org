@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS template_leads (
   company text NOT NULL,
   job_title text NOT NULL,
   phone_number text NOT NULL,
+  country_iso text,
+  dial_code text,
   most_pressing_quality_problem text NOT NULL,
   source_page text NOT NULL DEFAULT 'library_unlock'
 );

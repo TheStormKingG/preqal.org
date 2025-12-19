@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Lock, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import PhoneInput from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 const Resources: React.FC = () => {
   const jobTitles = [
@@ -37,61 +39,6 @@ const Resources: React.FC = () => {
     'Other'
   ];
 
-  const countryCodes = [
-    { code: '+1', country: 'AG', flag: '🇦🇬', name: 'Antigua & Barbuda' },
-    { code: '+54', country: 'AR', flag: '🇦🇷', name: 'Argentina' },
-    { code: '+61', country: 'AU', flag: '🇦🇺', name: 'Australia' },
-    { code: '+1', country: 'BS', flag: '🇧🇸', name: 'Bahamas' },
-    { code: '+1', country: 'BB', flag: '🇧🇧', name: 'Barbados' },
-    { code: '+591', country: 'BO', flag: '🇧🇴', name: 'Bolivia' },
-    { code: '+55', country: 'BR', flag: '🇧🇷', name: 'Brazil' },
-    { code: '+1', country: 'CA', flag: '🇨🇦', name: 'Canada' },
-    { code: '+1', country: 'KY', flag: '🇰🇾', name: 'Cayman Islands' },
-    { code: '+56', country: 'CL', flag: '🇨🇱', name: 'Chile' },
-    { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
-    { code: '+57', country: 'CO', flag: '🇨🇴', name: 'Colombia' },
-    { code: '+53', country: 'CU', flag: '🇨🇺', name: 'Cuba' },
-    { code: '+1', country: 'DM', flag: '🇩🇲', name: 'Dominica' },
-    { code: '+1', country: 'DO', flag: '🇩🇴', name: 'Dominican Republic' },
-    { code: '+593', country: 'EC', flag: '🇪🇨', name: 'Ecuador' },
-    { code: '+20', country: 'EG', flag: '🇪🇬', name: 'Egypt' },
-    { code: '+251', country: 'ET', flag: '🇪🇹', name: 'Ethiopia' },
-    { code: '+33', country: 'FR', flag: '🇫🇷', name: 'France' },
-    { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
-    { code: '+233', country: 'GH', flag: '🇬🇭', name: 'Ghana' },
-    { code: '+1', country: 'GD', flag: '🇬🇩', name: 'Grenada' },
-    { code: '+592', country: 'GY', flag: '🇬🇾', name: 'Guyana' },
-    { code: '+509', country: 'HT', flag: '🇭🇹', name: 'Haiti' },
-    { code: '+91', country: 'IN', flag: '🇮🇳', name: 'India' },
-    { code: '+39', country: 'IT', flag: '🇮🇹', name: 'Italy' },
-    { code: '+1', country: 'JM', flag: '🇯🇲', name: 'Jamaica' },
-    { code: '+81', country: 'JP', flag: '🇯🇵', name: 'Japan' },
-    { code: '+254', country: 'KE', flag: '🇰🇪', name: 'Kenya' },
-    { code: '+212', country: 'MA', flag: '🇲🇦', name: 'Morocco' },
-    { code: '+31', country: 'NL', flag: '🇳🇱', name: 'Netherlands' },
-    { code: '+234', country: 'NG', flag: '🇳🇬', name: 'Nigeria' },
-    { code: '+595', country: 'PY', flag: '🇵🇾', name: 'Paraguay' },
-    { code: '+51', country: 'PE', flag: '🇵🇪', name: 'Peru' },
-    { code: '+1', country: 'KN', flag: '🇰🇳', name: 'Saint Kitts & Nevis' },
-    { code: '+1', country: 'LC', flag: '🇱🇨', name: 'Saint Lucia' },
-    { code: '+1', country: 'VC', flag: '🇻🇨', name: 'Saint Vincent & the Grenadines' },
-    { code: '+65', country: 'SG', flag: '🇸🇬', name: 'Singapore' },
-    { code: '+27', country: 'ZA', flag: '🇿🇦', name: 'South Africa' },
-    { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
-    { code: '+34', country: 'ES', flag: '🇪🇸', name: 'Spain' },
-    { code: '+597', country: 'SR', flag: '🇸🇷', name: 'Suriname' },
-    { code: '+255', country: 'TZ', flag: '🇹🇿', name: 'Tanzania' },
-    { code: '+1', country: 'TT', flag: '🇹🇹', name: 'Trinidad & Tobago' },
-    { code: '+1', country: 'TC', flag: '🇹🇨', name: 'Turks & Caicos' },
-    { code: '+256', country: 'UG', flag: '🇺🇬', name: 'Uganda' },
-    { code: '+971', country: 'AE', flag: '🇦🇪', name: 'United Arab Emirates' },
-    { code: '+44', country: 'GB', flag: '🇬🇧', name: 'United Kingdom' },
-    { code: '+1', country: 'US', flag: '🇺🇸', name: 'United States' },
-    { code: '+598', country: 'UY', flag: '🇺🇾', name: 'Uruguay' },
-    { code: '+58', country: 'VE', flag: '🇻🇪', name: 'Venezuela' },
-    { code: '+260', country: 'ZM', flag: '🇿🇲', name: 'Zambia' },
-  ];
-
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -99,8 +46,9 @@ const Resources: React.FC = () => {
     company: '',
     job_title: '',
     custom_job_title: '',
-    country_code: '+1',
-    phone_number: '',
+    phone: '',
+    country_iso: 'us',
+    dial_code: '+1',
     most_pressing_quality_problem: '',
     custom_quality_problem: '',
   });
@@ -165,7 +113,7 @@ const Resources: React.FC = () => {
       setError('Please enter your job title');
       return false;
     }
-    if (!formData.phone_number.trim()) {
+    if (!formData.phone.trim()) {
       setError('Phone number is required');
       return false;
     }
@@ -208,7 +156,9 @@ const Resources: React.FC = () => {
           email: formData.email.trim().toLowerCase(),
           company: formData.company.trim(),
           job_title: formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim(),
-          phone_number: `${formData.country_code} ${formData.phone_number.trim()}`,
+          phone_number: formData.phone.trim(),
+          country_iso: formData.country_iso,
+          dial_code: formData.dial_code,
           most_pressing_quality_problem: formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim(),
           source_page: 'library_unlock',
         });
@@ -229,8 +179,9 @@ const Resources: React.FC = () => {
         company: '',
         job_title: '',
         custom_job_title: '',
-        country_code: '+1',
-        phone_number: '',
+        phone: '',
+        country_iso: 'us',
+        dial_code: '+1',
         most_pressing_quality_problem: '',
         custom_quality_problem: '',
       });
@@ -365,40 +316,24 @@ const Resources: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">Phone Number *</label>
-                <div className="flex gap-2">
-                  <div className="relative flex-shrink-0 w-36">
-                    <select
-                      name="country_code"
-                      value={formData.country_code}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-8 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all appearance-none"
-                      style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 0.75rem center',
-                        paddingLeft: '2.75rem'
-                      }}
-                    >
-                      {countryCodes.map((country) => (
-                        <option key={country.country} value={country.code}>
-                          {country.flag} {country.code}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-lg">
-                      {countryCodes.find(c => c.code === formData.country_code)?.flag || '🇺🇸'}
-                    </div>
-                  </div>
-                  <input
-                    type="tel"
-                    name="phone_number"
-                    required
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                    className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all placeholder-neutral-400"
-                    placeholder="440-555-1234"
-                  />
-                </div>
+                <PhoneInput
+                  defaultCountry="us"
+                  value={formData.phone}
+                  onChange={(phone, { country, dialCode }) => {
+                    setFormData({
+                      ...formData,
+                      phone,
+                      country_iso: country?.iso2?.toLowerCase() || 'us',
+                      dial_code: dialCode || '+1',
+                    });
+                    setError('');
+                  }}
+                  className="w-full"
+                  inputClassName="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-900 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                  countrySelectorStyleProps={{
+                    buttonClassName: "px-3 py-3 bg-neutral-50 border border-neutral-200 rounded-l-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent",
+                  }}
+                />
               </div>
 
               <div>
