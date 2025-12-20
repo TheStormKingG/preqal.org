@@ -27,7 +27,7 @@ const caseStudies = [
     solution: "Developed Stashway™ with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.",
     result: "Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.",
     color: "border-l-purple-500",
-    externalLink: "https://stashway.app"
+    externalLink: "https://stashway.app/about"
   },
   {
     sector: "Oil & Gas Services Contractor",
