@@ -47,7 +47,7 @@ const Home: React.FC = () => {
                 <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-neutral-900">
-                Evidence-Driven Quality, Safety & ESG Systems <br />
+                Preqal: Evidence-Driven Quality, Safety & ESG Systems <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
@@ -122,6 +122,10 @@ const Home: React.FC = () => {
               <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Explore Our Services</Link>
               <span className="text-neutral-400">•</span>
               <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Learn About Preqal</Link>
+              <span className="text-neutral-400">•</span>
+              <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Us</Link>
+              <span className="text-neutral-400">•</span>
+              <Link to="/preqal-not-prequel" className="text-amber-600 hover:text-amber-500 font-semibold underline">Preqal (Not Prequel)</Link>
               <span className="text-neutral-400">•</span>
               <a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">ISO 9001 Standards</a>
             </div>
