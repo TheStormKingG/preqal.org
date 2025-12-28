@@ -112,12 +112,32 @@ const Home: React.FC = () => {
               />
             </picture>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Quality, Safety & ESG Management Systems</h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
               Preqal specializes in developing comprehensive ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
             </p>
-            <p className="text-base text-neutral-600 max-w-3xl mx-auto mt-4 leading-relaxed">
-              Whether you need ISO 9001 certification for quality management, ISO 45001 for occupational health and safety, or ISO 14001 for environmental management, Preqal provides end-to-end support from initial risk assessment through audit readiness. Our evidence-driven approach ensures your management system is not just compliant on paper, but actively improves operational performance and reduces non-conformances.
-            </p>
+            
+            <div className="max-w-3xl mx-auto space-y-6 text-left">
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">ISO-ready documentation</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We develop policies, Standard Operating Procedures (SOPs), and registers that align with ISO 9001, ISO 14001, and ISO 45001 requirements. Our documentation is practical, visual, and designed for frontline teams to use effectively.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Risk-based controls & legal compliance</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  Our integrated management systems prioritize critical risks and ensure your organization meets regulatory requirements. We help you identify, assess, and control risks across quality, safety, and environmental processes.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Audits, CAPA, and continual improvement</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We establish audit programs, Corrective and Preventive Action (CAPA) processes, and management review systems that drive continuous improvement. Our approach ensures your management system evolves with your business needs.
+                </p>
+              </div>
+            </div>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Explore Our Services</Link>
               <span className="text-neutral-400">•</span>
@@ -164,9 +184,32 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">How We Work</h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-8">
               The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your quality management system, safety management system, and ESG program are not just compliant, but drive measurable business results. From initial risk scan to continuous improvement, we guide organizations through every step of building an integrated management system that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
             </p>
+            
+            <div className="max-w-3xl mx-auto space-y-6 text-left">
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Rapid diagnostic</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We start with a comprehensive risk scan that identifies critical gaps in your current systems. This rapid diagnostic assessment evaluates your operations against ISO standards and regulatory requirements, delivering a prioritized Red Flag Report within seven days.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Build and implement in phases</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We architect your Integrated Management System and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and training your team to ensure smooth adoption.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Verify effectiveness</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We establish Key Performance Indicators (KPIs), conduct internal audits, and prepare management reviews to verify your system's effectiveness. Our approach ensures continuous monitoring and improvement of your quality, safety, and ESG performance.
+                </p>
+              </div>
+            </div>
           </div>
           
           <div className="relative">
@@ -227,9 +270,32 @@ const Home: React.FC = () => {
           <div className="flex justify-between items-end mb-12">
             <div>
               <h2 className="text-3xl font-bold text-neutral-900 mb-2">Our Core Services</h2>
-              <p className="text-lg text-neutral-600 leading-relaxed">
+              <p className="text-lg text-neutral-600 leading-relaxed mb-6">
                 Preqal offers a comprehensive suite of quality management, safety management, and compliance services designed for operational excellence. Our services help organizations build robust integrated management systems (IMS) that meet ISO standards, regulatory requirements, and industry best practices. From rapid risk assessments to full system implementation, we provide the expertise and tools needed to achieve and maintain compliance.
               </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Integrated management system design</h3>
+                  <p className="text-base text-neutral-600 leading-relaxed">
+                    We architect unified management systems that combine quality, safety, and environmental processes into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Training for frontline teams</h3>
+                  <p className="text-base text-neutral-600 leading-relaxed">
+                    We deliver targeted training programs that build competency at all organizational levels. Our training is practical, role-specific, and designed to ensure your team can effectively execute quality, safety, and environmental controls.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Audit readiness and certification support</h3>
+                  <p className="text-base text-neutral-600 leading-relaxed">
+                    We prepare your organization for external audits through mock inspections, evidence trail strengthening, and performance tracking. Our support helps you achieve ISO certification and maintain continuous compliance.
+                  </p>
+                </div>
+              </div>
             </div>
             <Link to="/services" className="hidden md:flex items-center text-amber-600 font-semibold hover:text-amber-500 transition-colors">
               View all solutions <ChevronRight className="ml-1 h-5 w-5" />
@@ -375,9 +441,33 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-8 animate-fade-in-up">
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Get a Risk Scan</h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
-              Ready to identify gaps in your quality management system, safety management system, or ESG program? Our Quality Risk Scan™ provides a rapid seven-day diagnostic assessment that evaluates your current systems against ISO 9001, ISO 14001, ISO 45001, and regulatory requirements. You'll receive a prioritized Red Flag Report and a strategic roadmap for strengthening your integrated management system.
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-8">
+              Ready to identify gaps in your quality management system, safety management system, or ESG program? Our Quality Risk Scan™ provides a rapid seven-day diagnostic assessment that evaluates your current systems against ISO 9001, ISO 14001, ISO 45001, and regulatory requirements.
             </p>
+            
+            <div className="max-w-3xl mx-auto space-y-6 text-left mb-8">
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">What you receive</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your integrated management system. The report includes actionable recommendations tailored to your specific risks and compliance requirements.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Who it's for</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  Our Risk Scan is ideal for organizations of any size preparing for ISO certification, regulatory inspections, or client audits. Whether you're starting from scratch or improving existing systems, we help you identify what matters most.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">How to start</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  Book your Risk Scan today and receive your diagnostic assessment within seven days. Our rapid assessment can be conducted on-site or virtually, making it accessible to businesses across Guyana and the Caribbean.
+                </p>
+              </div>
+            </div>
+            
             <Link 
               to="/book" 
               className="inline-flex items-center justify-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1"
