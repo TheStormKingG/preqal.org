@@ -57,6 +57,7 @@ jobs:
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
           VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID }}
+          VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
         run: |
           # Verify environment variables are set (without exposing values)
           if [ -z "$VITE_SUPABASE_URL" ]; then

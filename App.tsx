@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
+import { initGA } from './src/analytics/ga';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -15,6 +16,11 @@ const ScrollToTop = () => {
 
 const App: React.FC = () => {
   const patternRef = useRef<HTMLDivElement>(null);
+
+  // Initialize Google Analytics
+  useEffect(() => {
+    initGA();
+  }, []);
 
   useEffect(() => {
     // Set initial transform with scale

@@ -66,13 +66,27 @@ const Home: React.FC = () => {
             
             {/* Right Side - Clock Tower Image */}
             <div className="relative hidden lg:block">
-              <img 
-                src={`${import.meta.env.BASE_URL}Image1.png`}
-                alt="Stabroek Market Clock Tower in Georgetown, Guyana - representing Preqal's local presence and commitment to quality systems in the Caribbean"
-                width="600"
-                height="400"
-                className="w-full h-full object-contain object-right"
-              />
+              <picture>
+                <source 
+                  type="image/webp" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Image1-640.webp 640w,
+                    ${import.meta.env.BASE_URL}Image1-1200.webp 1200w,
+                    ${import.meta.env.BASE_URL}Image1-1920.webp 1920w
+                  `}
+                  sizes="(max-width: 1024px) 640px, (max-width: 1920px) 1200px, 1920px"
+                />
+                <img 
+                  src={`${import.meta.env.BASE_URL}Image1.png`}
+                  alt="Stabroek Market Clock Tower in Georgetown, Guyana - representing Preqal's local presence and commitment to quality systems in the Caribbean"
+                  width="600"
+                  height="400"
+                  className="w-full h-full object-contain object-right"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </picture>
             </div>
           </div>
         </div>
@@ -82,13 +96,21 @@ const Home: React.FC = () => {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 animate-fade-in-up">
-            <img 
-              src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
-              alt="Preqal logo - Quality, Safety & ESG Systems"
-              width="200"
-              height="80"
-              className="mx-auto mb-6 h-20 w-auto"
-            />
+            <picture>
+              <source 
+                type="image/webp" 
+                srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.webp`}
+              />
+              <img 
+                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
+                alt="Preqal logo - Quality, Safety & ESG Systems"
+                width="200"
+                height="80"
+                className="mx-auto mb-6 h-20 w-auto"
+                loading="eager"
+                decoding="async"
+              />
+            </picture>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">What Preqal Builds</h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
               Preqal specializes in developing comprehensive quality management systems (QMS), health and safety management systems (HSE), and environmental management systems aligned with ISO standards. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
