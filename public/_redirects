@@ -1,0 +1,8 @@
+# HTTP to HTTPS redirects for GitHub Pages
+http://preqal.org/*    https://preqal.org/:splat    301!
+http://www.preqal.org/*    https://preqal.org/:splat    301!
+https://www.preqal.org/*    https://preqal.org/:splat    301!
+
+# SPA fallback - serve index.html for all routes
+/*    /index.html   200
+

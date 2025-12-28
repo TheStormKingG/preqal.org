@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import SEO from '../components/SEO';
+import { getServiceSchema } from '../seo/serviceSchema';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -26,9 +27,14 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
 
 const Home: React.FC = () => {
 
+  const serviceSchema = getServiceSchema();
+
   return (
     <>
       <SEO pageKey="home" />
+      <script type="application/ld+json">
+        {JSON.stringify(serviceSchema)}
+      </script>
       <div className="w-full overflow-x-hidden">
       {/* Hero Section - Transparent to show App background */}
       <section className="relative text-neutral-900 pt-7 pb-12 lg:pt-10 lg:pb-16 overflow-hidden">
@@ -41,11 +47,11 @@ const Home: React.FC = () => {
                 <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-neutral-900">
-                Quality, Safety & Compliance <br />
+                Evidence-Driven Quality, Safety & ESG Systems <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
-                Preqal builds evidence-driven management systems for all types and sizes of businesses. Move from chaos to compliance.
+                Preqal builds evidence-driven quality management systems (QMS), safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) approach aligns ISO 9001, ISO 14001, and ISO 45001 standards to help organizations move from chaos to compliance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
@@ -62,9 +68,40 @@ const Home: React.FC = () => {
             <div className="relative hidden lg:block">
               <img 
                 src={`${import.meta.env.BASE_URL}Image1.png`}
-                alt="Stabroek Market Clock Tower"
+                alt="Stabroek Market Clock Tower in Georgetown, Guyana - representing Preqal's local presence and commitment to quality systems in the Caribbean"
+                width="600"
+                height="400"
                 className="w-full h-full object-contain object-right"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What Preqal Builds - New Content Section */}
+      <section className="py-12 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12 animate-fade-in-up">
+            <img 
+              src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
+              alt="Preqal logo - Quality, Safety & ESG Systems"
+              width="200"
+              height="80"
+              className="mx-auto mb-6 h-20 w-auto"
+            />
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">What Preqal Builds</h2>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+              Preqal specializes in developing comprehensive quality management systems (QMS), health and safety management systems (HSE), and environmental management systems aligned with ISO standards. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
+            </p>
+            <p className="text-base text-neutral-600 max-w-3xl mx-auto mt-4 leading-relaxed">
+              Whether you need ISO 9001 certification for quality management, ISO 45001 for occupational health and safety, or ISO 14001 for environmental management, Preqal provides end-to-end support from initial risk assessment through audit readiness. Our evidence-driven approach ensures your management system is not just compliant on paper, but actively improves operational performance and reduces non-conformances.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Explore Our Services</Link>
+              <span className="text-neutral-400">•</span>
+              <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Learn About Preqal</Link>
+              <span className="text-neutral-400">•</span>
+              <a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">ISO 9001 Standards</a>
             </div>
           </div>
         </div>
@@ -100,8 +137,10 @@ const Home: React.FC = () => {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16 animate-fade-in-up">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4">The Preqal System</h2>
-            <p className="text-neutral-600 max-w-2xl mx-auto">Our proven methodology transforms operational data into strategic authority.</p>
+            <h2 className="text-3xl font-bold text-neutral-900 mb-4">How We Work</h2>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+              The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your quality management system, safety management system, and ESG program are not just compliant, but drive measurable business results. From initial risk scan to continuous improvement, we guide organizations through every step of building an integrated management system that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
+            </p>
           </div>
           
           <div className="relative">
@@ -161,8 +200,10 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-bold text-neutral-900 mb-2">Signature Solutions</h2>
-              <p className="text-neutral-600">Designed for operational excellence.</p>
+              <h2 className="text-3xl font-bold text-neutral-900 mb-2">Our Core Services</h2>
+              <p className="text-lg text-neutral-600 leading-relaxed">
+                Preqal offers a comprehensive suite of quality management, safety management, and compliance services designed for operational excellence. Our services help organizations build robust integrated management systems (IMS) that meet ISO standards, regulatory requirements, and industry best practices. From rapid risk assessments to full system implementation, we provide the expertise and tools needed to achieve and maintain compliance.
+              </p>
             </div>
             <Link to="/services" className="hidden md:flex items-center text-amber-600 font-semibold hover:text-amber-500 transition-colors">
               View all solutions <ChevronRight className="ml-1 h-5 w-5" />
@@ -204,9 +245,12 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="inline-block px-3 py-1 bg-neutral-800 border border-neutral-700 text-amber-400 rounded-full text-xs font-semibold mb-4 tracking-wider">PROVEN OUTCOMES</div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">Evidence-Driven <br/><span className="text-amber-500">Results</span></h2>
-              <p className="text-neutral-400 text-lg mb-8">
-                We don't just write reports. We transform operational reality. Our systems are designed to deliver measurable improvements in compliance, safety, and efficiency across your organization.
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">Who We Help</h2>
+              <p className="text-neutral-400 text-lg mb-6 leading-relaxed">
+                Preqal serves businesses across diverse sectors in Guyana and the Caribbean, from small shops to large corporations. We help organizations in poultry production, logistics and distribution, food handling and processing, eco-hospitality, oil and gas services, and waste management build quality management systems, safety management systems, and ESG programs that drive real operational improvements.
+              </p>
+              <p className="text-neutral-400 text-lg mb-8 leading-relaxed">
+                Our evidence-driven approach means we don't just write reports—we transform operational reality. Our integrated management systems are designed to deliver measurable improvements in compliance, safety, and efficiency. Whether you're preparing for ISO certification, regulatory inspection, or client audits, Preqal provides the expertise and support needed to achieve audit-readiness and maintain continuous compliance.
               </p>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center space-x-3 text-neutral-300">
@@ -296,6 +340,28 @@ const Home: React.FC = () => {
               Get Free Document Templates
               <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Get a Risk Scan Section */}
+      <section className="py-12 relative bg-gradient-to-b from-neutral-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-8 animate-fade-in-up">
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Get a Risk Scan</h2>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
+              Ready to identify gaps in your quality management system, safety management system, or ESG program? Our Quality Risk Scan™ provides a rapid seven-day diagnostic assessment that evaluates your current systems against ISO 9001, ISO 14001, ISO 45001, and regulatory requirements. You'll receive a prioritized Red Flag Report and a strategic roadmap for strengthening your integrated management system.
+            </p>
+            <Link 
+              to="/book" 
+              className="inline-flex items-center justify-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1"
+            >
+              Book Your Risk Scan Today
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+            <p className="text-sm text-neutral-500 mt-4">
+              Learn more about our <Link to="/services" className="text-amber-600 hover:text-amber-500 underline">comprehensive services</Link> or explore <Link to="/case-studies" className="text-amber-600 hover:text-amber-500 underline">real success stories</Link> from organizations we've helped achieve ISO certification and regulatory compliance.
+            </p>
           </div>
         </div>
       </section>
