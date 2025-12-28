@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
             <Link to="/" className="flex items-center group">
               <img 
                 src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
-                alt="PREQAL Logo"
+                alt="Preqal logo"
                 className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
               />
             </Link>

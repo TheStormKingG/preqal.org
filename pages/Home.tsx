@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import SEO from '../components/SEO';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -26,7 +27,9 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
 const Home: React.FC = () => {
 
   return (
-    <div className="w-full overflow-x-hidden">
+    <>
+      <SEO pageKey="home" />
+      <div className="w-full overflow-x-hidden">
       {/* Hero Section - Transparent to show App background */}
       <section className="relative text-neutral-900 pt-7 pb-12 lg:pt-10 lg:pb-16 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
@@ -42,7 +45,7 @@ const Home: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
-                We build evidence-driven management systems for all types and sizes of businesses. Move from chaos to compliance.
+                Preqal builds evidence-driven management systems for all types and sizes of businesses. Move from chaos to compliance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
@@ -296,7 +299,15 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Disambiguation Text */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+        <p className="text-xs text-neutral-400">
+          Preqal is a brand name and not the word "prequel".
+        </p>
+      </div>
     </div>
+    </>
   );
 };
 

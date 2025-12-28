@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb, Code } from 'lucide-react';
 import { ServiceItem } from '../types';
+import SEO from '../components/SEO';
 
 const services: (ServiceItem & { features: string[] })[] = [
   {
@@ -112,7 +113,9 @@ const services: (ServiceItem & { features: string[] })[] = [
 
 const Services: React.FC = () => {
   return (
-    <div className="min-h-screen pb-20">
+    <>
+      <SEO pageKey="services" />
+      <div className="min-h-screen pb-20">
       {/* Header with Seamless Fade and Pattern - Fades to Transparent */}
       <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] py-24 relative overflow-hidden text-white">
         {/* Pattern Overlay */}
@@ -124,8 +127,8 @@ const Services: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 animate-fade-in-up">
           <h1 className="text-4xl font-bold text-white mb-4">Services & Solutions</h1>
           <p className="text-xl text-neutral-400 max-w-3xl leading-relaxed">
-            We don't sell generic consulting hours. We sell operational outcomes. 
-            Choose a solution designed to solve your specific compliance bottleneck.
+            Preqal doesn't sell generic consulting hours. We sell operational outcomes. 
+            Choose a Preqal solution designed to solve your specific compliance bottleneck.
           </p>
         </div>
       </div>
@@ -178,6 +181,7 @@ const Services: React.FC = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

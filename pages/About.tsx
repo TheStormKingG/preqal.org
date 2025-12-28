@@ -1,9 +1,12 @@
 import React from 'react';
 import { Microscope, Activity, Globe, Heart } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const About: React.FC = () => {
   return (
-    <div className="min-h-screen pb-20">
+    <>
+      <SEO pageKey="about" />
+      <div className="min-h-screen pb-20">
       {/* Header with Seamless Fade and Pattern - Fades to Transparent */}
       <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] py-24 relative overflow-hidden">
         {/* Pattern Overlay */}
@@ -12,7 +15,7 @@ const About: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 text-center animate-fade-in-up relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Preqal — Clinic on Quality™</h1>
           <p className="text-xl text-neutral-400 leading-relaxed max-w-2xl mx-auto">
-            We specialize in Quality and Compliance Systems for all sectors,<br />from small shops to large corporations.
+            Preqal specializes in Quality and Compliance Systems for all sectors,<br />from small shops to large corporations.
           </p>
         </div>
       </div>
@@ -99,6 +102,7 @@ const About: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

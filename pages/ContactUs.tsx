@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import SEO from '../components/SEO';
 
 const ContactUs: React.FC = () => {
   const jobTitles = [
@@ -228,7 +229,9 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <>
+      <SEO pageKey="contact" />
+      <div className="min-h-screen pb-20">
       {/* Header - Dark with Seamless Fade and Pattern */}
       <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] py-24 relative overflow-hidden text-white">
         {/* Pattern Overlay */}
@@ -239,7 +242,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 animate-fade-in-up">
           <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
           <p className="text-xl text-neutral-400 max-w-2xl leading-relaxed">
-            Have a general question, partnership inquiry, or need to discuss a custom project? We're here to help.
+            Contact Preqal with a general question, partnership inquiry, or need to discuss a custom project. We're here to help.
           </p>
         </div>
       </div>
@@ -441,6 +444,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         </div>
       </div>
     </div>
+    </>
   );
 };
 

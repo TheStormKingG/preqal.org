@@ -1,6 +1,7 @@
 import React from 'react';
 import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, Activity, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const caseStudies = [
   {
@@ -58,7 +59,9 @@ const industries = [
 
 const CaseStudies: React.FC = () => {
   return (
-    <div className="min-h-screen pb-20">
+    <>
+      <SEO pageKey="caseStudies" />
+      <div className="min-h-screen pb-20">
       {/* Header - Dark for Contrast with Seamless Fade and Pattern */}
       <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] text-white py-24 pb-32 relative overflow-hidden">
         {/* Pattern Overlay */}
@@ -210,6 +213,7 @@ const CaseStudies: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

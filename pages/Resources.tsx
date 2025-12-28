@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 import emailjs from '@emailjs/browser';
+import SEO from '../components/SEO';
 
 const Resources: React.FC = () => {
   const jobTitles = [
@@ -251,18 +252,20 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
   };
 
   return (
-    <div className="min-h-screen pb-20">
-      {/* Header with Seamless Fade and Pattern - Fades to Transparent */}
-      <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] py-24 mb-16 relative overflow-hidden">
-        {/* Pattern Overlay */}
-        <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
+    <>
+      <SEO pageKey="resources" />
+      <div className="min-h-screen pb-20">
+        {/* Header with Seamless Fade and Pattern - Fades to Transparent */}
+        <div className="bg-[linear-gradient(to_bottom,#171717_0%,#171717_80%,transparent_100%)] py-24 mb-16 relative overflow-hidden">
+          {/* Pattern Overlay */}
+          <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up relative z-10">
-          <h1 className="text-4xl font-bold text-white mb-4">Resources & Tools</h1>
-          <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-            Professional tools to kickstart your compliance journey. Free for the community.
-          </p>
-        </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up relative z-10">
+            <h1 className="text-4xl font-bold text-white mb-4">Resources & Tools</h1>
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+              Preqal provides professional tools to kickstart your compliance journey. Free for the community.
+            </p>
+          </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -462,6 +465,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         </div>
       </div>
     </div>
+    </>
   );
 };
 

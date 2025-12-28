@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { HashRouter as Router, useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
@@ -36,8 +37,9 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Router>
-      <ScrollToTop />
+    <HelmetProvider>
+      <Router>
+        <ScrollToTop />
       {/* Global Background Texture */}
       <div className="fixed inset-0 z-[-1] bg-[#f6f8fb] pointer-events-none overflow-hidden">
          {/* Sparse Orange Icons Pattern with Parallax */}
@@ -58,7 +60,8 @@ const App: React.FC = () => {
         </main>
         <Footer />
       </div>
-    </Router>
+      </Router>
+    </HelmetProvider>
   );
 };
 

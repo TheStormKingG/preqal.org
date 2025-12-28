@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import SEO from '../components/SEO';
 
 const BookScan: React.FC = () => {
   const location = useLocation();
@@ -103,7 +104,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
     formTitle: "Project Inquiry"
   } : {
     title: "Book a Risk Scan",
-    subtitle: "Stop guessing about your compliance status. Get a professional diagnostic of your current systems against regulatory standards.",
+    subtitle: "Stop guessing about your compliance status. Get a Preqal professional diagnostic of your current systems against regulatory standards.",
     detailedDescription: 'Our Quality Risk Scan™ is a comprehensive seven-day diagnostic assessment that evaluates your current operational systems against ISO standards, regulatory requirements, and industry best practices. We conduct thorough gap analysis across quality, safety, and environmental processes, identifying critical vulnerabilities and compliance risks. You receive a prioritized Red Flag Report highlighting immediate concerns, along with a strategic roadmap outlining actionable steps to strengthen your controls and achieve full compliance alignment.',
     stepsTitle: "What happens next?",
     steps: [
@@ -116,7 +117,9 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <>
+        <SEO pageKey="book" />
+        <div className="min-h-screen flex items-center justify-center px-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl shadow-neutral-200/50 border border-neutral-100 max-w-md w-full text-center animate-fade-in-up">
           <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-200">
             <CheckCircle2 className="h-8 w-8 text-green-600" />
@@ -133,11 +136,14 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
           </button>
         </div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen py-12 md:py-20">
+    <>
+      <SEO pageKey="book" />
+      <div className="min-h-screen py-12 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
           
@@ -338,6 +344,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
         </div>
       </div>
     </div>
+    </>
   );
 };
 

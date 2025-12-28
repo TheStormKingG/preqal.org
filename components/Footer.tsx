@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
             <div className="mb-4">
               <img 
                 src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-10.png`}
-                alt="PREQAL Logo"
+                alt="Preqal logo"
                 className="w-auto"
                 style={{ height: 'calc(2.5rem * 1.75 * 1.5)' }}
               />
@@ -61,6 +61,7 @@ const Footer: React.FC = () => {
               <li><Link to="/case-studies" className="hover:text-amber-400 transition-colors duration-200">Case Studies</Link></li>
               <li><Link to="/resources" className="hover:text-amber-400 transition-colors duration-200">Resources</Link></li>
               <li><Link to="/contact" className="hover:text-amber-400 transition-colors duration-200">Contact Us</Link></li>
+              <li><Link to="/preqal-not-prequel" className="hover:text-amber-400 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>
           </div>
 

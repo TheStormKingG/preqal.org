@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://preqal.org/sitemap.xml
+

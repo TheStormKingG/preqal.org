@@ -7,8 +7,10 @@ import Resources from '../pages/Resources';
 import About from '../pages/About';
 import BookScan from '../pages/BookScan';
 import ContactUs from '../pages/ContactUs';
+import PreqalNotPrequel from '../pages/PreqalNotPrequel';
+import SEOHealth from '../pages/SEOHealth';
 
-const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book'];
+const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book', '/preqal-not-prequel'];
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -59,6 +61,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/preqal-not-prequel" element={<PreqalNotPrequel />} />
+        {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
       </Routes>
     </div>
   );
