@@ -51,7 +51,7 @@ const Home: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
-                Preqal builds evidence-driven quality management systems (QMS), safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) approach aligns ISO 9001, ISO 14001, and ISO 45001 standards to help organizations move from chaos to compliance.
+                Preqal builds ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) approach combines ISO 9001 quality management, ISO 45001 safety management, and ISO 14001 environmental management standards to help organizations move from chaos to compliance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
@@ -111,9 +111,9 @@ const Home: React.FC = () => {
                 decoding="async"
               />
             </picture>
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">What Preqal Builds</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Quality, Safety & ESG Management Systems</h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
-              Preqal specializes in developing comprehensive quality management systems (QMS), health and safety management systems (HSE), and environmental management systems aligned with ISO standards. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
+              Preqal specializes in developing comprehensive ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
             </p>
             <p className="text-base text-neutral-600 max-w-3xl mx-auto mt-4 leading-relaxed">
               Whether you need ISO 9001 certification for quality management, ISO 45001 for occupational health and safety, or ISO 14001 for environmental management, Preqal provides end-to-end support from initial risk assessment through audit readiness. Our evidence-driven approach ensures your management system is not just compliant on paper, but actively improves operational performance and reduces non-conformances.

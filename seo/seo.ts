@@ -13,7 +13,7 @@ const DEFAULT_OG_IMAGE = `${BASE_URL}/Preqal%20Logo%20Sep25-9.png`;
 export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
     home: {
-      title: 'Preqal | Quality, Safety & ESG Systems',
+      title: 'Preqal | ISO Quality, Safety & ESG Management Systems',
       description: 'Preqal is a quality, safety, ESG, and integrated management systems company. We build evidence-driven management systems for all types and sizes of businesses. Move from chaos to compliance.',
       canonical: `${BASE_URL}/`,
       ogImage: DEFAULT_OG_IMAGE,
