@@ -29,8 +29,11 @@ const Footer: React.FC = () => {
                 style={{ height: 'calc(2.5rem * 1.75 * 1.5)' }}
               />
             </div>
-            <p className="text-sm leading-relaxed mb-6 text-neutral-500">
+            <p className="text-sm leading-relaxed mb-4 text-neutral-500">
               Integrated Quality, Safety & Compliance Systems for any business.
+            </p>
+            <p className="text-xs leading-relaxed mb-6 text-neutral-600 italic">
+              Founded and led by Dr. Stefan Gravesande, MBBS.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-amber-400 transition-colors duration-300"><Linkedin className="h-5 w-5" /></a>
