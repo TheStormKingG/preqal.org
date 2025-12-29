@@ -28,9 +28,14 @@ export default defineConfig(({ mode }) => {
           output: {
             manualChunks: (id) => {
               if (id.includes('node_modules')) {
-                // Separate React core into its own chunk
-                if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('react-helmet')) {
+                // CRITICAL: React and react-dom MUST be in the same chunk and load first
+                // Only include core React packages here, not router/helmet which depend on React
+                if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-is/')) {
                   return 'react-vendor';
+                }
+                // React Router and React Helmet can be in a separate chunk (they depend on React)
+                if (id.includes('react-router') || id.includes('react-helmet')) {
+                  return 'react-router-vendor';
                 }
                 // Recharts is lazy-loaded, so it will be in a separate chunk automatically
                 if (id.includes('recharts')) {

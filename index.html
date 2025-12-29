@@ -28,7 +28,8 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter/Inter-400.woff2" />
     <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter/Inter-500.woff2" />
     <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter/Inter-600.woff2" />
-    <link rel="preload" as="image" href="/Image1-1280.avif" fetchpriority="high" />
+    <!-- Preload LCP image - WebP for better browser support (desktop only, image is hidden on mobile) -->
+    <link rel="preload" as="image" href="/Image1-1280.webp" fetchpriority="high" />
     
     <!-- Schema.org JSON-LD Structured Data - Present in initial HTML for SEO tools -->
     <script type="application/ld+json">
