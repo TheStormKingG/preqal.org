@@ -21,10 +21,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
-    <!-- Preconnect to Google Fonts for faster loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Preload critical Inter font (400 weight) for faster rendering -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter/Inter-400.woff2" />
     
     <!-- Schema.org JSON-LD Structured Data - Present in initial HTML for SEO tools -->
     <script type="application/ld+json">
