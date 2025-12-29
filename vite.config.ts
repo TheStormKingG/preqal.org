@@ -18,7 +18,9 @@ export default defineConfig(({ mode }) => {
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
-        }
+        },
+        // Ensure single React instance across all dependencies
+        dedupe: ['react', 'react-dom', 'react-is'],
       },
       build: {
         minify: 'esbuild',
@@ -27,27 +29,12 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           output: {
             manualChunks: (id) => {
-              if (id.includes('node_modules')) {
-                // CRITICAL: React and react-dom MUST be in the same chunk and load first
-                // Only include core React packages here
-                if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-is/')) {
-                  return 'react-vendor';
-                }
-                // React Router and React Helmet can be in a separate chunk (they depend on React)
-                if (id.includes('react-router') || id.includes('react-helmet')) {
-                  return 'react-router-vendor';
-                }
-                // React-dependent UI libraries (must load after React)
-                if (id.includes('lucide-react') || id.includes('react-international-phone')) {
-                  return 'react-ui-vendor';
-                }
-                // Recharts is lazy-loaded, so it will be in a separate chunk automatically
-                if (id.includes('recharts')) {
-                  return 'charts-vendor';
-                }
-                // Other vendor libraries (non-React)
-                return 'vendor';
+              // Only manually chunk truly large libraries
+              // Let Vite/Rollup handle React and React ecosystem automatically
+              if (id.includes('node_modules/recharts')) {
+                return 'charts';
               }
+              // Otherwise let Rollup decide chunking automatically
             }
           }
         }
