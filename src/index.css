@@ -1,14 +1,6 @@
 @import "tailwindcss";
 
-/* Self-hosted Inter font - @font-face declarations */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/fonts/inter/Inter-300.woff2') format('woff2');
-}
-
+/* Self-hosted Inter font - @font-face declarations (only weights 400, 500, 600, 700) */
 @font-face {
   font-family: 'Inter';
   font-style: normal;

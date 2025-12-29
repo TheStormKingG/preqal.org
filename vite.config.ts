@@ -24,23 +24,24 @@ export default defineConfig(({ mode }) => {
         minify: 'esbuild',
         cssMinify: true,
         chunkSizeWarningLimit: 600,
-        // Temporarily removed manual chunking to eliminate bundling side effects
-        // Will re-add after confirming React 18 compatibility resolves the error
-        // rollupOptions: {
-        //   output: {
-        //     manualChunks: (id) => {
-        //       if (id.includes('node_modules')) {
-        //         if (id.includes('react') || id.includes('react-dom')) {
-        //           return 'react-vendor';
-        //         }
-        //         if (id.includes('recharts')) {
-        //           return 'charts-vendor';
-        //         }
-        //         return 'vendor';
-        //       }
-        //     }
-        //   }
-        // }
+        rollupOptions: {
+          output: {
+            manualChunks: (id) => {
+              if (id.includes('node_modules')) {
+                // Separate React core into its own chunk
+                if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('react-helmet')) {
+                  return 'react-vendor';
+                }
+                // Recharts is lazy-loaded, so it will be in a separate chunk automatically
+                if (id.includes('recharts')) {
+                  return 'charts-vendor';
+                }
+                // Other vendor libraries
+                return 'vendor';
+              }
+            }
+          }
+        }
       }
     };
 });

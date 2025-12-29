@@ -7,7 +7,7 @@ export const getOrganizationSchema = () => {
     url: 'https://preqal.org',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://preqal.org/Preqal%20Logo%20Sep25-9.png',
+      url: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
       width: 1200,
       height: 630
     },

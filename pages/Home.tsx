@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+// Recharts lazy-loaded to reduce initial bundle size
+const MaturityChart = React.lazy(() => import('../components/MaturityChart').then(module => ({ default: module.default })));
 import SEO from '../components/SEO';
 import { getServiceSchema } from '../seo/serviceSchema';
 import { getServicesSchema } from '../seo/servicesSchema';
@@ -400,24 +401,9 @@ const Home: React.FC = () => {
                 <span className="text-amber-500 font-mono text-xs animate-pulse">● Live Projection</span>
               </div>
               <div className="h-64 w-full min-h-[256px]">
-                <ResponsiveContainer width="100%" height={300} minHeight={256}>
-                  <AreaChart data={data}>
-                    <defs>
-                      <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.6}/>
-                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
-                    <XAxis dataKey="name" stroke="#525252" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#525252" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#171717', borderColor: '#404040', color: '#f5f5f5', borderRadius: '8px' }}
-                      itemStyle={{ color: '#fbbf24' }}
-                    />
-                    <Area type="monotone" dataKey="score" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center text-neutral-400">Loading chart...</div>}>
+                  <MaturityChart data={data} />
+                </React.Suspense>
               </div>
             </div>
           </div>
