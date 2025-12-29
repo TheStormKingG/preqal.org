@@ -14,7 +14,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
     home: {
       title: 'Preqal | ISO Quality, Safety & ESG Management Systems',
-      description: 'Preqal delivers quality, safety & ESG management systems—audits, SOPs, risk tools, and training—so teams stay compliant and ready.',
+      description: 'Preqal delivers quality, safety & ESG management systems—audits, SOPs, risk tools and training—so teams stay compliant, capable, and always ready now.',
       canonical: `${BASE_URL}/`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
