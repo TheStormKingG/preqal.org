@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
       build: {
         minify: 'esbuild',
         cssMinify: true,
+        chunkSizeWarningLimit: 600,
         rollupOptions: {
           output: {
             manualChunks: (id) => {
@@ -39,9 +40,7 @@ export default defineConfig(({ mode }) => {
                 }
                 return 'vendor';
               }
-            },
-            // Optimize chunk size warnings
-            chunkSizeWarningLimit: 600
+            }
           }
         }
       }
