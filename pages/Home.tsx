@@ -4,6 +4,7 @@ import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarCha
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import SEO from '../components/SEO';
 import { getServiceSchema } from '../seo/serviceSchema';
+import { getServicesSchema } from '../seo/servicesSchema';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -28,12 +29,16 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
 const Home: React.FC = () => {
 
   const serviceSchema = getServiceSchema();
+  const servicesSchema = getServicesSchema();
 
   return (
     <>
       <SEO pageKey="home" />
       <script type="application/ld+json">
         {JSON.stringify(serviceSchema)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(servicesSchema)}
       </script>
       <div className="w-full overflow-x-hidden">
       {/* Hero Section - Transparent to show App background */}

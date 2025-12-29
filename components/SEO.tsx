@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { SEOData, getSeoMeta } from '../seo/seo';
 import { getOrganizationSchema } from '../seo/organizationSchema';
 import { getWebsiteSchema } from '../seo/websiteSchema';
+import { getServicesSchema } from '../seo/servicesSchema';
 
 interface SEOProps {
   pageKey: string;
@@ -13,6 +14,7 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
   const seoData = { ...getSeoMeta(pageKey), ...customData };
   const orgSchema = getOrganizationSchema();
   const websiteSchema = getWebsiteSchema();
+  const servicesSchema = getServicesSchema();
 
   return (
     <Helmet>
@@ -52,6 +54,11 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
       {/* WebSite Structured Data - Added for better SEO tool detection */}
       <script type="application/ld+json">
         {JSON.stringify(websiteSchema)}
+      </script>
+      
+      {/* Services Structured Data - Defines core services for entity recognition */}
+      <script type="application/ld+json">
+        {JSON.stringify(servicesSchema)}
       </script>
     </Helmet>
   );
