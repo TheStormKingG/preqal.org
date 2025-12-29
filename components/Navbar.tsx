@@ -73,7 +73,8 @@ const Navbar: React.FC = () => {
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-amber-600 focus:outline-none transition-colors"
+              className="inline-flex items-center justify-center p-3 rounded-md text-neutral-600 hover:text-amber-600 focus:outline-none transition-colors min-w-[48px] min-h-[48px]"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

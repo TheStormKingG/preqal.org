@@ -246,3 +246,104 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg%20width='1000'%20height='1000'%20viewBox='0%200%201000%201000'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cg%20fill='none'%20stroke='%23ea580c'%20stroke-width='2'%20stroke-opacity='0.32'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M150%20150%20v-30%20h15%20v30%20M180%20150%20v-50%20h15%20v50%20M210%20150%20v-20%20h15%20v20'%20/%3E%3Cpath%20d='M800%20300%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Ccircle%20cx='300'%20cy='700'%20r='16'%20stroke-dasharray='6%206'%20/%3E%3Cpath%20d='M500%20500%20l20%2010%20v18%20q-20%2016%20-40%200%20v-18%20z'%20/%3E%3Cpath%20d='M600%20100%20h30%20v40%20h-30%20z%20M608%20112%20h14%20M608%20124%20h14'%20/%3E%3Cpath%20d='M100%20600%20l15%2015%20l30%20-30'%20/%3E%3Ccircle%20cx='850'%20cy='850'%20r='6'%20/%3E%3Cpath%20d='M856%20856%20l24%2024'%20/%3E%3Cpath%20d='M400%20800%20l15%208%20l-15%208%20l-15%20-8%20z'%20/%3E%3Cpath%20d='M50%2050%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Cpath%20d='M900%2050%20q-12%200%20-12%2012%20q0%2010%2010%2010%20v6%20h6%20v-6%20q10%200%2010%20-10%20q0%20-12%20-12%20-12'%20/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Mobile Tap Target Optimization - Google Standard: 48x48px minimum */
+@media (max-width: 768px) {
+  /* All buttons and button-like links must be at least 48x48px */
+  button,
+  a[class*="button"],
+  a[class*="btn"],
+  a[class*="cta"],
+  .inline-flex[class*="justify-center"],
+  Link[class*="inline-flex"] {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Primary CTAs - Full width on mobile for thumb reach */
+  a[href*="/book"],
+  Link[to*="/book"],
+  .bg-orange-600,
+  .bg-orange-500 {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 48px !important;
+    padding: 14px 20px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Navigation links - Ensure proper spacing */
+  nav a,
+  nav Link {
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Mobile menu links - Already have good spacing, ensure tap target */
+  nav[class*="md:hidden"] a,
+  nav[class*="md:hidden"] Link {
+    min-height: 48px !important;
+    padding: 14px 16px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Inline links in content - Stack vertically with spacing */
+  p a,
+  div a[class*="text-amber"],
+  div a[class*="underline"] {
+    display: inline-block !important;
+    min-height: 44px !important;
+    padding: 8px 4px !important;
+    margin: 4px 0 !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Link clusters - Stack vertically with proper spacing */
+  .flex.flex-wrap.gap-4 a,
+  .flex.flex-wrap.gap-4 Link {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 12px !important;
+    min-height: 48px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Footer links - Ensure tap targets */
+  footer a,
+  footer Link {
+    min-height: 44px !important;
+    padding: 8px 0 !important;
+    display: inline-block !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Service cards and interactive elements */
+  [class*="card"],
+  [class*="group"][class*="cursor-pointer"] {
+    min-height: 48px !important;
+    padding: 16px !important;
+  }
+
+  /* Ensure spacing between interactive elements */
+  .gap-4 {
+    gap: 12px !important;
+  }
+
+  /* Hero CTA buttons - Full width stack */
+  .flex.flex-col.sm\\:flex-row.gap-4 > * {
+    width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Mobile menu button - Ensure 48x48px */
+  button[class*="inline-flex"][class*="items-center"][class*="justify-center"] {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    padding: 12px !important;
+  }
+}
+

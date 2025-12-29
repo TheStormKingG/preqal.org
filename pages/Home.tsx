@@ -143,16 +143,16 @@ const Home: React.FC = () => {
                 </p>
               </div>
             </div>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Explore Our Services</Link>
-              <span className="text-neutral-400">•</span>
-              <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Learn About Preqal</Link>
-              <span className="text-neutral-400">•</span>
-              <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Us</Link>
-              <span className="text-neutral-400">•</span>
-              <Link to="/preqal-not-prequel" className="text-amber-600 hover:text-amber-500 font-semibold underline">Preqal (Not Prequel)</Link>
-              <span className="text-neutral-400">•</span>
-              <a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">ISO 9001 Standards</a>
+            <div className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-4">
+              <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline py-2 px-2 min-h-[44px] flex items-center">Explore Our Services</Link>
+              <span className="hidden sm:inline text-neutral-400">•</span>
+              <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline py-2 px-2 min-h-[44px] flex items-center">Learn About Preqal</Link>
+              <span className="hidden sm:inline text-neutral-400">•</span>
+              <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline py-2 px-2 min-h-[44px] flex items-center">Contact Us</Link>
+              <span className="hidden sm:inline text-neutral-400">•</span>
+              <Link to="/preqal-not-prequel" className="text-amber-600 hover:text-amber-500 font-semibold underline py-2 px-2 min-h-[44px] flex items-center">Preqal (Not Prequel)</Link>
+              <span className="hidden sm:inline text-neutral-400">•</span>
+              <a href="https://www.iso.org/iso-9001-quality-management.html" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline py-2 px-2 min-h-[44px] flex items-center">ISO 9001 Standards</a>
             </div>
           </div>
         </div>
