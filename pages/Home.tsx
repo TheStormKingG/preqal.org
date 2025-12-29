@@ -400,7 +400,7 @@ const Home: React.FC = () => {
                 <span className="text-amber-500 font-mono text-xs animate-pulse">● Live Projection</span>
               </div>
               <div className="h-64 w-full min-h-[256px]">
-                <ResponsiveContainer width="100%" height="100%" minHeight={256}>
+                <ResponsiveContainer width="100%" height={300} minHeight={256}>
                   <AreaChart data={data}>
                     <defs>
                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
