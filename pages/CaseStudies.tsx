@@ -131,9 +131,14 @@ const CaseStudies: React.FC = () => {
                             ? `${import.meta.env.BASE_URL}stashway-logo-400.webp`
                             : `${import.meta.env.BASE_URL}${study.logo}`
                           }
-                        alt="Stashway Logo" 
-                        className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
-                      />
+                          alt="Stashway Logo" 
+                          className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
+                          width="24"
+                          height="24"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
                     </a>
                   ) : (
                     <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100">{study.icon}</div>
