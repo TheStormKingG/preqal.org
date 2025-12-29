@@ -13,13 +13,17 @@
     "@emailjs/browser": "^4.4.1",
     "@supabase/supabase-js": "^2.45.4",
     "lucide-react": "^0.555.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-helmet-async": "^2.0.5",
     "react-international-phone": "^4.6.1",
-    "react-is": "^18.3.1",
+    "react-is": "18.3.1",
     "react-router-dom": "^7.9.6",
     "recharts": "^3.5.1"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
