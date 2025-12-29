@@ -73,19 +73,32 @@ const Home: React.FC = () => {
             <div className="relative hidden lg:block">
               <picture>
                 <source 
+                  type="image/avif" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Image1-480.avif 480w,
+                    ${import.meta.env.BASE_URL}Image1-768.avif 768w,
+                    ${import.meta.env.BASE_URL}Image1-1024.avif 1024w,
+                    ${import.meta.env.BASE_URL}Image1-1280.avif 1280w,
+                    ${import.meta.env.BASE_URL}Image1-1920.avif 1920w
+                  `}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, (max-width: 1920px) 1200px, 1920px"
+                />
+                <source 
                   type="image/webp" 
                   srcSet={`
-                    ${import.meta.env.BASE_URL}Image1-640.webp 640w,
-                    ${import.meta.env.BASE_URL}Image1-1200.webp 1200w,
+                    ${import.meta.env.BASE_URL}Image1-480.webp 480w,
+                    ${import.meta.env.BASE_URL}Image1-768.webp 768w,
+                    ${import.meta.env.BASE_URL}Image1-1024.webp 1024w,
+                    ${import.meta.env.BASE_URL}Image1-1280.webp 1280w,
                     ${import.meta.env.BASE_URL}Image1-1920.webp 1920w
                   `}
-                  sizes="(max-width: 1024px) 640px, (max-width: 1920px) 1200px, 1920px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, (max-width: 1920px) 1200px, 1920px"
                 />
                 <img 
-                  src={`${import.meta.env.BASE_URL}Image1.png`}
+                  src={`${import.meta.env.BASE_URL}Image1-1280.webp`}
                   alt="Stabroek Market Clock Tower in Georgetown, Guyana - representing Preqal's local presence and commitment to quality systems in the Caribbean"
-                  width="600"
-                  height="400"
+                  width="1200"
+                  height="800"
                   className="w-full h-full object-contain object-right"
                   loading="eager"
                   fetchPriority="high"
@@ -103,14 +116,28 @@ const Home: React.FC = () => {
           <div className="text-center mb-12 animate-fade-in-up">
             <picture>
               <source 
+                type="image/avif" 
+                srcSet={`
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w,
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w,
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.avif 1200w
+                `}
+                sizes="(max-width: 640px) 200px, 400px"
+              />
+              <source 
                 type="image/webp" 
-                srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.webp`}
+                srcSet={`
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w,
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w,
+                  ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.webp 1200w
+                `}
+                sizes="(max-width: 640px) 200px, 400px"
               />
               <img 
-                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
+                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                 alt="Preqal logo - Quality, Safety & ESG Systems"
-                width="200"
-                height="80"
+                width="400"
+                height="160"
                 className="mx-auto mb-6 h-20 w-auto"
                 loading="eager"
                 decoding="async"

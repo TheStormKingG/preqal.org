@@ -105,8 +105,32 @@ const CaseStudies: React.FC = () => {
                       rel="noopener noreferrer"
                       className="p-2 bg-neutral-50 rounded-lg border border-neutral-100 group"
                     >
-                      <img 
-                        src={`${import.meta.env.BASE_URL}${study.logo}`}
+                      <picture>
+                        {study.logo === 'stashway-logo.png' && (
+                          <>
+                            <source 
+                              type="image/avif" 
+                              srcSet={`
+                                ${import.meta.env.BASE_URL}stashway-logo-200.avif 200w,
+                                ${import.meta.env.BASE_URL}stashway-logo-400.avif 400w
+                              `}
+                              sizes="(max-width: 640px) 200px, 400px"
+                            />
+                            <source 
+                              type="image/webp" 
+                              srcSet={`
+                                ${import.meta.env.BASE_URL}stashway-logo-200.webp 200w,
+                                ${import.meta.env.BASE_URL}stashway-logo-400.webp 400w
+                              `}
+                              sizes="(max-width: 640px) 200px, 400px"
+                            />
+                          </>
+                        )}
+                        <img 
+                          src={study.logo === 'stashway-logo.png' 
+                            ? `${import.meta.env.BASE_URL}stashway-logo-400.webp`
+                            : `${import.meta.env.BASE_URL}${study.logo}`
+                          }
                         alt="Stashway Logo" 
                         className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
                       />

@@ -35,11 +35,33 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-20">
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
-              <img 
-                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`}
-                alt="Preqal logo"
-                className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
-              />
+              <picture>
+                <source 
+                  type="image/avif" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w,
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w
+                  `}
+                  sizes="160px"
+                />
+                <source 
+                  type="image/webp" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w,
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w
+                  `}
+                  sizes="160px"
+                />
+                <img 
+                  src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp`}
+                  alt="Preqal logo"
+                  width="200"
+                  height="80"
+                  className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95"
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
             </Link>
           </div>
 

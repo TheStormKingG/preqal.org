@@ -30,15 +30,33 @@ const About: React.FC = () => {
           <div className="md:col-span-4">
             <div className="bg-white border border-neutral-200 rounded-2xl p-8 sticky top-24 shadow-xl shadow-neutral-200/50 animate-fade-in-up delay-100">
               <div className="w-32 h-32 bg-neutral-100 rounded-full mx-auto mb-6 overflow-hidden border-4 border-amber-500/20 p-1">
-                <img 
-                  src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`} 
-                  alt="Preqal founder Dr. Gravesande" 
-                  className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500"
-                  loading="lazy"
-                  decoding="async"
-                  width="128"
-                  height="128"
-                />
+                <picture>
+                  <source 
+                    type="image/avif" 
+                    srcSet={`
+                      ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.avif 128w,
+                      ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-256.avif 256w
+                    `}
+                    sizes="128px"
+                  />
+                  <source 
+                    type="image/webp" 
+                    srcSet={`
+                      ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.webp 128w,
+                      ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-256.webp 256w
+                    `}
+                    sizes="128px"
+                  />
+                  <img 
+                    src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.webp`}
+                    alt="Preqal founder Dr. Gravesande" 
+                    className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500"
+                    loading="lazy"
+                    decoding="async"
+                    width="128"
+                    height="128"
+                  />
+                </picture>
               </div>
               <h2 className="text-2xl font-bold text-center mb-1 text-neutral-900">Dr. Gravesande</h2>
               <p className="text-amber-600 text-center text-xs font-bold mb-6 uppercase tracking-wider whitespace-nowrap">Medical Leadership → Systems Engineer</p>

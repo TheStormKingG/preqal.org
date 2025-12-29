@@ -22,12 +22,34 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <div className="mb-4">
-              <img 
-                src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-10.png`}
-                alt="Preqal logo"
-                className="w-auto"
-                style={{ height: 'calc(2.5rem * 1.75 * 1.5)' }}
-              />
+              <picture>
+                <source 
+                  type="image/avif" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w,
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w
+                  `}
+                  sizes="(max-width: 640px) 200px, 400px"
+                />
+                <source 
+                  type="image/webp" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w,
+                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w
+                  `}
+                  sizes="(max-width: 640px) 200px, 400px"
+                />
+                <img 
+                  src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
+                  alt="Preqal logo"
+                  className="w-auto"
+                  style={{ height: 'calc(2.5rem * 1.75 * 1.5)' }}
+                  width="400"
+                  height="160"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <p className="text-sm leading-relaxed mb-4 text-neutral-500">
               Integrated Quality, Safety & Compliance Systems for any business.

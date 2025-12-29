@@ -182,7 +182,34 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
             </div>
             
             <div className="mt-6">
-              <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-6.png`} alt="Dr. Gravesande Signature" className="h-auto" style={{ width: '30rem' }} />
+              <picture>
+                <source 
+                  type="image/avif" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Stefan%20Signature-6-300.avif 300w,
+                    ${import.meta.env.BASE_URL}Stefan%20Signature-6-600.avif 600w
+                  `}
+                  sizes="(max-width: 768px) 300px, 600px"
+                />
+                <source 
+                  type="image/webp" 
+                  srcSet={`
+                    ${import.meta.env.BASE_URL}Stefan%20Signature-6-300.webp 300w,
+                    ${import.meta.env.BASE_URL}Stefan%20Signature-6-600.webp 600w
+                  `}
+                  sizes="(max-width: 768px) 300px, 600px"
+                />
+                <img 
+                  src={`${import.meta.env.BASE_URL}Stefan%20Signature-6-600.webp`}
+                  alt="Dr. Gravesande Signature" 
+                  className="h-auto" 
+                  style={{ width: '30rem', maxWidth: '100%' }}
+                  width="600"
+                  height="200"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
           </div>
 
