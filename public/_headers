@@ -1,8 +1,9 @@
-# Security Headers for GitHub Pages / Cloudflare Pages
+# Headers for Cloudflare Pages
 # Note: GitHub Pages doesn't support custom headers directly
-# If using Cloudflare Pages, this file will be processed automatically
-# For GitHub Pages, consider using Cloudflare in front or another CDN
+# To use these headers, deploy to Cloudflare Pages or use Cloudflare in front of GitHub Pages
+# Cloudflare Pages will automatically process this _headers file
 
+# Global security headers
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
@@ -11,25 +12,45 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
 
-# Image Caching Headers
+# Image caching headers (1 year cache, immutable)
 /*.png
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.jpg
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.jpeg
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.webp
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.gif
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.svg
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
 /*.ico
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# Font caching headers
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
