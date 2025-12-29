@@ -56,7 +56,7 @@ const Home: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl leading-relaxed">
-                Preqal builds ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) approach combines ISO 9001 quality management, ISO 45001 safety management, and ISO 14001 environmental management standards to help organizations move from chaos to compliance.
+                Preqal builds ISO-aligned <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management systems</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management systems</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG programs</Link> for businesses across Guyana and the Caribbean. Our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system (IMS)</Link> approach combines ISO 9001 quality management, ISO 45001 safety management, and ISO 14001 environmental management standards to help organizations move from chaos to compliance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-600/20 hover:shadow-orange-600/40 hover:-translate-y-1">
@@ -118,7 +118,7 @@ const Home: React.FC = () => {
             </picture>
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Quality, Safety & ESG Management Systems</h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
-              Preqal specializes in developing comprehensive ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean. Our integrated management system (IMS) framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance.
+              Preqal specializes in developing comprehensive ISO-aligned <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management systems</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management systems</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG programs</Link> for businesses across Guyana and the Caribbean. Our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system (IMS)</Link> framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance. Our approach aligns with internationally recognized quality management principles, such as those outlined by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality (ASQ)</a>.
             </p>
             
             <div className="max-w-3xl mx-auto space-y-6 text-left">
@@ -190,21 +190,21 @@ const Home: React.FC = () => {
           <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">How We Work</h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your quality management system, safety management system, and ESG program are not just compliant, but drive measurable business results. From initial risk scan to continuous improvement, we guide organizations through every step of building an integrated management system that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
+              The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management system</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management system</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG program</Link> are not just compliant, but drive measurable business results. From initial <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> to continuous improvement, we guide organizations through every step of building an <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system</Link> that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
             </p>
             
             <div className="max-w-3xl mx-auto space-y-6 text-left">
               <div>
                 <h3 className="text-xl font-bold text-neutral-900 mb-2">Rapid diagnostic</h3>
                 <p className="text-base text-neutral-600 leading-relaxed">
-                  We start with a comprehensive risk scan that identifies critical gaps in your current systems. This rapid diagnostic assessment evaluates your operations against ISO standards and regulatory requirements, delivering a prioritized Red Flag Report within seven days.
+                  We start with a comprehensive <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> that identifies critical gaps in your current systems. This rapid diagnostic assessment evaluates your operations against ISO standards and regulatory requirements, delivering a prioritized Red Flag Report within seven days.
                 </p>
               </div>
               
               <div>
                 <h3 className="text-xl font-bold text-neutral-900 mb-2">Build and implement in phases</h3>
                 <p className="text-base text-neutral-600 leading-relaxed">
-                  We architect your Integrated Management System and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and training your team to ensure smooth adoption.
+                  We architect your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Integrated Management System</Link> and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">training your team</Link> to ensure smooth adoption.
                 </p>
               </div>
               
@@ -280,12 +280,12 @@ const Home: React.FC = () => {
               </p>
               
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Integrated management system design</h3>
-                  <p className="text-base text-neutral-600 leading-relaxed">
-                    We architect unified management systems that combine quality, safety, and environmental processes into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">Integrated management system design</h3>
+                <p className="text-base text-neutral-600 leading-relaxed">
+                  We architect unified management systems that combine <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">environmental processes</Link> into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
+                </p>
+              </div>
                 
                 <div>
                   <h3 className="text-xl font-bold text-neutral-900 mb-2">Training for frontline teams</h3>
@@ -454,7 +454,7 @@ const Home: React.FC = () => {
               <div>
                 <h3 className="text-xl font-bold text-neutral-900 mb-2">What you receive</h3>
                 <p className="text-base text-neutral-600 leading-relaxed">
-                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your integrated management system. The report includes actionable recommendations tailored to your specific risks and compliance requirements.
+                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system</Link>. The report includes actionable recommendations tailored to your specific risks and compliance requirements. For teams new to systems-based thinking, this <a href="https://www.youtube.com/watch?v=O5T4H8K_rwQ" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">short explainer video on systems-based management</a> helps illustrate how structured management systems reduce operational chaos.
                 </p>
               </div>
               
