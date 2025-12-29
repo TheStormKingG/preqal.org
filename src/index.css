@@ -250,6 +250,14 @@ body {
     line-height: 1.6 !important;
     margin-bottom: 1rem !important;
     margin-top: 0 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+  }
+
+  /* Ensure paragraphs don't force links to break */
+  p {
+    text-align: left !important;
   }
 
   /* Override any conflicting line-height classes on paragraphs */
@@ -406,7 +414,9 @@ body {
   p a,
   p Link,
   p > a,
-  p > Link {
+  p > Link,
+  p * a,
+  p * Link {
     display: inline !important;
     min-height: auto !important;
     padding: 0 !important;
@@ -417,6 +427,9 @@ body {
     word-break: normal !important;
     overflow-wrap: normal !important;
     width: auto !important;
+    text-align: inherit !important;
+    float: none !important;
+    clear: none !important;
   }
 
   /* Inline links in content - Stack vertically with spacing (but not within paragraphs) */
