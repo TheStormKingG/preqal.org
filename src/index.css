@@ -334,7 +334,8 @@ body {
   }
 
   /* Hero CTA buttons - Full width stack */
-  .flex.flex-col.sm\\:flex-row.gap-4 > * {
+  .flex-col.gap-4 > *,
+  .flex.flex-col.gap-4 > * {
     width: 100% !important;
     margin-bottom: 12px !important;
   }
