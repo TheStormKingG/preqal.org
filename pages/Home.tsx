@@ -144,10 +144,12 @@ const Home: React.FC = () => {
                 decoding="async"
               />
             </picture>
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 text-left">Quality, Safety & ESG Management Systems</h2>
-            <p className="text-lg text-neutral-600 max-w-3xl leading-relaxed mb-6 text-left">
-              Preqal specializes in developing comprehensive ISO-aligned <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management systems</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management systems</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG programs</Link> for businesses across Guyana and the Caribbean. Our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system (IMS)</Link> framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance. Our approach aligns with internationally recognized quality management principles, such as those outlined by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality (ASQ)</a>.
-            </p>
+            <div className="max-w-3xl mx-auto text-left">
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Quality, Safety & ESG Management Systems</h2>
+              <p className="text-lg text-neutral-600 leading-relaxed mb-6">
+                Preqal specializes in developing comprehensive ISO-aligned <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management systems</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management systems</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG programs</Link> for businesses across Guyana and the Caribbean. Our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system (IMS)</Link> framework combines quality, safety, and ESG reporting into a unified operational structure that reduces duplication, improves efficiency, and ensures regulatory compliance. Our approach aligns with internationally recognized quality management principles, such as those outlined by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality (ASQ)</a>.
+              </p>
+            </div>
             
             <div className="max-w-3xl mx-auto space-y-6 text-left">
               <div>
@@ -216,10 +218,12 @@ const Home: React.FC = () => {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-16 animate-fade-in-up">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4 text-left">How We Work</h2>
-            <p className="text-lg text-neutral-600 max-w-3xl leading-relaxed mb-8 text-left">
-              The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management system</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management system</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG program</Link> are not just compliant, but drive measurable business results. From initial <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> to continuous improvement, we guide organizations through every step of building an <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system</Link> that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
-            </p>
+            <div className="max-w-3xl mx-auto text-left">
+              <h2 className="text-3xl font-bold text-neutral-900 mb-4">How We Work</h2>
+              <p className="text-lg text-neutral-600 leading-relaxed mb-8">
+                The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management system</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management system</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG program</Link> are not just compliant, but drive measurable business results. From initial <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> to continuous improvement, we guide organizations through every step of building an <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system</Link> that aligns with ISO 9001, ISO 14001, and ISO 45001 requirements.
+              </p>
+            </div>
             
             <div className="max-w-3xl mx-auto space-y-6 text-left">
               <div>
