@@ -266,17 +266,7 @@ body {
   }
 
   /* Inline links within paragraphs - inherit parent line-height */
-  p a,
-  p Link {
-    line-height: inherit !important;
-    vertical-align: baseline !important;
-    display: inline !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-  }
+  /* REMOVED - duplicate rule, see mobile tap target section below */
 
   /* Paragraphs within sections - consistent spacing */
   section p,
