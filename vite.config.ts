@@ -24,29 +24,23 @@ export default defineConfig(({ mode }) => {
         minify: 'esbuild',
         cssMinify: true,
         chunkSizeWarningLimit: 600,
-        rollupOptions: {
-          output: {
-            manualChunks: (id) => {
-              // Split vendor chunks for better caching
-              if (id.includes('node_modules')) {
-                // Put all React-related packages in the same chunk to avoid loading order issues
-                if (id.includes('react') || 
-                    id.includes('react-dom') || 
-                    id.includes('lucide-react') ||
-                    id.includes('react-router') ||
-                    id.includes('react-helmet') ||
-                    id.includes('react-international-phone')) {
-                  return 'react-vendor';
-                }
-                // Recharts can be separate (it has its own React dependency handling)
-                if (id.includes('recharts')) {
-                  return 'charts-vendor';
-                }
-                return 'vendor';
-              }
-            }
-          }
-        }
+        // Temporarily removed manual chunking to eliminate bundling side effects
+        // Will re-add after confirming React 18 compatibility resolves the error
+        // rollupOptions: {
+        //   output: {
+        //     manualChunks: (id) => {
+        //       if (id.includes('node_modules')) {
+        //         if (id.includes('react') || id.includes('react-dom')) {
+        //           return 'react-vendor';
+        //         }
+        //         if (id.includes('recharts')) {
+        //           return 'charts-vendor';
+        //         }
+        //         return 'vendor';
+        //       }
+        //     }
+        //   }
+        // }
       }
     };
 });
