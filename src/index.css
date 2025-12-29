@@ -238,6 +238,98 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg%20width='1000'%20height='1000'%20viewBox='0%200%201000%201000'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cg%20fill='none'%20stroke='%23ea580c'%20stroke-width='2'%20stroke-opacity='0.32'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M150%20150%20v-30%20h15%20v30%20M180%20150%20v-50%20h15%20v50%20M210%20150%20v-20%20h15%20v20'%20/%3E%3Cpath%20d='M800%20300%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Ccircle%20cx='300'%20cy='700'%20r='16'%20stroke-dasharray='6%206'%20/%3E%3Cpath%20d='M500%20500%20l20%2010%20v18%20q-20%2016%20-40%200%20v-18%20z'%20/%3E%3Cpath%20d='M600%20100%20h30%20v40%20h-30%20z%20M608%20112%20h14%20M608%20124%20h14'%20/%3E%3Cpath%20d='M100%20600%20l15%2015%20l30%20-30'%20/%3E%3Ccircle%20cx='850'%20cy='850'%20r='6'%20/%3E%3Cpath%20d='M856%20856%20l24%2024'%20/%3E%3Cpath%20d='M400%20800%20l15%208%20l-15%208%20l-15%20-8%20z'%20/%3E%3Cpath%20d='M50%2050%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Cpath%20d='M900%2050%20q-12%200%20-12%2012%20q0%2010%2010%2010%20v6%20h6%20v-6%20q10%200%2010%20-10%20q0%20-12%20-12%20-12'%20/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Mobile Typography & Spacing - Consistent line spacing across all pages */
+@media (max-width: 768px) {
+  /* Base typography - consistent line height for all text */
+  body {
+    line-height: 1.6 !important;
+  }
+
+  /* Paragraphs - consistent spacing */
+  p {
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+    margin-top: 0 !important;
+  }
+
+  /* Paragraphs within sections - consistent spacing */
+  section p,
+  div p,
+  article p {
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Headings - consistent spacing above and below */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Headings followed by paragraphs - consistent gap */
+  h1 + p,
+  h2 + p,
+  h3 + p,
+  h4 + p,
+  h5 + p,
+  h6 + p {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Sections - consistent spacing between sections */
+  section {
+    margin-bottom: 2rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  /* Divs with content - consistent spacing */
+  div[class*="space-y"] > * {
+    margin-bottom: 1rem !important;
+  }
+
+  /* Lists - consistent spacing */
+  ul, ol {
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+    margin-top: 0 !important;
+    padding-left: 1.5rem !important;
+  }
+
+  li {
+    line-height: 1.6 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Text blocks in cards/containers - consistent spacing */
+  [class*="card"] p,
+  [class*="container"] p,
+  [class*="max-w"] p {
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Spacing between content blocks */
+  .space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+
+  .space-y-8 > * + * {
+    margin-top: 2rem !important;
+  }
+
+  /* Ensure consistent spacing in text-heavy sections */
+  [class*="text-"]:not([class*="text-amber"]):not([class*="text-orange"]) {
+    line-height: 1.6 !important;
+  }
+}
+
 /* Mobile Tap Target Optimization - Google Standard: 48x48px minimum */
 @media (max-width: 768px) {
   /* All buttons and button-like links must be at least 48x48px */
