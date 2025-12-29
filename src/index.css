@@ -401,12 +401,19 @@ body {
   }
 
   /* Links within paragraphs - MUST be first to override other rules */
-  p a,
-  p Link,
-  p > a,
-  p > Link,
-  p * a,
-  p * Link {
+  /* Use highest specificity to override all other rules */
+  p a[class*="text-amber"],
+  p Link[class*="text-amber"],
+  p a[class*="underline"],
+  p Link[class*="underline"],
+  p > a[class*="text-amber"],
+  p > Link[class*="text-amber"],
+  p > a[class*="underline"],
+  p > Link[class*="underline"],
+  p * a[class*="text-amber"],
+  p * Link[class*="text-amber"],
+  p * a[class*="underline"],
+  p * Link[class*="underline"] {
     display: inline !important;
     min-height: auto !important;
     padding: 0 !important;
@@ -420,6 +427,7 @@ body {
     text-align: inherit !important;
     float: none !important;
     clear: none !important;
+    max-width: none !important;
   }
 
   /* Inline links in content - Stack vertically with spacing (but not within paragraphs) */
