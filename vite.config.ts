@@ -29,15 +29,19 @@ export default defineConfig(({ mode }) => {
             manualChunks: (id) => {
               // Split vendor chunks for better caching
               if (id.includes('node_modules')) {
-                // React and react-dom must be together
-                if (id.includes('react') || id.includes('react-dom')) {
+                // Put all React-related packages in the same chunk to avoid loading order issues
+                if (id.includes('react') || 
+                    id.includes('react-dom') || 
+                    id.includes('lucide-react') ||
+                    id.includes('react-router') ||
+                    id.includes('react-helmet') ||
+                    id.includes('react-international-phone')) {
                   return 'react-vendor';
                 }
-                // Recharts can be separate (it has its own React dependency)
+                // Recharts can be separate (it has its own React dependency handling)
                 if (id.includes('recharts')) {
                   return 'charts-vendor';
                 }
-                // Keep lucide-react with other vendors (not separate) to avoid React dependency issues
                 return 'vendor';
               }
             }
