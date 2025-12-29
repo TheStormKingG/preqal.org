@@ -102,7 +102,7 @@ const Home: React.FC = () => {
                   height="800"
                   className="w-full h-full object-contain object-right"
                   loading="eager"
-                  fetchPriority="high"
+                  fetchpriority="high"
                   decoding="async"
                 />
               </picture>

@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
             manualChunks: (id) => {
               if (id.includes('node_modules')) {
                 // CRITICAL: React and react-dom MUST be in the same chunk and load first
-                // Only include core React packages here, not router/helmet which depend on React
+                // Only include core React packages here
                 if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-is/')) {
                   return 'react-vendor';
                 }
@@ -37,11 +37,15 @@ export default defineConfig(({ mode }) => {
                 if (id.includes('react-router') || id.includes('react-helmet')) {
                   return 'react-router-vendor';
                 }
+                // React-dependent UI libraries (must load after React)
+                if (id.includes('lucide-react') || id.includes('react-international-phone')) {
+                  return 'react-ui-vendor';
+                }
                 // Recharts is lazy-loaded, so it will be in a separate chunk automatically
                 if (id.includes('recharts')) {
                   return 'charts-vendor';
                 }
-                // Other vendor libraries
+                // Other vendor libraries (non-React)
                 return 'vendor';
               }
             }
