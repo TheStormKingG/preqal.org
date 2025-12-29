@@ -17,6 +17,32 @@ const ScrollToTop = () => {
 const App: React.FC = () => {
   const patternRef = useRef<HTMLDivElement>(null);
 
+  // IP Canonicalization: Redirect IP address access to canonical domain
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    const canonicalDomain = 'preqal.org';
+    
+    // Check if hostname is an IP address (IPv4 or IPv6)
+    const isIPAddress = /^(\d{1,3}\.){3}\d{1,3}$|^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/.test(hostname);
+    
+    // If accessed via IP address, redirect to canonical domain
+    if (isIPAddress && hostname !== canonicalDomain) {
+      const currentPath = window.location.pathname + window.location.search + window.location.hash;
+      window.location.replace(`https://${canonicalDomain}${currentPath}`);
+      return;
+    }
+    
+    // Also redirect non-canonical domains (www, etc.) to canonical
+    if (hostname !== canonicalDomain && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      const currentPath = window.location.pathname + window.location.search + window.location.hash;
+      // Only redirect if it's a known variant (www, etc.)
+      if (hostname.includes('preqal.org')) {
+        window.location.replace(`https://${canonicalDomain}${currentPath}`);
+        return;
+      }
+    }
+  }, []);
+
   // Initialize Google Analytics
   useEffect(() => {
     initGA();
