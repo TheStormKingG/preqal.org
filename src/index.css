@@ -265,6 +265,9 @@ body {
     display: inline !important;
     margin: 0 !important;
     padding: 0 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
   }
 
   /* Paragraphs within sections - consistent spacing */
@@ -417,6 +420,9 @@ body {
     margin: 0 !important;
     line-height: inherit !important;
     vertical-align: baseline !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
   }
 
   /* Link clusters - Stack vertically with proper spacing */
