@@ -48,9 +48,11 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
             <div>
-              <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-amber-500/30 text-amber-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
+              <div className="inline-flex items-center group cursor-pointer mb-6">
+                <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-amber-500/30 text-amber-700 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-active:scale-95">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
+                </div>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-neutral-900">
                 Preqal: Evidence-Driven Quality, Safety & ESG Systems <br />
