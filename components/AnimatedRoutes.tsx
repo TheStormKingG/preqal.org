@@ -9,6 +9,7 @@ import BookScan from '../pages/BookScan';
 import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
 import SEOHealth from '../pages/SEOHealth';
+import MDST from '../pages/MDST';
 
 const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book', '/preqal-not-prequel'];
 
@@ -62,6 +63,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/preqal-not-prequel" element={<PreqalNotPrequel />} />
+        {/* Hidden tool route - not in navigation */}
+        <Route path="/tools/mdst" element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
       </Routes>
     </div>

@@ -1,0 +1,5 @@
+{
+  "name": "Medical Director Scope Tool (MD-ST)",
+  "description": "A production-ready salary assessment tool for Medical Directors, featuring a 6-question questionnaire, dynamic scoring logic, and high-quality PDF report generation.",
+  "requestFramePermissions": []
+}
