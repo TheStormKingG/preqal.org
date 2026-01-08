@@ -27,8 +27,8 @@ export const QUESTIONS: Question[] = [
     text: 'Clinical time requirement:',
     options: [
       { id: 'A', label: 'None / purely director', description: '100% administrative and strategic focus.' },
-      { id: 'B', label: '≤10–15% routine', description: 'Occasional clinic presence or standard reviews.' },
-      { id: 'C', label: '≥20% or emergency care', description: 'Significant hands-on clinical duties or acute response.' }
+      { id: 'B', label: '<=10-15% routine', description: 'Occasional clinic presence or standard reviews.' },
+      { id: 'C', label: '>=20% or emergency care', description: 'Significant hands-on clinical duties or acute response.' }
     ]
   },
   {

@@ -174,14 +174,11 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     // Account for: left padding (4mm) + right padding (4mm) + border (0.2mm) + safety margin (4mm) = 12mm
     // Using larger safety margin for Selection column to prevent text overflow
     const optionLabel = opt?.label || '';
-    // Ensure special characters like ≥ are preserved correctly
-    // Normalize the text to ensure proper character encoding and preserve special characters
-    const normalizedLabel = optionLabel.normalize('NFKC'); // Normalize Unicode characters
-    // Ensure ≥ character is preserved (U+2265) - Helvetica should support it
-    // Split text with proper character preservation
+    // Use standard ASCII characters for consistent rendering and spacing
+    // No normalization needed since we're using standard ASCII
     const selectionTextWidth = selectionColWidth - 12; // Extra conservative to prevent overflow
-    // Use splitTextToSize which should preserve Unicode characters
-    const optionText = doc.splitTextToSize(normalizedLabel, selectionTextWidth);
+    // Use splitTextToSize with standard characters - ensures consistent spacing
+    const optionText = doc.splitTextToSize(optionLabel, selectionTextWidth);
     
     // autoTable accepts arrays of strings for multi-line cells
     return [
