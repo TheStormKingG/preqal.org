@@ -4,8 +4,10 @@ import { OptionKey, AssessmentResult } from '../tools/mdst/types';
 import { calculateSalaryBand } from '../tools/mdst/scoring';
 import { QuestionCard } from '../tools/mdst/components/QuestionCard';
 import { ResultScreen } from '../tools/mdst/components/ResultScreen';
+import { LeadCaptureForm, LeadInfo } from '../tools/mdst/components/LeadCaptureForm';
 
 const MDST: React.FC = () => {
+  const [leadInfo, setLeadInfo] = useState<LeadInfo | null>(null);
   const [answers, setAnswers] = useState<Record<string, OptionKey>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [result, setResult] = useState<AssessmentResult | null>(null);
@@ -40,6 +42,12 @@ const MDST: React.FC = () => {
     setAnswers({});
     setCurrentIndex(0);
     setResult(null);
+    setLeadInfo(null); // Reset lead info on reset
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLeadSubmit = (info: LeadInfo) => {
+    setLeadInfo(info);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -49,15 +57,18 @@ const MDST: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f6f8fb] py-8 px-4 md:py-12 pt-8">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        {!result && (
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-extrabold text-neutral-900 tracking-tight">MD-ST</h1>
-            <p className="text-neutral-500 font-medium mt-1">Medical Director Scope Tool</p>
-          </div>
-        )}
+        {/* Show lead form first if not submitted */}
+        {!leadInfo ? (
+          <LeadCaptureForm onSubmit={handleLeadSubmit} />
+        ) : !result ? (
+          <>
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h1 className="text-3xl font-extrabold text-neutral-900 tracking-tight">MD-ST</h1>
+              <p className="text-neutral-500 font-medium mt-1">Medical Director Scope Tool</p>
+            </div>
 
-        {!result ? (
+            <div className="space-y-6">
           <div className="space-y-6">
             {/* Progress Bar */}
             <div className="w-full bg-white/50 h-2 rounded-full overflow-hidden mb-8 backdrop-blur-sm border border-neutral-200">
@@ -113,12 +124,13 @@ const MDST: React.FC = () => {
               )}
             </div>
             
-            <p className="text-center text-xs text-neutral-400 font-medium uppercase tracking-widest pt-4">
-              Step {currentIndex + 1} of {QUESTIONS.length}
-            </p>
-          </div>
+              <p className="text-center text-xs text-neutral-400 font-medium uppercase tracking-widest pt-4">
+                Step {currentIndex + 1} of {QUESTIONS.length}
+              </p>
+            </div>
+          </>
         ) : (
-          <ResultScreen result={result} onReset={handleReset} />
+          <ResultScreen result={result} leadInfo={leadInfo} onReset={handleReset} />
         )}
       </div>
     </div>

@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { AssessmentResult, BandDetails } from '../types';
 import { QUESTIONS, BAND_MAP } from '../constants';
 import { generatePDFReport } from '../services/pdfService';
+import { LeadInfo } from './LeadCaptureForm';
 
 interface ResultScreenProps {
   result: AssessmentResult;
+  leadInfo: LeadInfo;
   onReset: () => void;
 }
 
-export const ResultScreen: React.FC<ResultScreenProps> = ({ result, onReset }) => {
+export const ResultScreen: React.FC<ResultScreenProps> = ({ result, leadInfo, onReset }) => {
   const details = BAND_MAP[result.band];
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const handleCopySummary = () => {
     const summary = `
@@ -90,15 +94,109 @@ Role: ${details.title}
         <button
           onClick={async () => {
             try {
-              await generatePDFReport(result, details);
+              setIsSendingEmail(true);
+              
+              // Generate PDF and get it as blob/base64 for email
+              const pdfBlob = await generatePDFReport(result, details, leadInfo);
+              
+              // Send lead notification to Preqal
+              try {
+                await emailjs.send(
+                  import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+                  import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+                  {
+                    subject: 'Preqal Lead - MD-ST Assessment',
+                    first_name: leadInfo.firstName,
+                    last_name: leadInfo.lastName,
+                    full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
+                    email: leadInfo.email,
+                    company: leadInfo.company,
+                    job_title: 'Medical Director (Assessment)',
+                    message: `MD-ST Assessment completed. Band: ${details.band}, Range: ${details.range}`,
+                    source_page: 'mdst_assessment',
+                    submitted_at: new Date().toLocaleString('en-US', { 
+                      dateStyle: 'full', 
+                      timeStyle: 'long',
+                      timeZone: 'UTC'
+                    }),
+                    formatted_data: `
+New Lead Submission - MD-ST Assessment
+
+Name: ${leadInfo.firstName} ${leadInfo.lastName}
+Email: ${leadInfo.email}
+Company: ${leadInfo.company}
+Assessment Result: Band ${details.band} (${details.range})
+Source: MD-ST Assessment Tool
+Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
+                    `.trim(),
+                  },
+                  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+                );
+              } catch (leadError) {
+                console.error('Error sending lead notification:', leadError);
+                // Don't block user if lead notification fails
+              }
+
+              // Send PDF report email to user via EmailJS
+              try {
+                // Convert PDF blob to base64 for potential future use
+                const reader = new FileReader();
+                reader.readAsDataURL(pdfBlob);
+                reader.onloadend = async () => {
+                  const base64PDF = reader.result as string;
+                  
+                  // Send email to user with assessment results
+                  await emailjs.send(
+                    import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+                    import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+                    {
+                      subject: `Your MD-ST Assessment Report - Band ${details.band}`,
+                      first_name: leadInfo.firstName,
+                      last_name: leadInfo.lastName,
+                      full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
+                      email: leadInfo.email,
+                      company: leadInfo.company,
+                      message: `Thank you for completing the MD-ST Assessment.
+
+Your Assessment Results:
+- Band: ${details.band}
+- Salary Range: ${details.range}
+- Role Title: ${details.title}
+
+Your PDF report has been downloaded. Please check your downloads folder.
+
+If you have any questions about your assessment results, please don't hesitate to contact us.`,
+                      source_page: 'mdst_user_report',
+                      submitted_at: new Date().toLocaleString('en-US', { 
+                        dateStyle: 'full', 
+                        timeStyle: 'long',
+                        timeZone: 'UTC'
+                      }),
+                    },
+                    import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+                  );
+                };
+                
+                alert(`PDF report downloaded! A confirmation email has been sent to ${leadInfo.email}.`);
+              } catch (emailError) {
+                console.error('Error sending email to user:', emailError);
+                alert(`PDF report downloaded! (Email notification failed, but your report is ready.)`);
+              }
             } catch (error) {
               console.error('Error generating PDF:', error);
               alert('Failed to generate PDF. Please try again.');
+            } finally {
+              setIsSendingEmail(false);
             }
           }}
-          className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-200 active:scale-95"
+          disabled={isSendingEmail}
+          className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-200 active:scale-95 ${
+            isSendingEmail
+              ? 'bg-blue-400 text-white cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
         >
-          Download PDF Report
+          {isSendingEmail ? 'Sending...' : 'Download PDF Report'}
         </button>
         <button
           onClick={handleCopySummary}

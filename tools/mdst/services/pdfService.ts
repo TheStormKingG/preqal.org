@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { AssessmentResult, BandDetails } from '../types';
 import { QUESTIONS } from '../constants';
+import { LeadInfo } from '../components/LeadCaptureForm';
 
 // Helper function to load image as base64
 function loadImageAsBase64(url: string): Promise<string> {
@@ -26,7 +27,11 @@ function loadImageAsBase64(url: string): Promise<string> {
   });
 }
 
-export async function generatePDFReport(result: AssessmentResult, details: BandDetails) {
+export async function generatePDFReport(
+  result: AssessmentResult, 
+  details: BandDetails,
+  leadInfo: LeadInfo
+): Promise<Blob> {
   const doc = new jsPDF({
     compress: true,
     orientation: 'portrait',
@@ -119,8 +124,16 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const dateText = doc.splitTextToSize(`Generated: ${date}`, titleMaxWidth);
   doc.text(dateText, titleStartX, headerY + 20);
 
-  // Result Section - starting after header with 1 inch margins
-  const contentStartY = headerY + 28;
+  // User Information Section - add after date
+  const userInfoY = headerY + 28;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139); // slate-500
+  doc.text(`Prepared for: ${leadInfo.firstName} ${leadInfo.lastName}`, marginInch, userInfoY);
+  doc.text(`Company: ${leadInfo.company}`, marginInch, userInfoY + 5);
+  doc.text(`Email: ${leadInfo.email}`, marginInch, userInfoY + 10);
+
+  // Result Section - starting after user info with 1 inch margins
+  const contentStartY = userInfoY + 18;
   doc.setFontSize(13);
   doc.setTextColor(15, 23, 42);
   doc.text('Result:', marginInch, contentStartY);
@@ -323,5 +336,11 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   doc.setTextColor(100, 116, 139);
   doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', pageWidth / 2, footerY, { align: 'center' });
 
+  // Generate PDF blob for email attachment
+  const pdfBlob = doc.output('blob');
+  
+  // Also trigger download
   doc.save(`MD-ST_Report_${timestamp}.pdf`);
+  
+  return pdfBlob;
 }
