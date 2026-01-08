@@ -77,6 +77,8 @@ jobs:
           echo "VITE_EMAILJS_SERVICE_ID is set: $(if [ -n "$VITE_EMAILJS_SERVICE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
           echo "VITE_EMAILJS_TEMPLATE_ID is set: $(if [ -n "$VITE_EMAILJS_TEMPLATE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
           echo "VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID is set: $(if [ -n "$VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID is set: $(if [ -n "$VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
+          echo "VITE_EMAILJS_MDST_USER_TEMPLATE_ID is set: $(if [ -n "$VITE_EMAILJS_MDST_USER_TEMPLATE_ID" ]; then echo 'yes'; else echo 'no'; fi)"
           npm run build
       
       - name: Setup Pages
