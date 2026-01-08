@@ -101,9 +101,14 @@ Role: ${details.title}
               
               // Send lead notification to Preqal
               try {
+                // Use MDST-specific template ID if available, fallback to default
+                const leadTemplateId = import.meta.env.VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID || 
+                                      import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 
+                                      'template_t9m3dai';
+                
                 await emailjs.send(
                   import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-                  import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+                  leadTemplateId,
                   {
                     subject: 'Preqal Lead - MD-ST Assessment',
                     first_name: leadInfo.firstName,
@@ -126,6 +131,7 @@ Name: ${leadInfo.firstName} ${leadInfo.lastName}
 Email: ${leadInfo.email}
 Company: ${leadInfo.company}
 Assessment Result: Band ${details.band} (${details.range})
+Role Title: ${details.title}
 Source: MD-ST Assessment Tool
 Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
                     `.trim(),
@@ -140,9 +146,14 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
               // Send PDF report email to user via EmailJS
               try {
                 // Send email to user with assessment results
+                // Use MDST-specific template ID if available, fallback to default
+                const userTemplateId = import.meta.env.VITE_EMAILJS_MDST_USER_TEMPLATE_ID || 
+                                       import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 
+                                       'template_t9m3dai';
+                
                 await emailjs.send(
                   import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-                  import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+                  userTemplateId,
                   {
                     subject: `Your MD-ST Assessment Report - Band ${details.band}`,
                     first_name: leadInfo.firstName,
@@ -150,17 +161,22 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                     full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
                     email: leadInfo.email,
                     company: leadInfo.company,
-                    message: `Thank you for completing the MD-ST Assessment.
+                    band: details.band,
+                    range: details.range,
+                    title: details.title,
+                    description: details.description,
+                    assessment_summary: `MD-ST Assessment Results
 
-Your Assessment Results:
-- Band: ${details.band}
-- Salary Range: ${details.range}
-- Role Title: ${details.title}
+Band: ${details.band}
+Salary Range: ${details.range}
+Role Title: ${details.title}
 
-Your PDF report has been downloaded. Please check your downloads folder.
+${details.description}
 
-If you have any questions about your assessment results, please don't hesitate to contact us.`,
-                    source_page: 'mdst_user_report',
+Key Responsibilities:
+${details.responsibilities.map((r, i) => `${i + 1}. ${r}`).join('\n')}
+
+Your complete PDF report has been downloaded. Please check your downloads folder for the detailed assessment report.`,
                     submitted_at: new Date().toLocaleString('en-US', { 
                       dateStyle: 'full', 
                       timeStyle: 'long',
