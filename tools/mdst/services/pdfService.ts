@@ -142,10 +142,11 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   
   // Calculate column widths to fit within usable width (159.2mm)
   // ID: 15mm, Question: 75mm, Opt: 15mm, Selection: remaining (~54mm)
+  // Account for borders between columns (3 borders * 0.1mm = 0.3mm)
   const idColWidth = 15;
   const optColWidth = 15;
   const questionColWidth = 75;
-  const selectionColWidth = usableWidth - idColWidth - questionColWidth - optColWidth; // ~54.2mm
+  const selectionColWidth = usableWidth - idColWidth - questionColWidth - optColWidth - 0.3; // ~53.9mm (account for borders)
   
   // Prepare table data with properly wrapped text
   // Split long text to ensure cells fit within column widths
@@ -153,12 +154,17 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     const ansKey = result.answers[q.id];
     const opt = q.options.find(o => o.id === ansKey);
     
-    // Split question text to fit within question column width (account for padding)
-    const questionText = doc.splitTextToSize(q.text.replace(':', ''), questionColWidth - 8);
+    // Split question text to fit within question column width
+    // Account for: left padding (4mm) + right padding (4mm) + border (0.1mm) + safety margin (2mm) = 10mm
+    const questionTextWidth = questionColWidth - 10;
+    const questionText = doc.splitTextToSize(q.text.replace(':', ''), questionTextWidth);
     
-    // Split option label to fit within selection column width (account for padding)
+    // Split option label to fit within selection column width
+    // Account for: left padding (4mm) + right padding (4mm) + border (0.2mm) + safety margin (4mm) = 12mm
+    // Using larger safety margin for Selection column to prevent text overflow
     const optionLabel = opt?.label || '';
-    const optionText = doc.splitTextToSize(optionLabel, selectionColWidth - 8);
+    const selectionTextWidth = selectionColWidth - 12; // Extra conservative to prevent overflow
+    const optionText = doc.splitTextToSize(optionLabel, selectionTextWidth);
     
     // autoTable accepts arrays of strings for multi-line cells
     return [
