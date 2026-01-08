@@ -81,15 +81,18 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     }
   }
 
-  // Title - positioned to the right of logo or start position
+  // Title - positioned to the right of logo or start position, respecting right margin
   const titleStartX = logoData && logoWidth > 0 ? marginInch + 18 + 10 : marginInch;
+  const titleMaxWidth = usableWidth - (titleStartX - marginInch) - 10; // Account for logo space
   doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
-  doc.text('MD-ST Salary Band Assessment', titleStartX, headerY + 12);
+  const titleText = doc.splitTextToSize('MD-ST Salary Band Assessment', titleMaxWidth);
+  doc.text(titleText, titleStartX, headerY + 12);
   
   doc.setFontSize(11);
   doc.setTextColor(100, 116, 139); // slate-500
-  doc.text(`Generated: ${date}`, titleStartX, headerY + 20);
+  const dateText = doc.splitTextToSize(`Generated: ${date}`, titleMaxWidth);
+  doc.text(dateText, titleStartX, headerY + 20);
 
   // Result Section - starting after header with 1 inch margins
   const contentStartY = headerY + 28;
@@ -137,19 +140,25 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   // Table of Answers - start after responsibilities with proper spacing
   const tableStartY = yPos + 7;
   
+  // Calculate column widths to fit within usable width (159.2mm)
+  // ID: 15mm, Question: 75mm, Opt: 15mm, Selection: remaining (~54mm)
+  const idColWidth = 15;
+  const optColWidth = 15;
+  const questionColWidth = 75;
+  const selectionColWidth = usableWidth - idColWidth - questionColWidth - optColWidth; // ~54.2mm
+  
   // Prepare table data with properly wrapped text
   // Split long text to ensure cells fit within column widths
   const tableData = QUESTIONS.map((q) => {
     const ansKey = result.answers[q.id];
     const opt = q.options.find(o => o.id === ansKey);
     
-    // Split question text to fit within column width
-    // Column width will be calculated based on usable width
-    const questionText = doc.splitTextToSize(q.text.replace(':', ''), 90);
+    // Split question text to fit within question column width (account for padding)
+    const questionText = doc.splitTextToSize(q.text.replace(':', ''), questionColWidth - 8);
     
-    // Split option label to fit within column width
+    // Split option label to fit within selection column width (account for padding)
     const optionLabel = opt?.label || '';
-    const optionText = doc.splitTextToSize(optionLabel, 60);
+    const optionText = doc.splitTextToSize(optionLabel, selectionColWidth - 8);
     
     // autoTable accepts arrays of strings for multi-line cells
     return [
@@ -190,28 +199,32 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     },
     columnStyles: {
       0: { 
-        cellWidth: 18,
+        // ID column - 15mm
+        cellWidth: idColWidth,
         halign: 'center',
         valign: 'middle',
         fontStyle: 'bold',
         overflow: 'visible'
       },
       1: { 
-        cellWidth: 95,
+        // Question column - 75mm, respects right margin
+        cellWidth: questionColWidth,
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
         cellPadding: { top: 3, right: 4, bottom: 3, left: 4 }
       },
       2: { 
-        cellWidth: 18, 
+        // Opt column - 15mm
+        cellWidth: optColWidth, 
         halign: 'center',
         valign: 'middle',
         fontStyle: 'bold',
         overflow: 'visible'
       },
       3: { 
-        cellWidth: 60,
+        // Selection column - remaining space (~54mm), respects right margin
+        cellWidth: selectionColWidth,
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
@@ -253,12 +266,13 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     "- Escalation: 3+ 'C' selections results in Band C."
   ];
   
-  // Notes with better spacing
+  // Notes with better spacing, respecting right margin
   let currentNoteY = notesY + 6;
   notes.forEach((note) => {
     doc.setFontSize(9);
-    doc.text(note, marginInch, currentNoteY);
-    currentNoteY += 5;
+    const splitNote = doc.splitTextToSize(note, usableWidth);
+    doc.text(splitNote, marginInch, currentNoteY);
+    currentNoteY += 5 * splitNote.length; // Account for multi-line notes
   });
 
   // Footer text at bottom of page (single page only) - 1 inch from bottom
