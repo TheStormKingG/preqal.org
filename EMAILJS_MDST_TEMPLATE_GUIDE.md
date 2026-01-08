@@ -104,6 +104,17 @@ Preqal Lead - MD-ST Assessment
                 </div>
               </div>
 
+              <!-- PDF Download -->
+              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; text-align: center;">
+                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 18px; font-weight: 600;">Assessment PDF Report</h3>
+                <p style="margin: 0 0 20px 0; color: #525252; font-size: 14px; line-height: 1.6;">
+                  Download the complete assessment report with detailed analysis and recommendations.
+                </p>
+                <a href="{{pdf_data_url}}" download="MD-ST_Assessment_Report.pdf" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                  Download PDF Report
+                </a>
+              </div>
+
               <!-- Metadata -->
               <div style="margin-bottom: 20px;">
                 <p style="margin: 0; color: #525252; font-size: 12px;">
@@ -144,7 +155,7 @@ Preqal Lead - MD-ST Assessment
 ```
 Or use dynamic subject:
 ```
-Your MD-ST Assessment Report - Band {{band}}
+Your MD-ST Assessment Report - Band {{assessment_band}}
 ```
 
 ### Available Template Variables
@@ -212,31 +223,34 @@ Your MD-ST Assessment Report - Band {{band}}
                 
                 <div style="text-align: center; margin-bottom: 20px;">
                   <div style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 32px; font-weight: bold; margin-bottom: 10px;">
-                    Band {{band}}
+                    Band {{assessment_band}}
                   </div>
-                  <p style="margin: 10px 0 0 0; color: #171717; font-size: 20px; font-weight: 600;">{{range}}</p>
-                  <p style="margin: 5px 0 0 0; color: #525252; font-size: 16px;">{{title}}</p>
+                  <p style="margin: 10px 0 0 0; color: #171717; font-size: 20px; font-weight: 600;">{{assessment_range}}</p>
+                  <p style="margin: 5px 0 0 0; color: #525252; font-size: 16px;">{{assessment_title}}</p>
                 </div>
 
                 <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; margin-top: 20px;">
-                  <p style="margin: 0; color: #171717; font-size: 14px; line-height: 1.6;">{{description}}</p>
+                  <p style="margin: 0; color: #171717; font-size: 14px; line-height: 1.6;">{{assessment_description}}</p>
                 </div>
               </div>
 
               <!-- Assessment Summary -->
               <div style="margin-bottom: 30px;">
-                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 18px; font-weight: 600;">Assessment Summary</h3>
+                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 18px; font-weight: 600;">Key Responsibilities</h3>
                 <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
-                  <pre style="margin: 0; color: #525252; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: pre-wrap; line-height: 1.6;">{{assessment_summary}}</pre>
+                  <pre style="margin: 0; color: #525252; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: pre-wrap; line-height: 1.6;">{{assessment_responsibilities}}</pre>
                 </div>
               </div>
 
-              <!-- Next Steps -->
-              <div style="margin-bottom: 30px; background-color: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-                <h3 style="margin: 0 0 10px 0; color: #171717; font-size: 16px; font-weight: 600;">Next Steps</h3>
-                <p style="margin: 0; color: #171717; font-size: 14px; line-height: 1.6;">
-                  Your PDF report has been downloaded. Please check your downloads folder for the complete assessment report with detailed analysis and recommendations.
+              <!-- PDF Download -->
+              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 30px; border-radius: 12px; border: 2px solid #2563eb; text-align: center;">
+                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 20px; font-weight: 600;">Download Your Complete Report</h3>
+                <p style="margin: 0 0 25px 0; color: #525252; font-size: 14px; line-height: 1.6;">
+                  Your detailed PDF report includes the complete assessment analysis, all question responses, and detailed recommendations.
                 </p>
+                <a href="{{pdf_data_url}}" download="MD-ST_Assessment_Report.pdf" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
+                  Download PDF Report
+                </a>
               </div>
 
               <!-- Contact Information -->
