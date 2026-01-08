@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import emailjs from '@emailjs/browser';
 import { AssessmentResult, BandDetails } from '../types';
 import { QUESTIONS, BAND_MAP } from '../constants';
 import { generatePDFReport } from '../services/pdfService';
@@ -13,7 +12,7 @@ interface ResultScreenProps {
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({ result, leadInfo, onReset }) => {
   const details = BAND_MAP[result.band];
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const handleCopySummary = () => {
     const summary = `
@@ -94,116 +93,32 @@ Role: ${details.title}
         <button
           onClick={async () => {
             try {
-              setIsSendingEmail(true);
-              
-              // Generate PDF and get it as blob/base64 for email
+              setIsGeneratingPDF(true);
+              // Generate PDF and trigger download
               const pdfBlob = await generatePDFReport(result, details, leadInfo);
-              
-              // Send lead notification to Preqal
-              try {
-                // Use MDST-specific template ID if available, fallback to MDST lead template
-                const leadTemplateId = import.meta.env.VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID || 
-                                      'template_sijvjd7'; // MD-ST Lead Notification template
-                
-                await emailjs.send(
-                  import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-                  leadTemplateId,
-                  {
-                    subject: 'Preqal Lead - MD-ST Assessment',
-                    first_name: leadInfo.firstName,
-                    last_name: leadInfo.lastName,
-                    full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
-                    email: leadInfo.email,
-                    company: leadInfo.company,
-                    job_title: 'Medical Director (Assessment)',
-                    message: `MD-ST Assessment completed. Band: ${details.band}, Range: ${details.range}`,
-                    source_page: 'mdst_assessment',
-                    submitted_at: new Date().toLocaleString('en-US', { 
-                      dateStyle: 'full', 
-                      timeStyle: 'long',
-                      timeZone: 'UTC'
-                    }),
-                    formatted_data: `
-New Lead Submission - MD-ST Assessment
-
-Name: ${leadInfo.firstName} ${leadInfo.lastName}
-Email: ${leadInfo.email}
-Company: ${leadInfo.company}
-Assessment Result: Band ${details.band} (${details.range})
-Role Title: ${details.title}
-Source: MD-ST Assessment Tool
-Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
-                    `.trim(),
-                  },
-                  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
-                );
-              } catch (leadError) {
-                console.error('Error sending lead notification:', leadError);
-                // Don't block user if lead notification fails
-              }
-
-              // Send PDF report email to user via EmailJS
-              try {
-                // Send email to user with assessment results
-                // Use MDST-specific template ID if available, fallback to MDST user template
-                const userTemplateId = import.meta.env.VITE_EMAILJS_MDST_USER_TEMPLATE_ID || 
-                                       'template_8rvfoi6'; // MD-ST User Report template
-                
-                await emailjs.send(
-                  import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-                  userTemplateId,
-                  {
-                    subject: `Your MD-ST Assessment Report - Band ${details.band}`,
-                    first_name: leadInfo.firstName,
-                    last_name: leadInfo.lastName,
-                    full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
-                    email: leadInfo.email,
-                    company: leadInfo.company,
-                    band: details.band,
-                    range: details.range,
-                    title: details.title,
-                    description: details.description,
-                    assessment_summary: `MD-ST Assessment Results
-
-Band: ${details.band}
-Salary Range: ${details.range}
-Role Title: ${details.title}
-
-${details.description}
-
-Key Responsibilities:
-${details.responsibilities.map((r, i) => `${i + 1}. ${r}`).join('\n')}
-
-Your complete PDF report has been downloaded. Please check your downloads folder for the detailed assessment report.`,
-                    submitted_at: new Date().toLocaleString('en-US', { 
-                      dateStyle: 'full', 
-                      timeStyle: 'long',
-                      timeZone: 'UTC'
-                    }),
-                  },
-                  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
-                );
-                
-                alert(`PDF report downloaded! A confirmation email has been sent to ${leadInfo.email}.`);
-              } catch (emailError) {
-                console.error('Error sending email to user:', emailError);
-                alert(`PDF report downloaded! (Email notification failed, but your report is ready.)`);
-              }
+              const url = URL.createObjectURL(pdfBlob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `MD-ST_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
             } catch (error) {
               console.error('Error generating PDF:', error);
               alert('Failed to generate PDF. Please try again.');
             } finally {
-              setIsSendingEmail(false);
+              setIsGeneratingPDF(false);
             }
           }}
-          disabled={isSendingEmail}
+          disabled={isGeneratingPDF}
           className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-200 active:scale-95 ${
-            isSendingEmail
+            isGeneratingPDF
               ? 'bg-blue-400 text-white cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
         >
-          {isSendingEmail ? 'Sending...' : 'Download PDF Report'}
+          {isGeneratingPDF ? 'Generating...' : 'Download PDF Report'}
         </button>
         <button
           onClick={handleCopySummary}

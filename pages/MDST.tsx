@@ -1,16 +1,20 @@
 import React, { useState, useCallback } from 'react';
+import emailjs from '@emailjs/browser';
 import { QUESTIONS } from '../tools/mdst/constants';
 import { OptionKey, AssessmentResult } from '../tools/mdst/types';
 import { calculateSalaryBand } from '../tools/mdst/scoring';
 import { QuestionCard } from '../tools/mdst/components/QuestionCard';
 import { ResultScreen } from '../tools/mdst/components/ResultScreen';
 import { LeadCaptureForm, LeadInfo } from '../tools/mdst/components/LeadCaptureForm';
+import { generatePDFReport } from '../tools/mdst/services/pdfService';
+import { BAND_MAP } from '../tools/mdst/constants';
 
 const MDST: React.FC = () => {
   const [leadInfo, setLeadInfo] = useState<LeadInfo | null>(null);
   const [answers, setAnswers] = useState<Record<string, OptionKey>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [result, setResult] = useState<AssessmentResult | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSelect = useCallback((option: OptionKey) => {
     setAnswers((prev) => ({ ...prev, [QUESTIONS[currentIndex].id]: option }));
@@ -30,11 +34,131 @@ const MDST: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    if (Object.keys(answers).length === QUESTIONS.length) {
+  const handleSubmit = async () => {
+    if (Object.keys(answers).length === QUESTIONS.length && leadInfo) {
+      setIsSubmitting(true);
       const band = calculateSalaryBand(answers);
-      setResult({ band, answers });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const result: AssessmentResult = { band, answers };
+      const details = BAND_MAP[band];
+      
+      // Generate PDF and send emails
+      try {
+        // Generate PDF and convert to base64 data URL for email
+        const pdfBlob = await generatePDFReport(result, details, leadInfo);
+        
+        // Also trigger browser download
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `MD-ST_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        // Convert PDF blob to base64 data URL for email
+        const pdfDataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result as string); // Keep full data URL format
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(pdfBlob);
+        });
+
+        // Send lead notification to Preqal with PDF data URL
+        try {
+          const leadTemplateId = import.meta.env.VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID || 
+                                'template_sijvjd7';
+          
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+            leadTemplateId,
+            {
+              subject: 'Preqal Lead - MD-ST Assessment',
+              first_name: leadInfo.firstName,
+              last_name: leadInfo.lastName,
+              full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
+              email: leadInfo.email,
+              company: leadInfo.company,
+              job_title: 'Medical Director (Assessment)',
+              assessment_band: details.band,
+              assessment_range: details.range,
+              assessment_title: details.title,
+              message: `MD-ST Assessment completed. Band: ${details.band}, Range: ${details.range}`,
+              source_page: 'mdst_assessment',
+              submitted_at: new Date().toLocaleString('en-US', { 
+                dateStyle: 'full', 
+                timeStyle: 'long',
+                timeZone: 'UTC'
+              }),
+              pdf_data_url: pdfDataUrl, // Include PDF as data URL for email template
+              formatted_data: `
+New Lead Submission - MD-ST Assessment
+
+Name: ${leadInfo.firstName} ${leadInfo.lastName}
+Email: ${leadInfo.email}
+Company: ${leadInfo.company}
+Assessment Result: Band ${details.band} (${details.range})
+Role Title: ${details.title}
+Source: MD-ST Assessment Tool
+Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}
+              `.trim(),
+            },
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+          );
+        } catch (leadError) {
+          console.error('Error sending lead notification:', leadError);
+          // Don't block user if lead notification fails
+        }
+
+        // Send PDF report email to user with PDF data URL
+        try {
+          const userTemplateId = import.meta.env.VITE_EMAILJS_MDST_USER_TEMPLATE_ID || 
+                                 'template_8rvfoi6';
+          
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+            userTemplateId,
+            {
+              subject: `Your MD-ST Assessment Report - Band ${details.band}`,
+              first_name: leadInfo.firstName,
+              last_name: leadInfo.lastName,
+              full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
+              email: leadInfo.email,
+              company: leadInfo.company,
+              assessment_band: details.band,
+              assessment_range: details.range,
+              assessment_title: details.title,
+              assessment_description: details.description,
+              assessment_responsibilities: details.responsibilities.map((r, i) => `${i + 1}. ${r}`).join('\n'),
+              pdf_data_url: pdfDataUrl, // Include PDF as data URL for email template
+              submitted_at: new Date().toLocaleString('en-US', { 
+                dateStyle: 'full', 
+                timeStyle: 'long',
+                timeZone: 'UTC'
+              }),
+            },
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+          );
+        } catch (emailError) {
+          console.error('Error sending email to user:', emailError);
+          // Don't block user if email fails
+        }
+
+        // Set result to show results screen
+        setResult(result);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        alert(`Assessment complete! Your PDF report has been downloaded and sent to ${leadInfo.email}.`);
+      } catch (error) {
+        console.error('Error generating PDF or sending emails:', error);
+        // Still show results even if email fails
+        setResult({ band, answers });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        alert('Assessment complete! PDF downloaded. (Email notification failed, but your report is ready.)');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -99,14 +223,14 @@ const MDST: React.FC = () => {
                 {currentIndex === QUESTIONS.length - 1 ? (
                   <button
                     onClick={handleSubmit}
-                    disabled={!isComplete}
+                    disabled={!isComplete || isSubmitting}
                     className={`px-10 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-200 ${
-                      isComplete 
+                      isComplete && !isSubmitting
                         ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95' 
                         : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                     }`}
                   >
-                    Finalize Assessment
+                    {isSubmitting ? 'Sending...' : 'Finalize Assessment'}
                   </button>
                 ) : (
                   <button

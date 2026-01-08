@@ -32,8 +32,16 @@ Preqal Lead - MD-ST Assessment
 - `{{job_title}}` - Job title (always "Medical Director (Assessment)")
 
 #### Assessment Results
+- `{{assessment_band}}` - The calculated salary band (e.g., "A", "B", "C")
+- `{{assessment_range}}` - The approximate salary range (e.g., "GYD 1.5M – 1.8M")
+- `{{assessment_title}}` - The role title for the band (e.g., "Advisory Medical Director")
 - `{{message}}` - Assessment summary (e.g., "MD-ST Assessment completed. Band: C, Range: GYD 2.2M – 2.5M")
 - `{{source_page}}` - Source identifier ("mdst_assessment")
+
+#### PDF Attachment
+- `{{pdf_data_url}}` - Base64-encoded PDF data URL (for email template use)
+
+**Note:** EmailJS browser SDK doesn't support file attachments directly. The PDF is provided as a data URL that can be included in the email template as a downloadable link. However, many email clients block data URLs for security reasons. Users will also receive the PDF via browser download when they complete the assessment.
 
 #### Metadata
 - `{{submitted_at}}` - Formatted submission timestamp
@@ -149,11 +157,16 @@ Your MD-ST Assessment Report - Band {{band}}
 - `{{company}}` - Company name
 
 #### Assessment Results
-- `{{band}}` - Assessment band (A, B, or C)
-- `{{range}}` - Salary range (e.g., "GYD 2.2M – 2.5M")
-- `{{title}}` - Role title (e.g., "Executive Medical Director")
-- `{{description}}` - Role description
-- `{{assessment_summary}}` - Formatted assessment summary
+- `{{assessment_band}}` - Assessment band (A, B, or C)
+- `{{assessment_range}}` - Salary range (e.g., "GYD 2.2M – 2.5M")
+- `{{assessment_title}}` - Role title (e.g., "Executive Medical Director")
+- `{{assessment_description}}` - Role description
+- `{{assessment_responsibilities}}` - Formatted list of key responsibilities
+
+#### PDF Attachment
+- `{{pdf_data_url}}` - Base64-encoded PDF data URL (for email template use)
+
+**Note:** EmailJS browser SDK doesn't support file attachments directly. The PDF is provided as a data URL that can be included in the email template as a downloadable link. However, many email clients block data URLs for security reasons. Users will also receive the PDF via browser download when they complete the assessment.
 
 #### Metadata
 - `{{submitted_at}}` - Formatted submission timestamp

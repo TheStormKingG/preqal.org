@@ -337,10 +337,8 @@ export async function generatePDFReport(
   doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', pageWidth / 2, footerY, { align: 'center' });
 
   // Generate PDF blob for email attachment
+  // Return PDF as Blob (download is handled by caller)
   const pdfBlob = doc.output('blob');
-  
-  // Also trigger download
-  doc.save(`MD-ST_Report_${timestamp}.pdf`);
   
   return pdfBlob;
 }
