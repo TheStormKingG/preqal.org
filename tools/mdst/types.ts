@@ -10,6 +10,7 @@ export interface Question {
   id: string;
   category: string;
   text: string;
+  clarification?: string; // Simple explanation to help users understand the question
   options: Option[];
 }
 

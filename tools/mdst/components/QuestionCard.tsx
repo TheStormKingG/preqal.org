@@ -27,9 +27,17 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         </span>
       </div>
       
-      <h2 className="text-xl md:text-2xl font-bold text-neutral-900 mb-8 leading-tight">
+      <h2 className="text-xl md:text-2xl font-bold text-neutral-900 mb-4 leading-tight">
         {question.text}
       </h2>
+      
+      {question.clarification && (
+        <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+          <p className="text-sm md:text-base text-neutral-700 leading-relaxed">
+            {question.clarification}
+          </p>
+        </div>
+      )}
 
       <div className="space-y-4">
         {question.options.map((option) => (
