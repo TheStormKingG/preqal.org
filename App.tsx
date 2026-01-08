@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { HashRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
