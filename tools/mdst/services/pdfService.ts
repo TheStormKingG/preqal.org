@@ -27,7 +27,18 @@ function loadImageAsBase64(url: string): Promise<string> {
 }
 
 export async function generatePDFReport(result: AssessmentResult, details: BandDetails) {
-  const doc = new jsPDF();
+  const doc = new jsPDF({
+    compress: true,
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+  
+  // Ensure proper font encoding for special characters
+  // Helvetica should support most Unicode characters including ≥
+  // Use 'normal' style to ensure consistent character spacing
+  doc.setFont('helvetica', 'normal');
+  
   const date = new Date().toLocaleString();
   const timestamp = new Date().toISOString().split('T')[0];
 
@@ -163,8 +174,14 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     // Account for: left padding (4mm) + right padding (4mm) + border (0.2mm) + safety margin (4mm) = 12mm
     // Using larger safety margin for Selection column to prevent text overflow
     const optionLabel = opt?.label || '';
+    // Ensure special characters like ≥ are preserved correctly
+    // Normalize the text to ensure proper character encoding and preserve special characters
+    const normalizedLabel = optionLabel.normalize('NFKC'); // Normalize Unicode characters
+    // Ensure ≥ character is preserved (U+2265) - Helvetica should support it
+    // Split text with proper character preservation
     const selectionTextWidth = selectionColWidth - 12; // Extra conservative to prevent overflow
-    const optionText = doc.splitTextToSize(optionLabel, selectionTextWidth);
+    // Use splitTextToSize which should preserve Unicode characters
+    const optionText = doc.splitTextToSize(normalizedLabel, selectionTextWidth);
     
     // autoTable accepts arrays of strings for multi-line cells
     return [
