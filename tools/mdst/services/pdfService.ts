@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { AssessmentResult, BandDetails } from '../types';
 import { QUESTIONS } from '../constants';
 
@@ -59,7 +59,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     return [q.id, q.text.replace(':', ''), ansKey, opt?.label || ''];
   });
 
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: yPos + 10,
     head: [['ID', 'Question', 'Opt', 'Selection']],
     body: tableData,
@@ -74,7 +74,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   });
 
   // Footer / Scoring Notes
-  const finalY = (doc as any).lastAutoTable.finalY || 200;
+  const finalY = (doc as any).lastAutoTable?.finalY || (yPos + 60);
   doc.setFontSize(10);
   doc.setTextColor(100, 116, 139);
   doc.text('Scoring Notes:', 20, finalY + 15);
