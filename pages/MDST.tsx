@@ -56,17 +56,7 @@ const MDST: React.FC = () => {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        // Convert PDF blob to base64 data URL for email
-        const pdfDataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            resolve(reader.result as string); // Keep full data URL format
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(pdfBlob);
-        });
-
-        // Send lead notification to Preqal with PDF data URL
+        // Send lead notification to Preqal
         try {
           const leadTemplateId = import.meta.env.VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID || 
                                 'template_sijvjd7';
@@ -92,7 +82,6 @@ const MDST: React.FC = () => {
                 timeStyle: 'long',
                 timeZone: 'UTC'
               }),
-              pdf_data_url: pdfDataUrl, // Include PDF as data URL for email template
               formatted_data: `
 New Lead Submission - MD-ST Assessment
 
@@ -132,7 +121,6 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
               assessment_title: details.title,
               assessment_description: details.description,
               assessment_responsibilities: details.responsibilities.map((r, i) => `${i + 1}. ${r}`).join('\n'),
-              pdf_data_url: pdfDataUrl, // Include PDF as data URL for email template
               submitted_at: new Date().toLocaleString('en-US', { 
                 dateStyle: 'full', 
                 timeStyle: 'long',

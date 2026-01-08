@@ -38,10 +38,8 @@ Preqal Lead - MD-ST Assessment
 - `{{message}}` - Assessment summary (e.g., "MD-ST Assessment completed. Band: C, Range: GYD 2.2M – 2.5M")
 - `{{source_page}}` - Source identifier ("mdst_assessment")
 
-#### PDF Attachment
-- `{{pdf_data_url}}` - Base64-encoded PDF data URL (for email template use)
-
-**Note:** EmailJS browser SDK doesn't support file attachments directly. The PDF is provided as a data URL that can be included in the email template as a downloadable link. However, many email clients block data URLs for security reasons. Users will also receive the PDF via browser download when they complete the assessment.
+#### PDF Information
+**Note:** The PDF report is automatically downloaded to the user's device when they complete the assessment. Email clients block data URLs for security reasons, so we cannot include a downloadable PDF link in the email. The email template should inform users that the PDF has been downloaded to their device.
 
 #### Metadata
 - `{{submitted_at}}` - Formatted submission timestamp
@@ -104,15 +102,12 @@ Preqal Lead - MD-ST Assessment
                 </div>
               </div>
 
-              <!-- PDF Download -->
-              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; text-align: center;">
+              <!-- PDF Information -->
+              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
                 <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 18px; font-weight: 600;">Assessment PDF Report</h3>
-                <p style="margin: 0 0 20px 0; color: #525252; font-size: 14px; line-height: 1.6;">
-                  Download the complete assessment report with detailed analysis and recommendations.
+                <p style="margin: 0; color: #525252; font-size: 14px; line-height: 1.6;">
+                  The complete assessment report with detailed analysis and recommendations has been automatically downloaded to your device when you completed the assessment. Please check your downloads folder for the PDF file.
                 </p>
-                <a href="{{pdf_data_url}}" download="MD-ST_Assessment_Report.pdf" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
-                  Download PDF Report
-                </a>
               </div>
 
               <!-- Metadata -->
@@ -174,10 +169,8 @@ Your MD-ST Assessment Report - Band {{assessment_band}}
 - `{{assessment_description}}` - Role description
 - `{{assessment_responsibilities}}` - Formatted list of key responsibilities
 
-#### PDF Attachment
-- `{{pdf_data_url}}` - Base64-encoded PDF data URL (for email template use)
-
-**Note:** EmailJS browser SDK doesn't support file attachments directly. The PDF is provided as a data URL that can be included in the email template as a downloadable link. However, many email clients block data URLs for security reasons. Users will also receive the PDF via browser download when they complete the assessment.
+#### PDF Information
+**Note:** The PDF report is automatically downloaded to the user's device when they complete the assessment. Email clients block data URLs for security reasons, so we cannot include a downloadable PDF link in the email. The email template should inform users that the PDF has been downloaded to their device.
 
 #### Metadata
 - `{{submitted_at}}` - Formatted submission timestamp
@@ -242,15 +235,15 @@ Your MD-ST Assessment Report - Band {{assessment_band}}
                 </div>
               </div>
 
-              <!-- PDF Download -->
-              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 30px; border-radius: 12px; border: 2px solid #2563eb; text-align: center;">
-                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 20px; font-weight: 600;">Download Your Complete Report</h3>
-                <p style="margin: 0 0 25px 0; color: #525252; font-size: 14px; line-height: 1.6;">
-                  Your detailed PDF report includes the complete assessment analysis, all question responses, and detailed recommendations.
+              <!-- PDF Information -->
+              <div style="margin-bottom: 30px; background-color: #eff6ff; padding: 30px; border-radius: 12px; border: 2px solid #2563eb;">
+                <h3 style="margin: 0 0 15px 0; color: #171717; font-size: 20px; font-weight: 600;">Your Complete PDF Report</h3>
+                <p style="margin: 0 0 15px 0; color: #525252; font-size: 14px; line-height: 1.6;">
+                  Your detailed PDF report has been automatically downloaded to your device. The report includes the complete assessment analysis, all question responses, and detailed recommendations.
                 </p>
-                <a href="{{pdf_data_url}}" download="MD-ST_Assessment_Report.pdf" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
-                  Download PDF Report
-                </a>
+                <p style="margin: 0; color: #525252; font-size: 14px; line-height: 1.6; font-weight: 600;">
+                  📄 Please check your downloads folder for the PDF file.
+                </p>
               </div>
 
               <!-- Contact Information -->
