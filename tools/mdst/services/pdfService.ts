@@ -3,19 +3,60 @@ import autoTable from 'jspdf-autotable';
 import { AssessmentResult, BandDetails } from '../types';
 import { QUESTIONS } from '../constants';
 
+// Helper function to load image as base64
+function loadImageAsBase64(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        resolve(dataURL);
+      } else {
+        reject(new Error('Could not get canvas context'));
+      }
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = url;
+  });
+}
+
 export async function generatePDFReport(result: AssessmentResult, details: BandDetails) {
   const doc = new jsPDF();
   const date = new Date().toLocaleString();
   const timestamp = new Date().toISOString().split('T')[0];
 
-  // Title
+  // Load Preqal logo
+  let logoData: string | null = null;
+  try {
+    const logoUrl = `${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`;
+    logoData = await loadImageAsBase64(logoUrl);
+  } catch (error) {
+    console.warn('Could not load logo for PDF:', error);
+  }
+
+  // Header with logo (top left)
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 20, 10, 50, 15); // x, y, width, height
+    } catch (error) {
+      console.warn('Could not add logo to PDF:', error);
+    }
+  }
+
+  // Title - moved to the right of logo or start position
   doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
-  doc.text('MD-ST Salary Band Assessment', 20, 30);
+  doc.text('MD-ST Salary Band Assessment', 75, 25); // Moved right to accommodate logo
   
   doc.setFontSize(10);
   doc.setTextColor(100, 116, 139); // slate-500
-  doc.text(`Generated on: ${date}`, 20, 40);
+  doc.text(`Generated on: ${date}`, 75, 35); // Moved right to accommodate logo
 
   // Result Section
   doc.setFontSize(14);
@@ -87,6 +128,13 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   notes.forEach((note, i) => {
     doc.text(note, 20, finalY + 22 + (i * 6));
   });
+
+  // Footer text at bottom
+  const pageHeight = doc.internal.pageSize.height;
+  const footerY = pageHeight - 15;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', 105, footerY, { align: 'center' });
 
   doc.save(`MD-ST_Report_${timestamp}.pdf`);
 }
