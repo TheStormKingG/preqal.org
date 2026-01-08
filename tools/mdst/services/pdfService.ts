@@ -57,80 +57,85 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     console.warn('Could not load logo for PDF:', error);
   }
 
-  // Footer height and bottom margin
-  const footerHeight = 15;
-  const bottomMargin = 20;
+  // 1 inch margins (25.4mm) on all sides
+  const marginInch = 25.4;
+  const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
-  const contentEndY = pageHeight - bottomMargin - footerHeight;
+  const usableWidth = pageWidth - (marginInch * 2); // 159.2mm for A4
+  const usableHeight = pageHeight - (marginInch * 2); // 246.2mm for A4
+  
+  // Footer height
+  const footerHeight = 12;
+  const contentEndY = pageHeight - marginInch - footerHeight;
 
-  // Compact header with logo (top left) - maintain aspect ratio
-  const headerY = 10;
+  // Header with logo (top left) - maintain aspect ratio, 1 inch from top
+  const headerY = marginInch;
   if (logoData && logoWidth > 0 && logoHeight > 0) {
     try {
-      // Smaller logo for compact layout
-      const compactLogoHeight = 12;
-      const compactLogoWidth = compactLogoHeight * (logoWidth / logoHeight);
-      doc.addImage(logoData, 'PNG', 20, headerY, compactLogoWidth, compactLogoHeight);
+      // Larger logo for better use of space
+      const logoHeightSize = 18;
+      const logoWidthSize = logoHeightSize * (logoWidth / logoHeight);
+      doc.addImage(logoData, 'PNG', marginInch, headerY, logoWidthSize, logoHeightSize);
     } catch (error) {
       console.warn('Could not add logo to PDF:', error);
     }
   }
 
   // Title - positioned to the right of logo or start position
-  const titleStartX = logoData && logoWidth > 0 ? 20 + 12 + 8 : 20;
-  doc.setFontSize(18);
+  const titleStartX = logoData && logoWidth > 0 ? marginInch + 18 + 10 : marginInch;
+  doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
-  doc.text('MD-ST Salary Band Assessment', titleStartX, headerY + 8);
+  doc.text('MD-ST Salary Band Assessment', titleStartX, headerY + 12);
   
-  doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139); // slate-500
-  doc.text(`Generated: ${date}`, titleStartX, headerY + 14);
-
-  // Compact Result Section - starting after header
-  const contentStartY = headerY + 20;
   doc.setFontSize(11);
+  doc.setTextColor(100, 116, 139); // slate-500
+  doc.text(`Generated: ${date}`, titleStartX, headerY + 20);
+
+  // Result Section - starting after header with 1 inch margins
+  const contentStartY = headerY + 28;
+  doc.setFontSize(13);
   doc.setTextColor(15, 23, 42);
-  doc.text('Result:', 20, contentStartY);
+  doc.text('Result:', marginInch, contentStartY);
   
   doc.setFillColor(248, 250, 252);
-  doc.rect(20, contentStartY + 2, 170, 16, 'F');
+  doc.rect(marginInch, contentStartY + 3, usableWidth, 22, 'F');
   
-  doc.setFontSize(18);
+  doc.setFontSize(24);
   doc.setTextColor(37, 99, 235); // blue-600
-  doc.text(`Band ${details.band}`, 25, contentStartY + 10);
+  doc.text(`Band ${details.band}`, marginInch + 5, contentStartY + 14);
   
+  doc.setFontSize(16);
+  doc.setTextColor(15, 23, 42);
+  doc.text(details.range, marginInch + 5, contentStartY + 22);
+
+  // Description with better spacing
+  const descY = contentStartY + 30;
+  doc.setFontSize(11);
+  doc.setTextColor(51, 65, 85);
+  const splitDesc = doc.splitTextToSize(details.description, usableWidth);
+  doc.text(splitDesc, marginInch, descY);
+  const descHeight = splitDesc.length * 5.5;
+
+  // Responsibilities with better spacing
+  const respY = descY + descHeight + 6;
   doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text(details.range, 25, contentStartY + 16);
-
-  // Compact description
-  const descY = contentStartY + 22;
-  doc.setFontSize(9);
-  doc.setTextColor(51, 65, 85);
-  const splitDesc = doc.splitTextToSize(details.description, 170);
-  doc.text(splitDesc, 20, descY);
-  const descHeight = splitDesc.length * 4;
-
-  // Compact Responsibilities
-  const respY = descY + descHeight + 4;
-  doc.setFontSize(10);
-  doc.setTextColor(15, 23, 42);
-  doc.text('Key Responsibilities:', 20, respY);
+  doc.text('Key Responsibilities:', marginInch, respY);
   
-  doc.setFontSize(8);
+  doc.setFontSize(10);
   doc.setTextColor(51, 65, 85);
-  let yPos = respY + 5;
+  let yPos = respY + 7;
   details.responsibilities.forEach((item) => {
-    // Split long responsibilities to fit on one line or wrap
-    const splitItem = doc.splitTextToSize(item, 165);
+    // Split long responsibilities to fit within usable width
+    const splitItem = doc.splitTextToSize(item, usableWidth - 5);
     splitItem.forEach((line: string) => {
-      doc.text(`• ${line}`, 23, yPos);
-      yPos += 4;
+      doc.text(`• ${line}`, marginInch + 3, yPos);
+      yPos += 5.5;
     });
   });
 
-  // Table of Answers - start after responsibilities with minimal spacing
-  const tableStartY = yPos + 5;
+  // Table of Answers - start after responsibilities with proper spacing
+  const tableStartY = yPos + 7;
   
   // Prepare table data with properly wrapped text
   // Split long text to ensure cells fit within column widths
@@ -138,14 +143,13 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     const ansKey = result.answers[q.id];
     const opt = q.options.find(o => o.id === ansKey);
     
-    // Split question text to fit within 85mm column width
-    // Account for padding: 85mm - 8mm padding = 77mm usable width
-    const questionText = doc.splitTextToSize(q.text.replace(':', ''), 77);
+    // Split question text to fit within column width
+    // Column width will be calculated based on usable width
+    const questionText = doc.splitTextToSize(q.text.replace(':', ''), 90);
     
-    // Split option label to fit within 55mm column width
-    // Account for padding: 55mm - 8mm padding = 47mm usable width
+    // Split option label to fit within column width
     const optionLabel = opt?.label || '';
-    const optionText = doc.splitTextToSize(optionLabel, 47);
+    const optionText = doc.splitTextToSize(optionLabel, 60);
     
     // autoTable accepts arrays of strings for multi-line cells
     return [
@@ -156,10 +160,10 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     ];
   });
 
-  // Reserve space for footer and scoring notes
-  const footerReservedSpace = footerHeight + bottomMargin;
-  // Reserve minimal space for scoring notes (4 lines + header + spacing)
-  const notesReservedSpace = 25;
+  // Reserve space for footer and scoring notes (1 inch from bottom)
+  const footerReservedSpace = footerHeight + marginInch;
+  // Reserve space for scoring notes
+  const notesReservedSpace = 28;
   
   // Calculate bottom margin: ensure footer space + notes
   const tableBottomMargin = footerReservedSpace + notesReservedSpace;
@@ -173,60 +177,60 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
       fillColor: [30, 41, 59],
       textColor: [255, 255, 255],
       fontStyle: 'bold',
-      fontSize: 8,
-      cellPadding: { top: 2, right: 2, bottom: 2, left: 2 }
+      fontSize: 10,
+      cellPadding: { top: 4, right: 4, bottom: 4, left: 4 }
     },
     bodyStyles: {
-      fontSize: 7,
+      fontSize: 9,
       textColor: [51, 65, 85],
-      cellPadding: { top: 1.5, right: 2, bottom: 1.5, left: 2 },
+      cellPadding: { top: 3, right: 4, bottom: 3, left: 4 },
       overflow: 'linebreak',
       lineWidth: 0.1,
       lineColor: [226, 232, 240]
     },
     columnStyles: {
       0: { 
-        cellWidth: 15,
+        cellWidth: 18,
         halign: 'center',
         valign: 'middle',
         fontStyle: 'bold',
         overflow: 'visible'
       },
       1: { 
-        cellWidth: 85,
+        cellWidth: 95,
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
-        cellPadding: { top: 1.5, right: 2, bottom: 1.5, left: 2 }
+        cellPadding: { top: 3, right: 4, bottom: 3, left: 4 }
       },
       2: { 
-        cellWidth: 15, 
+        cellWidth: 18, 
         halign: 'center',
         valign: 'middle',
         fontStyle: 'bold',
         overflow: 'visible'
       },
       3: { 
-        cellWidth: 55,
+        cellWidth: 60,
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
-        cellPadding: { top: 1.5, right: 2, bottom: 1.5, left: 2 }
+        cellPadding: { top: 3, right: 4, bottom: 3, left: 4 }
       }
     },
     // Single page - don't show header on every page
     showHead: 'firstPage',
-    // Set margins - bottom margin reserves space for footer
+    // Set margins - 1 inch (25.4mm) on all sides
     margin: { 
       top: tableStartY, 
-      left: 20, 
-      right: 20, 
+      left: marginInch, 
+      right: marginInch, 
       bottom: tableBottomMargin 
     },
     // Ensure proper wrapping
     styles: {
       overflow: 'linebreak',
-      cellPadding: 1.5,
+      cellPadding: 3,
       lineWidth: 0.1,
       lineColor: [226, 232, 240]
     },
@@ -234,13 +238,13 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     tableWidth: 'auto'
   });
 
-  // Scoring Notes - positioned above footer with minimal spacing
+  // Scoring Notes - positioned above footer with 1 inch margins
   const finalY = (doc as any).lastAutoTable?.finalY || (tableStartY + 60);
-  const notesY = finalY + 4;
+  const notesY = finalY + 6;
   
-  doc.setFontSize(8);
+  doc.setFontSize(10);
   doc.setTextColor(100, 116, 139);
-  doc.text('Scoring Notes:', 20, notesY);
+  doc.text('Scoring Notes:', marginInch, notesY);
   
   const notes = [
     "- 'Mostly' rule: Highest count of A/B/C determines primary band.",
@@ -249,27 +253,27 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     "- Escalation: 3+ 'C' selections results in Band C."
   ];
   
-  // Compact notes with minimal line spacing
-  let currentNoteY = notesY + 4;
+  // Notes with better spacing
+  let currentNoteY = notesY + 6;
   notes.forEach((note) => {
-    doc.setFontSize(7);
-    doc.text(note, 20, currentNoteY);
-    currentNoteY += 3.5;
+    doc.setFontSize(9);
+    doc.text(note, marginInch, currentNoteY);
+    currentNoteY += 5;
   });
 
-  // Footer text at bottom of page (single page only)
+  // Footer text at bottom of page (single page only) - 1 inch from bottom
   doc.setPage(1);
-  const footerY = pageHeight - footerHeight / 2;
+  const footerY = pageHeight - marginInch - (footerHeight / 2);
   
   // Add subtle divider line above footer
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.1);
-  doc.line(20, footerY - 5, 190, footerY - 5);
+  doc.line(marginInch, footerY - 5, pageWidth - marginInch, footerY - 5);
   
   // Footer text - centered
-  doc.setFontSize(7);
+  doc.setFontSize(9);
   doc.setTextColor(100, 116, 139);
-  doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', 105, footerY, { align: 'center' });
+  doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', pageWidth / 2, footerY, { align: 'center' });
 
   doc.save(`MD-ST_Report_${timestamp}.pdf`);
 }
