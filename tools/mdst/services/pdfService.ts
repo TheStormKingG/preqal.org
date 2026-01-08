@@ -83,8 +83,8 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const headerY = marginInch;
   if (logoData && logoWidth > 0 && logoHeight > 0) {
     try {
-      // Larger logo for better use of space
-      const logoHeightSize = 18;
+      // Doubled logo size for better visibility
+      const logoHeightSize = 36; // Doubled from 18mm
       const logoWidthSize = logoHeightSize * (logoWidth / logoHeight);
       doc.addImage(logoData, 'PNG', marginInch, headerY, logoWidthSize, logoHeightSize);
     } catch (error) {
@@ -93,7 +93,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   }
 
   // Title - positioned to the right of logo or start position, respecting right margin
-  const titleStartX = logoData && logoWidth > 0 ? marginInch + 18 + 10 : marginInch;
+  const titleStartX = logoData && logoWidth > 0 ? marginInch + 36 + 10 : marginInch; // Updated to match doubled logo width
   const titleMaxWidth = usableWidth - (titleStartX - marginInch) - 10; // Account for logo space
   doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
