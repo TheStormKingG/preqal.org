@@ -38,7 +38,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { id: 'A', label: 'Yes, strong team', description: 'Full redundant cover; role is largely replaceable for clinical shifts.' },
       { id: 'B', label: 'Partial cover', description: 'Limited backup; some shifts require your specific presence.' },
-      { id: 'C', label: 'I'm essential clinician', description: 'The service cannot operate without your specific clinical license.' }
+      { id: 'C', label: "I'm essential clinician", description: 'The service cannot operate without your specific clinical license.' }
     ]
   },
   {
