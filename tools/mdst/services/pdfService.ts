@@ -79,21 +79,24 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const footerHeight = 12;
   const contentEndY = pageHeight - marginInch - footerHeight;
 
-  // Header with logo (top left) - maintain aspect ratio, 1 inch from top
-  const headerY = marginInch;
+  // Header with logo (top left) - positioned within 1 inch top margin
+  // Logo positioned at top of page, within the margin space
+  const logoTopY = 5; // Position logo 5mm from top, well within the 25.4mm margin
   if (logoData && logoWidth > 0 && logoHeight > 0) {
     try {
-      // Doubled logo size for better visibility
-      const logoHeightSize = 36; // Doubled from 18mm
+      // Logo size to fit within top margin (25.4mm - 5mm top - 5mm bottom = ~15mm available)
+      // Use 20mm to maximize visibility while staying within margin
+      const logoHeightSize = 20; // Fits within 1 inch margin (25.4mm)
       const logoWidthSize = logoHeightSize * (logoWidth / logoHeight);
-      doc.addImage(logoData, 'PNG', marginInch, headerY, logoWidthSize, logoHeightSize);
+      doc.addImage(logoData, 'PNG', marginInch, logoTopY, logoWidthSize, logoHeightSize);
     } catch (error) {
       console.warn('Could not add logo to PDF:', error);
     }
   }
 
-  // Title - positioned to the right of logo or start position, respecting right margin
-  const titleStartX = logoData && logoWidth > 0 ? marginInch + 36 + 10 : marginInch; // Updated to match doubled logo width
+  // Title - starts at 1 inch margin (25.4mm), positioned to the right of logo
+  const headerY = marginInch; // Start content at 1 inch margin
+  const titleStartX = logoData && logoWidth > 0 ? marginInch + 20 + 10 : marginInch; // Account for logo width (20mm) + spacing
   const titleMaxWidth = usableWidth - (titleStartX - marginInch) - 10; // Account for logo space
   doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
