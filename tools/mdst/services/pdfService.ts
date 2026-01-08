@@ -84,9 +84,8 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const logoTopY = 5; // Position logo 5mm from top, well within the 25.4mm margin
   if (logoData && logoWidth > 0 && logoHeight > 0) {
     try {
-      // Logo size to fit within top margin (25.4mm - 5mm top - 5mm bottom = ~15mm available)
-      // Use 20mm to maximize visibility while staying within margin
-      const logoHeightSize = 20; // Fits within 1 inch margin (25.4mm)
+      // Logo size increased 1.8x from 20mm to 36mm
+      const logoHeightSize = 36; // 1.8x bigger (20mm * 1.8 = 36mm)
       const logoWidthSize = logoHeightSize * (logoWidth / logoHeight);
       doc.addImage(logoData, 'PNG', marginInch, logoTopY, logoWidthSize, logoHeightSize);
     } catch (error) {
@@ -96,7 +95,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
 
   // Title - starts at 1 inch margin (25.4mm), positioned to the right of logo
   const headerY = marginInch; // Start content at 1 inch margin
-  const titleStartX = logoData && logoWidth > 0 ? marginInch + 20 + 10 : marginInch; // Account for logo width (20mm) + spacing
+  const titleStartX = logoData && logoWidth > 0 ? marginInch + 36 + 10 : marginInch; // Account for logo width (36mm) + spacing
   const titleMaxWidth = usableWidth - (titleStartX - marginInch) - 10; // Account for logo space
   doc.setFontSize(22);
   doc.setTextColor(30, 41, 59); // slate-800
