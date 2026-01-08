@@ -47,24 +47,21 @@ const GitHubPagesRedirect: React.FC = () => {
     // Handle GitHub Pages SPA redirect pattern: /?/path
     // The URL format is: domain.com/?/tools/mdst
     const search = window.location.search;
+    const hash = window.location.hash;
     
     // Check if search string starts with ?/ (GitHub Pages redirect pattern)
     if (search.startsWith('?/')) {
       // Extract the path from ?/tools/mdst
       const redirectPath = '/' + search.slice(2).replace(/~and~/g, '&');
       
-      console.log('GitHub Pages redirect detected:', {
-        search,
-        redirectPath,
-        currentPath: location.pathname
-      });
+      // Clean up the URL immediately before navigation
+      const newUrl = redirectPath + (hash || '');
+      window.history.replaceState({}, '', newUrl);
       
-      // Clean up the URL and navigate to the actual path
-      window.history.replaceState({}, '', redirectPath);
       // Navigate to the actual path
-      navigate(redirectPath, { replace: true });
+      navigate(redirectPath + (hash || ''), { replace: true });
     }
-  }, [navigate, location]);
+  }, [navigate]); // Removed location from dependencies to avoid re-triggering
   
   return null;
 };
@@ -101,6 +98,22 @@ const App: React.FC = () => {
   // Initialize Google Analytics
   useEffect(() => {
     initGA();
+  }, []);
+
+  // Suppress NavigationPreloadManager warnings (harmless - often from extensions/GTM)
+  useEffect(() => {
+    const originalWarn = console.warn;
+    console.warn = (...args: any[]) => {
+      // Filter out NavigationPreloadManager warnings
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('NavigationPreloadManager')) {
+        return; // Suppress this specific warning
+      }
+      originalWarn.apply(console, args);
+    };
+    
+    return () => {
+      console.warn = originalWarn;
+    };
   }, []);
 
   useEffect(() => {
