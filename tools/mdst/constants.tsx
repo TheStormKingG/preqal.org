@@ -5,66 +5,66 @@ export const QUESTIONS: Question[] = [
     id: 'Q1',
     category: 'Authority & Risk Ownership',
     text: 'Medical decision authority:',
-    clarification: 'This question asks about who makes the final medical decisions. Think about whether you give advice only, share decisions with others, or make the final call yourself.',
+    clarification: 'This question asks about who makes the final medical decisions. Think about whether the Medical Director gives advice only, shares decisions with others, or makes the final call.',
     options: [
-      { id: 'A', label: 'Advisory only', description: 'You give recommendations and advice, but someone else makes the final decision. You provide guidance but do not have the final say.' },
-      { id: 'B', label: 'Shared with operations/HSE', description: 'You share the decision-making with operations and health, safety, and environment teams. You work together to make decisions about medical matters.' },
-      { id: 'C', label: 'Final medical authority', description: 'You make the final decision on all medical and clinical matters. When it comes to medical decisions, the final responsibility is yours.' }
+      { id: 'A', label: 'Advisory only', description: 'The Medical Director gives recommendations and advice, but someone else makes the final decision. The role provides guidance but does not have the final say.' },
+      { id: 'B', label: 'Shared with operations/HSE', description: 'The Medical Director shares the decision-making with operations and health, safety, and environment teams. The role works together with others to make decisions about medical matters.' },
+      { id: 'C', label: 'Final medical authority', description: 'The Medical Director makes the final decision on all medical and clinical matters. When it comes to medical decisions, the final responsibility lies with this role.' }
     ]
   },
   {
     id: 'Q2',
     category: 'Authority & Risk Ownership',
     text: '2 a.m. incident expectation:',
-    clarification: 'This question asks what happens if there is a medical emergency at 2 a.m. (very early morning). Think about whether you would be called, give advice over the phone, or need to go to the scene.',
+    clarification: 'This question asks what happens if there is a medical emergency at 2 a.m. (very early morning). Think about whether the Medical Director would be called, give advice over the phone, or need to go to the scene.',
     options: [
-      { id: 'A', label: 'Be informed later', description: 'You are told about the incident later during normal working hours. You find out about emergencies after they happen, not immediately.' },
-      { id: 'B', label: 'Remote decision support', description: 'You can be called by phone to give advice and help make decisions. You provide guidance from wherever you are, without going to the scene.' },
-      { id: 'C', label: 'Lead/attend response', description: 'You must go to the incident site or lead the response immediately. You are directly involved in handling the crisis when it happens.' }
+      { id: 'A', label: 'Be informed later', description: 'The Medical Director is told about the incident later during normal working hours. The role finds out about emergencies after they happen, not immediately.' },
+      { id: 'B', label: 'Remote decision support', description: 'The Medical Director can be called by phone to give advice and help make decisions. The role provides guidance from wherever they are, without going to the scene.' },
+      { id: 'C', label: 'Lead/attend response', description: 'The Medical Director must go to the incident site or lead the response immediately. The role is directly involved in handling the crisis when it happens.' }
     ]
   },
   {
     id: 'Q3',
     category: 'Clinical Load',
     text: 'Clinical time requirement:',
-    clarification: 'This question asks how much time you spend doing hands-on medical work with patients. Think about what percentage of your time is spent treating patients versus doing administrative or management work.',
+    clarification: 'This question asks how much time the Medical Director spends doing hands-on medical work with patients. Think about what percentage of the role\'s time is spent treating patients versus doing administrative or management work.',
     options: [
-      { id: 'A', label: 'None / purely director', description: 'You do no hands-on patient care. All your time (100%) is spent on administration, management, and planning work. You are a director only, not a practicing doctor.' },
-      { id: 'B', label: '<=10-15% routine', description: 'You spend a small amount of time (10-15%) doing routine patient care. Most of your time is administrative, but you occasionally see patients or review cases.' },
-      { id: 'C', label: '>=20% or emergency care', description: 'You spend a significant amount of time (20% or more) doing hands-on patient care, or you handle emergency cases. You actively treat patients as a regular part of your job.' }
+      { id: 'A', label: 'None / purely director', description: 'The Medical Director does no hands-on patient care. All the role\'s time (100%) is spent on administration, management, and planning work. This is a director-only role, not a practicing doctor position.' },
+      { id: 'B', label: '<=10-15% routine', description: 'The Medical Director spends a small amount of time (10-15%) doing routine patient care. Most of the role\'s time is administrative, but the Medical Director occasionally sees patients or reviews cases.' },
+      { id: 'C', label: '>=20% or emergency care', description: 'The Medical Director spends a significant amount of time (20% or more) doing hands-on patient care, or handles emergency cases. The role actively treats patients as a regular part of the job.' }
     ]
   },
   {
     id: 'Q4',
     category: 'Clinical Load',
     text: 'Clinical cover depth:',
-    clarification: 'This question asks if there are other doctors who can cover for you when you are not available. Think about whether the clinic or service can operate without you, or if your specific license is required.',
+    clarification: 'This question asks if there are other doctors who can cover for the Medical Director when they are not available. Think about whether the clinic or service can operate without the Medical Director, or if their specific license is required.',
     options: [
-      { id: 'A', label: 'Yes, strong team', description: 'There are other doctors who can fully cover your clinical duties. If you are not available, someone else can do your patient care work. You are replaceable for clinical shifts.' },
-      { id: 'B', label: 'Partial cover', description: 'There is some backup, but not always complete. Sometimes other doctors can cover, but some shifts require you to be there. You are partially replaceable.' },
-      { id: 'C', label: "I'm essential clinician", description: 'The clinic or service cannot operate without you. Your specific medical license is required, and there is no one else who can cover your clinical duties. You are essential.' }
+      { id: 'A', label: 'Yes, strong team', description: 'There are other doctors who can fully cover the Medical Director\'s clinical duties. If the Medical Director is not available, someone else can do the patient care work. The role is replaceable for clinical shifts.' },
+      { id: 'B', label: 'Partial cover', description: 'There is some backup, but not always complete. Sometimes other doctors can cover, but some shifts require the Medical Director to be there. The role is partially replaceable.' },
+      { id: 'C', label: "I'm essential clinician", description: 'The clinic or service cannot operate without the Medical Director. Their specific medical license is required, and there is no one else who can cover their clinical duties. The Medical Director is essential to operations.' }
     ]
   },
   {
     id: 'Q5',
     category: 'Scale & Governance Exposure',
     text: 'Project footprint:',
-    clarification: 'This question asks about the size and location of the projects you manage. Think about whether you work at one location, multiple nearby locations, or sites that are far away or difficult to reach.',
+    clarification: 'This question asks about the size and location of the projects the Medical Director manages. Think about whether the role works at one location, multiple nearby locations, or sites that are far away or difficult to reach.',
     options: [
-      { id: 'A', label: 'Single site, stable access', description: 'You work at one location that is easy to reach. You are responsible for one local site with simple travel and access. Everything is in one place.' },
-      { id: 'B', label: 'Multi-site, moderate travel', description: 'You work at multiple locations within the same region. You travel regularly to coordinate between different sites, but travel is manageable.' },
-      { id: 'C', label: 'Multi-site, remote/high logistics', description: 'You work at multiple locations that are far apart, possibly in different countries. Travel is complex, frequent, or to remote areas that are difficult to reach.' }
+      { id: 'A', label: 'Single site, stable access', description: 'The Medical Director works at one location that is easy to reach. The role is responsible for one local site with simple travel and access. Everything is in one place.' },
+      { id: 'B', label: 'Multi-site, moderate travel', description: 'The Medical Director works at multiple locations within the same region. The role travels regularly to coordinate between different sites, but travel is manageable.' },
+      { id: 'C', label: 'Multi-site, remote/high logistics', description: 'The Medical Director works at multiple locations that are far apart, possibly in different countries. Travel is complex, frequent, or to remote areas that are difficult to reach.' }
     ]
   },
   {
     id: 'Q6',
     category: 'Scale & Governance Exposure',
     text: 'Governance & audit exposure:',
-    clarification: 'This question asks about how much you are involved in quality reviews and audits. Think about whether audits are handled by others, you do internal audits, or you lead audits from external regulators or clients.',
+    clarification: 'This question asks about how much the Medical Director is involved in quality reviews and audits. Think about whether audits are handled by others, the Medical Director does internal audits, or leads audits from external regulators or clients.',
     options: [
-      { id: 'A', label: 'Minimal / shared', description: 'You have little involvement in audits. Quality reviews are mostly handled by a central quality team. You share this responsibility with others.' },
-      { id: 'B', label: 'Accountable internally', description: 'You are responsible for internal quality checks and reports within your organization. You ensure quality standards are met inside the company.' },
-      { id: 'C', label: 'Accountable incl. external/client audits', description: 'You lead responses to audits from external regulators or major clients. You are the main person responsible when outside parties come to review your organization.' }
+      { id: 'A', label: 'Minimal / shared', description: 'The Medical Director has little involvement in audits. Quality reviews are mostly handled by a central quality team. The role shares this responsibility with others.' },
+      { id: 'B', label: 'Accountable internally', description: 'The Medical Director is responsible for internal quality checks and reports within the organization. The role ensures quality standards are met inside the company.' },
+      { id: 'C', label: 'Accountable incl. external/client audits', description: 'The Medical Director leads responses to audits from external regulators or major clients. The role is the main person responsible when outside parties come to review the organization.' }
     ]
   }
 ];
