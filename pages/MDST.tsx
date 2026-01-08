@@ -47,7 +47,7 @@ const MDST: React.FC = () => {
   const isComplete = Object.keys(answers).length === QUESTIONS.length;
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] py-8 px-4 md:py-12 pt-24">
+    <div className="min-h-screen bg-[#f6f8fb] py-8 px-4 md:py-12 pt-8">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         {!result && (

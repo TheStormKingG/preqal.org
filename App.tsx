@@ -6,6 +6,30 @@ import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { initGA } from './src/analytics/ga';
 
+// Conditionally render Navbar - hide on /tools/mdst
+const ConditionalNavbar: React.FC = () => {
+  const location = useLocation();
+  const isToolPage = location.pathname.startsWith('/tools/');
+  
+  if (isToolPage) {
+    return null;
+  }
+  
+  return <Navbar />;
+};
+
+// Conditionally render Footer - hide on /tools/mdst
+const ConditionalFooter: React.FC = () => {
+  const location = useLocation();
+  const isToolPage = location.pathname.startsWith('/tools/');
+  
+  if (isToolPage) {
+    return null;
+  }
+  
+  return <Footer />;
+};
+
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   React.useEffect(() => {
@@ -118,11 +142,11 @@ const App: React.FC = () => {
       </div>
 
       <div className="flex flex-col min-h-screen text-neutral-900 font-sans selection:bg-amber-500/30">
-        <Navbar />
+        <ConditionalNavbar />
         <main className="flex-grow pt-20 overflow-hidden">
           <AnimatedRoutes />
         </main>
-        <Footer />
+        <ConditionalFooter />
       </div>
       </Router>
     </HelmetProvider>
