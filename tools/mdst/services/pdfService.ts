@@ -63,75 +63,48 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const pageHeight = doc.internal.pageSize.height;
   const contentEndY = pageHeight - bottomMargin - footerHeight;
 
-  // Header with logo (top left) - maintain aspect ratio
-  const headerY = 15;
+  // Compact header with logo (top left) - maintain aspect ratio
+  const headerY = 10;
   if (logoData && logoWidth > 0 && logoHeight > 0) {
     try {
-      // Add logo maintaining aspect ratio, positioned at top left
-      doc.addImage(logoData, 'PNG', 20, headerY, logoWidth, logoHeight);
+      // Smaller logo for compact layout
+      const compactLogoHeight = 12;
+      const compactLogoWidth = compactLogoHeight * (logoWidth / logoHeight);
+      doc.addImage(logoData, 'PNG', 20, headerY, compactLogoWidth, compactLogoHeight);
     } catch (error) {
       console.warn('Could not add logo to PDF:', error);
     }
   }
 
   // Title - positioned to the right of logo or start position
-  const titleStartX = logoData && logoWidth > 0 ? 20 + logoWidth + 10 : 20;
-  doc.setFontSize(22);
+  const titleStartX = logoData && logoWidth > 0 ? 20 + 12 + 8 : 20;
+  doc.setFontSize(18);
   doc.setTextColor(30, 41, 59); // slate-800
-  doc.text('MD-ST Salary Band Assessment', titleStartX, headerY + 10);
+  doc.text('MD-ST Salary Band Assessment', titleStartX, headerY + 8);
   
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(100, 116, 139); // slate-500
-  doc.text(`Generated on: ${date}`, titleStartX, headerY + 18);
+  doc.text(`Generated: ${date}`, titleStartX, headerY + 14);
 
-  // Result Section - starting after header
-  const contentStartY = headerY + logoHeight + 15;
-  doc.setFontSize(14);
+  // Compact Result Section - starting after header
+  const contentStartY = headerY + 20;
+  doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text('Assessment Result:', 20, contentStartY);
+  doc.text('Result:', 20, contentStartY);
   
   doc.setFillColor(248, 250, 252);
-  doc.rect(20, contentStartY + 5, 170, 35, 'F');
+  doc.rect(20, contentStartY + 3, 170, 20, 'F');
   
-  doc.setFontSize(24);
+  doc.setFontSize(20);
   doc.setTextColor(37, 99, 235); // blue-600
-  doc.text(`Band ${details.band}`, 30, contentStartY + 20);
+  doc.text(`Band ${details.band}`, 25, contentStartY + 12);
   
-  doc.setFontSize(16);
-  doc.setTextColor(15, 23, 42);
-  doc.text(details.range, 30, contentStartY + 32);
-
-  // Description
-  const descY = contentStartY + 50;
-  doc.setFontSize(12);
-  doc.setTextColor(51, 65, 85);
-  const splitDesc = doc.splitTextToSize(details.description, 170);
-  doc.text(splitDesc, 20, descY);
-
-  // Calculate description height
-  const descHeight = splitDesc.length * 5; // Approximate line height
-
-  // Responsibilities
-  const respY = descY + descHeight + 10;
   doc.setFontSize(14);
   doc.setTextColor(15, 23, 42);
-  doc.text('Key Responsibilities:', 20, respY);
-  
-  doc.setFontSize(11);
-  doc.setTextColor(51, 65, 85);
-  let yPos = respY + 10;
-  details.responsibilities.forEach((item) => {
-    // Check if we need a new page before adding responsibility
-    if (yPos > contentEndY - 30) {
-      doc.addPage();
-      yPos = 20;
-    }
-    doc.text(`• ${item}`, 25, yPos);
-    yPos += 8;
-  });
+  doc.text(details.range, 25, contentStartY + 20);
 
-  // Table of Answers - ensure it doesn't overlap with footer
-  const tableStartY = yPos + 10;
+  // Table of Answers - start immediately after result box
+  const tableStartY = contentStartY + 28;
   
   // Prepare table data with properly wrapped text
   // Split long text to ensure cells fit within column widths
@@ -157,13 +130,11 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     ];
   });
 
-  // Reserve space for footer (footerHeight + bottomMargin)
+  // Reserve space for footer only (no scoring notes on single page)
   const footerReservedSpace = footerHeight + bottomMargin;
-  // Reserve additional space for scoring notes section (if table ends near bottom)
-  const minSpaceForNotes = 50;
   
-  // Calculate bottom margin: ensure footer space + some breathing room
-  const tableBottomMargin = footerReservedSpace + 10;
+  // Calculate bottom margin: ensure footer space
+  const tableBottomMargin = footerReservedSpace;
 
   autoTable(doc, {
     startY: tableStartY,
@@ -174,13 +145,13 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
       fillColor: [30, 41, 59],
       textColor: [255, 255, 255],
       fontStyle: 'bold',
-      fontSize: 10,
-      cellPadding: { top: 5, right: 5, bottom: 5, left: 5 }
+      fontSize: 9,
+      cellPadding: { top: 3, right: 3, bottom: 3, left: 3 }
     },
     bodyStyles: {
-      fontSize: 9,
+      fontSize: 8,
       textColor: [51, 65, 85],
-      cellPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+      cellPadding: { top: 2, right: 3, bottom: 2, left: 3 },
       overflow: 'linebreak',
       lineWidth: 0.1,
       lineColor: [226, 232, 240]
@@ -198,7 +169,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
-        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 }
+        cellPadding: { top: 2, right: 3, bottom: 2, left: 3 }
       },
       2: { 
         cellWidth: 15, 
@@ -212,13 +183,11 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
         halign: 'left',
         valign: 'top',
         overflow: 'linebreak',
-        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 }
+        cellPadding: { top: 2, right: 3, bottom: 2, left: 3 }
       }
     },
-    // Critical: Enable row splitting across pages (default is false)
-    dontSplitRows: false,
-    // Show header on every page
-    showHead: 'everyPage',
+    // Single page - don't show header on every page
+    showHead: 'firstPage',
     // Set margins - bottom margin reserves space for footer
     margin: { 
       top: tableStartY, 
@@ -229,7 +198,7 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     // Ensure proper wrapping
     styles: {
       overflow: 'linebreak',
-      cellPadding: 3,
+      cellPadding: 2,
       lineWidth: 0.1,
       lineColor: [226, 232, 240]
     },
@@ -237,53 +206,19 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
     tableWidth: 'auto'
   });
 
-  // Footer / Scoring Notes - positioned above footer space
-  const finalY = (doc as any).lastAutoTable?.finalY || (tableStartY + 60);
+  // Footer text at bottom of page (single page only)
+  doc.setPage(1);
+  const footerY = pageHeight - footerHeight / 2;
   
-  // Check if we need a new page for scoring notes
-  let notesY = finalY + 15;
-  if (notesY > contentEndY - 40) {
-    doc.addPage();
-    notesY = 20;
-  }
+  // Add subtle divider line above footer
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.1);
+  doc.line(20, footerY - 5, 190, footerY - 5);
   
-  doc.setFontSize(10);
+  // Footer text - centered
+  doc.setFontSize(8);
   doc.setTextColor(100, 116, 139);
-  doc.text('Scoring Notes:', 20, notesY);
-  const notes = [
-    "- 'Mostly' rule: Highest count of A/B/C determines primary band.",
-    "- Tie-break: In event of equal counts, the higher band is selected.",
-    "- Incident/Clinical Rule: Any 'C' selection in Q2 or Q3 mandates a minimum of Band B.",
-    "- Escalation: 3 or more 'C' selections across all categories results in Band C."
-  ];
-  
-  // Ensure notes fit above footer
-  let currentNoteY = notesY + 7;
-  notes.forEach((note) => {
-    if (currentNoteY > contentEndY - 10) {
-      doc.addPage();
-      currentNoteY = 20;
-    }
-    doc.text(note, 20, currentNoteY);
-    currentNoteY += 6;
-  });
-
-  // Footer text at bottom of every page
-  const totalPages = doc.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    const footerY = pageHeight - footerHeight / 2;
-    
-    // Add subtle divider line above footer
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.1);
-    doc.line(20, footerY - 5, 190, footerY - 5);
-    
-    // Footer text - centered
-    doc.setFontSize(9);
-    doc.setTextColor(100, 116, 139);
-    doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', 105, footerY, { align: 'center' });
-  }
+  doc.text('Medical Director Scoping Tool © 2026 Preqal Inc. All rights reserved.', 105, footerY, { align: 'center' });
 
   doc.save(`MD-ST_Report_${timestamp}.pdf`);
 }
