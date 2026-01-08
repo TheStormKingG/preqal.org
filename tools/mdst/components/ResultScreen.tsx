@@ -88,7 +88,14 @@ Role: ${details.title}
 
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-center pb-12">
         <button
-          onClick={() => generatePDFReport(result, details)}
+          onClick={async () => {
+            try {
+              await generatePDFReport(result, details);
+            } catch (error) {
+              console.error('Error generating PDF:', error);
+              alert('Failed to generate PDF. Please try again.');
+            }
+          }}
           className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-200 active:scale-95"
         >
           Download PDF Report
