@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,6 +11,28 @@ const ScrollToTop = () => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  return null;
+};
+
+// Component to handle GitHub Pages 404 redirect
+const GitHubPagesRedirect: React.FC = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Handle GitHub Pages SPA redirect pattern: /?/path
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectPath = searchParams.get('/');
+    
+    if (redirectPath) {
+      // Clean up the URL and navigate to the actual path
+      const cleanPath = '/' + redirectPath.replace(/~and~/g, '&');
+      // Remove the query parameter from URL
+      window.history.replaceState({}, '', cleanPath);
+      // Navigate to the actual path
+      navigate(cleanPath, { replace: true });
+    }
+  }, [navigate]);
+  
   return null;
 };
 
@@ -71,6 +93,7 @@ const App: React.FC = () => {
   return (
     <HelmetProvider>
       <Router>
+        <GitHubPagesRedirect />
         <ScrollToTop />
       {/* Global Background Texture */}
       <div className="fixed inset-0 z-[-1] bg-[#f6f8fb] pointer-events-none overflow-hidden">
