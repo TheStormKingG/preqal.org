@@ -17,21 +17,30 @@ const ScrollToTop = () => {
 // Component to handle GitHub Pages 404 redirect
 const GitHubPagesRedirect: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   
   useEffect(() => {
     // Handle GitHub Pages SPA redirect pattern: /?/path
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirectPath = searchParams.get('/');
+    // The URL format is: domain.com/?/tools/mdst
+    const search = window.location.search;
     
-    if (redirectPath) {
+    // Check if search string starts with ?/ (GitHub Pages redirect pattern)
+    if (search.startsWith('?/')) {
+      // Extract the path from ?/tools/mdst
+      const redirectPath = '/' + search.slice(2).replace(/~and~/g, '&');
+      
+      console.log('GitHub Pages redirect detected:', {
+        search,
+        redirectPath,
+        currentPath: location.pathname
+      });
+      
       // Clean up the URL and navigate to the actual path
-      const cleanPath = '/' + redirectPath.replace(/~and~/g, '&');
-      // Remove the query parameter from URL
-      window.history.replaceState({}, '', cleanPath);
+      window.history.replaceState({}, '', redirectPath);
       // Navigate to the actual path
-      navigate(cleanPath, { replace: true });
+      navigate(redirectPath, { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, location]);
   
   return null;
 };
