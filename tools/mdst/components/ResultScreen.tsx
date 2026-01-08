@@ -139,24 +139,18 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
 
               // Send PDF report email to user via EmailJS
               try {
-                // Convert PDF blob to base64 for potential future use
-                const reader = new FileReader();
-                reader.readAsDataURL(pdfBlob);
-                reader.onloadend = async () => {
-                  const base64PDF = reader.result as string;
-                  
-                  // Send email to user with assessment results
-                  await emailjs.send(
-                    import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-                    import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
-                    {
-                      subject: `Your MD-ST Assessment Report - Band ${details.band}`,
-                      first_name: leadInfo.firstName,
-                      last_name: leadInfo.lastName,
-                      full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
-                      email: leadInfo.email,
-                      company: leadInfo.company,
-                      message: `Thank you for completing the MD-ST Assessment.
+                // Send email to user with assessment results
+                await emailjs.send(
+                  import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+                  import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_t9m3dai',
+                  {
+                    subject: `Your MD-ST Assessment Report - Band ${details.band}`,
+                    first_name: leadInfo.firstName,
+                    last_name: leadInfo.lastName,
+                    full_name: `${leadInfo.firstName} ${leadInfo.lastName}`,
+                    email: leadInfo.email,
+                    company: leadInfo.company,
+                    message: `Thank you for completing the MD-ST Assessment.
 
 Your Assessment Results:
 - Band: ${details.band}
@@ -166,16 +160,15 @@ Your Assessment Results:
 Your PDF report has been downloaded. Please check your downloads folder.
 
 If you have any questions about your assessment results, please don't hesitate to contact us.`,
-                      source_page: 'mdst_user_report',
-                      submitted_at: new Date().toLocaleString('en-US', { 
-                        dateStyle: 'full', 
-                        timeStyle: 'long',
-                        timeZone: 'UTC'
-                      }),
-                    },
-                    import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
-                  );
-                };
+                    source_page: 'mdst_user_report',
+                    submitted_at: new Date().toLocaleString('en-US', { 
+                      dateStyle: 'full', 
+                      timeStyle: 'long',
+                      timeZone: 'UTC'
+                    }),
+                  },
+                  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
+                );
                 
                 alert(`PDF report downloaded! A confirmation email has been sent to ${leadInfo.email}.`);
               } catch (emailError) {
