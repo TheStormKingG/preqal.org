@@ -97,10 +97,22 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
   const headerY = marginInch; // Start content at 1 inch margin
   const titleStartX = logoData && logoWidth > 0 ? marginInch + 36 + 10 : marginInch; // Account for logo width (36mm) + spacing
   const titleMaxWidth = usableWidth - (titleStartX - marginInch) - 10; // Account for logo space
-  doc.setFontSize(22);
+  
+  // Reduce font size to ensure title fits on one line
+  const titleText = 'MD-ST Salary Band Assessment';
+  let titleFontSize = 18; // Start with 18pt (reduced from 22pt)
+  doc.setFontSize(titleFontSize);
   doc.setTextColor(30, 41, 59); // slate-800
-  const titleText = doc.splitTextToSize('MD-ST Salary Band Assessment', titleMaxWidth);
-  doc.text(titleText, titleStartX, headerY + 12);
+  
+  // Check if it fits on one line, reduce font size if needed
+  let titleSplit = doc.splitTextToSize(titleText, titleMaxWidth);
+  if (titleSplit.length > 1) {
+    titleFontSize = 16; // Further reduce to 16pt if still doesn't fit
+    doc.setFontSize(titleFontSize);
+    titleSplit = doc.splitTextToSize(titleText, titleMaxWidth);
+  }
+  // Use first line only to ensure single line
+  doc.text(titleSplit[0], titleStartX, headerY + 12);
   
   doc.setFontSize(11);
   doc.setTextColor(100, 116, 139); // slate-500
