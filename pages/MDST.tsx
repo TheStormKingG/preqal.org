@@ -69,61 +69,60 @@ const MDST: React.FC = () => {
             </div>
 
             <div className="space-y-6">
-          <div className="space-y-6">
-            {/* Progress Bar */}
-            <div className="w-full bg-white/50 h-2 rounded-full overflow-hidden mb-8 backdrop-blur-sm border border-neutral-200">
-              <div 
-                className="h-full bg-blue-500 transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
+              {/* Progress Bar */}
+              <div className="w-full bg-white/50 h-2 rounded-full overflow-hidden mb-8 backdrop-blur-sm border border-neutral-200">
+                <div 
+                  className="h-full bg-blue-500 transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+
+              <QuestionCard
+                question={QUESTIONS[currentIndex]}
+                selectedOption={answers[QUESTIONS[currentIndex].id] || null}
+                onSelect={handleSelect}
+                index={currentIndex}
+                total={QUESTIONS.length}
               />
-            </div>
 
-            <QuestionCard
-              question={QUESTIONS[currentIndex]}
-              selectedOption={answers[QUESTIONS[currentIndex].id] || null}
-              onSelect={handleSelect}
-              index={currentIndex}
-              total={QUESTIONS.length}
-            />
-
-            <div className="flex items-center justify-between gap-4 mt-8 sticky bottom-8 sm:relative sm:bottom-0 p-4 sm:p-0 bg-white/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none rounded-3xl sm:rounded-none border border-neutral-200 sm:border-none">
-              <button
-                onClick={handleBack}
-                disabled={currentIndex === 0}
-                className={`px-6 py-3 rounded-2xl font-bold transition-all ${
-                  currentIndex === 0 ? 'opacity-0 pointer-events-none' : 'text-neutral-500 hover:bg-white/50'
-                }`}
-              >
-                Back
-              </button>
-
-              {currentIndex === QUESTIONS.length - 1 ? (
+              <div className="flex items-center justify-between gap-4 mt-8 sticky bottom-8 sm:relative sm:bottom-0 p-4 sm:p-0 bg-white/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none rounded-3xl sm:rounded-none border border-neutral-200 sm:border-none">
                 <button
-                  onClick={handleSubmit}
-                  disabled={!isComplete}
-                  className={`px-10 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-200 ${
-                    isComplete 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95' 
-                      : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                  onClick={handleBack}
+                  disabled={currentIndex === 0}
+                  className={`px-6 py-3 rounded-2xl font-bold transition-all ${
+                    currentIndex === 0 ? 'opacity-0 pointer-events-none' : 'text-neutral-500 hover:bg-white/50'
                   }`}
                 >
-                  Finalize Assessment
+                  Back
                 </button>
-              ) : (
-                <button
-                  onClick={handleNext}
-                  disabled={!answers[QUESTIONS[currentIndex].id]}
-                  className={`px-10 py-4 rounded-2xl font-bold transition-all ${
-                    answers[QUESTIONS[currentIndex].id]
-                      ? 'bg-neutral-800 text-white hover:bg-neutral-900 active:scale-95 shadow-xl shadow-neutral-200'
-                      : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                  }`}
-                >
-                  Continue
-                </button>
-              )}
-            </div>
-            
+
+                {currentIndex === QUESTIONS.length - 1 ? (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!isComplete}
+                    className={`px-10 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-200 ${
+                      isComplete 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95' 
+                        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Finalize Assessment
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleNext}
+                    disabled={!answers[QUESTIONS[currentIndex].id]}
+                    className={`px-10 py-4 rounded-2xl font-bold transition-all ${
+                      answers[QUESTIONS[currentIndex].id]
+                        ? 'bg-neutral-800 text-white hover:bg-neutral-900 active:scale-95 shadow-xl shadow-neutral-200'
+                        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Continue
+                  </button>
+                )}
+              </div>
+              
               <p className="text-center text-xs text-neutral-400 font-medium uppercase tracking-widest pt-4">
                 Step {currentIndex + 1} of {QUESTIONS.length}
               </p>
