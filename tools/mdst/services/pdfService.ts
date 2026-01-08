@@ -132,29 +132,109 @@ export async function generatePDFReport(result: AssessmentResult, details: BandD
 
   // Table of Answers - ensure it doesn't overlap with footer
   const tableStartY = yPos + 10;
-  // Reserve space for scoring notes and footer
-  const maxTableHeight = contentEndY - tableStartY - 50; // Reserve 50mm for scoring notes
-
+  
+  // Prepare table data with properly wrapped text
+  // Split long text to ensure cells fit within column widths
   const tableData = QUESTIONS.map((q) => {
     const ansKey = result.answers[q.id];
     const opt = q.options.find(o => o.id === ansKey);
-    return [q.id, q.text.replace(':', ''), ansKey, opt?.label || ''];
+    
+    // Split question text to fit within 85mm column width
+    // Account for padding: 85mm - 8mm padding = 77mm usable width
+    const questionText = doc.splitTextToSize(q.text.replace(':', ''), 77);
+    
+    // Split option label to fit within 55mm column width
+    // Account for padding: 55mm - 8mm padding = 47mm usable width
+    const optionLabel = opt?.label || '';
+    const optionText = doc.splitTextToSize(optionLabel, 47);
+    
+    // autoTable accepts arrays of strings for multi-line cells
+    return [
+      q.id,
+      questionText,
+      ansKey,
+      optionText
+    ];
   });
+
+  // Reserve space for footer (footerHeight + bottomMargin)
+  const footerReservedSpace = footerHeight + bottomMargin;
+  // Reserve additional space for scoring notes section (if table ends near bottom)
+  const minSpaceForNotes = 50;
+  
+  // Calculate bottom margin: ensure footer space + some breathing room
+  const tableBottomMargin = footerReservedSpace + 10;
 
   autoTable(doc, {
     startY: tableStartY,
     head: [['ID', 'Question', 'Opt', 'Selection']],
     body: tableData,
     theme: 'grid',
-    headStyles: { fillColor: [30, 41, 59] },
-    columnStyles: {
-      0: { cellWidth: 10 },
-      1: { cellWidth: 80 },
-      2: { cellWidth: 15, halign: 'center' },
-      3: { cellWidth: 65 }
+    headStyles: { 
+      fillColor: [30, 41, 59],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      fontSize: 10,
+      cellPadding: { top: 5, right: 5, bottom: 5, left: 5 }
     },
-    // Ensure table respects page margins
-    margin: { top: tableStartY, left: 20, right: 20, bottom: contentEndY }
+    bodyStyles: {
+      fontSize: 9,
+      textColor: [51, 65, 85],
+      cellPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+      overflow: 'linebreak',
+      lineWidth: 0.1,
+      lineColor: [226, 232, 240]
+    },
+    columnStyles: {
+      0: { 
+        cellWidth: 15,
+        halign: 'center',
+        valign: 'middle',
+        fontStyle: 'bold',
+        overflow: 'visible'
+      },
+      1: { 
+        cellWidth: 85,
+        halign: 'left',
+        valign: 'top',
+        overflow: 'linebreak',
+        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 }
+      },
+      2: { 
+        cellWidth: 15, 
+        halign: 'center',
+        valign: 'middle',
+        fontStyle: 'bold',
+        overflow: 'visible'
+      },
+      3: { 
+        cellWidth: 55,
+        halign: 'left',
+        valign: 'top',
+        overflow: 'linebreak',
+        cellPadding: { top: 4, right: 4, bottom: 4, left: 4 }
+      }
+    },
+    // Critical: Enable row splitting across pages (default is false)
+    dontSplitRows: false,
+    // Show header on every page
+    showHead: 'everyPage',
+    // Set margins - bottom margin reserves space for footer
+    margin: { 
+      top: tableStartY, 
+      left: 20, 
+      right: 20, 
+      bottom: tableBottomMargin 
+    },
+    // Ensure proper wrapping
+    styles: {
+      overflow: 'linebreak',
+      cellPadding: 3,
+      lineWidth: 0.1,
+      lineColor: [226, 232, 240]
+    },
+    // Allow table to use full width
+    tableWidth: 'auto'
   });
 
   // Footer / Scoring Notes - positioned above footer space
