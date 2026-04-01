@@ -60,6 +60,7 @@ jobs:
           VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_MDST_LEAD_TEMPLATE_ID }}
           VITE_EMAILJS_MDST_USER_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_MDST_USER_TEMPLATE_ID }}
           VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
+          VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
         run: |
           # Verify environment variables are set (without exposing values)
           if [ -z "$VITE_SUPABASE_URL" ]; then
