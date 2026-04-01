@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
 const ContactUs: React.FC = () => {
   const jobTitles = ['Quality Manager','Quality Assurance Manager','Quality Control Manager','Compliance Manager','QHSE Manager','HSE Manager','Operations Manager','Production Manager','Quality Engineer','Quality Assurance Engineer','Compliance Officer','Quality Analyst','Quality Specialist','Regulatory Affairs Manager','Director of Quality','VP of Quality','Chief Quality Officer','Other'];
@@ -14,6 +18,10 @@ const ContactUs: React.FC = () => {
   const [error, setError] = useState('');
   const [showCustomJobTitle, setShowCustomJobTitle] = useState(false);
   const [showCustomQualityProblem, setShowCustomQualityProblem] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -42,6 +50,9 @@ const ContactUs: React.FC = () => {
       if (!formData.phone.trim()) { setError('Phone number is required'); setStatus('idle'); return; }
       if (!formData.most_pressing_quality_problem.trim()) { setError('Quality problem is required'); setStatus('idle'); return; }
       if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) { setError('Please describe your quality problem'); setStatus('idle'); return; }
+      if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); setStatus('idle'); return; }
+      if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); setStatus('idle'); return; }
+      if (!recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
 
       const jobTitle = formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim();
       const qualityProblem = formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim();
@@ -65,6 +76,10 @@ const ContactUs: React.FC = () => {
       setFormData({ first_name: '', last_name: '', email: '', company: '', job_title: '', custom_job_title: '', phone: '', country_iso: 'gy', dial_code: '+592', most_pressing_quality_problem: '', custom_quality_problem: '', message: '' });
       setShowCustomJobTitle(false);
       setShowCustomQualityProblem(false);
+      setRecaptchaToken(null);
+      setAcceptPrivacy(false);
+      setAcceptTerms(false);
+      recaptchaRef.current?.reset();
     } catch (err) {
       console.error('Error sending contact form:', err);
       setError('Something went wrong. Please try again or email us directly.');
@@ -149,6 +164,25 @@ const ContactUs: React.FC = () => {
                     <label className="block text-sm font-medium text-slate-600 mb-1">Message</label>
                     <textarea name="message" rows={4} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
                   </div>
+                  <div className="space-y-3">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-1 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+                      <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                        I have read and accept the <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
+                      </span>
+                    </label>
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-1 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+                      <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                        I have read and accept the <Link to="/terms-of-service" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
+                      </span>
+                    </label>
+                  </div>
+                  {RECAPTCHA_SITE_KEY && (
+                    <div className="flex justify-center">
+                      <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setRecaptchaToken(token)} onExpired={() => setRecaptchaToken(null)} />
+                    </div>
+                  )}
                   {error && <div className="p-3 neu-pressed rounded-xl text-red-600 text-sm">{error}</div>}
                   <button type="submit" disabled={status === 'submitting'} className="w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 px-6 rounded-xl transition-all neu-raised-sm disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center">
                     {status === 'submitting' ? <><Loader2 className="h-5 w-5 mr-2 animate-spin" />Processing...</> : 'Submit'}

@@ -77,7 +77,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
     },
     termsOfService: {
       title: 'Terms of Service | Preqal',
-      description: 'Terms of Service for Preqal Consulting. Read our terms governing use of preqal.org and our quality, safety, and ESG consulting services.',
+      description: 'Terms of Service for Preqal Inc. Read our terms governing use of preqal.org and our quality, safety, and ESG consulting services.',
       canonical: `${BASE_URL}/terms-of-service`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'article'

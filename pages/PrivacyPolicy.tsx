@@ -24,10 +24,10 @@ const PrivacyPolicy: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">1. Who We Are</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  Preqal Consulting ("Preqal", "we", "us", or "our") is a quality, safety, and ESG management systems consultancy. We are the data controller responsible for your personal data collected through this website (<strong>preqal.org</strong>).
+                  Preqal Inc ("Preqal", "we", "us", or "our") is a quality, safety, and ESG management systems consultancy. We are the data controller responsible for your personal data collected through this website (<strong>preqal.org</strong>).
                 </p>
                 <div className="neu-pressed-sm rounded-xl p-4 mt-4 text-sm text-slate-600 space-y-1">
-                  <p><strong>Business Name:</strong> Preqal Consulting</p>
+                  <p><strong>Business Name:</strong> Preqal Inc</p>
                   <p><strong>Founded by:</strong> Dr. Stefan Gravesande, MBBS</p>
                   <p><strong>Contact Email:</strong> privacy@preqal.org</p>
                   <p><strong>Location:</strong> Georgetown, Guyana</p>

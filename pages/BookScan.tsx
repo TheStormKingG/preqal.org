@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Send, CheckCircle2, Phone, Calendar, Loader2 } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import ReCAPTCHA from 'react-google-recaptcha';
 import SEO from '../components/SEO';
+
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
 const BookScan: React.FC = () => {
   const location = useLocation();
@@ -19,6 +22,10 @@ const BookScan: React.FC = () => {
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [error, setError] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,6 +35,9 @@ const BookScan: React.FC = () => {
     e.preventDefault();
     setStatus('submitting');
     setError('');
+    if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); setStatus('idle'); return; }
+    if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); setStatus('idle'); return; }
+    if (!recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
     try {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
@@ -45,6 +55,10 @@ const BookScan: React.FC = () => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
       );
       setStatus('success');
+      setRecaptchaToken(null);
+      setAcceptPrivacy(false);
+      setAcceptTerms(false);
+      recaptchaRef.current?.reset();
     } catch (err) {
       console.error('Error sending service request:', err);
       setError('Something went wrong. Please try again or call us directly.');
@@ -235,6 +249,25 @@ const BookScan: React.FC = () => {
                     ))}
                   </div>
                 </div>
+                <div className="space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-1 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+                    <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                      I have read and accept the <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-1 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+                    <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                      I have read and accept the <Link to="/terms-of-service" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
+                    </span>
+                  </label>
+                </div>
+                {RECAPTCHA_SITE_KEY && (
+                  <div className="flex justify-center">
+                    <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setRecaptchaToken(token)} onExpired={() => setRecaptchaToken(null)} />
+                  </div>
+                )}
                 {error && <div className="p-3 neu-pressed rounded-xl text-red-600 text-sm">{error}</div>}
                 <button type="submit" disabled={status === 'submitting'} className="w-full flex justify-center items-center py-4 px-6 rounded-xl text-white bg-amber-500 hover:bg-amber-400 font-bold text-lg transition-all duration-300 neu-raised-sm disabled:opacity-70 disabled:cursor-not-allowed">
                   {status === 'submitting' ? <Loader2 className="h-6 w-6 animate-spin" /> : <>{content.formTitle} <Send className="ml-2 h-5 w-5" /></>}

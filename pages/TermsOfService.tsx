@@ -24,10 +24,10 @@ const TermsOfService: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">1. Agreement to Terms</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  By accessing or using the Preqal website (<strong>preqal.org</strong>) and any services offered by Preqal Consulting ("Preqal", "we", "us", or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not access or use our website or services.
+                  By accessing or using the Preqal website (<strong>preqal.org</strong>) and any services offered by Preqal Inc ("Preqal", "we", "us", or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not access or use our website or services.
                 </p>
                 <p className="text-slate-700 leading-relaxed mt-3">
-                  These Terms constitute a legally binding agreement between you ("you", "your", or "Client") and Preqal Consulting. We encourage you to read these Terms carefully before using our website or engaging our services.
+                  These Terms constitute a legally binding agreement between you ("you", "your", or "Client") and Preqal Inc. We encourage you to read these Terms carefully before using our website or engaging our services.
                 </p>
               </section>
 
@@ -73,16 +73,16 @@ const TermsOfService: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">4. Intellectual Property</h2>
                 <p className="text-slate-700 leading-relaxed mb-4">
-                  All content on this website — including but not limited to text, graphics, logos (including the Preqal logo and Preqal 360™ mark), images, software, and downloadable materials — is the intellectual property of Preqal Consulting or its licensors and is protected by the Copyright Act of Guyana (Chapter 51:03), international copyright treaties, and applicable intellectual property laws.
+                  All content on this website — including but not limited to text, graphics, logos (including the Preqal logo and Preqal 360™ mark), images, software, and downloadable materials — is the intellectual property of Preqal Inc or its licensors and is protected by the Copyright Act of Guyana (Chapter 51:03), international copyright treaties, and applicable intellectual property laws.
                 </p>
                 <CollapsibleSection title="Downloadable resources" headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">
-                    Free resource templates provided through our website are licensed for your personal and internal business use only. You may not redistribute, resell, or publicly share these templates without our prior written consent. You may modify them for your organization's internal use. All templates are provided "as-is" and remain the intellectual property of Preqal Consulting.
+                    Free resource templates provided through our website are licensed for your personal and internal business use only. You may not redistribute, resell, or publicly share these templates without our prior written consent. You may modify them for your organization's internal use. All templates are provided "as-is" and remain the intellectual property of Preqal Inc.
                   </p>
                 </CollapsibleSection>
                 <CollapsibleSection title="Trademarks" headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">
-                    "Preqal", "Preqal 360™", "Quality Risk Scan™", "Clinic on Quality™", and the Preqal logo are trademarks of Preqal Consulting. Use of these marks without our written permission is prohibited. All other trademarks referenced on this website are the property of their respective owners.
+                    "Preqal", "Preqal 360™", "Quality Risk Scan™", "Clinic on Quality™", and the Preqal logo are trademarks of Preqal Inc. Use of these marks without our written permission is prohibited. All other trademarks referenced on this website are the property of their respective owners.
                   </p>
                 </CollapsibleSection>
               </section>
@@ -145,7 +145,7 @@ const TermsOfService: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">9. Indemnification</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  You agree to indemnify, defend, and hold harmless Preqal Consulting, its founder, employees, agents, and affiliates from and against any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising from your use of the website, violation of these Terms, or infringement of any third party's rights.
+                  You agree to indemnify, defend, and hold harmless Preqal Inc, its founder, employees, agents, and affiliates from and against any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising from your use of the website, violation of these Terms, or infringement of any third party's rights.
                 </p>
               </section>
 
