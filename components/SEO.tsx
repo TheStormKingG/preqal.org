@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SEOData, getSeoMeta } from '../seo/seo';
-import { getOrganizationSchema } from '../seo/organizationSchema';
+import { getOrganizationSchema, getBrandSchema } from '../seo/organizationSchema';
 import { getWebsiteSchema } from '../seo/websiteSchema';
 import { getServicesSchema } from '../seo/servicesSchema';
 
@@ -13,6 +13,7 @@ interface SEOProps {
 const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
   const seoData = { ...getSeoMeta(pageKey), ...customData };
   const orgSchema = getOrganizationSchema();
+  const brandSchema = getBrandSchema();
   const websiteSchema = getWebsiteSchema();
   const servicesSchema = getServicesSchema();
 
@@ -25,6 +26,10 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
       
       {/* Noindex if specified */}
       {seoData.noindex && <meta name="robots" content="noindex, nofollow" />}
+
+      {/* Brand identity reinforcement */}
+      <meta name="author" content="Preqal Inc" />
+      <meta name="application-name" content="Preqal" />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={seoData.ogType || 'website'} />
@@ -50,13 +55,18 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
       <script type="application/ld+json">
         {JSON.stringify(orgSchema)}
       </script>
+
+      {/* Brand Structured Data - Helps Google distinguish "Preqal" as a brand entity */}
+      <script type="application/ld+json">
+        {JSON.stringify(brandSchema)}
+      </script>
       
-      {/* WebSite Structured Data - Added for better SEO tool detection */}
+      {/* WebSite Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(websiteSchema)}
       </script>
       
-      {/* Services Structured Data - Defines core services for entity recognition */}
+      {/* Services Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(servicesSchema)}
       </script>

@@ -1,14 +1,77 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 
 const webpageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
+  '@id': 'https://preqal.org/preqal-not-prequel/#webpage',
   headline: 'Preqal (Not Prequel) | Brand Clarification',
   url: 'https://preqal.org/preqal-not-prequel',
   description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is a quality, safety, ESG, and integrated management systems company.',
+  about: {
+    '@id': 'https://preqal.org/#organization'
+  },
+  isPartOf: {
+    '@id': 'https://preqal.org/#website'
+  }
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is Preqal related to movies or entertainment?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Preqal is not related to movies, entertainment, or any form of media. Preqal is a quality management and compliance consulting company based in Georgetown, Guyana.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'What does Preqal do?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Preqal helps businesses build quality, safety, and environmental management systems. We provide services such as risk assessments, ISO compliance support, documentation development, training, and audit preparation.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Where is Preqal located?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Preqal operates primarily in Georgetown, Guyana and serves clients across the Caribbean region. We work with businesses of all sizes, from small shops to large corporations.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I contact Preqal?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You can contact Preqal through the contact page at https://preqal.org/contact, or learn more about our services at https://preqal.org/services.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Is Preqal the same as "prequel"?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Preqal is a brand name and company name for a quality, safety, and ESG management systems consultancy. "Prequel" is a common English word referring to a narrative work that precedes another. They are completely unrelated concepts.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the difference between Preqal and prequel?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Preqal (preqal.org) is a professional consulting company specializing in ISO-aligned quality management systems, safety management systems, and ESG programs. "Prequel" is an English word meaning a story set before a previously existing work. Preqal has no connection to entertainment, movies, or fiction.'
+      }
+    }
+  ]
 };
 
 const PreqalNotPrequel: React.FC = () => {
@@ -87,6 +150,9 @@ const PreqalNotPrequel: React.FC = () => {
                 <CollapsibleSection title='Is Preqal the same as "prequel"?' headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">No. Preqal is a brand name and company name, while "prequel" is a common English word referring to a narrative work that precedes another. They are completely unrelated concepts.</p>
                 </CollapsibleSection>
+                <CollapsibleSection title="What is the difference between Preqal and prequel?" headingLevel="h3">
+                  <p className="text-slate-700 leading-relaxed">Preqal (<a href="https://preqal.org" className="text-amber-600 hover:text-amber-500 font-semibold underline">preqal.org</a>) is a professional consulting company specializing in ISO-aligned quality management systems, safety management systems, and ESG programs. "Prequel" is an English word meaning a story set before a previously existing work. Preqal has no connection to entertainment, movies, or fiction.</p>
+                </CollapsibleSection>
               </div>
             </section>
 
@@ -103,9 +169,10 @@ const PreqalNotPrequel: React.FC = () => {
         </div>
       </div>
 
-      <script type="application/ld+json">
-        {JSON.stringify(webpageSchema)}
-      </script>
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(webpageSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
     </>
   );
 };
