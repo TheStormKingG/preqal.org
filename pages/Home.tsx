@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf } from 'lucide-react';
+import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf, Download } from 'lucide-react';
 const MaturityChart = React.lazy(() => import('../components/MaturityChart').then(module => ({ default: module.default })));
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Quality, Safety & ESG Management Systems</h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                Preqal specializes in developing comprehensive ISO-aligned <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management systems</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management systems</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG programs</Link> for businesses across Guyana and the Caribbean. Our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system (IMS)</Link> framework combines quality, safety, and ESG reporting into a unified operational structure. Our approach aligns with internationally recognized quality management principles, such as those outlined by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality (ASQ)</a>.
+                Preqal specializes in developing comprehensive ISO-aligned <strong>quality management systems</strong>, <strong>safety management systems</strong>, and <strong>ESG programs</strong> for businesses across Guyana and the Caribbean. Our <strong>integrated management system (IMS)</strong> framework combines quality, safety, and ESG reporting into a unified operational structure. Our approach aligns with internationally recognized quality management principles, such as those outlined by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality (ASQ)</a>.
               </p>
             </div>
             <div className="max-w-3xl mx-auto space-y-2">
@@ -146,7 +146,7 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto text-left">
               <h2 className="text-3xl font-bold text-slate-900 mb-4">How We Work</h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality management system</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety management system</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">ESG program</Link> are not just compliant, but drive measurable business results.
+                The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <strong>quality management system</strong>, <strong>safety management system</strong>, and <strong>ESG program</strong> are not just compliant, but drive measurable business results.
               </p>
             </div>
             <div className="max-w-3xl mx-auto space-y-2">
@@ -157,7 +157,7 @@ const Home: React.FC = () => {
               </CollapsibleSection>
               <CollapsibleSection title="Build and implement in phases" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We architect your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">Integrated Management System</Link> and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">training your team</Link> to ensure smooth adoption.
+                  We architect your Integrated Management System and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and training your team to ensure smooth adoption.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Verify effectiveness" headingLevel="h3">
@@ -197,7 +197,7 @@ const Home: React.FC = () => {
           <div className="max-w-3xl space-y-2 mb-8">
             <CollapsibleSection title="Integrated management system design" headingLevel="h3">
               <p className="text-base text-slate-600 leading-relaxed">
-                We architect unified management systems that combine <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">quality</Link>, <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">safety</Link>, and <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">environmental processes</Link> into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
+                We architect unified management systems that combine quality, safety, and environmental processes into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
               </p>
             </CollapsibleSection>
             <CollapsibleSection title="Training for frontline teams" headingLevel="h3">
@@ -276,32 +276,25 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Lead Magnet ── */}
+      {/* ── Free Resource Package ── */}
       <section className="py-16 relative text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto neu-raised-lg rounded-3xl overflow-visible animate-fade-in-up p-6 md:p-12">
-            <div className="relative h-48 mb-4 flex items-center justify-center">
-              <style>{`
-                @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
-                @keyframes floatReverse { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(-5deg); } }
-                @keyframes floatSlow { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-25px) rotate(3deg); } }
-                .doc-float-1 { animation: float 3s ease-in-out infinite; }
-                .doc-float-2 { animation: floatReverse 3.5s ease-in-out infinite; animation-delay: 0.5s; }
-                .doc-float-3 { animation: floatSlow 4s ease-in-out infinite; animation-delay: 1s; }
-                .doc-float-4 { animation: float 3.2s ease-in-out infinite; animation-delay: 1.5s; }
-                .doc-float-5 { animation: floatReverse 3.8s ease-in-out infinite; animation-delay: 2s; }
-              `}</style>
-              <FileText className="absolute h-14 w-14 text-amber-500/40 doc-float-1" style={{ left: '5%', top: '30%' }} />
-              <FileText className="absolute h-16 w-16 text-amber-500/50 doc-float-2" style={{ left: '20%', top: '20%' }} />
-              <FileText className="absolute h-20 w-20 text-amber-600/60 doc-float-3" style={{ left: '50%', top: '15%', transform: 'translateX(-50%)' }} />
-              <FileText className="absolute h-16 w-16 text-amber-500/45 doc-float-4" style={{ right: '20%', top: '25%' }} />
-              <FileText className="absolute h-14 w-14 text-amber-500/40 doc-float-5" style={{ right: '5%', top: '35%' }} />
+            <div className="inline-flex items-center justify-center p-4 rounded-full mb-6 neu-pressed">
+              <Download className="h-10 w-10 text-amber-600" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">Free Resource Package</h2>
+            <p className="text-slate-500 mb-6 max-w-md mx-auto">5 ready-to-use compliance templates — download instantly after a quick form.</p>
+            <div className="flex flex-wrap justify-center gap-2 text-xs mb-8">
+              {['Document Masterlist', 'QHSE Policy', 'Document Control', 'Risk Register', 'Training Register'].map((t) => (
+                <span key={t} className="neu-pressed-sm px-3 py-1.5 rounded-lg text-slate-600">{t}</span>
+              ))}
             </div>
             <Link
               to="/resources"
               className="inline-flex items-center justify-center px-4 py-3 md:px-8 md:py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm md:text-lg rounded-xl transition-all duration-300 neu-raised-sm w-full md:w-auto"
             >
-              Get Free Document Templates <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+              Download Free Templates <Download className="ml-2 h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
             </Link>
           </div>
         </div>
@@ -319,7 +312,7 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto space-y-2 text-left mb-8">
               <CollapsibleSection title="What you receive" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">integrated management system</Link>. The report includes actionable recommendations tailored to your specific risks. For teams new to systems-based thinking, this <a href="https://www.youtube.com/watch?v=O5T4H8K_rwQ" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">short explainer video on systems-based management</a> helps illustrate how structured management systems reduce operational chaos.
+                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your integrated management system. The report includes actionable recommendations tailored to your specific risks. For teams new to systems-based thinking, this <a href="https://www.youtube.com/watch?v=O5T4H8K_rwQ" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">short explainer video on systems-based management</a> helps illustrate how structured management systems reduce operational chaos.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Who it's for" headingLevel="h3">
