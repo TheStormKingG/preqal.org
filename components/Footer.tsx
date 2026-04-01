@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Mail } from 'lucide-react';
+import { Linkedin, Facebook } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
@@ -54,11 +54,11 @@ const Footer: React.FC = () => {
               Founded and led by Dr. Stefan Gravesande, MBBS.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+              <a href="https://linkedin.com/company/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
-                <Mail className="h-5 w-5" />
+              <a href="https://www.facebook.com/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+                <Facebook className="h-5 w-5" />
               </a>
             </div>
           </div>
