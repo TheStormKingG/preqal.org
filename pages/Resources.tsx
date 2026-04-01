@@ -51,7 +51,7 @@ const Resources: React.FC = () => {
     if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) { setError('Please describe your quality problem'); return false; }
     if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); return false; }
     if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); return false; }
-    if (!recaptchaToken) { setError('Please complete the reCAPTCHA verification'); return false; }
+    if (RECAPTCHA_SITE_KEY && !recaptchaToken) { setError('Please complete the reCAPTCHA verification'); return false; }
     return true;
   };
 

@@ -52,7 +52,7 @@ const ContactUs: React.FC = () => {
       if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) { setError('Please describe your quality problem'); setStatus('idle'); return; }
       if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); setStatus('idle'); return; }
       if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); setStatus('idle'); return; }
-      if (!recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
+      if (RECAPTCHA_SITE_KEY && !recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
 
       const jobTitle = formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim();
       const qualityProblem = formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim();

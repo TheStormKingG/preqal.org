@@ -37,7 +37,7 @@ const BookScan: React.FC = () => {
     setError('');
     if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); setStatus('idle'); return; }
     if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); setStatus('idle'); return; }
-    if (!recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
+    if (RECAPTCHA_SITE_KEY && !recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
     try {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
