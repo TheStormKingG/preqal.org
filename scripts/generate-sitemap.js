@@ -8,13 +8,13 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'https://preqal.org';
 const routes = [
   { url: '/', changefreq: 'weekly', priority: 1.0 },
-  { url: '/#/about', changefreq: 'monthly', priority: 0.8 },
-  { url: '/#/services', changefreq: 'monthly', priority: 0.9 },
-  { url: '/#/contact', changefreq: 'monthly', priority: 0.8 },
-  { url: '/#/case-studies', changefreq: 'monthly', priority: 0.7 },
-  { url: '/#/resources', changefreq: 'monthly', priority: 0.7 },
-  { url: '/#/book', changefreq: 'monthly', priority: 0.8 },
-  { url: '/#/preqal-not-prequel', changefreq: 'yearly', priority: 0.6 },
+  { url: '/about', changefreq: 'monthly', priority: 0.8 },
+  { url: '/services', changefreq: 'monthly', priority: 0.9 },
+  { url: '/contact', changefreq: 'monthly', priority: 0.8 },
+  { url: '/case-studies', changefreq: 'monthly', priority: 0.7 },
+  { url: '/resources', changefreq: 'monthly', priority: 0.7 },
+  { url: '/book', changefreq: 'monthly', priority: 0.8 },
+  { url: '/preqal-not-prequel', changefreq: 'yearly', priority: 0.6 },
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

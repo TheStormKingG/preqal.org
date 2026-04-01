@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Self-hosted Inter font - @font-face declarations (only weights 400, 500, 600, 700) */
+/* Self-hosted Inter font */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -33,458 +33,132 @@
   src: url('/fonts/inter/Inter-700.woff2') format('woff2');
 }
 
-/* Custom styles that were in index.html */
+/* ── Base ── */
 body {
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  background-color: #f6f8fb;
-  color: #171717;
+  background-color: #e0e5ec;
+  color: #334155;
 }
 
-/* Subtle Fade In Animation */
+/* ── Neumorphic Utilities ── */
+.neu-raised {
+  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+}
+.neu-raised-sm {
+  box-shadow: 3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff;
+}
+.neu-raised-lg {
+  box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
+}
+.neu-pressed {
+  box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff;
+}
+.neu-pressed-sm {
+  box-shadow: inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff;
+}
+.neu-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+}
+.neu-flat {
+  background: #e0e5ec;
+  box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+}
+
+/* ── Animations ── */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
 }
-
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-500 { animation-delay: 500ms; }
 
-/* Page Transition Animations */
+/* Page Transitions */
 .page-transition {
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
   border-radius: 1.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
 }
 
 @keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(100%) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
+  from { opacity: 0; transform: translateX(100%) scale(0.8); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
 }
-
 @keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-100%) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
+  from { opacity: 0; transform: translateX(-100%) scale(0.8); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
 }
-
 @keyframes slideOutLeft {
-  from {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-100%) scale(0.8);
-  }
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(-100%) scale(0.8); }
 }
-
 @keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(100%) scale(0.8);
-  }
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.8); }
 }
-
-.slide-in-right {
-  animation-name: slideInRight;
-}
-
-.slide-in-left {
-  animation-name: slideInLeft;
-}
-
-.slide-out-left {
-  animation-name: slideOutLeft;
-}
-
-.slide-out-right {
-  animation-name: slideOutRight;
-}
+.slide-in-right  { animation-name: slideInRight; }
+.slide-in-left   { animation-name: slideInLeft; }
+.slide-out-left  { animation-name: slideOutLeft; }
+.slide-out-right { animation-name: slideOutRight; }
 
 /* Mobile Menu Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
 
-@keyframes glassShine {
-  0% {
-    transform: translateX(-100%) skewX(-20deg);
-  }
-  100% {
-    transform: translateX(200%) skewX(-20deg);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Glass Backdrop Effect */
+/* Glass Backdrop Overlay (mobile menu) */
 .glass-backdrop {
-  background: rgba(0, 0, 0, 0.81);
-  backdrop-filter: blur(15px) saturate(180%);
-  -webkit-backdrop-filter: blur(15px) saturate(180%);
-  position: relative;
+  background: rgba(224, 229, 236, 0.85);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+/* ── Collapsible Section ── */
+.collapsible-content {
   overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+.collapsible-content[data-open="false"] {
+  max-height: 0;
+  opacity: 0;
+}
+.collapsible-content[data-open="true"] {
+  opacity: 1;
+}
+.collapsible-chevron {
+  transition: transform 0.3s ease;
+}
+.collapsible-chevron[data-open="true"] {
+  transform: rotate(180deg);
 }
 
-.glass-backdrop::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent
-  );
-  animation: glassShine 3s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
-}
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #e0e5ec; }
+::-webkit-scrollbar-thumb { background: #a3b1c6; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
 
-.glass-backdrop::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Custom Scrollbar for Light Theme */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #fbbf24;
-}
-
-/* Scatter Pattern for Dark Backgrounds */
-.bg-scatter-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='500' height='500' viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-opacity='0.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M60 120 v-20 h10 v20 M80 120 v-35 h10 v35 M100 120 v-15 h10 v15' /%3E%3Ccircle cx='420' cy='180' r='8' /%3E%3Cpath d='M408 210 q12 -10 24 0' /%3E%3Cpath d='M120 400 l15 9 v18 l-15 9 l-15 -9 v-18 z' /%3E%3Crect x='380' y='380' width='28' height='36' rx='3' /%3E%3Cpath d='M388 392 h12 M388 400 h12 M388 408 h8' /%3E%3Cpath d='M250 250 l15 8 v12 q-15 12 -30 0 v-12 z' /%3E%3Ccircle cx='50' cy='280' r='12' /%3E%3Cpath d='M60 290 l10 10' /%3E%3Ccircle cx='350' cy='60' r='12' stroke-dasharray='4 4' /%3E%3Ccircle cx='180' cy='80' r='4' /%3E%3Ccircle cx='220' cy='100' r='4' /%3E%3Cpath d='M184 82 l32 16' /%3E%3Cpath d='M280 350 h20 v25 h-20 z M285 358 h10 M285 366 h10' /%3E%3Cpath d='M150 150 h15 l8 8' stroke-dasharray='5 5' /%3E%3Ccircle cx='450' cy='300' r='2' fill='%23ffffff' fill-opacity='0.1' stroke='none'/%3E%3Ccircle cx='80' cy='50' r='3' fill='%23ffffff' fill-opacity='0.1' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* Light Scatter Pattern for White Backgrounds */
-.bg-scatter-pattern-light {
-  background-image: url("data:image/svg+xml,%3Csvg%20width='1000'%20height='1000'%20viewBox='0%200%201000%201000'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cg%20fill='none'%20stroke='%23ea580c'%20stroke-width='2'%20stroke-opacity='0.32'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M150%20150%20v-30%20h15%20v30%20M180%20150%20v-50%20h15%20v50%20M210%20150%20v-20%20h15%20v20'%20/%3E%3Cpath%20d='M800%20300%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Ccircle%20cx='300'%20cy='700'%20r='16'%20stroke-dasharray='6%206'%20/%3E%3Cpath%20d='M500%20500%20l20%2010%20v18%20q-20%2016%20-40%200%20v-18%20z'%20/%3E%3Cpath%20d='M600%20100%20h30%20v40%20h-30%20z%20M608%20112%20h14%20M608%20124%20h14'%20/%3E%3Cpath%20d='M100%20600%20l15%2015%20l30%20-30'%20/%3E%3Ccircle%20cx='850'%20cy='850'%20r='6'%20/%3E%3Cpath%20d='M856%20856%20l24%2024'%20/%3E%3Cpath%20d='M400%20800%20l15%208%20l-15%208%20l-15%20-8%20z'%20/%3E%3Cpath%20d='M50%2050%20l20%2012%20v24%20l-20%2012%20l-20%20-12%20v-24%20z'%20/%3E%3Cpath%20d='M900%2050%20q-12%200%20-12%2012%20q0%2010%2010%2010%20v6%20h6%20v-6%20q10%200%2010%20-10%20q0%20-12%20-12%20-12'%20/%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* Mobile Typography & Spacing - Consistent line spacing across all pages */
+/* ── Mobile Typography ── */
 @media (max-width: 768px) {
-  /* Base typography - consistent line height for all text */
-  body {
-    line-height: 1.6 !important;
-  }
-
-  /* Paragraphs - consistent spacing */
-  p {
-    line-height: 1.6 !important;
-    margin-bottom: 1rem !important;
-    margin-top: 0 !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    hyphens: auto !important;
-  }
-
-  /* Ensure paragraphs don't force links to break */
-  p {
-    text-align: left !important;
-  }
-
-  /* Override any conflicting line-height classes on paragraphs */
-  p[class*="leading-"] {
-    line-height: 1.6 !important;
-  }
-
-  /* Inline links within paragraphs - inherit parent line-height */
-  /* REMOVED - duplicate rule, see mobile tap target section below */
-
-  /* Paragraphs within sections - consistent spacing */
-  section p,
-  div p,
-  article p {
-    line-height: 1.6 !important;
-    margin-bottom: 1rem !important;
-  }
-
-  /* Ensure inline elements don't break line spacing */
-  p span,
-  p em,
-  p strong,
-  p code {
-    line-height: inherit !important;
-    vertical-align: baseline !important;
-  }
-
-  /* Headings - consistent spacing above and below */
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.3 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  /* Headings followed by paragraphs - consistent gap */
-  h1 + p,
-  h2 + p,
-  h3 + p,
-  h4 + p,
-  h5 + p,
-  h6 + p {
-    margin-top: 0.5rem !important;
-    margin-bottom: 1rem !important;
-  }
-
-  /* Sections - consistent spacing between sections */
-  section {
-    margin-bottom: 2rem !important;
-    padding-top: 1.5rem !important;
-    padding-bottom: 1.5rem !important;
-  }
-
-  /* Divs with content - consistent spacing */
-  div[class*="space-y"] > * {
-    margin-bottom: 1rem !important;
-  }
-
-  /* Lists - consistent spacing */
-  ul, ol {
-    line-height: 1.6 !important;
-    margin-bottom: 1rem !important;
-    margin-top: 0 !important;
-    padding-left: 1.5rem !important;
-  }
-
-  li {
-    line-height: 1.6 !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  /* Text blocks in cards/containers - consistent spacing */
-  [class*="card"] p,
-  [class*="container"] p,
-  [class*="max-w"] p {
-    line-height: 1.6 !important;
-    margin-bottom: 1rem !important;
-  }
-
-  /* Spacing between content blocks */
-  .space-y-4 > * + * {
-    margin-top: 1rem !important;
-  }
-
-  .space-y-6 > * + * {
-    margin-top: 1.5rem !important;
-  }
-
-  .space-y-8 > * + * {
-    margin-top: 2rem !important;
-  }
-
-  /* Ensure consistent spacing in text-heavy sections */
-  [class*="text-"]:not([class*="text-amber"]):not([class*="text-orange"]) {
-    line-height: 1.6 !important;
-  }
+  body { line-height: 1.6; }
+  p { line-height: 1.6; margin-bottom: 1rem; word-wrap: break-word; overflow-wrap: break-word; }
+  h1, h2, h3, h4, h5, h6 { line-height: 1.3; margin-bottom: 0.75rem; }
+  section { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 }
-
-/* Mobile Tap Target Optimization - Google Standard: 48x48px minimum */
-@media (max-width: 768px) {
-  /* All buttons and button-like links must be at least 48x48px */
-  button,
-  a[class*="button"],
-  a[class*="btn"],
-  a[class*="cta"],
-  .inline-flex[class*="justify-center"],
-  Link[class*="inline-flex"] {
-    min-height: 48px !important;
-    min-width: 48px !important;
-    padding: 12px 16px !important;
-  }
-
-  /* Primary CTAs - Full width on mobile for thumb reach */
-  a[href*="/book"],
-  Link[to*="/book"],
-  .bg-orange-600,
-  .bg-orange-500 {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    min-height: 48px !important;
-    padding: 14px 20px !important;
-    margin-bottom: 12px !important;
-  }
-
-  /* Navigation links - Ensure proper spacing */
-  nav a,
-  nav Link {
-    min-height: 48px !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 12px 16px !important;
-  }
-
-  /* Mobile menu links - Already have good spacing, ensure tap target */
-  nav[class*="md:hidden"] a,
-  nav[class*="md:hidden"] Link {
-    min-height: 48px !important;
-    padding: 14px 16px !important;
-    margin-bottom: 4px !important;
-  }
-
-  /* Links within paragraphs - MUST be first to override other rules */
-  /* Use highest specificity to override all other rules */
-  p a[class*="text-amber"],
-  p Link[class*="text-amber"],
-  p a[class*="underline"],
-  p Link[class*="underline"],
-  p > a[class*="text-amber"],
-  p > Link[class*="text-amber"],
-  p > a[class*="underline"],
-  p > Link[class*="underline"],
-  p * a[class*="text-amber"],
-  p * Link[class*="text-amber"],
-  p * a[class*="underline"],
-  p * Link[class*="underline"] {
-    display: inline !important;
-    min-height: auto !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    line-height: inherit !important;
-    vertical-align: baseline !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    width: auto !important;
-    text-align: inherit !important;
-    float: none !important;
-    clear: none !important;
-    max-width: none !important;
-  }
-
-  /* Inline links in content - Stack vertically with spacing (but not within paragraphs) */
-  div a[class*="text-amber"]:not(p a):not(p > a),
-  div a[class*="underline"]:not(p a):not(p > a),
-  div Link[class*="text-amber"]:not(p Link):not(p > Link),
-  div Link[class*="underline"]:not(p Link):not(p > Link) {
-    display: inline-block !important;
-    min-height: 44px !important;
-    padding: 8px 4px !important;
-    margin: 4px 0 !important;
-    line-height: 1.6 !important;
-  }
-
-  /* Link clusters - Stack vertically with proper spacing */
-  .flex.flex-wrap.gap-4 a,
-  .flex.flex-wrap.gap-4 Link {
-    display: block !important;
-    width: 100% !important;
-    margin-bottom: 12px !important;
-    min-height: 48px !important;
-    padding: 12px 16px !important;
-  }
-
-  /* Footer links - Ensure tap targets */
-  footer a,
-  footer Link {
-    min-height: 44px !important;
-    padding: 8px 0 !important;
-    display: inline-block !important;
-    margin-bottom: 4px !important;
-  }
-
-  /* Service cards and interactive elements */
-  [class*="card"],
-  [class*="group"][class*="cursor-pointer"] {
-    min-height: 48px !important;
-    padding: 16px !important;
-  }
-
-  /* Ensure spacing between interactive elements */
-  .gap-4 {
-    gap: 12px !important;
-  }
-
-  /* Hero CTA buttons - Full width stack */
-  .flex-col.gap-4 > *,
-  .flex.flex-col.gap-4 > * {
-    width: 100% !important;
-    margin-bottom: 12px !important;
-  }
-
-  /* Mobile menu button - Ensure 48x48px */
-  button[class*="inline-flex"][class*="items-center"][class*="justify-center"] {
-    min-width: 48px !important;
-    min-height: 48px !important;
-    padding: 12px !important;
-  }
-}
-

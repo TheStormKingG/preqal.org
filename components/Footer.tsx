@@ -14,32 +14,28 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[linear-gradient(to_bottom,#f6f8fb_0%,transparent_0%,#000000_64px,#000000_100%)] text-neutral-400 pt-16 pb-12 relative overflow-hidden">
-      {/* Pattern Overlay */}
-      <div className="absolute inset-0 bg-scatter-pattern opacity-[0.3] pointer-events-none"></div>
+    <footer className="bg-[#e0e5ec] pt-16 pb-12 relative">
+      {/* Top divider */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="h-px neu-pressed-sm rounded-full" />
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <div className="mb-4">
               <picture>
-                <source 
-                  type="image/avif" 
-                  srcSet={`
-                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w,
-                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w
-                  `}
+                <source
+                  type="image/avif"
+                  srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w`}
                   sizes="(max-width: 640px) 200px, 400px"
                 />
-                <source 
-                  type="image/webp" 
-                  srcSet={`
-                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w,
-                    ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w
-                  `}
+                <source
+                  type="image/webp"
+                  srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w`}
                   sizes="(max-width: 640px) 200px, 400px"
                 />
-                <img 
+                <img
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
                   className="w-auto"
@@ -51,26 +47,30 @@ const Footer: React.FC = () => {
                 />
               </picture>
             </div>
-            <p className="text-sm leading-relaxed mb-4 text-neutral-500">
+            <p className="text-sm leading-relaxed mb-4 text-slate-500">
               Integrated Quality, Safety & Compliance Systems for any business.
             </p>
-            <p className="text-xs leading-relaxed mb-6 text-neutral-600 italic">
+            <p className="text-xs leading-relaxed mb-6 text-slate-400 italic">
               Founded and led by Dr. Stefan Gravesande, MBBS.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-amber-400 transition-colors duration-300"><Linkedin className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-amber-400 transition-colors duration-300"><Mail className="h-5 w-5" /></a>
+            <div className="flex space-x-3">
+              <a href="#" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+                <Mail className="h-5 w-5" />
+              </a>
             </div>
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-4 tracking-wide">Services</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Services</h3>
             <ul className="space-y-2 text-sm">
               {services.map((service) => (
                 <li key={service.name}>
-                  <Link 
+                  <Link
                     to={`/book?service=${encodeURIComponent(service.query)}`}
-                    className="hover:text-amber-400 transition-colors duration-200 block"
+                    className="text-slate-500 hover:text-amber-600 transition-colors duration-200 block"
                   >
                     {service.name}
                   </Link>
@@ -80,33 +80,36 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-4 tracking-wide">Company</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Company</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="hover:text-amber-400 transition-colors duration-200">About Preqal</Link></li>
-              <li><Link to="/case-studies" className="hover:text-amber-400 transition-colors duration-200">Case Studies</Link></li>
-              <li><Link to="/resources" className="hover:text-amber-400 transition-colors duration-200">Resources</Link></li>
-              <li><Link to="/contact" className="hover:text-amber-400 transition-colors duration-200">Contact Us</Link></li>
-              <li><Link to="/preqal-not-prequel" className="hover:text-amber-400 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
+              <li><Link to="/about" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">About Preqal</Link></li>
+              <li><Link to="/case-studies" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Case Studies</Link></li>
+              <li><Link to="/resources" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Resources</Link></li>
+              <li><Link to="/contact" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact Us</Link></li>
+              <li><Link to="/preqal-not-prequel" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-4 tracking-wide">Compliance</h3>
-            <div className="flex flex-wrap gap-2 text-xs font-mono text-neutral-500">
-              <span className="border border-neutral-800 bg-neutral-900 px-2 py-1 rounded hover:border-amber-900 hover:text-amber-500 transition-colors cursor-default">ISO 9001</span>
-              <span className="border border-neutral-800 bg-neutral-900 px-2 py-1 rounded hover:border-amber-900 hover:text-amber-500 transition-colors cursor-default">ISO 45001</span>
-              <span className="border border-neutral-800 bg-neutral-900 px-2 py-1 rounded hover:border-amber-900 hover:text-amber-500 transition-colors cursor-default">ISO 14001</span>
-              <span className="border border-neutral-800 bg-neutral-900 px-2 py-1 rounded hover:border-amber-900 hover:text-amber-500 transition-colors cursor-default">HACCP</span>
-              <span className="border border-neutral-800 bg-neutral-900 px-2 py-1 rounded hover:border-amber-900 hover:text-amber-500 transition-colors cursor-default">Climate-Friendliness</span>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Compliance</h3>
+            <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
+              {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate-Friendliness'].map((badge) => (
+                <span key={badge} className="neu-pressed-sm px-3 py-1.5 rounded-lg hover:text-amber-600 transition-colors cursor-default">
+                  {badge}
+                </span>
+              ))}
             </div>
           </div>
         </div>
-        
-        <div className="border-t border-neutral-900 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600">
+
+        <div className="mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
+          <div className="h-px w-full neu-pressed-sm rounded-full mb-8" />
+        </div>
+        <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
           <p>&copy; {new Date().getFullYear()} Preqal Consulting. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-neutral-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-neutral-400 transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-slate-600 transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>
