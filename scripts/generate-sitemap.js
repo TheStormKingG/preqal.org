@@ -15,6 +15,8 @@ const routes = [
   { url: '/resources', changefreq: 'monthly', priority: 0.7 },
   { url: '/book', changefreq: 'monthly', priority: 0.8 },
   { url: '/preqal-not-prequel', changefreq: 'yearly', priority: 0.6 },
+  { url: '/privacy-policy', changefreq: 'yearly', priority: 0.3 },
+  { url: '/terms-of-service', changefreq: 'yearly', priority: 0.3 },
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

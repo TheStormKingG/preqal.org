@@ -68,6 +68,20 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'article'
     },
+    privacyPolicy: {
+      title: 'Privacy Policy | Preqal',
+      description: 'Preqal\'s GDPR-compliant Privacy Policy. Learn how we collect, use, and protect your personal data in accordance with international standards and the Guyana Data Protection Act 2023.',
+      canonical: `${BASE_URL}/privacy-policy`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'article'
+    },
+    termsOfService: {
+      title: 'Terms of Service | Preqal',
+      description: 'Terms of Service for Preqal Consulting. Read our terms governing use of preqal.org and our quality, safety, and ESG consulting services.',
+      canonical: `${BASE_URL}/terms-of-service`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'article'
+    },
     seoHealth: {
       title: 'SEO Health Check | Preqal',
       description: 'SEO health check page for development purposes.',

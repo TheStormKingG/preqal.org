@@ -108,8 +108,8 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
           <p>&copy; {new Date().getFullYear()} Preqal Consulting. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-600 transition-colors">Terms of Service</a>
+            <Link to="/privacy-policy" className="hover:text-slate-600 transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-slate-600 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

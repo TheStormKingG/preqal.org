@@ -10,8 +10,10 @@ import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
 import SEOHealth from '../pages/SEOHealth';
 import MDST from '../pages/MDST';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+import TermsOfService from '../pages/TermsOfService';
 
-const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book', '/preqal-not-prequel'];
+const routeOrder = ['/', '/services', '/case-studies', '/resources', '/about', '/contact', '/book', '/preqal-not-prequel', '/privacy-policy', '/terms-of-service'];
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -63,6 +65,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/preqal-not-prequel" element={<PreqalNotPrequel />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
         {/* Hidden tool route - not in navigation */}
         <Route path="/tools/mdst" element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
