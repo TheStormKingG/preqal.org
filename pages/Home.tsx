@@ -146,23 +146,23 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto text-left">
               <h2 className="text-3xl font-bold text-slate-900 mb-4">How We Work</h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                The Preqal System is a proven methodology that transforms operational data into strategic authority. Our six-phase approach ensures your <strong>quality management system</strong>, <strong>safety management system</strong>, and <strong>ESG program</strong> are not just compliant, but drive measurable business results.
+                Every good story has a turning point — the moment everything starts to change. The Preqal System is that moment for your business. Our six-phase approach takes what you already have and transforms it into something powerful — a quality, safety, and environmental programme that doesn't just meet the standard. It sets it.
               </p>
             </div>
             <div className="max-w-3xl mx-auto space-y-2">
               <CollapsibleSection title="Rapid diagnostic" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We start with a comprehensive <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> that identifies critical gaps in your current systems. This rapid diagnostic assessment evaluates your operations against ISO standards and regulatory requirements, delivering a prioritized Red Flag Report within seven days.
+                  Every transformation begins with the truth. Preqal starts by taking a clear, honest look at where your business stands today — measuring what's working, spotting what's missing, and delivering a simple Red Flag Report within seven days. No jargon. No confusion. Just a <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> that shows you exactly where to focus — so you can move forward with confidence from day one.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Build and implement in phases" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We architect your Integrated Management System and implement it in manageable phases. This includes designing system architecture, developing documentation, establishing processes, and training your team to ensure smooth adoption.
+                  Then the real building begins. Preqal designs your entire system and puts it in place — step by step, at a pace your team can handle. The right structures. The right documents. The right training. Nothing overwhelming, nothing left out. Just steady, guided progress that makes your people feel capable and your business feel ready.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Verify effectiveness" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We establish Key Performance Indicators (KPIs), conduct internal audits, and prepare management reviews to verify your system's effectiveness. Our approach ensures continuous monitoring and improvement of your quality, safety, and ESG performance.
+                  And once it's built, we make sure it works. Preqal tracks your progress, runs internal audits, and reviews your results — so you always know your system is doing its job. Because the goal was never just to be compliant. The goal was to be genuinely, measurably better — and to keep getting better, long after we've done our work.
                 </p>
               </CollapsibleSection>
             </div>
