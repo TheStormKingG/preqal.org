@@ -41,7 +41,7 @@ const About: React.FC = () => {
                     <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
                       <p>Transitioning from a strong medical foundation into industrial quality and systems engineering, Dr. Gravesande applies a diagnostic, evidence-based mindset to operational excellence.</p>
                       <p>He currently leads the development of Integrated Management Systems (IMS) from the ground up for multiple firms, aligning operations with ISO 9001, ISO 14001, and ISO 45001.</p>
-                      <p>He is also the creator of advanced multi-agent reporting systems and enterprise software tools that automate analysis, scoring, and decision-support for modern quality operations.</p>
+                      <p>He is also the architect of national-scale quality frameworks across agriculture, food production, and environmental systems — building the kind of institutional infrastructure that doesn't just protect businesses, but safeguards communities, ecosystems, and the long-term health of an entire nation.</p>
                     </div>
                   </CollapsibleSection>
                 </div>
