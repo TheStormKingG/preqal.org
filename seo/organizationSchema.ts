@@ -65,7 +65,8 @@ export const getOrganizationSchema = () => {
     ],
     sameAs: [
       'https://www.linkedin.com/company/preqal',
-      'https://www.facebook.com/preqal'
+      'https://www.facebook.com/preqal',
+      'https://www.youtube.com/@Preqal'
     ]
   };
 };
@@ -82,7 +83,8 @@ export const getBrandSchema = () => {
     description: 'Preqal is a quality, safety, ESG, and integrated management systems brand. Preqal is not "prequel" — it is unrelated to movies, fiction, or entertainment.',
     sameAs: [
       'https://www.linkedin.com/company/preqal',
-      'https://www.facebook.com/preqal'
+      'https://www.facebook.com/preqal',
+      'https://www.youtube.com/@Preqal'
     ]
   };
 };

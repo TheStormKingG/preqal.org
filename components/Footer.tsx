@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Facebook, MapPin, Phone, User } from 'lucide-react';
+import { Linkedin, Facebook, Youtube, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
@@ -75,6 +75,9 @@ const Footer: React.FC = () => {
               </a>
               <a href="https://www.facebook.com/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Facebook className="h-5 w-5" />
+              </a>
+              <a href="https://www.youtube.com/@Preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+                <Youtube className="h-5 w-5" />
               </a>
             </div>
           </div>
