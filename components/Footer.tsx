@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
-            <div className="mb-4 overflow-hidden" style={{ height: '4.5rem' }}>
+            <div className="mb-4">
               <picture>
                 <source
                   type="image/avif"
@@ -38,8 +38,8 @@ const Footer: React.FC = () => {
                 <img
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
-                  className="w-auto object-contain"
-                  style={{ height: '10rem', marginTop: '-2.75rem' }}
+                  className="w-full object-cover object-center"
+                  style={{ height: '2.25rem' }}
                   width="400"
                   height="160"
                   loading="lazy"
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Services</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">SERVICES</h3>
             <ul className="space-y-2 text-sm">
               {services.map((service) => (
                 <li key={service.name}>
@@ -95,7 +95,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Company</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPANY</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="/about" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">About Preqal</Link></li>
               <li><Link to="/case-studies" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Case Studies</Link></li>
@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Compliance</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPLIANCE</h3>
             <p className="text-sm leading-relaxed mb-4 text-slate-500">
               Integrated Quality, Safety & Compliance Systems for any business.
             </p>
