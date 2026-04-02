@@ -47,7 +47,8 @@ const Home: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl leading-relaxed">
-                Every business in Guyana and the Caribbean has a story — and the best ones are built on trust, safety, and doing things right. At <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Preqal</Link>, we help you write that chapter. We bring the systems, the standards, and the expertise that turn good intentions into real results — so your people stay safe, your clients stay confident, and your organisation keeps growing. Ready to see what that <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">service</Link> looks like for you?
+                <strong className="text-slate-800">You built something worth protecting.</strong><br /><br />
+                Every business in Guyana and the Caribbean that stands strong today got there because someone — someone like you — decided to do things right. At <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Preqal</Link>, we walk beside you on that journey. We bring the systems, the standards, and the expertise that turn your vision into something real and lasting — so your people stay safe, your clients stay confident, and your organisation keeps growing. Ready to see what that looks like for your business?
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-all duration-300 neu-raised-sm">
@@ -82,23 +83,27 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Quality, Safety & ESG Management Systems</h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                Having that service means having the right foundation. Preqal's systems bring together quality, safety, and environmental responsibility into one unified structure — built specifically for businesses like yours. No confusion. No gaps. Just a clear path forward, shaped by the same world-class standards that leading organisations across the globe rely on — including principles recognised by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality</a>. Because when your foundation is strong, everything you build on top of it lasts.
+                <strong className="text-slate-800">And doing things right starts with the right foundation.</strong><br /><br />
+                Preqal brings together quality, safety, and environmental responsibility into one unified structure — built around the way your business actually works. No confusion. No overwhelm. Just a clear, steady path forward, shaped by the same world-class standards that leading organisations across the globe rely on — including principles recognised by the <a href="https://asq.org/quality-resources/quality-management-system" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">American Society for Quality</a>. Because when your foundation is strong, everything you build on top of it lasts.
               </p>
             </div>
             <div className="max-w-3xl mx-auto space-y-2">
               <CollapsibleSection title="ISO-ready documentation" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Every great story needs a script — and yours is no different. Preqal writes the policies, procedures, and registers your team needs to operate with confidence every single day. Clear. Practical. Visual. Designed so that everyone — from the office to the frontline — knows exactly what to do, and feels proud doing it right.
+                  <strong className="text-slate-700">Every hero needs a map.</strong><br /><br />
+                  Preqal writes the policies, procedures, and registers that guide your team — clearly, visually, and in language everyone understands. From the office to the frontline, your people will know exactly what to do, feel confident doing it, and take pride in doing it right.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Risk-based controls & legal compliance" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  But a strong story also needs protection. The world is full of risks — and the businesses that last are the ones that see them coming. Preqal maps out every threat to your quality, safety, and environment, then builds the controls that keep you covered and compliant. So instead of worrying about what could go wrong, you stay focused on everything going right.
+                  <strong className="text-slate-700">And every great journey needs protection.</strong><br /><br />
+                  The businesses that endure are the ones that see risk coming before it arrives. Preqal identifies every threat to your quality, safety, and environment — then builds the controls that keep you covered and compliant. So instead of worrying about what could go wrong, you stay free to focus on everything going right.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Audits, CAPA, and continual improvement" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  And the best stories? They keep getting better. Preqal's audit and improvement systems make sure your business never stands still. We find the gaps, fix the problems, and build the habits that carry your organisation forward — stronger every year, sharper every season. Because this isn't just about where you are today. It's about who you're becoming.
+                  <strong className="text-slate-700">The best stories never stop improving.</strong><br /><br />
+                  Preqal's audit and improvement systems make sure your business keeps moving forward. We find the gaps, fix the problems, and build the habits that carry your organisation further — stronger every year, sharper every season. Because this chapter isn't just about where you are today. It's about who you're becoming.
                 </p>
               </CollapsibleSection>
             </div>
@@ -146,23 +151,27 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto text-left">
               <h2 className="text-3xl font-bold text-slate-900 mb-4">How We Work</h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                Every good story has a turning point — the moment everything starts to change. The Preqal System is that moment for your business. Our six-phase approach takes what you already have and transforms it into something powerful — a quality, safety, and environmental programme that doesn't just meet the standard. It sets it.
+                <strong className="text-slate-800">Every transformation has a moment when it all clicks.</strong><br /><br />
+                The Preqal System is that moment for your business. Our six-phase approach takes what you already have and turns it into something powerful — a quality, safety, and environmental programme that doesn't just meet the standard. It sets it. And you'll feel the difference from day one.
               </p>
             </div>
             <div className="max-w-3xl mx-auto space-y-2">
               <CollapsibleSection title="Rapid diagnostic" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Every transformation begins with the truth. Preqal starts by taking a clear, honest look at where your business stands today — measuring what's working, spotting what's missing, and delivering a simple Red Flag Report within seven days. No jargon. No confusion. Just a <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">risk scan</Link> that shows you exactly where to focus — so you can move forward with confidence from day one.
+                  <strong className="text-slate-700">Your journey begins with clarity.</strong><br /><br />
+                  Preqal takes an honest, expert look at where your business stands today — what's working, what's missing, and where the risk is hiding. Within seven days, you receive a simple, prioritised <Link to="/book" className="text-amber-600 hover:text-amber-500 font-semibold underline">Red Flag Report</Link> that shows you exactly where to focus. No jargon. No guesswork. Just a clear picture — and the confidence to move forward.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Build and implement in phases" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Then the real building begins. Preqal designs your entire system and puts it in place — step by step, at a pace your team can handle. The right structures. The right documents. The right training. Nothing overwhelming, nothing left out. Just steady, guided progress that makes your people feel capable and your business feel ready.
+                  <strong className="text-slate-700">Then we build it together.</strong><br /><br />
+                  Preqal designs your entire system and puts it in place — step by step, at a pace that works for your team. The right structures. The right documents. The right training. Nothing rushed, nothing skipped. Just steady, guided progress that leaves your people feeling capable, and your business feeling ready for anything.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Verify effectiveness" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  And once it's built, we make sure it works. Preqal tracks your progress, runs internal audits, and reviews your results — so you always know your system is doing its job. Because the goal was never just to be compliant. The goal was to be genuinely, measurably better — and to keep getting better, long after we've done our work.
+                  <strong className="text-slate-700">And we make sure it holds.</strong><br /><br />
+                  Once your system is in place, Preqal stays with you — tracking your progress, running audits, and reviewing results so you always know it's working. Because the goal was never just to pass an inspection. The goal was for you to run a business you're genuinely proud of — and to keep getting better, long after the work is done.
                 </p>
               </CollapsibleSection>
             </div>
@@ -186,7 +195,7 @@ const Home: React.FC = () => {
             <div>
               <h2 className="text-3xl font-bold text-slate-900 mb-2">Our Core Services</h2>
               <p className="text-lg text-slate-600 leading-relaxed max-w-3xl">
-                Comprehensive quality management, safety management, and compliance services designed for operational excellence.
+                You shouldn't have to piece together your compliance journey alone. Preqal offers every service a growing business needs — from your first diagnostic to full system certification — so you always have an expert in your corner.
               </p>
             </div>
             <Link to="/services" className="hidden md:flex items-center text-amber-600 font-semibold hover:text-amber-500 transition-colors">
@@ -197,26 +206,26 @@ const Home: React.FC = () => {
           <div className="max-w-3xl space-y-2 mb-8">
             <CollapsibleSection title="Integrated management system design" headingLevel="h3">
               <p className="text-base text-slate-600 leading-relaxed">
-                We architect unified management systems that combine quality, safety, and environmental processes into a single, efficient framework. Our IMS design reduces duplication and ensures consistent compliance across all standards.
+                Preqal architects a unified framework that brings your quality, safety, and environmental processes together — removing duplication, closing gaps, and giving your organisation one clear standard to operate by.
               </p>
             </CollapsibleSection>
             <CollapsibleSection title="Training for frontline teams" headingLevel="h3">
               <p className="text-base text-slate-600 leading-relaxed">
-                We deliver targeted training programs that build competency at all organizational levels. Our training is practical, role-specific, and designed to ensure your team can effectively execute quality, safety, and environmental controls.
+                Preqal delivers practical, role-specific training that builds real confidence at every level of your organisation — so your team doesn't just understand the system. They own it.
               </p>
             </CollapsibleSection>
             <CollapsibleSection title="Audit readiness and certification support" headingLevel="h3">
               <p className="text-base text-slate-600 leading-relaxed">
-                We prepare your organization for external audits through mock inspections, evidence trail strengthening, and performance tracking. Our support helps you achieve ISO certification and maintain continuous compliance.
+                Preqal prepares you thoroughly — mock inspections, evidence trails, performance tracking — so that when the moment comes, you don't just pass. You demonstrate exactly the kind of organisation you've worked so hard to become.
               </p>
             </CollapsibleSection>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { title: "Quality Risk Scan™", icon: <AlertTriangle />, desc: "Rapid diagnostic to identify gaps in your current system. You receive a prioritized \"Red Flag Report\" and a roadmap for strengthening controls.", link: "/book", linkText: "Book Scan" },
-              { title: "IMS Design & Setup", icon: <Settings />, desc: "We architect your Integrated Management System from the ground up, including policy formulation, process mapping, and digital infrastructure.", link: "/services", linkText: "Learn More" },
-              { title: "SOP & Procedure Development", icon: <FileText />, desc: "Visual SOPs, flowcharts, and checklists that frontline teams can actually use, in mobile-friendly formats.", link: "/services", linkText: "Learn More" }
+              { title: "Quality Risk Scan™", icon: <AlertTriangle />, desc: "Not sure where the gaps are? The Quality Risk Scan™ gives you a prioritised Red Flag Report and a clear roadmap — all within seven days. It's the fastest way to see exactly where you stand and exactly what to do next.", link: "/book", linkText: "Book Scan" },
+              { title: "IMS Design & Setup", icon: <Settings />, desc: "Preqal architects your entire Integrated Management System from the ground up — policy, process, and digital infrastructure — so your business runs on a foundation you can trust.", link: "/services", linkText: "Learn More" },
+              { title: "SOP & Procedure Development", icon: <FileText />, desc: "Preqal develops visual SOPs, flowcharts, and checklists your frontline teams can actually use — in plain language, mobile-friendly formats that make doing things right feel natural.", link: "/services", linkText: "Learn More" }
             ].map((card, i) => (
               <div key={i} className="neu-card rounded-2xl p-8 group hover:neu-raised transition-all duration-300">
                 <div className="h-12 w-12 rounded-xl flex items-center justify-center mb-6 text-amber-600 neu-pressed">
@@ -246,7 +255,7 @@ const Home: React.FC = () => {
                 <span className="inline-block px-3 py-1 neu-pressed-sm text-amber-600 rounded-full text-xs font-semibold mb-4 tracking-wider">PROVEN OUTCOMES</span>
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight">Who We Help</h2>
                 <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                  Preqal serves businesses across diverse sectors in Guyana and the Caribbean. We help organizations build quality management systems, safety management systems, and ESG programs that drive real operational improvements.
+                  Businesses across Guyana and the Caribbean — in every sector — have chosen to build something better. Preqal helps them get there: audit-ready in as little as 12 weeks, with stronger systems, safer teams, and the kind of operational confidence that opens doors.
                 </p>
                 <ul className="space-y-4 mb-8">
                   {['Audit-readiness typically achieved in 12 weeks', 'Sustainable reduction in non-conformances', 'Enhanced traceability & risk visibility'].map((item) => (
@@ -306,23 +315,24 @@ const Home: React.FC = () => {
           <div className="text-center mb-8 animate-fade-in-up">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Get a Risk Scan</h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              Ready to identify gaps in your quality management system, safety management system, or ESG program? Our Quality Risk Scan™ provides a rapid seven-day diagnostic assessment.
+              <strong className="text-slate-800">This is where your story changes.</strong><br /><br />
+              If you've ever wondered whether your systems are truly protecting your business — this is how you find out. The Quality Risk Scan™ gives you a clear, expert assessment of your quality, safety, and ESG gaps within seven days. No pressure. No jargon. Just honest answers and a practical path forward — tailored to you.
             </p>
 
             <div className="max-w-3xl mx-auto space-y-2 text-left mb-8">
               <CollapsibleSection title="What you receive" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  You'll receive a prioritized Red Flag Report that highlights critical gaps in your systems, plus a strategic roadmap for strengthening your integrated management system. The report includes actionable recommendations tailored to your specific risks. For teams new to systems-based thinking, this <a href="https://www.youtube.com/watch?v=O5T4H8K_rwQ" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">short explainer video on systems-based management</a> helps illustrate how structured management systems reduce operational chaos.
+                  A prioritised Red Flag Report highlighting your critical gaps, a strategic roadmap for your next steps, and actionable recommendations shaped around your specific risks. For teams new to systems thinking, a short <a href="https://www.youtube.com/watch?v=O5T4H8K_rwQ" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 font-semibold underline">explainer video</a> helps bring it all to life.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Who it's for" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Our Risk Scan is ideal for organizations of any size preparing for ISO certification, regulatory inspections, or client audits. Whether you're starting from scratch or improving existing systems, we help you identify what matters most.
+                  Any organisation preparing for ISO certification, a regulatory inspection, or a client audit — whether you're starting fresh or strengthening what you already have. If you want to run a tighter, safer, more confident business, this is for you.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="How to start" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Book your Risk Scan today and receive your diagnostic assessment within seven days. Our rapid assessment can be conducted on-site or virtually, making it accessible to businesses across Guyana and the Caribbean.
+                  Book your Risk Scan today. We'll deliver your diagnostic within seven days — on-site or virtually, wherever you are across Guyana and the Caribbean.
                 </p>
               </CollapsibleSection>
             </div>
