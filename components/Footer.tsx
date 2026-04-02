@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Facebook } from 'lucide-react';
+import { Linkedin, Facebook, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
@@ -47,9 +47,21 @@ const Footer: React.FC = () => {
                 />
               </picture>
             </div>
-            <p className="text-sm leading-relaxed mb-4 text-slate-500">
-              Integrated Quality, Safety & Compliance Systems for any business.
-            </p>
+            <div className="space-y-3 mb-4">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm leading-relaxed text-slate-500">
+                  90 Waiakabra Soesdyke Linden Highway<br />
+                  East Bank Demerara, Guyana
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Phone className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <a href="tel:+5926335873" className="text-sm text-slate-500 hover:text-amber-600 transition-colors">
+                  +592 633 5873
+                </a>
+              </div>
+            </div>
             <p className="text-xs leading-relaxed mb-6 text-slate-400 italic">
               Founded and led by Dr. Stefan Gravesande, MBBS.
             </p>
@@ -92,6 +104,9 @@ const Footer: React.FC = () => {
 
           <div>
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wide">Compliance</h3>
+            <p className="text-sm leading-relaxed mb-4 text-slate-500">
+              Integrated Quality, Safety & Compliance Systems for any business.
+            </p>
             <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
               {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate-Friendliness'].map((badge) => (
                 <span key={badge} className="neu-pressed-sm px-3 py-1.5 rounded-lg hover:text-amber-600 transition-colors cursor-default">
