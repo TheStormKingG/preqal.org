@@ -57,7 +57,8 @@ const Footer: React.FC = () => {
               <div className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed text-slate-500">
-                  90 Waiakabra Soesdyke Linden Highway<br />
+                  90 Waiakabra<br />
+                  Soesdyke Linden Highway<br />
                   East Bank Demerara, Guyana
                 </p>
               </div>
