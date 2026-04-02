@@ -88,17 +88,17 @@ const Home: React.FC = () => {
             <div className="max-w-3xl mx-auto space-y-2">
               <CollapsibleSection title="ISO-ready documentation" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We develop policies, Standard Operating Procedures (SOPs), and registers that align with ISO 9001, ISO 14001, and ISO 45001 requirements. Our documentation is practical, visual, and designed for frontline teams to use effectively.
+                  Every great story needs a script — and yours is no different. Preqal writes the policies, procedures, and registers your team needs to operate with confidence every single day. Clear. Practical. Visual. Designed so that everyone — from the office to the frontline — knows exactly what to do, and feels proud doing it right.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Risk-based controls & legal compliance" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  Our integrated management systems prioritize critical risks and ensure your organization meets regulatory requirements. We help you identify, assess, and control risks across quality, safety, and environmental processes.
+                  But a strong story also needs protection. The world is full of risks — and the businesses that last are the ones that see them coming. Preqal maps out every threat to your quality, safety, and environment, then builds the controls that keep you covered and compliant. So instead of worrying about what could go wrong, you stay focused on everything going right.
                 </p>
               </CollapsibleSection>
               <CollapsibleSection title="Audits, CAPA, and continual improvement" headingLevel="h3">
                 <p className="text-base text-slate-600 leading-relaxed">
-                  We establish audit programs, Corrective and Preventive Action (CAPA) processes, and management review systems that drive continuous improvement. Our approach ensures your management system evolves with your business needs.
+                  And the best stories? They keep getting better. Preqal's audit and improvement systems make sure your business never stands still. We find the gaps, fix the problems, and build the habits that carry your organisation forward — stronger every year, sharper every season. Because this isn't just about where you are today. It's about who you're becoming.
                 </p>
               </CollapsibleSection>
             </div>
