@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Facebook, MapPin, Phone } from 'lucide-react';
+import { Linkedin, Facebook, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
-            <div className="mb-4">
+            <div className="mb-4 overflow-hidden" style={{ height: '4.5rem' }}>
               <picture>
                 <source
                   type="image/avif"
@@ -38,8 +38,8 @@ const Footer: React.FC = () => {
                 <img
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
-                  className="w-auto"
-                  style={{ height: 'calc(2.5rem * 1.75 * 1.5)' }}
+                  className="w-auto object-contain"
+                  style={{ height: '10rem', marginTop: '-2.75rem' }}
                   width="400"
                   height="160"
                   loading="lazy"
@@ -47,7 +47,13 @@ const Footer: React.FC = () => {
                 />
               </picture>
             </div>
-            <div className="space-y-3 mb-4">
+            <div className="space-y-3 mb-5">
+              <div className="flex items-center gap-2.5">
+                <User className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <p className="text-sm text-slate-500 italic">
+                  Founded and led by Dr. Stefan Gravesande, MBBS.
+                </p>
+              </div>
               <div className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed text-slate-500">
@@ -62,9 +68,6 @@ const Footer: React.FC = () => {
                 </a>
               </div>
             </div>
-            <p className="text-xs leading-relaxed mb-6 text-slate-400 italic">
-              Founded and led by Dr. Stefan Gravesande, MBBS.
-            </p>
             <div className="flex space-x-3">
               <a href="https://linkedin.com/company/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Linkedin className="h-5 w-5" />
