@@ -98,7 +98,7 @@ const ContactUs: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
             <h1 className="text-4xl font-bold text-slate-900 mb-4">Get in Touch</h1>
             <p className="text-xl text-slate-500 max-w-2xl leading-relaxed">
-              Contact Preqal with a general question, partnership inquiry, or need to discuss a custom project.
+              You've got questions — and you deserve real answers. Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business, Preqal is here. Reach out and let's write the next chapter together.
             </p>
           </div>
         </div>
