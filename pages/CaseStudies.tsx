@@ -35,7 +35,7 @@ const CaseStudies: React.FC = () => {
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">Case Studies — Real Impact</h1>
             <p className="text-xl text-slate-500 max-w-3xl leading-relaxed mb-8">
-              We support poultry, logistics, food-handling, eco-hospitality, oil & gas services, and waste/environmental operations across Guyana and the Caribbean.
+              You're not alone in this journey. Business owners across poultry, logistics, food-handling, eco-hospitality, oil & gas, and waste management operations in Guyana and the Caribbean have already taken the step you're considering — and their businesses are stronger for it. These are their stories.
             </p>
             <div className="p-4 neu-pressed rounded-xl max-w-2xl border-l-4 border-amber-500">
               <p className="text-sm text-slate-500 italic">
