@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb, Code } from 'lucide-react';
+import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb, Code, ChevronDown } from 'lucide-react';
 import { ServiceItem } from '../types';
 import SEO from '../components/SEO';
 
@@ -15,7 +15,95 @@ const services: (ServiceItem & { features: string[] })[] = [
   { id: 'custom-advisory', title: 'Specialized Advisory & Crisis Support', tagline: 'Bespoke solutions for unique constraints', description: 'For challenges that don\'t fit a standard mold. Whether it\'s recovering from operational failures, navigating compliance disputes, or standing up new processes, we design a custom intervention plan that aligns with ISO principles and your organizational reality.', icon: <Lightbulb className="h-8 w-8 text-amber-600" />, features: ['Custom Intervention Design', 'Crisis Recovery Planning', 'Compliance Dispute Resolution', 'Bespoke Solution Architecture'] },
 ];
 
+const ServiceAccordionItem: React.FC<{
+  service: (typeof services)[number];
+  isOpen: boolean;
+  onToggle: () => void;
+}> = ({ service, isOpen, onToggle }) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState('0px');
+
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      setMaxHeight(`${contentRef.current.scrollHeight}px`);
+    } else {
+      setMaxHeight('0px');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = contentRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      setMaxHeight(`${el.scrollHeight}px`);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isOpen]);
+
+  return (
+    <div className={`neu-card rounded-2xl transition-all duration-300 animate-fade-in-up ${isOpen ? 'neu-raised' : ''}`}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="w-full p-8 flex flex-col md:flex-row gap-6 items-start md:items-center cursor-pointer text-left"
+      >
+        <div className="flex-shrink-0">
+          <div className="h-16 w-16 rounded-xl flex items-center justify-center neu-pressed">
+            {service.icon}
+          </div>
+        </div>
+        <div className="flex-grow min-w-0">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <h3 className="text-2xl font-bold text-slate-900">{service.title}</h3>
+            <span className="inline-block neu-pressed-sm text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">
+              {service.tagline}
+            </span>
+          </div>
+        </div>
+        <ChevronDown
+          className={`h-6 w-6 text-amber-600 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      <div
+        ref={contentRef}
+        className="overflow-hidden transition-all duration-400 ease-in-out"
+        style={{ maxHeight, opacity: isOpen ? 1 : 0, transition: 'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out' }}
+      >
+        <div className="px-8 pb-8 md:pl-[7.5rem]">
+          <p className="text-slate-600 text-lg mb-8 leading-relaxed">{service.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+            {service.features.map((feature, idx) => (
+              <div key={idx} className="flex items-center space-x-3 text-sm text-slate-500 neu-pressed-sm px-3 py-2 rounded-lg">
+                <CheckSquare className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center">
+            <Link to={`/book?service=${encodeURIComponent(service.title)}`} className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm">
+              Book This Service <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+            <Link to="/case-studies" className="ml-6 text-amber-600 font-medium hover:text-amber-500 transition-colors">
+              See Success Stories
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Services: React.FC = () => {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const handleToggle = (id: string) => {
+    setOpenId(prev => prev === id ? null : id);
+  };
+
   return (
     <>
       <SEO pageKey="services" />
@@ -30,40 +118,14 @@ const Services: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           {services.map((service) => (
-            <div key={service.id} className="neu-card rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start hover:neu-raised transition-all duration-300 animate-fade-in-up">
-              <div className="flex-shrink-0">
-                <div className="h-16 w-16 rounded-xl flex items-center justify-center neu-pressed">
-                  {service.icon}
-                </div>
-              </div>
-              <div className="flex-grow">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-3">
-                  <h3 className="text-2xl font-bold text-slate-900">{service.title}</h3>
-                  <span className="inline-block neu-pressed-sm text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mt-2 md:mt-0">
-                    {service.tagline}
-                  </span>
-                </div>
-                <p className="text-slate-600 text-lg mb-8 leading-relaxed">{service.description}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                  {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center space-x-3 text-sm text-slate-500 neu-pressed-sm px-3 py-2 rounded-lg">
-                      <CheckSquare className="h-4 w-4 text-amber-600 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center">
-                  <Link to={`/book?service=${encodeURIComponent(service.title)}`} className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm">
-                    Book This Service <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                  <Link to="/case-studies" className="ml-6 text-amber-600 font-medium hover:text-amber-500 transition-colors">
-                    See Success Stories
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <ServiceAccordionItem
+              key={service.id}
+              service={service}
+              isOpen={openId === service.id}
+              onToggle={() => handleToggle(service.id)}
+            />
           ))}
         </div>
       </div>
