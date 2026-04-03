@@ -71,6 +71,21 @@ const About: React.FC = () => {
               </div>
             </div>
 
+            {/* Hexagon watermark — fills empty space when bio is collapsed */}
+            <div
+              className={`hidden md:flex md:col-span-4 md:row-start-2 items-center justify-center pointer-events-none transition-all duration-700 ease-in-out ${
+                bioExpanded ? 'opacity-0 -translate-y-16' : 'opacity-100 translate-y-0'
+              }`}
+              aria-hidden="true"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}favicon.png`}
+                alt=""
+                className="w-44 h-44 opacity-[0.07] select-none"
+                draggable="false"
+              />
+            </div>
+
             {/* Clinic on Quality */}
             <div className="md:col-span-8 md:row-start-2 animate-fade-in-up delay-200">
               <div className="neu-raised rounded-2xl p-8 border-l-4 border-amber-500">
