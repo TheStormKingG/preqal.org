@@ -113,7 +113,7 @@ const Services: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
             <h1 className="text-4xl font-bold text-slate-900 mb-4">Services & Solutions</h1>
             <p className="text-xl text-slate-500 max-w-3xl leading-relaxed">
-              Preqal doesn't sell generic consulting hours. We sell operational outcomes. Choose a solution designed to solve your specific compliance bottleneck.
+              You've already built something worth protecting. Now it's time to make it unbreakable. Every service Preqal offers exists for one reason — to give you the systems, the confidence, and the clarity to lead your business at the highest level. Your story doesn't stop at compliance. It starts there.
             </p>
           </div>
         </div>
