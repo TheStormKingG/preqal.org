@@ -1,10 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Microscope, Activity, Globe, Heart } from 'lucide-react';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 
+const SPACE_Y_12 = 48; // 3rem gap between Philosophy and Clinic sections
+
 const About: React.FC = () => {
   const [bioExpanded, setBioExpanded] = useState(false);
+  const philosophyRef = useRef<HTMLDivElement>(null);
+  const clinicRef = useRef<HTMLDivElement>(null);
+  const [cardHeight, setCardHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const ph = philosophyRef.current;
+    const cl = clinicRef.current;
+    if (!ph || !cl) return;
+
+    const measure = () => {
+      const phH = ph.offsetHeight;
+      const clH = cl.offsetHeight;
+      setCardHeight(bioExpanded ? phH + SPACE_Y_12 + clH : phH);
+    };
+
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(ph);
+    observer.observe(cl);
+    return () => observer.disconnect();
+  }, [bioExpanded]);
 
   return (
     <>
@@ -25,9 +49,12 @@ const About: React.FC = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-            {/* Founder Side — flex column so hexagon fills remaining space */}
-            <div className="md:col-span-4 flex flex-col min-w-0 overflow-hidden">
-              <div className="neu-card rounded-2xl p-8 animate-fade-in-up delay-100">
+            {/* Founder Side */}
+            <div className="md:col-span-4 flex flex-col min-w-0">
+              <div
+                className="neu-card rounded-2xl p-8 overflow-hidden animate-fade-in-up delay-100"
+                style={cardHeight ? { height: `${cardHeight}px`, transition: 'height 0.5s ease-in-out' } : undefined}
+              >
                 <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-amber-500/20 p-1 neu-pressed">
                   <picture>
                     <source type="image/avif" srcSet={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.avif 128w, ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-256.avif 256w`} sizes="128px" />
@@ -51,7 +78,7 @@ const About: React.FC = () => {
 
               {/* Hexagon watermark — fills remaining space below card */}
               <div
-                className={`hidden md:flex flex-1 items-center justify-center pointer-events-none transition-all duration-700 ease-in-out ${
+                className={`hidden md:flex flex-1 items-center justify-center pointer-events-none transition-all duration-700 ease-in-out min-h-0 ${
                   bioExpanded ? 'opacity-0 -translate-y-12 scale-90' : 'opacity-100 translate-y-0 scale-100'
                 }`}
                 aria-hidden="true"
@@ -67,7 +94,7 @@ const About: React.FC = () => {
 
             {/* Philosophy + Clinic Content */}
             <div className="md:col-span-8 space-y-12 animate-fade-in-up delay-200">
-              <div>
+              <div ref={philosophyRef}>
                 <h2 className="text-3xl font-bold text-slate-900 mb-8 border-l-4 border-amber-500 pl-4">Our Philosophy</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
@@ -87,7 +114,7 @@ const About: React.FC = () => {
                 </div>
               </div>
 
-              <div className="neu-raised rounded-2xl p-8 border-l-4 border-amber-500">
+              <div ref={clinicRef} className="neu-raised rounded-2xl p-8 border-l-4 border-amber-500">
                 <h3 className="text-xl font-bold text-amber-700 mb-4">Why "Clinic on Quality"?</h3>
                 <CollapsibleSection title="Our diagnostic approach" headingLevel="h3" defaultOpen={true}>
                   <div className="space-y-4 text-slate-700 leading-relaxed">
