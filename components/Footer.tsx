@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPLIANCE</h3>
             <p className="text-sm leading-relaxed mb-4 text-slate-500">
-              Integrated Quality, Safety & Compliance Systems — for any business ready to grow.
+              Integrated Quality, Safety & Compliance Systems — built around you, wherever you're growing.
             </p>
             <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
               {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate-Friendliness'].map((badge) => (
