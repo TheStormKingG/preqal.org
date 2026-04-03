@@ -130,7 +130,7 @@ const Resources: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
             <h1 className="text-4xl font-bold text-slate-900 mb-4">Free Resource Package</h1>
             <p className="text-xl text-slate-500 max-w-2xl mx-auto">
-              Download 5 professional compliance templates to kickstart your quality journey — completely free.
+              You don't have to start from scratch. These five professional templates give you a head start on the systems that protect your business — yours instantly, completely free. Consider it your first step forward.
             </p>
           </div>
         </div>
