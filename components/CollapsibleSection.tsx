@@ -5,6 +5,7 @@ interface CollapsibleSectionProps {
   title: string;
   headingLevel?: 'h2' | 'h3';
   defaultOpen?: boolean;
+  onToggle?: (isOpen: boolean) => void;
   children: React.ReactNode;
 }
 
@@ -12,6 +13,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   title,
   headingLevel = 'h3',
   defaultOpen = false,
+  onToggle,
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -46,7 +48,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
     <div className="mb-4">
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { const next = !isOpen; setIsOpen(next); onToggle?.(next); }}
         aria-expanded={isOpen}
         className={`w-full flex items-center justify-between px-5 py-4 rounded-xl transition-all duration-300 cursor-pointer ${
           isOpen
