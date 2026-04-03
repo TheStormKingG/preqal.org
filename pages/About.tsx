@@ -26,7 +26,7 @@ const About: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             {/* Founder Side — flex column so hexagon fills remaining space */}
-            <div className="md:col-span-4 flex flex-col">
+            <div className="md:col-span-4 flex flex-col min-w-0 overflow-hidden">
               <div className="neu-card rounded-2xl p-8 animate-fade-in-up delay-100">
                 <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-amber-500/20 p-1 neu-pressed">
                   <picture>
