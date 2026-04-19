@@ -43,7 +43,7 @@ const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
 ];
 
 function standardIcon(kind: StandardChipIcon) {
-  const cls = 'text-amber-500 shrink-0 h-4 w-4 sm:h-5 sm:w-5';
+  const cls = 'text-amber-500 shrink-0 h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4';
   return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
 }
 
@@ -77,19 +77,19 @@ const StandardChipColumn: React.FC<{
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col shrink-0">
+    <div className="flex min-w-0 w-full flex-col">
       <button
         type="button"
         id={buttonId}
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
-        className={`inline-flex flex-row items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg font-bold text-slate-700 px-3 py-2 sm:px-3 md:px-4 rounded-xl transition-all duration-300 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`flex w-full min-w-0 flex-row items-center justify-center gap-0.5 md:gap-1 rounded-xl px-1.5 py-2 md:px-1 md:py-1.5 lg:px-1.5 lg:py-2 font-bold leading-none tracking-tight text-slate-700 transition-all duration-300 text-xs md:text-[clamp(0.5rem,0.38rem+0.85vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
         {standardIcon(item.icon)}
-        <span className="whitespace-nowrap">{item.label}</span>
+        <span className="min-w-0 whitespace-nowrap text-center">{item.label}</span>
       </button>
       <div
         ref={contentRef}
@@ -116,17 +116,15 @@ const GlobalStandardsTrust: React.FC = () => {
   };
 
   return (
-    <div className="w-full overflow-x-auto overflow-y-visible pb-1 [scrollbar-width:thin]">
-      <div className="flex flex-nowrap justify-center items-start gap-2 sm:gap-3 md:gap-4 w-max max-w-none mx-auto">
-        {GLOBAL_STANDARDS_DATA.map((item) => (
-          <StandardChipColumn
-            key={item.id}
-            item={item}
-            isOpen={expandedId === item.id}
-            onToggle={() => toggle(item.id)}
-          />
-        ))}
-      </div>
+    <div className="grid w-full min-w-0 grid-cols-3 gap-2 md:grid-cols-5 md:gap-1.5 lg:gap-2">
+      {GLOBAL_STANDARDS_DATA.map((item) => (
+        <StandardChipColumn
+          key={item.id}
+          item={item}
+          isOpen={expandedId === item.id}
+          onToggle={() => toggle(item.id)}
+        />
+      ))}
     </div>
   );
 };
@@ -230,8 +228,8 @@ const Home: React.FC = () => {
 
       {/* ── Trust Indicators ── */}
       <section className="py-10 relative">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="neu-raised rounded-3xl py-8 px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="neu-raised rounded-3xl py-8 px-4 sm:px-6">
             <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-8 text-center">Aligned with Global Standards</p>
             <GlobalStandardsTrust />
           </div>
