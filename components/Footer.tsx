@@ -1,6 +1,80 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Linkedin, Facebook, Youtube, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { GLOBAL_STANDARDS_DATA } from '../data/globalStandards';
+
+const FOOTER_COMPLIANCE_PANEL_ID = 'footer-compliance-standards-panel';
+
+const FooterComplianceStandards: React.FC = () => {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const panelContentRef = useRef<HTMLDivElement>(null);
+  const [panelMaxHeight, setPanelMaxHeight] = useState<string>('0px');
+  const expandedItem = expandedId ? GLOBAL_STANDARDS_DATA.find((i) => i.id === expandedId) : undefined;
+
+  const toggle = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  useEffect(() => {
+    if (!expandedItem) {
+      setPanelMaxHeight('0px');
+      return;
+    }
+    const el = panelContentRef.current;
+    if (el) {
+      setPanelMaxHeight(`${el.scrollHeight}px`);
+    }
+  }, [expandedItem]);
+
+  useEffect(() => {
+    if (!expandedItem) return;
+    const el = panelContentRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      setPanelMaxHeight(`${el.scrollHeight}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [expandedItem]);
+
+  return (
+    <div className="w-full min-w-0">
+      <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
+        {GLOBAL_STANDARDS_DATA.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            id={`footer-standard-btn-${item.id}`}
+            aria-expanded={expandedId === item.id}
+            aria-controls={FOOTER_COMPLIANCE_PANEL_ID}
+            onClick={() => toggle(item.id)}
+            className={`cursor-pointer px-3 py-1.5 rounded-lg font-mono text-xs transition-colors hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+              expandedId === item.id ? 'neu-raised-sm text-slate-600' : 'neu-pressed-sm text-slate-500'
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <div
+        id={FOOTER_COMPLIANCE_PANEL_ID}
+        role="region"
+        aria-label={expandedItem ? `Definition: ${expandedItem.label}` : undefined}
+        className="collapsible-content overflow-hidden"
+        data-open={expandedItem ? 'true' : 'false'}
+        style={{ maxHeight: expandedItem ? panelMaxHeight : '0px' }}
+      >
+        <div ref={panelContentRef} className="mt-2 w-full min-w-0">
+          {expandedItem ? (
+            <div className="neu-pressed-sm rounded-xl px-3 py-3 text-left text-sm leading-relaxed text-slate-600 w-full font-sans">
+              {expandedItem.definition}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Footer: React.FC = () => {
   const services = [
@@ -114,13 +188,7 @@ const Footer: React.FC = () => {
             <p className="text-sm leading-relaxed mb-4 text-slate-500">
               Integrated Quality, Safety & Compliance Systems — built around you, wherever you're growing.
             </p>
-            <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
-              {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate'].map((badge) => (
-                <span key={badge} className="neu-pressed-sm px-3 py-1.5 rounded-lg hover:text-amber-600 transition-colors cursor-default">
-                  {badge}
-                </span>
-              ))}
-            </div>
+            <FooterComplianceStandards />
           </div>
         </div>
 
