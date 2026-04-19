@@ -77,19 +77,19 @@ const StandardChipColumn: React.FC<{
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col min-w-0 w-full">
+    <div className="flex flex-col shrink-0">
       <button
         type="button"
         id={buttonId}
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
-        className={`flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-2 text-[0.65rem] leading-tight sm:text-sm md:text-base lg:text-lg font-bold text-slate-700 px-1.5 py-2 sm:px-3 md:px-4 rounded-xl transition-all duration-300 w-full text-center sm:text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`inline-flex flex-row items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg font-bold text-slate-700 px-3 py-2 sm:px-3 md:px-4 rounded-xl transition-all duration-300 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
         {standardIcon(item.icon)}
-        <span>{item.label}</span>
+        <span className="whitespace-nowrap">{item.label}</span>
       </button>
       <div
         ref={contentRef}
@@ -100,7 +100,7 @@ const StandardChipColumn: React.FC<{
         data-open={isOpen ? 'true' : 'false'}
         style={{ maxHeight: isOpen ? maxHeight : '0px' }}
       >
-        <div className="mt-2 neu-pressed-sm rounded-xl px-3 py-3 text-sm text-slate-600 leading-relaxed text-left">
+        <div className="mt-2 neu-pressed-sm rounded-xl px-3 py-3 text-sm text-slate-600 leading-relaxed text-left w-full">
           {item.definition}
         </div>
       </div>
@@ -116,15 +116,17 @@ const GlobalStandardsTrust: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-5 gap-1.5 sm:gap-3 md:gap-4 w-full min-w-0">
-      {GLOBAL_STANDARDS_DATA.map((item) => (
-        <StandardChipColumn
-          key={item.id}
-          item={item}
-          isOpen={expandedId === item.id}
-          onToggle={() => toggle(item.id)}
-        />
-      ))}
+    <div className="w-full overflow-x-auto overflow-y-visible pb-1 [scrollbar-width:thin]">
+      <div className="flex flex-nowrap justify-center items-start gap-2 sm:gap-3 md:gap-4 w-max max-w-none mx-auto">
+        {GLOBAL_STANDARDS_DATA.map((item) => (
+          <StandardChipColumn
+            key={item.id}
+            item={item}
+            isOpen={expandedId === item.id}
+            onToggle={() => toggle(item.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
