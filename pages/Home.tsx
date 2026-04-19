@@ -43,7 +43,7 @@ const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
 ];
 
 function standardIcon(kind: StandardChipIcon) {
-  const cls = 'text-amber-500 shrink-0 h-5 w-5';
+  const cls = 'text-amber-500 shrink-0 h-4 w-4 sm:h-5 sm:w-5';
   return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
 }
 
@@ -84,7 +84,7 @@ const StandardChipColumn: React.FC<{
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
-        className={`flex items-center justify-center gap-2 text-lg font-bold text-slate-700 px-4 py-2 rounded-xl transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-2 text-[0.65rem] leading-tight sm:text-sm md:text-base lg:text-lg font-bold text-slate-700 px-1.5 py-2 sm:px-3 md:px-4 rounded-xl transition-all duration-300 w-full text-center sm:text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
@@ -110,35 +110,22 @@ const StandardChipColumn: React.FC<{
 
 const GlobalStandardsTrust: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const top = GLOBAL_STANDARDS_DATA.slice(0, 4);
-  const bottom = GLOBAL_STANDARDS_DATA[4];
 
   const toggle = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
   return (
-    <>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {top.map((item) => (
-          <StandardChipColumn
-            key={item.id}
-            item={item}
-            isOpen={expandedId === item.id}
-            onToggle={() => toggle(item.id)}
-          />
-        ))}
-      </div>
-      <div className="flex justify-center mt-4">
-        <div className="w-full max-w-md">
-          <StandardChipColumn
-            item={bottom}
-            isOpen={expandedId === bottom.id}
-            onToggle={() => toggle(bottom.id)}
-          />
-        </div>
-      </div>
-    </>
+    <div className="grid grid-cols-5 gap-1.5 sm:gap-3 md:gap-4 w-full min-w-0">
+      {GLOBAL_STANDARDS_DATA.map((item) => (
+        <StandardChipColumn
+          key={item.id}
+          item={item}
+          isOpen={expandedId === item.id}
+          onToggle={() => toggle(item.id)}
+        />
+      ))}
+    </div>
   );
 };
 
