@@ -64,13 +64,13 @@ const StandardChipButton: React.FC<{
         aria-expanded={isOpen}
         aria-controls={GLOBAL_STANDARDS_PANEL_ID}
         onClick={onToggle}
-        className={`flex h-[2.75rem] w-full min-w-0 flex-row items-center justify-center gap-px sm:gap-0.5 md:gap-1 overflow-hidden rounded-xl px-0.5 py-0 sm:px-1 sm:py-1.5 md:px-1.5 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`flex h-[2.75rem] w-full min-w-0 flex-row items-center justify-center overflow-hidden rounded-xl px-0.5 py-0 sm:px-1 sm:py-1.5 md:px-1.5 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
-        {standardIcon(item.icon)}
-        <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center">
-          {item.label}
+        <span className="inline-flex min-w-0 max-w-full items-center gap-[1ch]">
+          {standardIcon(item.icon)}
+          <span className="min-w-0 truncate whitespace-nowrap">{item.label}</span>
         </span>
       </button>
     </div>
