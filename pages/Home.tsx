@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, CheckCircle2, AlertTriangle, FileText, BarChart3, Users, Settings, Leaf, Download } from 'lucide-react';
 const MaturityChart = React.lazy(() => import('../components/MaturityChart').then(module => ({ default: module.default })));
@@ -24,6 +24,123 @@ const ProcessStep: React.FC<{ title: string; desc: string; longDesc: string; ico
     <p className="text-xs text-slate-600 leading-relaxed">{longDesc}</p>
   </div>
 );
+
+type StandardChipIcon = 'check' | 'leaf';
+
+type StandardChipItem = {
+  id: string;
+  label: string;
+  definition: string;
+  icon: StandardChipIcon;
+};
+
+const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
+  { id: 'iso-9001', label: 'ISO 9001', definition: 'You understand quality systems; create consistent results, improve confidently.', icon: 'check' },
+  { id: 'iso-45001', label: 'ISO 45001', definition: 'You protect people wisely; prevent harm, build safe workplaces daily.', icon: 'check' },
+  { id: 'iso-14001', label: 'ISO 14001', definition: 'You think sustainably; reduce impact, protect environment with smart choices.', icon: 'check' },
+  { id: 'haccp', label: 'HACCP', definition: 'You ensure safe food; control risks, protect health every step.', icon: 'check' },
+  { id: 'climate-friendliness', label: 'Climate-Friendliness', definition: 'You act responsibly; reduce waste, protect planet, create sustainable future.', icon: 'leaf' },
+];
+
+function standardIcon(kind: StandardChipIcon) {
+  const cls = 'text-amber-500 shrink-0 h-5 w-5';
+  return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
+}
+
+const StandardChipColumn: React.FC<{
+  item: StandardChipItem;
+  isOpen: boolean;
+  onToggle: () => void;
+}> = ({ item, isOpen, onToggle }) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState<string>('0px');
+  const panelId = `global-standard-def-${item.id}`;
+  const buttonId = `global-standard-btn-${item.id}`;
+
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      setMaxHeight(`${contentRef.current.scrollHeight}px`);
+    } else {
+      setMaxHeight('0px');
+    }
+  }, [isOpen, item.definition]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = contentRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      setMaxHeight(`${el.scrollHeight}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isOpen]);
+
+  return (
+    <div className="flex flex-col min-w-0 w-full">
+      <button
+        type="button"
+        id={buttonId}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        onClick={onToggle}
+        className={`flex items-center justify-center gap-2 text-lg font-bold text-slate-700 px-4 py-2 rounded-xl transition-all duration-300 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+          isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
+        }`}
+      >
+        {standardIcon(item.icon)}
+        <span>{item.label}</span>
+      </button>
+      <div
+        ref={contentRef}
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        className="collapsible-content overflow-hidden"
+        data-open={isOpen ? 'true' : 'false'}
+        style={{ maxHeight: isOpen ? maxHeight : '0px' }}
+      >
+        <div className="mt-2 neu-pressed-sm rounded-xl px-3 py-3 text-sm text-slate-600 leading-relaxed text-left">
+          {item.definition}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GlobalStandardsTrust: React.FC = () => {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const top = GLOBAL_STANDARDS_DATA.slice(0, 4);
+  const bottom = GLOBAL_STANDARDS_DATA[4];
+
+  const toggle = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  return (
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {top.map((item) => (
+          <StandardChipColumn
+            key={item.id}
+            item={item}
+            isOpen={expandedId === item.id}
+            onToggle={() => toggle(item.id)}
+          />
+        ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <div className="w-full max-w-md">
+          <StandardChipColumn
+            item={bottom}
+            isOpen={expandedId === bottom.id}
+            onToggle={() => toggle(bottom.id)}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
 
 const Home: React.FC = () => {
   return (
@@ -127,19 +244,7 @@ const Home: React.FC = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="neu-raised rounded-3xl py-8 px-6">
             <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-8 text-center">Aligned with Global Standards</p>
-            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6">
-              {[
-                { icon: <CheckCircle2 className="text-amber-500" />, label: 'ISO 9001' },
-                { icon: <CheckCircle2 className="text-amber-500" />, label: 'ISO 45001' },
-                { icon: <CheckCircle2 className="text-amber-500" />, label: 'ISO 14001' },
-                { icon: <CheckCircle2 className="text-amber-500" />, label: 'HACCP' },
-                { icon: <Leaf className="text-amber-500" />, label: 'Climate-Friendliness' },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center space-x-2 text-lg font-bold text-slate-700 neu-pressed-sm px-4 py-2 rounded-xl">
-                  {item.icon}<span>{item.label}</span>
-                </div>
-              ))}
-            </div>
+            <GlobalStandardsTrust />
           </div>
         </div>
       </section>
