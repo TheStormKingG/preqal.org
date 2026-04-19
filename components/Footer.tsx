@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
               Integrated Quality, Safety & Compliance Systems — built around you, wherever you're growing.
             </p>
             <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-500">
-              {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate-Friendliness'].map((badge) => (
+              {['ISO 9001', 'ISO 45001', 'ISO 14001', 'HACCP', 'Climate'].map((badge) => (
                 <span key={badge} className="neu-pressed-sm px-3 py-1.5 rounded-lg hover:text-amber-600 transition-colors cursor-default">
                   {badge}
                 </span>

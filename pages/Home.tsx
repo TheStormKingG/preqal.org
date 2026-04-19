@@ -39,7 +39,7 @@ const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
   { id: 'iso-45001', label: 'ISO 45001', definition: 'You protect people wisely; prevent harm, build safe workplaces daily.', icon: 'check' },
   { id: 'iso-14001', label: 'ISO 14001', definition: 'You think sustainably; reduce impact, protect environment with smart choices.', icon: 'check' },
   { id: 'haccp', label: 'HACCP', definition: 'You ensure safe food; control risks, protect health every step.', icon: 'check' },
-  { id: 'climate-friendliness', label: 'Climate\u2011Friendliness', definition: 'You act responsibly; reduce waste, protect planet, create sustainable future.', icon: 'leaf' },
+  { id: 'climate-friendliness', label: 'Climate', definition: 'You act responsibly; reduce waste, protect planet, create sustainable future.', icon: 'leaf' },
 ];
 
 function standardIcon(kind: StandardChipIcon) {
@@ -47,43 +47,22 @@ function standardIcon(kind: StandardChipIcon) {
   return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
 }
 
-const StandardChipColumn: React.FC<{
+const GLOBAL_STANDARDS_PANEL_ID = 'global-standards-def-panel';
+
+const StandardChipButton: React.FC<{
   item: StandardChipItem;
   isOpen: boolean;
   onToggle: () => void;
 }> = ({ item, isOpen, onToggle }) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState<string>('0px');
-  const panelId = `global-standard-def-${item.id}`;
   const buttonId = `global-standard-btn-${item.id}`;
-
-  useEffect(() => {
-    if (isOpen && contentRef.current) {
-      setMaxHeight(`${contentRef.current.scrollHeight}px`);
-    } else {
-      setMaxHeight('0px');
-    }
-  }, [isOpen, item.definition]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const el = contentRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => {
-      setMaxHeight(`${el.scrollHeight}px`);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [isOpen]);
 
   return (
     <div className="flex min-w-0 w-full flex-col">
       <button
         type="button"
         id={buttonId}
-        title={item.label.replace(/\u2011/g, '-')}
         aria-expanded={isOpen}
-        aria-controls={panelId}
+        aria-controls={GLOBAL_STANDARDS_PANEL_ID}
         onClick={onToggle}
         className={`flex h-[2.75rem] w-full min-w-0 flex-row items-center justify-center gap-px sm:gap-0.5 md:gap-1 overflow-hidden rounded-xl px-0.5 py-0 sm:px-1 sm:py-1.5 md:px-1.5 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
@@ -94,40 +73,71 @@ const StandardChipColumn: React.FC<{
           {item.label}
         </span>
       </button>
-      <div
-        ref={contentRef}
-        id={panelId}
-        role="region"
-        aria-labelledby={buttonId}
-        className="collapsible-content overflow-hidden"
-        data-open={isOpen ? 'true' : 'false'}
-        style={{ maxHeight: isOpen ? maxHeight : '0px' }}
-      >
-        <div className="mt-2 neu-pressed-sm rounded-xl px-3 py-3 text-sm text-slate-600 leading-relaxed text-left w-full">
-          {item.definition}
-        </div>
-      </div>
     </div>
   );
 };
 
 const GlobalStandardsTrust: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const panelContentRef = useRef<HTMLDivElement>(null);
+  const [panelMaxHeight, setPanelMaxHeight] = useState<string>('0px');
+
+  const expandedItem = expandedId ? GLOBAL_STANDARDS_DATA.find((i) => i.id === expandedId) : undefined;
 
   const toggle = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
+  useEffect(() => {
+    if (!expandedItem) {
+      setPanelMaxHeight('0px');
+      return;
+    }
+    const el = panelContentRef.current;
+    if (el) {
+      setPanelMaxHeight(`${el.scrollHeight}px`);
+    }
+  }, [expandedItem]);
+
+  useEffect(() => {
+    if (!expandedItem) return;
+    const el = panelContentRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      setPanelMaxHeight(`${el.scrollHeight}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [expandedItem]);
+
   return (
-    <div className="grid w-full min-w-0 grid-cols-5 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2">
-      {GLOBAL_STANDARDS_DATA.map((item) => (
-        <StandardChipColumn
-          key={item.id}
-          item={item}
-          isOpen={expandedId === item.id}
-          onToggle={() => toggle(item.id)}
-        />
-      ))}
+    <div className="w-full min-w-0">
+      <div className="grid w-full min-w-0 grid-cols-5 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2">
+        {GLOBAL_STANDARDS_DATA.map((item) => (
+          <StandardChipButton
+            key={item.id}
+            item={item}
+            isOpen={expandedId === item.id}
+            onToggle={() => toggle(item.id)}
+          />
+        ))}
+      </div>
+      <div
+        id={GLOBAL_STANDARDS_PANEL_ID}
+        role="region"
+        aria-label={expandedItem ? `Definition: ${expandedItem.label}` : undefined}
+        className="collapsible-content overflow-hidden"
+        data-open={expandedItem ? 'true' : 'false'}
+        style={{ maxHeight: expandedItem ? panelMaxHeight : '0px' }}
+      >
+        <div ref={panelContentRef} className="mt-2 w-full min-w-0">
+          {expandedItem ? (
+            <div className="neu-pressed-sm rounded-xl px-3 py-3 text-sm text-slate-600 leading-relaxed text-left w-full">
+              {expandedItem.definition}
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 };
