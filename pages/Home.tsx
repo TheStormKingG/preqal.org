@@ -39,11 +39,11 @@ const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
   { id: 'iso-45001', label: 'ISO 45001', definition: 'You protect people wisely; prevent harm, build safe workplaces daily.', icon: 'check' },
   { id: 'iso-14001', label: 'ISO 14001', definition: 'You think sustainably; reduce impact, protect environment with smart choices.', icon: 'check' },
   { id: 'haccp', label: 'HACCP', definition: 'You ensure safe food; control risks, protect health every step.', icon: 'check' },
-  { id: 'climate-friendliness', label: 'Climate-Friendliness', definition: 'You act responsibly; reduce waste, protect planet, create sustainable future.', icon: 'leaf' },
+  { id: 'climate-friendliness', label: 'Climate\u2011Friendliness', definition: 'You act responsibly; reduce waste, protect planet, create sustainable future.', icon: 'leaf' },
 ];
 
 function standardIcon(kind: StandardChipIcon) {
-  const cls = 'text-amber-500 shrink-0 h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4';
+  const cls = 'text-amber-500 shrink-0 h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 lg:h-4 lg:w-4';
   return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
 }
 
@@ -81,15 +81,18 @@ const StandardChipColumn: React.FC<{
       <button
         type="button"
         id={buttonId}
+        title={item.label.replace(/\u2011/g, '-')}
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
-        className={`flex w-full min-w-0 flex-row items-center justify-center gap-0.5 md:gap-1 rounded-xl px-1.5 py-2 md:px-1 md:py-1.5 lg:px-1.5 lg:py-2 font-bold leading-none tracking-tight text-slate-700 transition-all duration-300 text-xs md:text-[clamp(0.5rem,0.38rem+0.85vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`flex h-[2.75rem] w-full min-w-0 flex-row items-center justify-center gap-px sm:gap-0.5 md:gap-1 overflow-hidden rounded-xl px-0.5 py-0 sm:px-1 sm:py-1.5 md:px-1.5 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
         {standardIcon(item.icon)}
-        <span className="min-w-0 whitespace-nowrap text-center">{item.label}</span>
+        <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center">
+          {item.label}
+        </span>
       </button>
       <div
         ref={contentRef}
@@ -116,7 +119,7 @@ const GlobalStandardsTrust: React.FC = () => {
   };
 
   return (
-    <div className="grid w-full min-w-0 grid-cols-3 gap-2 md:grid-cols-5 md:gap-1.5 lg:gap-2">
+    <div className="grid w-full min-w-0 grid-cols-5 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2">
       {GLOBAL_STANDARDS_DATA.map((item) => (
         <StandardChipColumn
           key={item.id}
