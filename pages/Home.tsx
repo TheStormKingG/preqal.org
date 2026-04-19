@@ -43,7 +43,8 @@ const GLOBAL_STANDARDS_DATA: StandardChipItem[] = [
 ];
 
 function standardIcon(kind: StandardChipIcon) {
-  const cls = 'text-amber-500 shrink-0 h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 lg:h-4 lg:w-4';
+  const cls =
+    'text-amber-500 shrink-0 h-3.5 w-3.5 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 lg:h-3.5 lg:w-3.5 xl:h-4 xl:w-4';
   return kind === 'leaf' ? <Leaf className={cls} /> : <CheckCircle2 className={cls} />;
 }
 
@@ -64,13 +65,15 @@ const StandardChipButton: React.FC<{
         aria-expanded={isOpen}
         aria-controls={GLOBAL_STANDARDS_PANEL_ID}
         onClick={onToggle}
-        className={`flex h-[2.75rem] w-full min-w-0 flex-row items-center justify-center overflow-hidden rounded-xl px-0.5 py-0 sm:px-1 sm:py-1.5 md:px-1.5 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
+        className={`flex w-full min-w-0 items-center justify-center overflow-hidden rounded-xl px-1 py-2 font-bold leading-tight tracking-tight text-slate-700 transition-all duration-300 min-h-[5.5rem] text-[clamp(0.5rem,0.3rem+1.1vw,0.8125rem)] sm:min-h-0 sm:h-[2.75rem] sm:px-1 sm:py-0 md:px-1.5 sm:text-[clamp(0.42rem,0.26rem+1.35vw,0.8125rem)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 ${
           isOpen ? 'neu-raised-sm' : 'neu-pressed-sm hover:bg-white/30'
         }`}
       >
-        <span className="inline-flex min-w-0 max-w-full items-center gap-[1ch]">
+        <span className="flex min-w-0 w-full max-w-full flex-col items-center justify-center gap-1 sm:inline-flex sm:flex-row sm:gap-[1ch]">
           {standardIcon(item.icon)}
-          <span className="min-w-0 truncate whitespace-nowrap">{item.label}</span>
+          <span className="min-w-0 w-full text-center text-balance whitespace-normal sm:w-auto sm:truncate sm:whitespace-nowrap sm:text-left">
+            {item.label}
+          </span>
         </span>
       </button>
     </div>
