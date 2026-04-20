@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, ChevronLeft, ChevronRight, Circle, Menu, X } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
 
@@ -99,9 +99,7 @@ const ECourseLearn: React.FC = () => {
             <h1 className="text-xs sm:text-sm md:text-base font-bold text-slate-800 text-center flex-1 min-w-0 order-last lg:order-none w-full lg:w-auto basis-full lg:basis-auto truncate px-1">
               E-Course: {COURSE_DISPLAY_TITLE}
             </h1>
-            <div className="hidden sm:flex ml-auto">{navButtons}</div>
           </div>
-          <div className="sm:hidden px-3 pb-3 flex justify-end">{navButtons}</div>
         </header>
 
         <div className="flex flex-1 min-h-0 min-w-0 relative">
@@ -234,26 +232,6 @@ const ECourseLearn: React.FC = () => {
                     ) : null}
                   </div>
                 </div>
-                <div className="mt-8 flex justify-between items-center gap-4 pt-4 border-t border-slate-200/50">
-                  <button
-                    type="button"
-                    onClick={goPrev}
-                    disabled={activeIndex <= 0}
-                    className="flex items-center gap-1 text-sm font-bold text-amber-700 hover:text-amber-600 disabled:opacity-30 disabled:pointer-events-none"
-                  >
-                    <ChevronLeft className="h-5 w-5" aria-hidden />
-                    Previous
-                  </button>
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    disabled={activeIndex >= total - 1}
-                    className="flex items-center gap-1 text-sm font-bold text-amber-700 hover:text-amber-600 disabled:opacity-30 disabled:pointer-events-none"
-                  >
-                    Next
-                    <ChevronRight className="h-5 w-5" aria-hidden />
-                  </button>
-                </div>
               </div>
             </div>
           </main>
@@ -261,20 +239,22 @@ const ECourseLearn: React.FC = () => {
 
         {/* Bottom bar — progress + navigation */}
         <footer className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_-4px_12px_#a3b1c6]">
-          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-3 flex flex-wrap items-center gap-4 justify-between">
-            <div className="min-w-[12rem] flex-1 sm:flex-none">
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide">Course progress</p>
-              <div className="mt-1.5 flex items-center gap-3">
-                <div className="flex-1 max-w-[200px] h-2.5 neu-pressed-sm rounded-full overflow-hidden">
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-4 flex flex-col items-center gap-5">
+            <div className="flex justify-center w-full">{navButtons}</div>
+            <div className="flex flex-col items-center w-full max-w-md mx-auto gap-2">
+              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide text-center">
+                Course progress
+              </p>
+              <div className="flex items-center justify-center gap-3 w-full">
+                <div className="h-2.5 flex-1 min-w-0 max-w-[280px] neu-pressed-sm rounded-full overflow-hidden">
                   <div
                     className="h-full bg-amber-500 rounded-full transition-all duration-500 ease-out shadow-inner"
                     style={{ width: `${courseProgressPct}%` }}
                   />
                 </div>
-                <span className="text-sm font-bold text-slate-800 tabular-nums">{courseProgressPct}%</span>
+                <span className="text-sm font-bold text-slate-800 tabular-nums shrink-0">{courseProgressPct}%</span>
               </div>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">{navButtons}</div>
           </div>
         </footer>
       </div>
