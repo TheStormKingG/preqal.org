@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
+import { officeWebViewerEmbedUrl, publicAssetAbsoluteUrl } from '../components/ecourses/slideAssetUrl';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
 
@@ -14,6 +15,15 @@ const ECourseLearn: React.FC = () => {
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
   const courseProgressPct = Math.min(100, Math.round(((activeIndex + 1) / total) * 100));
+
+  const slidesAbsoluteUrl = useMemo(
+    () => (current.slidesPptx ? publicAssetAbsoluteUrl(current.slidesPptx) : null),
+    [current.slidesPptx]
+  );
+  const slidesEmbedUrl = useMemo(
+    () => (current.slidesPptx ? officeWebViewerEmbedUrl(current.slidesPptx) : null),
+    [current.slidesPptx]
+  );
 
   const toggleModule = useCallback((id: string) => {
     setExpandedModuleIds((prev) => {
@@ -199,6 +209,29 @@ const ECourseLearn: React.FC = () => {
           <main className="flex-1 min-w-0 min-h-0 lg:self-stretch flex flex-col p-2 sm:p-3 lg:p-4 overflow-hidden">
             <div className="flex-1 min-h-0 flex flex-col max-w-5xl w-full mx-auto">
               <div className="neu-card neu-raised rounded-2xl w-full h-full min-h-0 flex-1 flex flex-col overflow-y-auto border border-white/50 shadow-neu p-6 sm:p-8 lg:p-10">
+                {slidesEmbedUrl && slidesAbsoluteUrl ? (
+                  <section className="mb-8 shrink-0" aria-label="Module slides">
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
+                    <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50">
+                      <iframe
+                        title={`Module ${current.number} presentation`}
+                        src={slidesEmbedUrl}
+                        className="w-full min-h-[min(50vh,520px)] h-[50vh] sm:min-h-[480px] border-0 bg-white"
+                        loading="lazy"
+                      />
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+                      Preview uses Microsoft Office Web Viewer. On localhost it may not load; use download if needed.
+                    </p>
+                    <a
+                      href={slidesAbsoluteUrl}
+                      download
+                      className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
+                    >
+                      Download slides (.pptx)
+                    </a>
+                  </section>
+                ) : null}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">

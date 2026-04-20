@@ -9,4 +9,6 @@ export interface CourseModule {
   estimatedMinutes: number;
   skillLevel: SkillLevel;
   comingSoon?: boolean;
+  /** Public URL path to slides (served from `public/`), e.g. `/e-courses/modules/{moduleId}/slides.pptx` */
+  slidesPptx?: string;
 }

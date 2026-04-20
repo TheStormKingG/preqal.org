@@ -1,5 +1,6 @@
 import type { CourseModule } from './types';
 
+/** Slide decks: place `slides.pptx` under `public/e-courses/modules/{moduleId}/` and set `slidesPptx` on the module. */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
@@ -14,6 +15,7 @@ export const COURSE_MODULES: CourseModule[] = [
     ],
     estimatedMinutes: 35,
     skillLevel: 'Beginner',
+    slidesPptx: '/e-courses/modules/ms-really/slides.pptx',
   },
   {
     id: 'quality-iso-simplified',
