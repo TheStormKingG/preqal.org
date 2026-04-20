@@ -13,8 +13,22 @@ import MDST from '../pages/MDST';
 import PrivacyPolicy from '../pages/PrivacyPolicy';
 import TermsOfService from '../pages/TermsOfService';
 import ECourses from '../pages/ECourses';
+import ECourseLearn from '../pages/ECourseLearn';
 
-const routeOrder = ['/', '/services', '/case-studies', '/resources', '/e-courses', '/about', '/contact', '/book', '/preqal-not-prequel', '/privacy-policy', '/terms-of-service'];
+const routeOrder = [
+  '/',
+  '/services',
+  '/case-studies',
+  '/resources',
+  '/e-courses',
+  '/e-courses/learn',
+  '/about',
+  '/contact',
+  '/book',
+  '/preqal-not-prequel',
+  '/privacy-policy',
+  '/terms-of-service',
+];
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -63,6 +77,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/e-courses" element={<ECourses />} />
+        <Route path="/e-courses/learn" element={<ECourseLearn />} />
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />

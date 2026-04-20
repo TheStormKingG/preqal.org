@@ -90,12 +90,12 @@ const ECourses: React.FC = () => {
             <p className="text-lg text-slate-600 max-w-3xl leading-relaxed mb-8">
               This is not theory. These are systems you can apply immediately to improve consistency, reduce errors, and scale your business with confidence.
             </p>
-            <a
-              href="#modules"
+            <Link
+              to="/e-courses/learn"
               className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
             >
               Start Learning
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ const ECourses: React.FC = () => {
               </p>
               <div className="mt-10">
                 <Link
-                  to="/contact"
+                  to="/e-courses/learn"
                   className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
                 >
                   Begin Course

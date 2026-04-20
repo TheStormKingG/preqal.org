@@ -21,7 +21,12 @@ const Navbar: React.FC = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/e-courses') {
+      return location.pathname === '/e-courses' || location.pathname.startsWith('/e-courses/');
+    }
+    return location.pathname === path;
+  };
 
   return (
     <nav className="fixed w-full z-50 bg-[#e0e5ec]/90 backdrop-blur-xl shadow-[0_4px_8px_#a3b1c6]">

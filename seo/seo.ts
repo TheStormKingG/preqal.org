@@ -61,6 +61,13 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },
+    eCourseLearn: {
+      title: 'E-Course Player | Preqal — QMS Modules',
+      description: 'Work through Preqal’s practical QMS e-course: nine modules with clear outcomes, pacing, and navigation—built for real operations.',
+      canonical: `${BASE_URL}/e-courses/learn`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
     book: {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',

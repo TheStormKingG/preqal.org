@@ -14,6 +14,7 @@ const routes = [
   { url: '/case-studies', changefreq: 'monthly', priority: 0.7 },
   { url: '/resources', changefreq: 'monthly', priority: 0.7 },
   { url: '/e-courses', changefreq: 'monthly', priority: 0.75 },
+  { url: '/e-courses/learn', changefreq: 'monthly', priority: 0.72 },
   { url: '/book', changefreq: 'monthly', priority: 0.8 },
   { url: '/preqal-not-prequel', changefreq: 'yearly', priority: 0.6 },
   { url: '/privacy-policy', changefreq: 'yearly', priority: 0.3 },

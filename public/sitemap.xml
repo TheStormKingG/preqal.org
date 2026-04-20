@@ -36,6 +36,11 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://preqal.org/e-courses/learn</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://preqal.org/book</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
