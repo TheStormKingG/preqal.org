@@ -102,7 +102,7 @@ const ECourseLearn: React.FC = () => {
           </div>
         </header>
 
-        <div className="flex flex-1 min-h-0 min-w-0 relative">
+        <div className="flex flex-1 min-h-0 min-w-0 relative lg:items-stretch">
           {/* Mobile sidebar overlay */}
           {sidebarOpen ? (
             <button
@@ -116,11 +116,13 @@ const ECourseLearn: React.FC = () => {
           {/* Left sidebar — course modules */}
           <aside
             className={[
-              'fixed lg:static inset-y-0 left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col pt-0 pb-32 lg:pb-0 lg:max-h-full transition-transform duration-300 ease-out lg:translate-x-0',
+              'fixed lg:static left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col min-h-0',
+              'top-20 bottom-40 sm:bottom-44 lg:inset-auto lg:h-full lg:self-stretch',
+              'transition-transform duration-300 ease-out lg:translate-x-0',
               sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}
           >
-            <div className="h-full max-h-full min-h-0 flex flex-col m-2 lg:m-4 neu-card rounded-2xl overflow-hidden shadow-neu-sm max-h-[calc(100svh-5rem-12rem)] lg:max-h-[calc(100svh-5rem-4.25rem-12rem)]">
+            <div className="flex-1 min-h-0 w-full flex flex-col mx-2 my-2 lg:mx-4 lg:my-4 neu-card rounded-2xl overflow-hidden shadow-neu-sm">
               <div className="flex items-center justify-between gap-2 px-4 py-3 neu-pressed-sm border-b border-slate-200/40">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">Course modules</span>
                 <button
