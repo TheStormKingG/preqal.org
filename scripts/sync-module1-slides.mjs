@@ -1,6 +1,7 @@
 /**
  * Copies Module 1 slide images into public/ and writes manifest.json (raster-only deck).
  * Default source: ~/Downloads/Module-1-What-is-a-Management-System-Really
+ * PNGs: numeric names like `1.png` … `10.png`, or `1_Title.png` (sorted by leading number).
  * Override: MODULE1_SLIDES_DIR=/path/to/folder npm run sync-module1-slides
  */
 import fs from 'node:fs';
