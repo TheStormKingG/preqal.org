@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 import type { CourseModule } from './types';
 
 function formatDuration(minutes: number): string {
@@ -19,18 +20,36 @@ interface CourseCardProps {
 const CourseCard: React.FC<CourseCardProps> = ({ module, isGridExpanded, onToggle, revealClassName = '' }) => {
   if (isGridExpanded) {
     return (
-      <button
-        type="button"
+      <div
+        role="region"
+        aria-label={`Module ${module.number} details`}
         onClick={onToggle}
-        aria-expanded="true"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+        tabIndex={0}
         className={[
-          'neu-card neu-raised rounded-2xl w-full text-left p-8 sm:p-10 lg:p-12',
+          'neu-card neu-raised rounded-2xl w-full text-left p-8 sm:p-10 lg:p-12 relative cursor-pointer',
           'transition-all duration-500 ease-in-out animate-fade-in',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40',
           revealClassName,
         ].join(' ')}
       >
-        <div className="max-w-3xl mx-auto">
+        <button
+          type="button"
+          aria-label="Close module"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
+          className="absolute top-5 left-5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-b from-amber-700 to-orange-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_2px_6px_rgba(0,0,0,0.18)] ring-1 ring-black/15 text-black hover:from-amber-600 hover:to-orange-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
+        >
+          <X className="h-3.5 w-3.5" strokeWidth={3} aria-hidden />
+        </button>
+        <div className="max-w-3xl mx-auto pl-10 sm:pl-11">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <span className="text-xs font-bold tabular-nums text-amber-700 uppercase tracking-wide">Module {module.number}</span>
             {module.comingSoon ? (
@@ -60,9 +79,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ module, isGridExpanded, onToggl
               <span className="font-semibold text-slate-800">{module.skillLevel}</span>
             </span>
           </div>
-          <p className="mt-10 text-sm text-slate-500">Click anywhere on this panel to return to all modules.</p>
+          <p className="mt-10 text-sm text-slate-500">Click the close control or anywhere on this panel to return to all modules.</p>
         </div>
-      </button>
+      </div>
     );
   }
 
