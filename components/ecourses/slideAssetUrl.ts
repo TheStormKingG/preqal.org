@@ -6,8 +6,3 @@ export function publicAssetAbsoluteUrl(pathFromRoot: string): string {
   const clean = pathFromRoot.replace(/^\//, '');
   return new URL(clean, baseUrl).href;
 }
-
-export function officeWebViewerEmbedUrl(pathFromRoot: string): string {
-  const abs = publicAssetAbsoluteUrl(pathFromRoot);
-  return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(abs)}`;
-}

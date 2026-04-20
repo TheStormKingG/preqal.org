@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
-import { officeWebViewerEmbedUrl, publicAssetAbsoluteUrl } from '../components/ecourses/slideAssetUrl';
+import NativeSlideDeck from '../components/ecourses/NativeSlideDeck';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
 
@@ -11,19 +11,19 @@ const ECourseLearn: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
+  const [nativeDeckComplete, setNativeDeckComplete] = useState(
+    () => !Boolean(COURSE_MODULES[0]?.slidesManifest)
+  );
 
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
   const courseProgressPct = Math.min(100, Math.round(((activeIndex + 1) / total) * 100));
 
-  const slidesAbsoluteUrl = useMemo(
-    () => (current.slidesPptx ? publicAssetAbsoluteUrl(current.slidesPptx) : null),
-    [current.slidesPptx]
-  );
-  const slidesEmbedUrl = useMemo(
-    () => (current.slidesPptx ? officeWebViewerEmbedUrl(current.slidesPptx) : null),
-    [current.slidesPptx]
-  );
+  const moduleAdvanceBlocked = Boolean(current.slidesManifest && !nativeDeckComplete);
+
+  const onNativeDeckCompleteChange = useCallback((complete: boolean) => {
+    setNativeDeckComplete(complete);
+  }, []);
 
   const toggleModule = useCallback((id: string) => {
     setExpandedModuleIds((prev) => {
@@ -39,21 +39,27 @@ const ECourseLearn: React.FC = () => {
   }, []);
 
   const goNext = useCallback(() => {
+    if (moduleAdvanceBlocked) return;
     setActiveIndex((i) => Math.min(total - 1, i + 1));
-  }, [total]);
+  }, [moduleAdvanceBlocked, total]);
 
   useEffect(() => {
     setExpandedModuleIds((prev) => new Set(prev).add(current.id));
   }, [current.id]);
 
   useEffect(() => {
+    setNativeDeckComplete(!current.slidesManifest);
+  }, [current.slidesManifest, current.id]);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (current.slidesManifest) return;
       if (e.key === 'ArrowLeft') goPrev();
       if (e.key === 'ArrowRight') goNext();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goPrev, goNext]);
+  }, [current.slidesManifest, goPrev, goNext]);
 
   const selectLesson = (moduleIndex: number) => {
     setActiveIndex(moduleIndex);
@@ -74,14 +80,15 @@ const ECourseLearn: React.FC = () => {
         <button
           type="button"
           onClick={goNext}
-          disabled={activeIndex >= total - 1}
+          disabled={activeIndex >= total - 1 || moduleAdvanceBlocked}
+          title={moduleAdvanceBlocked ? 'Finish all lesson slides to continue' : undefined}
           className="px-4 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
         >
           Next
         </button>
       </div>
     ),
-    [activeIndex, goNext, goPrev, total]
+    [activeIndex, goNext, goPrev, moduleAdvanceBlocked, total]
   );
 
   return (
@@ -209,28 +216,14 @@ const ECourseLearn: React.FC = () => {
           <main className="flex-1 min-w-0 min-h-0 lg:self-stretch flex flex-col p-2 sm:p-3 lg:p-4 overflow-hidden">
             <div className="flex-1 min-h-0 flex flex-col max-w-5xl w-full mx-auto">
               <div className="neu-card neu-raised rounded-2xl w-full h-full min-h-0 flex-1 flex flex-col overflow-y-auto border border-white/50 shadow-neu p-6 sm:p-8 lg:p-10">
-                {slidesEmbedUrl && slidesAbsoluteUrl ? (
-                  <section className="mb-8 shrink-0" aria-label="Module slides">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
-                    <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50">
-                      <iframe
-                        title={`Module ${current.number} presentation`}
-                        src={slidesEmbedUrl}
-                        className="w-full min-h-[min(50vh,520px)] h-[50vh] sm:min-h-[480px] border-0 bg-white"
-                        loading="lazy"
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-slate-500 leading-relaxed">
-                      Preview uses Microsoft Office Web Viewer. On localhost it may not load; use download if needed.
-                    </p>
-                    <a
-                      href={slidesAbsoluteUrl}
-                      download
-                      className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
-                    >
-                      Download slides (.pptx)
-                    </a>
-                  </section>
+                {current.slidesManifest ? (
+                  <NativeSlideDeck
+                    key={current.id}
+                    moduleId={current.id}
+                    manifestPath={current.slidesManifest}
+                    downloadPptxPath={current.slidesPptx}
+                    onAllSlidesReadChange={onNativeDeckCompleteChange}
+                  />
                 ) : null}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">
                   <div className="flex-1 min-w-0">
