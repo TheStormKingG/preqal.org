@@ -78,7 +78,7 @@ const ECourseLearn: React.FC = () => {
     <>
       <SEO pageKey="eCourseLearn" />
 
-      <div className="min-h-screen flex flex-col pt-20 pb-28 lg:pb-24">
+      <div className="min-h-screen flex flex-col pt-20 pb-40 sm:pb-44">
         {/* Top bar — course title + navigation */}
         <header className="shrink-0 border-b border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_2px_8px_#a3b1c6]">
           <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-3 flex flex-wrap items-center gap-3">
@@ -116,11 +116,11 @@ const ECourseLearn: React.FC = () => {
           {/* Left sidebar — course modules */}
           <aside
             className={[
-              'fixed lg:static inset-y-0 left-0 z-[70] w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col pt-0 pb-24 lg:pb-0 transition-transform duration-300 ease-out lg:translate-x-0',
+              'fixed lg:static inset-y-0 left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col pt-0 pb-32 lg:pb-0 lg:max-h-full transition-transform duration-300 ease-out lg:translate-x-0',
               sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}
           >
-            <div className="h-full lg:min-h-[calc(100vh-12rem)] flex flex-col m-2 lg:m-4 neu-card rounded-2xl overflow-hidden shadow-neu-sm">
+            <div className="h-full max-h-full min-h-0 flex flex-col m-2 lg:m-4 neu-card rounded-2xl overflow-hidden shadow-neu-sm max-h-[calc(100svh-5rem-12rem)] lg:max-h-[calc(100svh-5rem-4.25rem-12rem)]">
               <div className="flex items-center justify-between gap-2 px-4 py-3 neu-pressed-sm border-b border-slate-200/40">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">Course modules</span>
                 <button
@@ -194,9 +194,9 @@ const ECourseLearn: React.FC = () => {
           </aside>
 
           {/* Main slide area */}
-          <main className="flex-1 min-w-0 overflow-y-auto p-3 sm:p-5 lg:p-8 flex flex-col">
-            <div className="flex-1 flex items-stretch justify-center max-w-5xl w-full mx-auto">
-              <div className="neu-card neu-raised rounded-2xl w-full p-6 sm:p-10 lg:p-12 shadow-neu min-h-[min(70vh,36rem)] flex flex-col border border-white/50">
+          <main className="flex-1 min-w-0 min-h-0 overflow-y-auto p-3 sm:p-5 lg:p-8 flex flex-col">
+            <div className="flex-1 flex items-stretch justify-center max-w-5xl w-full mx-auto pb-6 sm:pb-8">
+              <div className="neu-card neu-raised rounded-2xl w-full p-6 sm:p-10 lg:p-12 shadow-neu min-h-[min(70vh,36rem)] flex flex-col border border-white/50 mb-2 sm:mb-4">
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">
@@ -238,7 +238,7 @@ const ECourseLearn: React.FC = () => {
         </div>
 
         {/* Bottom bar — progress + navigation */}
-        <footer className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_-4px_12px_#a3b1c6]">
+        <footer className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_-4px_12px_#a3b1c6] pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-4 flex flex-col items-center gap-5">
             <div className="flex justify-center w-full">{navButtons}</div>
             <div className="flex flex-col items-center w-full max-w-md mx-auto gap-2">
