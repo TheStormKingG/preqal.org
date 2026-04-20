@@ -116,13 +116,13 @@ const ECourseLearn: React.FC = () => {
           {/* Left sidebar — course modules */}
           <aside
             className={[
-              'fixed lg:static left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col min-h-0',
+              'fixed lg:static left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col min-h-0 p-2 sm:p-3 lg:p-4',
               'top-20 bottom-40 sm:bottom-44 lg:inset-auto lg:h-full lg:self-stretch',
               'transition-transform duration-300 ease-out lg:translate-x-0',
               sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}
           >
-            <div className="flex-1 min-h-0 w-full flex flex-col mx-2 my-2 lg:mx-4 lg:my-4 neu-card rounded-2xl overflow-hidden shadow-neu-sm">
+            <div className="flex-1 min-h-0 w-full h-full flex flex-col neu-card rounded-2xl overflow-hidden shadow-neu-sm">
               <div className="flex items-center justify-between gap-2 px-4 py-3 neu-pressed-sm border-b border-slate-200/40">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">Course modules</span>
                 <button
@@ -195,11 +195,11 @@ const ECourseLearn: React.FC = () => {
             </div>
           </aside>
 
-          {/* Main slide area */}
-          <main className="flex-1 min-w-0 min-h-0 overflow-y-auto p-3 sm:p-5 lg:p-8 flex flex-col">
-            <div className="flex-1 flex items-stretch justify-center max-w-5xl w-full mx-auto pb-6 sm:pb-8">
-              <div className="neu-card neu-raised rounded-2xl w-full p-6 sm:p-10 lg:p-12 shadow-neu min-h-[min(70vh,36rem)] flex flex-col border border-white/50 mb-2 sm:mb-4">
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1">
+          {/* Main slide area — same vertical inset as sidebar so card bottom aligns with sidebar card */}
+          <main className="flex-1 min-w-0 min-h-0 lg:self-stretch flex flex-col p-2 sm:p-3 lg:p-4 overflow-hidden">
+            <div className="flex-1 min-h-0 flex flex-col max-w-5xl w-full mx-auto">
+              <div className="neu-card neu-raised rounded-2xl w-full h-full min-h-0 flex-1 flex flex-col overflow-y-auto border border-white/50 shadow-neu p-6 sm:p-8 lg:p-10">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">
                       Module {current.number}
