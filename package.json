@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.js && node scripts/build-native-slides.mjs && vite build",
+    "build": "node scripts/generate-sitemap.js && vite build",
+    "sync-module1-slides": "node scripts/sync-module1-slides.mjs",
+    "build-slides-from-pptx": "node scripts/build-native-slides.mjs",
     "preview": "vite preview",
     "convert-images": "node scripts/convert-images.js"
   },

@@ -9,6 +9,6 @@ export interface CourseModule {
   estimatedMinutes: number;
   skillLevel: SkillLevel;
   comingSoon?: boolean;
-  /** Public URL path to `manifest.json` from `build-native-slides` (WebP deck + dwell rules). */
+  /** Public URL path to slide `manifest.json` (raster URLs and/or per-slide layer JSON). */
   slidesManifest?: string;
 }

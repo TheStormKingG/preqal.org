@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Native slides: `slides/manifest.json` + assets under `public/`. Source PPTX: `slide-source/ms-really/slides.pptx` (not deployed). Run `node scripts/build-native-slides.mjs` after edits. */
+/** Module 1 slides: raster images under `public/.../slides/` + `manifest.json`. Refresh with `npm run sync-module1-slides` (see script for source folder). */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
