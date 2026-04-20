@@ -221,7 +221,6 @@ const ECourseLearn: React.FC = () => {
                     key={current.id}
                     moduleId={current.id}
                     manifestPath={current.slidesManifest}
-                    downloadPptxPath={current.slidesPptx}
                     onAllSlidesReadChange={onNativeDeckCompleteChange}
                   />
                 ) : null}

@@ -12,7 +12,7 @@ import { extractSlideLayersAsync, readSlideSizeEmu } from './lib/pptxSlideLayers
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 
-const PPTX = path.join(root, 'public/e-courses/modules/ms-really/slides.pptx');
+const PPTX = path.join(root, 'slide-source/ms-really/slides.pptx');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/ms-really/slides');
 const TMP = path.join(root, 'node_modules/.cache/extract-slides-ms-really');
 const PUBLIC_URL_DIR = '/e-courses/modules/ms-really/slides';
@@ -74,7 +74,7 @@ async function mainAsync() {
   }
 
   const manifest = {
-    minDwellSeconds: 9,
+    minDwellSeconds: 18,
     slideSize: { cx: slideCx, cy: slideCy },
     slides: slideEntries,
   };

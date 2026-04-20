@@ -44,16 +44,10 @@ function isSlideRefV2(x: unknown): x is SlideRefV2 {
 export interface NativeSlideDeckProps {
   moduleId: string;
   manifestPath: string;
-  downloadPptxPath?: string;
   onAllSlidesReadChange?: (complete: boolean) => void;
 }
 
-const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
-  moduleId,
-  manifestPath,
-  downloadPptxPath,
-  onAllSlidesReadChange,
-}) => {
+const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPath, onAllSlidesReadChange }) => {
   const [manifest, setManifest] = useState<SlideManifest | null>(null);
   const [layerDocs, setLayerDocs] = useState<(SlideLayerFile | null)[]>([]);
   const [rasterUrls, setRasterUrls] = useState<(string | null)[]>([]);
@@ -65,14 +59,10 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   const fontsLoadedRef = useRef(false);
 
   const slideCount = manifest?.slides.length ?? 0;
-  const minDwellSeconds = manifest?.minDwellSeconds ?? 9;
+  const minDwellSeconds = manifest?.minDwellSeconds ?? 18;
   const minDwellMs = minDwellSeconds * 1000;
 
   const manifestUrl = useMemo(() => publicAssetAbsoluteUrl(manifestPath), [manifestPath]);
-  const downloadUrl = useMemo(
-    () => (downloadPptxPath ? publicAssetAbsoluteUrl(downloadPptxPath) : null),
-    [downloadPptxPath]
-  );
 
   useEffect(() => {
     if (fontsLoadedRef.current) return;
@@ -209,6 +199,9 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   const currentLayers = layerDocs[slideIndex];
   const currentRaster = rasterUrls[slideIndex];
   const remainingSec = Math.max(0, Math.ceil((minDwellMs - dwellMs) / 1000));
+  const isLastSlide = slideIndex >= slideCount - 1;
+  const nextDisabled = isLastSlide || !canLeaveSlide;
+  const showNextCountdown = !isLastSlide && !canLeaveSlide;
 
   return (
     <section className="mb-8 shrink-0" aria-label="Lesson slides">
@@ -232,11 +225,8 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
           )}
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60">
-          <p className="text-xs text-slate-600 tabular-nums" aria-live="polite">
+          <p className="text-xs text-slate-600 tabular-nums">
             Slide {slideIndex + 1} of {slideCount}
-            {!currentSlideRead && dwellMs < minDwellMs ? (
-              <span className="text-slate-500"> · Stay on this slide {remainingSec}s to continue</span>
-            ) : null}
           </p>
           <div className="flex items-center gap-2 justify-end">
             <button
@@ -251,28 +241,29 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
             <button
               type="button"
               onClick={goNextSlide}
-              disabled={slideIndex >= slideCount - 1 || !canLeaveSlide}
-              className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
+              disabled={nextDisabled}
+              aria-label={
+                showNextCountdown
+                  ? `Next slide, available in ${remainingSec} seconds`
+                  : isLastSlide
+                    ? 'Last slide'
+                    : 'Next slide'
+              }
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-90 disabled:pointer-events-none disabled:bg-amber-500/55 disabled:hover:bg-amber-500/55 transition-all duration-200"
             >
-              Next slide
-              <ChevronRight className="h-4 w-4" aria-hidden />
+              <span className="inline-flex items-center gap-1.5">
+                Next slide
+                {showNextCountdown ? (
+                  <span className="tabular-nums font-extrabold min-w-[2.25rem] text-center bg-black/15 rounded-lg px-1.5 py-0.5 text-xs">
+                    {remainingSec}s
+                  </span>
+                ) : null}
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0" aria-hidden />
             </button>
           </div>
         </div>
       </div>
-      <p className="mt-2 text-xs text-slate-500 leading-relaxed">
-        Slides render from the original layout (text and graphics). Spend at least {minDwellSeconds} seconds on each
-        slide to continue; progress is saved in this browser.
-      </p>
-      {downloadUrl ? (
-        <a
-          href={downloadUrl}
-          download
-          className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
-        >
-          Download slides (.pptx)
-        </a>
-      ) : null}
     </section>
   );
 };

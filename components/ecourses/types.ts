@@ -11,6 +11,4 @@ export interface CourseModule {
   comingSoon?: boolean;
   /** Public URL path to `manifest.json` from `build-native-slides` (WebP deck + dwell rules). */
   slidesManifest?: string;
-  /** Optional download of the source deck (served from `public/`). */
-  slidesPptx?: string;
 }

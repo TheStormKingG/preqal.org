@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Native slides: `slides/manifest.json` + WebP assets; optional `slidesPptx` for download. Run `node scripts/build-native-slides.mjs` after changing the PPTX. */
+/** Native slides: `slides/manifest.json` + assets under `public/`. Source PPTX: `slide-source/ms-really/slides.pptx` (not deployed). Run `node scripts/build-native-slides.mjs` after edits. */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
@@ -16,7 +16,6 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 35,
     skillLevel: 'Beginner',
     slidesManifest: '/e-courses/modules/ms-really/slides/manifest.json',
-    slidesPptx: '/e-courses/modules/ms-really/slides.pptx',
   },
   {
     id: 'quality-iso-simplified',
