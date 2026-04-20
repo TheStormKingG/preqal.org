@@ -178,7 +178,7 @@ const Footer: React.FC = () => {
               <li><Link to="/about" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">About Preqal</Link></li>
               <li><Link to="/case-studies" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Case Studies</Link></li>
               <li><Link to="/resources" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Resources</Link></li>
-              <li><Link to="/e-courses" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">E-Courses</Link></li>
+              <li><Link to="/e-courses" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">E-Course</Link></li>
               <li><Link to="/contact" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact Us</Link></li>
               <li><Link to="/preqal-not-prequel" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>

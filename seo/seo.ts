@@ -55,8 +55,8 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogType: 'website'
     },
     eCourses: {
-      title: 'E-Courses | Preqal — Practical QMS Learning',
-      description: 'Structured e-courses on Quality Management Systems: process thinking, risk, documentation, audits, CAPA, and improvement—practical, clear, and built for real operations.',
+      title: 'E-Course | Preqal — Practical QMS Learning',
+      description: 'Structured e-course on Quality Management Systems: process thinking, risk, documentation, audits, CAPA, and improvement—practical, clear, and built for real operations.',
       canonical: `${BASE_URL}/e-courses`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
