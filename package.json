@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "node scripts/generate-sitemap.js && vite build",
     "sync-module1-slides": "node scripts/sync-module1-slides.mjs",
+    "crop-module1-watermark": "node scripts/crop-module1-watermark.mjs",
     "build-slides-from-pptx": "node scripts/build-native-slides.mjs",
     "preview": "vite preview",
     "convert-images": "node scripts/convert-images.js"

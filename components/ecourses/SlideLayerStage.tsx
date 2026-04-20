@@ -138,6 +138,7 @@ const SlideLayerStage: React.FC<{ data: SlideLayerFile; className?: string }> = 
                 key={`i-${idx}-${layer.z}`}
                 src={src}
                 alt=""
+                draggable={false}
                 className="pointer-events-none select-none"
                 style={{
                   ...base,

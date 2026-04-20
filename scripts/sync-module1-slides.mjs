@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
+import { resizeWebpCropBottom, cropBottomPx } from './lib/slideImageCrop.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -53,15 +53,14 @@ async function main() {
     }
   }
 
+  console.log('[sync-module1-slides] Cropping bottom strip (px):', cropBottomPx());
+
   const urls = [];
   let i = 1;
   for (const f of files) {
     const stem = `slide-${String(i).padStart(2, '0')}`;
     const outPath = path.join(OUT_DIR, `${stem}.webp`);
-    await sharp(path.join(srcDir, f))
-      .resize({ width: 1920, withoutEnlargement: true })
-      .webp({ quality: 88 })
-      .toFile(outPath);
+    await resizeWebpCropBottom(path.join(srcDir, f), outPath);
     urls.push(`${PUBLIC_PREFIX}/${stem}.webp`);
     console.log('[sync-module1-slides]', stem, '<-', f);
     i += 1;

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import SlideLayerStage, { type SlideLayerFile } from './SlideLayerStage';
+import { SlideContentShield } from './SlideContentShield';
 
 type SlideRefV2 = { layers: string };
 
@@ -207,7 +208,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
     <section className="mb-8 shrink-0" aria-label="Lesson slides">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
       <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5">
-        <div className="relative flex items-center justify-center min-h-[min(50vh,520px)] sm:min-h-[480px] bg-slate-100 p-2 sm:p-3">
+        <SlideContentShield className="relative flex items-center justify-center min-h-[min(50vh,520px)] sm:min-h-[480px] bg-slate-100 p-2 sm:p-3">
           {currentLayers?.version === 2 ? (
             <div className="w-full max-w-[min(100%,1280px)]">
               <SlideLayerStage data={currentLayers} />
@@ -216,6 +217,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
             <img
               src={publicAssetAbsoluteUrl(currentRaster)}
               alt={`Slide ${slideIndex + 1} of ${slideCount}`}
+              draggable={false}
               className="max-h-[min(50vh,520px)] sm:max-h-[min(70vh,640px)] w-full object-contain"
               loading={slideIndex === 0 ? 'eager' : 'lazy'}
               decoding="async"
@@ -223,7 +225,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
           ) : (
             <p className="text-sm text-slate-600">Loading slide…</p>
           )}
-        </div>
+        </SlideContentShield>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60">
           <p className="text-xs text-slate-600 tabular-nums">
             Slide {slideIndex + 1} of {slideCount}
