@@ -1,0 +1,245 @@
+{
+  "version": 2,
+  "widthEmu": 14630400,
+  "heightEmu": 8229600,
+  "refWidth": 1920,
+  "refHeight": 1080,
+  "layers": [
+    {
+      "type": "rect",
+      "z": 0,
+      "left": 0,
+      "top": 0,
+      "width": 720,
+      "height": 1080,
+      "fill": "#030303"
+    },
+    {
+      "type": "image",
+      "z": 1,
+      "left": 13.015616797900261,
+      "top": 19.51561679790026,
+      "width": 693.9687664041995,
+      "height": 1040.9531496062993,
+      "src": "/e-courses/modules/ms-really/slides/slide-02-rId1.webp"
+    },
+    {
+      "type": "text",
+      "z": 2,
+      "left": 824.1719160104986,
+      "top": 205.8437007874016,
+      "width": 804.5,
+      "height": 81.3750656167979,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 48.5,
+          "runs": [
+            {
+              "text": "Systems vs. Random Work",
+              "lineSpacingPt": 48.5,
+              "fontSizePt": 39,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 3,
+      "left": 805.4219160104986,
+      "top": 326.28123359580053,
+      "width": 501.562467191601,
+      "height": 366.23438320209976,
+      "fill": "rgba(252,131,55,0.75)",
+      "borderRadiusPx": 21.974062992125987
+    },
+    {
+      "type": "text",
+      "z": 4,
+      "left": 831.4531496062991,
+      "top": 352.31246719160106,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "🎲",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Random Work",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 5,
+      "left": 831.4531496062991,
+      "top": 419.0468503937008,
+      "width": 449.5,
+      "height": 250.03123359580053,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Tasks are performed differently each time — driven by memory, mood, or urgency. Results are unpredictable, problems are hard to diagnose, and quality depends entirely on who shows up that day.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#000000",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 6,
+      "left": 1352.7656167979003,
+      "top": 352.31246719160106,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "⚙️",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Systematic Work",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 7,
+      "left": 1352.7656167979003,
+      "top": 419.0468503937008,
+      "width": 464.06246719160106,
+      "height": 208.35931758530182,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "A clear method guides every step. Everyone follows the same approach, making training simpler, results repeatable, and continuous improvement possible over time.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 8,
+      "left": 824.1719160104986,
+      "top": 721.8124671916011,
+      "width": 991.6562992125984,
+      "height": 152.32808398950132,
+      "fill": "#4B1E01",
+      "borderRadiusPx": 9.139685039370079
+    },
+    {
+      "type": "image",
+      "z": 9,
+      "left": 850.2031496062991,
+      "top": 760.5624671916011,
+      "width": 32.546850393700794,
+      "height": 26.031233595800526,
+      "src": "/e-courses/modules/ms-really/slides/slide-02-rId2.webp"
+    },
+    {
+      "type": "text",
+      "z": 10,
+      "left": 908.7812335958005,
+      "top": 754.3437007874015,
+      "width": 881.0156167979003,
+      "height": 83.34370078740159,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Key Insight:",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 700,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Random work depends on chance. A system creates results by design.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

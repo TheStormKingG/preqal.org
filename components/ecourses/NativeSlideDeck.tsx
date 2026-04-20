@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
+import SlideLayerStage, { type SlideLayerFile } from './SlideLayerStage';
+
+type SlideRefV2 = { layers: string };
 
 type SlideManifest = {
-  slides: string[];
+  slides: (string | SlideRefV2)[];
   minDwellSeconds?: number;
+  slideSize?: { cx: number; cy: number };
 };
 
 const LS_PREFIX = 'ecourse-slides-read:';
@@ -33,6 +37,10 @@ function saveReadFlags(moduleId: string, flags: boolean[]) {
   }
 }
 
+function isSlideRefV2(x: unknown): x is SlideRefV2 {
+  return Boolean(x && typeof x === 'object' && typeof (x as SlideRefV2).layers === 'string');
+}
+
 export interface NativeSlideDeckProps {
   moduleId: string;
   manifestPath: string;
@@ -47,11 +55,14 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   onAllSlidesReadChange,
 }) => {
   const [manifest, setManifest] = useState<SlideManifest | null>(null);
+  const [layerDocs, setLayerDocs] = useState<(SlideLayerFile | null)[]>([]);
+  const [rasterUrls, setRasterUrls] = useState<(string | null)[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [slideIndex, setSlideIndex] = useState(0);
   const [readFlags, setReadFlags] = useState<boolean[]>([]);
   const [dwellMs, setDwellMs] = useState(0);
   const dwellOriginRef = useRef<number>(0);
+  const fontsLoadedRef = useRef(false);
 
   const slideCount = manifest?.slides.length ?? 0;
   const minDwellSeconds = manifest?.minDwellSeconds ?? 9;
@@ -64,15 +75,31 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   );
 
   useEffect(() => {
+    if (fontsLoadedRef.current) return;
+    fontsLoadedRef.current = true;
+    const href =
+      'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&family=Saira:wght@400;500;600;700&display=swap';
+    if (!document.querySelector(`link[data-ecourse-slides-fonts="1"]`)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.setAttribute('data-ecourse-slides-fonts', '1');
+      document.head.appendChild(link);
+    }
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     setLoadError(null);
     setManifest(null);
+    setLayerDocs([]);
+    setRasterUrls([]);
     fetch(manifestUrl)
       .then((r) => {
         if (!r.ok) throw new Error(`Could not load slides (${r.status})`);
         return r.json() as Promise<SlideManifest>;
       })
-      .then((data) => {
+      .then(async (data) => {
         if (cancelled) return;
         if (!data?.slides?.length) throw new Error('Invalid slide manifest');
         setManifest(data);
@@ -81,6 +108,22 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
         const allDone = flags.every(Boolean);
         onAllSlidesReadChange?.(allDone);
         setSlideIndex(0);
+
+        const layersArr = await Promise.all(
+          data.slides.map(async (entry) => {
+            if (isSlideRefV2(entry)) {
+              const url = publicAssetAbsoluteUrl(entry.layers);
+              const lr = await fetch(url);
+              if (!lr.ok) throw new Error(`Missing slide layers (${lr.status})`);
+              return (await lr.json()) as SlideLayerFile;
+            }
+            return null;
+          })
+        );
+        const rasters = data.slides.map((entry) => (typeof entry === 'string' ? entry : null));
+        if (cancelled) return;
+        setLayerDocs(layersArr);
+        setRasterUrls(rasters);
       })
       .catch((e: Error) => {
         if (!cancelled) setLoadError(e.message || 'Failed to load slides');
@@ -163,21 +206,30 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
     );
   }
 
-  const currentSrc = publicAssetAbsoluteUrl(manifest.slides[slideIndex]);
+  const currentLayers = layerDocs[slideIndex];
+  const currentRaster = rasterUrls[slideIndex];
   const remainingSec = Math.max(0, Math.ceil((minDwellMs - dwellMs) / 1000));
 
   return (
     <section className="mb-8 shrink-0" aria-label="Lesson slides">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
       <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5">
-        <div className="relative flex items-center justify-center min-h-[min(50vh,520px)] sm:min-h-[480px] bg-slate-100">
-          <img
-            src={currentSrc}
-            alt={`Slide ${slideIndex + 1} of ${slideCount}`}
-            className="max-h-[min(50vh,520px)] sm:max-h-[min(70vh,640px)] w-full object-contain"
-            loading={slideIndex === 0 ? 'eager' : 'lazy'}
-            decoding="async"
-          />
+        <div className="relative flex items-center justify-center min-h-[min(50vh,520px)] sm:min-h-[480px] bg-slate-100 p-2 sm:p-3">
+          {currentLayers?.version === 2 ? (
+            <div className="w-full max-w-[min(100%,1280px)]">
+              <SlideLayerStage data={currentLayers} />
+            </div>
+          ) : currentRaster ? (
+            <img
+              src={publicAssetAbsoluteUrl(currentRaster)}
+              alt={`Slide ${slideIndex + 1} of ${slideCount}`}
+              className="max-h-[min(50vh,520px)] sm:max-h-[min(70vh,640px)] w-full object-contain"
+              loading={slideIndex === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          ) : (
+            <p className="text-sm text-slate-600">Loading slide…</p>
+          )}
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60">
           <p className="text-xs text-slate-600 tabular-nums" aria-live="polite">
@@ -209,8 +261,8 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
         </div>
       </div>
       <p className="mt-2 text-xs text-slate-500 leading-relaxed">
-        Each slide counts as read after you spend at least {minDwellSeconds} seconds on it. Progress is saved in this
-        browser.
+        Slides render from the original layout (text and graphics). Spend at least {minDwellSeconds} seconds on each
+        slide to continue; progress is saved in this browser.
       </p>
       {downloadUrl ? (
         <a

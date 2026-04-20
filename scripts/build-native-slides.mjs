@@ -1,13 +1,13 @@
 /**
- * Extracts one raster image per PPTX slide (largest PNG/JPEG in each slide's rels),
- * writes WebP under public/e-courses/modules/{moduleId}/slides/ and manifest.json.
- * Requires: unzip (system), sharp (devDependency).
+ * From PPTX: exports per-slide layer JSON (text, images, rects positioned like the deck)
+ * plus WebP assets for embedded pictures. Writes manifest.json for the e-course player.
+ * Requires: unzip, sharp, fast-xml-parser (devDependencies).
  */
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
+import { extractSlideLayersAsync, readSlideSizeEmu } from './lib/pptxSlideLayers.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -15,6 +15,16 @@ const root = path.join(__dirname, '..');
 const PPTX = path.join(root, 'public/e-courses/modules/ms-really/slides.pptx');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/ms-really/slides');
 const TMP = path.join(root, 'node_modules/.cache/extract-slides-ms-really');
+const PUBLIC_URL_DIR = '/e-courses/modules/ms-really/slides';
+
+function cleanGeneratedAssets() {
+  if (!fs.existsSync(OUT_DIR)) return;
+  for (const name of fs.readdirSync(OUT_DIR)) {
+    if (/^slide-\d{2}(\.layers\.json|\.webp|-rId\d+\.webp)$/.test(name)) {
+      fs.rmSync(path.join(OUT_DIR, name), { force: true });
+    }
+  }
+}
 
 async function mainAsync() {
   if (!fs.existsSync(PPTX)) {
@@ -25,55 +35,51 @@ async function mainAsync() {
   fs.rmSync(TMP, { recursive: true, force: true });
   fs.mkdirSync(TMP, { recursive: true });
   fs.mkdirSync(OUT_DIR, { recursive: true });
+  cleanGeneratedAssets();
 
   execSync(`unzip -q -o "${PPTX}" -d "${TMP}"`, { stdio: 'inherit' });
 
-  const slides = [];
+  const presXml = path.join(TMP, 'ppt', 'presentation.xml');
+  const { cx: slideCx, cy: slideCy } = readSlideSizeEmu(presXml);
+
+  const slideEntries = [];
   let n = 1;
   for (;;) {
-    const relFile = path.join(TMP, 'ppt', 'slides', '_rels', `slide${n}.xml.rels`);
-    if (!fs.existsSync(relFile)) break;
+    const slideXml = path.join(TMP, 'ppt', 'slides', `slide${n}.xml`);
+    const relsPath = path.join(TMP, 'ppt', 'slides', '_rels', `slide${n}.xml.rels`);
+    if (!fs.existsSync(slideXml) || !fs.existsSync(relsPath)) break;
 
-    const xml = fs.readFileSync(relFile, 'utf8');
-    const targets = [...xml.matchAll(/Target="\.\.\/media\/([^"]+)"/g)].map((m) => m[1]);
-    let bestPath = null;
-    let bestSize = 0;
-    for (const name of targets) {
-      if (!/\.(png|jpe?g)$/i.test(name)) continue;
-      const full = path.join(TMP, 'ppt', 'media', path.basename(name));
-      if (!fs.existsSync(full)) continue;
-      const st = fs.statSync(full);
-      if (st.size > bestSize) {
-        bestSize = st.size;
-        bestPath = full;
-      }
-    }
+    const stem = `slide-${String(n).padStart(2, '0')}`;
+    const layersPath = path.join(OUT_DIR, `${stem}.layers.json`);
 
-    if (!bestPath) {
-      console.warn(`[build-native-slides] Slide ${n}: no raster image in rels, skipping`);
-      n += 1;
-      continue;
-    }
+    const layerDoc = await extractSlideLayersAsync({
+      slideXmlPath: slideXml,
+      relsPath,
+      slideCx,
+      slideCy,
+      outDir: OUT_DIR,
+      slideStem: stem,
+      publicUrlDir: PUBLIC_URL_DIR,
+    });
 
-    const outName = `slide-${String(n).padStart(2, '0')}.webp`;
-    const outPath = path.join(OUT_DIR, outName);
-    await sharp(bestPath)
-      .resize({ width: 1680, withoutEnlargement: true })
-      .webp({ quality: 82 })
-      .toFile(outPath);
-    console.log('[build-native-slides]', outName, '<-', path.basename(bestPath), `(${bestSize} bytes)`);
-    slides.push(`/e-courses/modules/ms-really/slides/${outName}`);
+    fs.writeFileSync(layersPath, JSON.stringify(layerDoc, null, 2));
+    slideEntries.push({ layers: `${PUBLIC_URL_DIR}/${stem}.layers.json` });
+    console.log('[build-native-slides]', `${stem}.layers.json`, '—', layerDoc.layers.length, 'layers');
     n += 1;
   }
 
-  if (slides.length === 0) {
+  if (slideEntries.length === 0) {
     console.error('[build-native-slides] No slides extracted');
     process.exit(1);
   }
 
-  const manifest = { slides, minDwellSeconds: 9 };
+  const manifest = {
+    minDwellSeconds: 9,
+    slideSize: { cx: slideCx, cy: slideCy },
+    slides: slideEntries,
+  };
   fs.writeFileSync(path.join(OUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));
-  console.log('[build-native-slides] Wrote manifest.json with', slides.length, 'slides');
+  console.log('[build-native-slides] Wrote manifest.json with', slideEntries.length, 'slides');
 }
 
 mainAsync().catch((e) => {

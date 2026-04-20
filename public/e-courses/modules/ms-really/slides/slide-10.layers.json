@@ -1,0 +1,409 @@
+{
+  "version": 2,
+  "widthEmu": 14630400,
+  "heightEmu": 8229600,
+  "refWidth": 1920,
+  "refHeight": 1080,
+  "layers": [
+    {
+      "type": "text",
+      "z": 0,
+      "left": 104.17191601049868,
+      "top": 110.40629921259843,
+      "width": 1309.4843832020997,
+      "height": 81.3750656167979,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 48.5,
+          "runs": [
+            {
+              "text": "Outcome: \"I See Systems Everywhere Now\"",
+              "lineSpacingPt": 48.5,
+              "fontSizePt": 39,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 1,
+      "left": 104.17191601049868,
+      "top": 243.85931758530185,
+      "width": 1711.6562992125982,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "By the end of this module, the goal is simple but transformative: you recognize that every result — good or bad — is produced by a system.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 2,
+      "left": 104.17191601049868,
+      "top": 314.8280839895013,
+      "width": 553.1875328083989,
+      "height": 385.23438320209976,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 23.114062992125984
+    },
+    {
+      "type": "rect",
+      "z": 3,
+      "left": 133.20314960629923,
+      "top": 343.8593175853018,
+      "width": 78.1250656167979,
+      "height": 78.12506561679791,
+      "fill": "#FC8337",
+      "borderRadiusPx": 4.687503937007874
+    },
+    {
+      "type": "image",
+      "z": 4,
+      "left": 154.68753280839897,
+      "top": 365.3280839895013,
+      "width": 35.15629921259843,
+      "height": 35.15629921259843,
+      "src": "/e-courses/modules/ms-really/slides/slide-10-rId1.webp"
+    },
+    {
+      "type": "text",
+      "z": 5,
+      "left": 133.20314960629923,
+      "top": 448.0156167979003,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "See the System",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 6,
+      "left": 133.20314960629923,
+      "top": 504.34370078740153,
+      "width": 495.1250656167979,
+      "height": 166.68753280839894,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Recognize that behind every outcome — a complaint, a delay, a success — there is a set of processes and decisions that produced it.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 7,
+      "left": 683.3906824146982,
+      "top": 314.8280839895013,
+      "width": 553.2031496062992,
+      "height": 385.23438320209976,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 23.114062992125984
+    },
+    {
+      "type": "rect",
+      "z": 8,
+      "left": 712.4219160104986,
+      "top": 343.8593175853018,
+      "width": 78.1250656167979,
+      "height": 78.12506561679791,
+      "fill": "#FC8337",
+      "borderRadiusPx": 4.687503937007874
+    },
+    {
+      "type": "image",
+      "z": 9,
+      "left": 733.9062992125984,
+      "top": 365.3280839895013,
+      "width": 35.15629921259843,
+      "height": 35.15629921259843,
+      "src": "/e-courses/modules/ms-really/slides/slide-10-rId3.webp"
+    },
+    {
+      "type": "text",
+      "z": 10,
+      "left": 712.4219160104986,
+      "top": 448.0156167979003,
+      "width": 333.03123359580053,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "Understand the Cause",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 11,
+      "left": 712.4219160104986,
+      "top": 504.34370078740153,
+      "width": 495.1406824146982,
+      "height": 166.68753280839894,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Move beyond symptoms. Ask why results occur, and trace the answer back to the process, structure, or system that created them.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 12,
+      "left": 1262.6250656167979,
+      "top": 314.8280839895013,
+      "width": 553.1875328083989,
+      "height": 385.23438320209976,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 23.114062992125984
+    },
+    {
+      "type": "rect",
+      "z": 13,
+      "left": 1291.6562992125982,
+      "top": 343.8593175853018,
+      "width": 78.1250656167979,
+      "height": 78.12506561679791,
+      "fill": "#FC8337",
+      "borderRadiusPx": 4.687503937007874
+    },
+    {
+      "type": "image",
+      "z": 14,
+      "left": 1313.1406824146982,
+      "top": 365.3280839895013,
+      "width": 35.15629921259843,
+      "height": 35.15629921259843,
+      "src": "/e-courses/modules/ms-really/slides/slide-10-rId5.webp"
+    },
+    {
+      "type": "text",
+      "z": 15,
+      "left": 1291.6562992125982,
+      "top": 448.0156167979003,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "Improve by Design",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 16,
+      "left": 1291.6562992125982,
+      "top": 504.34370078740153,
+      "width": 495.1250656167979,
+      "height": 125.01561679790026,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Stop reacting to problems. Start designing better outcomes by intentionally improving the systems that produce your results.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 17,
+      "left": 143.23438320209974,
+      "top": 758.6562992125985,
+      "width": 1672.5937007874015,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Once you begin to see systems, you move from reacting to issues to designing better outcomes — and that shift changes everything.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 18,
+      "left": 104.17191601049868,
+      "top": 729.3593175853018,
+      "width": 3,
+      "height": 100.26561679790026,
+      "fill": "#FC8337"
+    },
+    {
+      "type": "rect",
+      "z": 19,
+      "left": 104.17191601049868,
+      "top": 858.9219160104986,
+      "width": 1711.6562992125982,
+      "height": 110.65629921259843,
+      "fill": "#4B1E01",
+      "borderRadiusPx": 6.639377952755905
+    },
+    {
+      "type": "image",
+      "z": 20,
+      "left": 130.2031496062992,
+      "top": 897.6719160104986,
+      "width": 32.546850393700794,
+      "height": 26.031233595800526,
+      "src": "/e-courses/modules/ms-really/slides/slide-10-rId7.webp"
+    },
+    {
+      "type": "text",
+      "z": 21,
+      "left": 188.78123359580053,
+      "top": 891.4531496062992,
+      "width": 1601.0156167979003,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Key Insight:",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 700,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "If you can see the system, you can improve the system.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

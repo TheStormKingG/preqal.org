@@ -1,0 +1,361 @@
+{
+  "version": 2,
+  "widthEmu": 14630400,
+  "heightEmu": 8229600,
+  "refWidth": 1920,
+  "refHeight": 1080,
+  "layers": [
+    {
+      "type": "text",
+      "z": 0,
+      "left": 104.17191601049868,
+      "top": 185.59370078740156,
+      "width": 846.75,
+      "height": 81.3750656167979,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 48.5,
+          "runs": [
+            {
+              "text": "People + Process + Evidence",
+              "lineSpacingPt": 48.5,
+              "fontSizePt": 39,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 1,
+      "left": 104.17191601049868,
+      "top": 319.04685039370077,
+      "width": 1711.6562992125982,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Every effective management system is built on three essential elements. Remove any one of them and the system becomes unstable.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 2,
+      "left": 104.17191601049868,
+      "top": 390.0156167979003,
+      "width": 553.1875328083989,
+      "height": 364.4219160104987,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 21.86531496062992
+    },
+    {
+      "type": "text",
+      "z": 3,
+      "left": 133.20314960629923,
+      "top": 419.0468503937008,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "👥",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "People",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 4,
+      "left": 133.20314960629923,
+      "top": 475.3750656167979,
+      "width": 495.1250656167979,
+      "height": 208.35931758530182,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Responsible for carrying out the work. Must be trained, aware of their roles, and clear on what is expected. Motivated, competent people are the engine of any system.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 5,
+      "left": 683.3906824146982,
+      "top": 390.0156167979003,
+      "width": 553.2031496062992,
+      "height": 364.4219160104987,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 21.86531496062992
+    },
+    {
+      "type": "text",
+      "z": 6,
+      "left": 712.4219160104986,
+      "top": 419.0468503937008,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "⚙️",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Process",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 7,
+      "left": 712.4219160104986,
+      "top": 475.3750656167979,
+      "width": 495.1406824146982,
+      "height": 208.35931758530182,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Defines",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "how",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "italic"
+            },
+            {
+              "text": "the work is done. Provides a clear, step-by-step method that ensures consistency, reduces confusion, and enables reliable outputs regardless of who is performing the task.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 8,
+      "left": 1262.6250656167979,
+      "top": 390.0156167979003,
+      "width": 553.1875328083989,
+      "height": 364.4219160104987,
+      "fill": "#030303",
+      "stroke": "#FC8337",
+      "strokeWidthPx": 3,
+      "borderRadiusPx": 21.86531496062992
+    },
+    {
+      "type": "text",
+      "z": 9,
+      "left": 1291.6562992125982,
+      "top": 419.0468503937008,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "📋",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Evidence",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 10,
+      "left": 1291.6562992125982,
+      "top": 475.3750656167979,
+      "width": 495.1250656167979,
+      "height": 250.03123359580053,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "The record that proves work was completed correctly. Allows the organization to verify performance, identify deviations, and drive targeted improvements based on facts — not assumptions.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 11,
+      "left": 104.17191601049868,
+      "top": 783.7343832020997,
+      "width": 1711.6562992125982,
+      "height": 110.65629921259843,
+      "fill": "#4B1E01",
+      "borderRadiusPx": 6.639377952755905
+    },
+    {
+      "type": "image",
+      "z": 12,
+      "left": 130.2031496062992,
+      "top": 822.4843832020997,
+      "width": 32.546850393700794,
+      "height": 26.031233595800526,
+      "src": "/e-courses/modules/ms-really/slides/slide-05-rId1.webp"
+    },
+    {
+      "type": "text",
+      "z": 13,
+      "left": 188.78123359580053,
+      "top": 816.2656167979002,
+      "width": 1601.0156167979003,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Key Insight:",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 700,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "People perform the work, processes guide the work, and evidence confirms the work.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

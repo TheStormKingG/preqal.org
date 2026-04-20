@@ -1,0 +1,335 @@
+{
+  "version": 2,
+  "widthEmu": 14630400,
+  "heightEmu": 8229600,
+  "refWidth": 1920,
+  "refHeight": 1080,
+  "layers": [
+    {
+      "type": "text",
+      "z": 0,
+      "left": 104.17191601049868,
+      "top": 147.75000000000003,
+      "width": 970.1406824146982,
+      "height": 81.3750656167979,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 48.5,
+          "runs": [
+            {
+              "text": "Mindset Shift: Quality = Survival",
+              "lineSpacingPt": 48.5,
+              "fontSizePt": 39,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 1,
+      "left": 85.42191601049868,
+      "top": 268.18753280839894,
+      "width": 772.7968503937008,
+      "height": 524.1093175853018,
+      "fill": "rgba(252,131,55,0.75)",
+      "borderRadiusPx": 31.446559055118108
+    },
+    {
+      "type": "text",
+      "z": 2,
+      "left": 111.45314960629922,
+      "top": 294.21876640419947,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "The Old Mindset",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 3,
+      "left": 111.45314960629922,
+      "top": 360.95314960629923,
+      "width": 720.7343832020998,
+      "height": 125.01561679790026,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Quality is an extra responsibility — something to address only when problems arise or when audits are approaching. It is seen as a cost, not an investment.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#000000",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 4,
+      "left": 111.45314960629922,
+      "top": 618.7812335958006,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "The Result",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#000000",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 5,
+      "left": 111.45314960629922,
+      "top": 685.5156167979003,
+      "width": 720.7343832020998,
+      "height": 83.34370078740159,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Limited growth, recurring errors, customer dissatisfaction, and increasing operational risk.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#000000",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 6,
+      "left": 904,
+      "top": 294.21876640419947,
+      "width": 325.5780839895013,
+      "height": 40.70314960629921,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 24,
+          "runs": [
+            {
+              "text": "The New Mindset",
+              "lineSpacingPt": 24,
+              "fontSizePt": 19.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Saira\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 7,
+      "left": 904,
+      "top": 360.95314960629923,
+      "width": 912.8124671916011,
+      "height": 125.01561679790026,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Quality is the foundation of daily operations. Organizations that embed quality into their routines deliver consistent value, reduce waste, and strengthen trust with every customer interaction.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "z": 8,
+      "left": 904,
+      "top": 509.4062992125984,
+      "width": 912.8124671916011,
+      "height": 194.01561679790026,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Consistent value delivered to customers",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        },
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Reduced waste and operational errors",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        },
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Stronger organizational resilience",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        },
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "A platform for sustainable growth",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#E5E0DF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "rect",
+      "z": 9,
+      "left": 104.17191601049868,
+      "top": 821.5937007874015,
+      "width": 1711.6562992125982,
+      "height": 110.65629921259843,
+      "fill": "#183A13",
+      "borderRadiusPx": 6.639377952755905
+    },
+    {
+      "type": "image",
+      "z": 10,
+      "left": 130.2031496062992,
+      "top": 860.3437007874015,
+      "width": 32.546850393700794,
+      "height": 26.031233595800526,
+      "src": "/e-courses/modules/ms-really/slides/slide-09-rId1.webp"
+    },
+    {
+      "type": "text",
+      "z": 11,
+      "left": 188.78123359580053,
+      "top": 854.1250656167979,
+      "width": 1601.0156167979003,
+      "height": 41.67191601049869,
+      "align": "left",
+      "verticalAlign": "top",
+      "paragraphs": [
+        {
+          "align": "left",
+          "lineSpacingPt": 25,
+          "runs": [
+            {
+              "text": "Key Insight:",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 700,
+              "fontStyle": "normal"
+            },
+            {
+              "text": "Quality is not an extra task. It is the foundation of a successful and sustainable business.",
+              "lineSpacingPt": 25,
+              "fontSizePt": 15.5,
+              "color": "#FFFFFF",
+              "fontFamily": "\"Roboto\", system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontStyle": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
