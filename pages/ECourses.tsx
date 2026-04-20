@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, SlidersHorizontal, TrendingUp } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -10,29 +10,48 @@ import { useRevealOnScroll } from '../components/ecourses/useRevealOnScroll';
 const CourseCardReveal: React.FC<{
   module: (typeof COURSE_MODULES)[number];
   index: number;
-  isOpen: boolean;
-  onToggle: () => void;
-}> = ({ module, index, isOpen, onToggle }) => {
+  expandedId: string | null;
+  onToggle: (id: string) => void;
+}> = ({ module, index, expandedId, onToggle }) => {
   const [wrapRef, visible] = useRevealOnScroll();
+  const isHidden = expandedId !== null && expandedId !== module.id;
+  const isExpanded = expandedId === module.id;
+  const revealDone = expandedId !== null || visible;
+
   return (
     <div
       ref={wrapRef}
-      className={`h-full transition-all duration-500 ease-out ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-      }`}
-      style={{ transitionDelay: visible ? `${index * 55}ms` : '0ms' }}
+      className={[
+        'h-full transition-all duration-500 ease-in-out',
+        isHidden ? 'hidden' : '',
+        revealDone ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3',
+      ].join(' ')}
+      style={{ transitionDelay: expandedId ? '0ms' : visible ? `${index * 55}ms` : '0ms' }}
     >
-      <CourseCard module={module} isOpen={isOpen} onToggle={onToggle} />
+      <CourseCard
+        module={module}
+        isGridExpanded={isExpanded}
+        onToggle={() => onToggle(module.id)}
+      />
     </div>
   );
 };
 
 const ECourses: React.FC = () => {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const handleToggle = (id: string) => {
-    setOpenId((prev) => (prev === id ? null : id));
+    setExpandedId((prev) => (prev === id ? null : id));
   };
+
+  useEffect(() => {
+    if (!expandedId) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpandedId(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [expandedId]);
 
   const pillars = [
     {
@@ -84,17 +103,22 @@ const ECourses: React.FC = () => {
           id="modules"
           eyebrow="Course overview"
           title="Nine modules. One clear path."
-          subtitle="Select a module to expand it and see learning outcomes, time, and skill level."
+          subtitle="Select a module to open it across the full grid. Click the open module again to return to all nine."
           className="pt-0"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 items-stretch">
+          <div
+            className={[
+              'grid gap-4 sm:gap-5 items-stretch transition-all duration-500 ease-in-out',
+              expandedId ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+            ].join(' ')}
+          >
             {COURSE_MODULES.map((module, index) => (
               <CourseCardReveal
                 key={module.id}
                 module={module}
                 index={index}
-                isOpen={openId === module.id}
-                onToggle={() => handleToggle(module.id)}
+                expandedId={expandedId}
+                onToggle={handleToggle}
               />
             ))}
           </div>
