@@ -1,0 +1,14 @@
+---
+description: After completing a user task, commit, push, and ensure deploy runs
+alwaysApply: true
+---
+
+# Ship after each task
+
+When you finish work the user asked for in this repository:
+
+1. **Commit** all intentional changes with a clear, conventional message (present tense, what changed and why in plain language).
+2. **Push** to `origin` on the branch you are on (usually `master`). Request `git_write` and `network` permissions as needed.
+3. **Deploy**: This site uses GitHub Actions (`.github/workflows/deploy.yml`) — a push to `master` triggers **Deploy to GitHub Pages**. You cannot complete deploy from the agent without GitHub; pushing **is** the deploy trigger. If `gh` is available and authenticated, you may optionally confirm the workflow run; otherwise state that deploy will follow from CI.
+
+Do not leave the task “done” only on disk: ship it unless the user explicitly asked not to commit or push.

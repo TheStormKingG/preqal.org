@@ -1,7 +1,7 @@
 /**
- * Module 1 → public/e-courses/modules/ms-really/slides/
- * Default: ./Module-1-What-is-a-Management-System-Really if present, else ~/Downloads/…
- * Override: MODULE1_SLIDES_DIR=/path npm run sync-module1-slides
+ * Module 3 → public/e-courses/modules/process-thinking/slides/
+ * Default: ./Module-3-Process-Thinking (repo root), else ~/Downloads/Module-3-Process-Thinking
+ * Override: MODULE3_SLIDES_DIR=/path npm run sync-module3-slides
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,18 +10,18 @@ import { resolveSlideSourceDir } from './lib/resolveSlideSourceDir.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
-const OUT_DIR = path.join(root, 'public/e-courses/modules/ms-really/slides');
-const PUBLIC_PREFIX = '/e-courses/modules/ms-really/slides';
-const WORKSPACE = 'Module-1-What-is-a-Management-System-Really';
+const OUT_DIR = path.join(root, 'public/e-courses/modules/process-thinking/slides');
+const PUBLIC_PREFIX = '/e-courses/modules/process-thinking/slides';
+const WORKSPACE = 'Module-3-Process-Thinking';
 const srcDir = resolveSlideSourceDir({
   root,
-  envValue: process.env.MODULE1_SLIDES_DIR,
+  envValue: process.env.MODULE3_SLIDES_DIR,
   workspaceDirName: WORKSPACE,
   downloadsDirName: WORKSPACE,
 });
 
 syncRasterSlidesFromDir({
-  logTag: 'sync-module1-slides',
+  logTag: 'sync-module3-slides',
   srcDir,
   outDir: OUT_DIR,
   publicUrlPrefix: PUBLIC_PREFIX,
