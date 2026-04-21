@@ -9,6 +9,7 @@
     "sync-module1-slides": "node scripts/sync-module1-slides.mjs",
     "sync-module2-slides": "node scripts/sync-module2-slides.mjs",
     "sync-module3-slides": "node scripts/sync-module3-slides.mjs",
+    "sync-module4-slides": "node scripts/sync-module4-slides.mjs",
     "crop-module1-watermark": "node scripts/crop-module1-watermark.mjs",
     "build-slides-from-pptx": "node scripts/build-native-slides.mjs",
     "preview": "vite preview",

@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module3-slides` (see scripts; env MODULEn_SLIDES_DIR). */
+/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module4-slides` (see scripts; env MODULEn_SLIDES_DIR). */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
@@ -60,6 +60,7 @@ export const COURSE_MODULES: CourseModule[] = [
     ],
     estimatedMinutes: 40,
     skillLevel: 'Intermediate',
+    slidesManifest: '/e-courses/modules/risk-based-thinking/slides/manifest.json',
   },
   {
     id: 'documentation-works',
