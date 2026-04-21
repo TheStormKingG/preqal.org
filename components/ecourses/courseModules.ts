@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Module 1 slides: raster images under `public/.../slides/` + `manifest.json`. Refresh with `npm run sync-module1-slides` (see script for source folder). */
+/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` / `sync-module2-slides` (see scripts; env MODULEn_SLIDES_DIR). */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
@@ -30,6 +30,7 @@ export const COURSE_MODULES: CourseModule[] = [
     ],
     estimatedMinutes: 40,
     skillLevel: 'Beginner',
+    slidesManifest: '/e-courses/modules/quality-iso-simplified/slides/manifest.json',
   },
   {
     id: 'process-thinking',
