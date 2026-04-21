@@ -52,27 +52,47 @@ const ECourseLearn: React.FC = () => {
     <>
       <SEO pageKey="eCourseLearn" />
 
-      <div className="min-h-screen flex flex-col pt-20 pb-40 sm:pb-44">
-        {/* Top bar — course title + navigation */}
+      <div className="min-h-screen flex flex-col pt-20 pb-12 sm:pb-16">
+        {/* Top bar — course title, progress, overview */}
         <header className="shrink-0 border-b border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_2px_8px_#a3b1c6]">
-          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-3 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              className="lg:hidden neu-raised-sm p-2.5 rounded-xl text-slate-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
-              aria-label="Open course modules"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            <Link
-              to="/e-courses"
-              className="text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-600 whitespace-nowrap neu-pressed-sm px-3 py-1.5 rounded-xl transition-colors"
-            >
-              ← Overview
-            </Link>
-            <h1 className="text-xs sm:text-sm md:text-base font-bold text-slate-800 text-center flex-1 min-w-0 order-last lg:order-none w-full lg:w-auto basis-full lg:basis-auto truncate px-1">
-              E-Course: {COURSE_DISPLAY_TITLE}
-            </h1>
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-3">
+            <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
+              <div className="flex items-center gap-3 shrink-0">
+                <button
+                  type="button"
+                  className="lg:hidden neu-raised-sm p-2.5 rounded-xl text-slate-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Open course modules"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+                <Link
+                  to="/e-courses"
+                  className="text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-600 whitespace-nowrap neu-pressed-sm px-3 py-1.5 rounded-xl transition-colors"
+                >
+                  ← Overview
+                </Link>
+              </div>
+              <div className="flex-1 min-w-0 w-full basis-full lg:basis-0 flex flex-col items-center order-last lg:order-none">
+                <h1 className="text-xs sm:text-sm md:text-base font-bold text-slate-800 text-center w-full max-w-3xl px-1">
+                  E-Course: {COURSE_DISPLAY_TITLE}
+                </h1>
+                <div className="mt-3 w-full max-w-md flex flex-col gap-2 items-stretch">
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide text-center">
+                    Course progress
+                  </p>
+                  <div className="flex items-center justify-center gap-3 w-full">
+                    <div className="h-2.5 flex-1 min-w-0 max-w-[280px] neu-pressed-sm rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber-500 rounded-full transition-all duration-500 ease-out shadow-inner"
+                        style={{ width: `${courseProgressPct}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-bold text-slate-800 tabular-nums shrink-0">{courseProgressPct}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 
@@ -91,7 +111,7 @@ const ECourseLearn: React.FC = () => {
           <aside
             className={[
               'fixed lg:static left-0 z-[70] lg:z-auto w-[min(100%,20rem)] lg:w-72 shrink-0 flex flex-col min-h-0 p-2 sm:p-3 lg:p-4',
-              'top-20 bottom-40 sm:bottom-44 lg:inset-auto lg:h-full lg:self-stretch',
+              'top-20 bottom-6 sm:bottom-8 lg:inset-auto lg:h-full lg:self-stretch',
               'transition-transform duration-300 ease-out lg:translate-x-0',
               sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}
@@ -226,26 +246,6 @@ const ECourseLearn: React.FC = () => {
             </div>
           </main>
         </div>
-
-        {/* Bottom bar — progress + navigation */}
-        <footer className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_-4px_12px_#a3b1c6] pb-[env(safe-area-inset-bottom)]">
-          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-4 flex flex-col items-center gap-3">
-            <div className="flex flex-col items-center w-full max-w-md mx-auto gap-2">
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide text-center">
-                Course progress
-              </p>
-              <div className="flex items-center justify-center gap-3 w-full">
-                <div className="h-2.5 flex-1 min-w-0 max-w-[280px] neu-pressed-sm rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-amber-500 rounded-full transition-all duration-500 ease-out shadow-inner"
-                    style={{ width: `${courseProgressPct}%` }}
-                  />
-                </div>
-                <span className="text-sm font-bold text-slate-800 tabular-nums shrink-0">{courseProgressPct}%</span>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
     </>
   );
