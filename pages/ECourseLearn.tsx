@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -34,15 +34,6 @@ const ECourseLearn: React.FC = () => {
     });
   }, []);
 
-  const goPrev = useCallback(() => {
-    setActiveIndex((i) => Math.max(0, i - 1));
-  }, []);
-
-  const goNext = useCallback(() => {
-    if (moduleAdvanceBlocked) return;
-    setActiveIndex((i) => Math.min(total - 1, i + 1));
-  }, [moduleAdvanceBlocked, total]);
-
   useEffect(() => {
     setExpandedModuleIds((prev) => new Set(prev).add(current.id));
   }, [current.id]);
@@ -51,45 +42,11 @@ const ECourseLearn: React.FC = () => {
     setNativeDeckComplete(!current.slidesManifest);
   }, [current.slidesManifest, current.id]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (current.slidesManifest) return;
-      if (e.key === 'ArrowLeft') goPrev();
-      if (e.key === 'ArrowRight') goNext();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [current.slidesManifest, goPrev, goNext]);
-
   const selectLesson = (moduleIndex: number) => {
+    if (moduleIndex > activeIndex && moduleAdvanceBlocked) return;
     setActiveIndex(moduleIndex);
     setSidebarOpen(false);
   };
-
-  const navButtons = useMemo(
-    () => (
-      <div className="flex items-center gap-2 shrink-0">
-        <button
-          type="button"
-          onClick={goPrev}
-          disabled={activeIndex <= 0}
-          className="px-4 py-2 rounded-xl text-sm font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          onClick={goNext}
-          disabled={activeIndex >= total - 1 || moduleAdvanceBlocked}
-          title={moduleAdvanceBlocked ? 'Finish all lesson slides to continue' : undefined}
-          className="px-4 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
-        >
-          Next
-        </button>
-      </div>
-    ),
-    [activeIndex, goNext, goPrev, moduleAdvanceBlocked, total]
-  );
 
   return (
     <>
@@ -178,11 +135,17 @@ const ECourseLearn: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => selectLesson(moduleIndex)}
+                            disabled={moduleIndex > activeIndex && moduleAdvanceBlocked}
+                            title={
+                              moduleIndex > activeIndex && moduleAdvanceBlocked
+                                ? 'Finish all slides in this module to continue'
+                                : undefined
+                            }
                             className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg text-left text-sm transition-all ${
                               isActiveModule
                                 ? 'neu-raised-sm bg-amber-100/40 text-slate-900 ring-1 ring-amber-500/30'
                                 : 'text-slate-600 hover:bg-white/50'
-                            }`}
+                            } disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed`}
                           >
                             <span className="mt-0.5 shrink-0">
                               {moduleIndex < activeIndex ? (
@@ -266,8 +229,7 @@ const ECourseLearn: React.FC = () => {
 
         {/* Bottom bar — progress + navigation */}
         <footer className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200/60 bg-[#e0e5ec]/95 backdrop-blur-md shadow-[0_-4px_12px_#a3b1c6] pb-[env(safe-area-inset-bottom)]">
-          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-4 flex flex-col items-center gap-5">
-            <div className="flex justify-center w-full">{navButtons}</div>
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-4 py-4 flex flex-col items-center gap-3">
             <div className="flex flex-col items-center w-full max-w-md mx-auto gap-2">
               <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide text-center">
                 Course progress
