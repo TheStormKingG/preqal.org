@@ -59,6 +59,14 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
 
   const absSrc = publicAssetAbsoluteUrl(src);
 
+  useEffect(() => {
+    if (!unlocked) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.preload = 'auto';
+    v.load();
+  }, [absSrc, unlocked, moduleId]);
+
   const bumpComplete = useCallback(
     (done: boolean) => {
       setComplete(done);
@@ -114,7 +122,7 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
   const onLoadedMetadata = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    setDuration(v.duration || 0);
+    setDuration(Number.isFinite(v.duration) ? v.duration : 0);
     setLoadError(null);
     if (!complete) {
       const saved = loadMaxWatched(moduleId);
@@ -124,6 +132,10 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
       }
     }
   }, [complete, moduleId]);
+
+  const onLoadedData = useCallback(() => {
+    setLoadError(null);
+  }, []);
 
   const onEnded = useCallback(() => {
     const v = videoRef.current;
@@ -139,12 +151,20 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
     const v = videoRef.current;
     if (!v) return;
     if (v.paused) {
+      const dur = Number.isFinite(v.duration) ? v.duration : 0;
+      if (dur > 0 && v.currentTime >= dur - 0.08) {
+        v.currentTime = 0;
+        if (!complete) {
+          maxWatchedRef.current = 0;
+          saveMaxWatched(moduleId, 0);
+        }
+      }
       void v.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     } else {
       v.pause();
       setPlaying(false);
     }
-  }, []);
+  }, [complete, moduleId]);
 
   const rewind10 = useCallback(() => {
     const v = videoRef.current;
@@ -201,11 +221,12 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
         ) : null}
         <div className="relative bg-black">
           <video
+            key={`${moduleId}-${absSrc}`}
             ref={videoRef}
             src={absSrc}
             className="w-full max-h-[min(56vh,520px)] object-contain block mx-auto"
             playsInline
-            preload="metadata"
+            preload="auto"
             controls={false}
             disablePictureInPicture
             controlsList="nodownload noremoteplayback"
@@ -214,13 +235,18 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
               if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') e.preventDefault();
             }}
             onLoadedMetadata={onLoadedMetadata}
+            onLoadedData={onLoadedData}
             onTimeUpdate={onTimeUpdate}
             onSeeking={onSeeking}
             onSeeked={onSeeked}
             onEnded={onEnded}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
-            onError={() => setLoadError('Could not load this video. If you are building locally, run npm run sync-qms-media to copy files from QMS Module Videos.')}
+            onError={() =>
+              setLoadError(
+                'Could not load this video. Run npm run sync-qms-media to copy full videos from QMS Module Videos into public/, then rebuild and deploy.',
+              )
+            }
           />
         </div>
         <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60">

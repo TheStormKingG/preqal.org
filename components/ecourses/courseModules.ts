@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module9-slides`. Video/quiz files: `npm run sync-qms-media` from `QMS Module Videos` / `QMS Module Quizzes` (see scripts). */
+/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module9-slides`. Media: `npm run sync-qms-media`. After editing `quiz.docx`, run `npm run generate-module-quiz-bank`. */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
