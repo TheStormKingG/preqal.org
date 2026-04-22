@@ -15,6 +15,7 @@
     "sync-module7-slides": "node scripts/sync-module7-slides.mjs",
     "sync-module8-slides": "node scripts/sync-module8-slides.mjs",
     "sync-module9-slides": "node scripts/sync-module9-slides.mjs",
+    "sync-qms-media": "node scripts/sync-qms-media.mjs",
     "crop-module1-watermark": "node scripts/crop-module1-watermark.mjs",
     "build-slides-from-pptx": "node scripts/build-native-slides.mjs",
     "preview": "vite preview",

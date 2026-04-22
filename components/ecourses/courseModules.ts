@@ -1,6 +1,6 @@
 import type { CourseModule } from './types';
 
-/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module9-slides` (see scripts; env MODULEn_SLIDES_DIR). */
+/** Slides: `slidesManifest` → `public/e-courses/modules/{id}/slides/`. Sync: `npm run sync-module1-slides` … `sync-module9-slides`. Video/quiz files: `npm run sync-qms-media` from `QMS Module Videos` / `QMS Module Quizzes` (see scripts). */
 export const COURSE_MODULES: CourseModule[] = [
   {
     id: 'ms-really',
@@ -16,6 +16,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 35,
     skillLevel: 'Beginner',
     slidesManifest: '/e-courses/modules/ms-really/slides/manifest.json',
+    videoSrc: '/e-courses/modules/ms-really/video.mp4',
+    quizDocxSrc: '/e-courses/modules/ms-really/quiz.docx',
   },
   {
     id: 'quality-iso-simplified',
@@ -31,6 +33,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 40,
     skillLevel: 'Beginner',
     slidesManifest: '/e-courses/modules/quality-iso-simplified/slides/manifest.json',
+    videoSrc: '/e-courses/modules/quality-iso-simplified/video.mp4',
+    quizDocxSrc: '/e-courses/modules/quality-iso-simplified/quiz.docx',
   },
   {
     id: 'process-thinking',
@@ -46,6 +50,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 45,
     skillLevel: 'Beginner',
     slidesManifest: '/e-courses/modules/process-thinking/slides/manifest.json',
+    videoSrc: '/e-courses/modules/process-thinking/video.mp4',
+    quizDocxSrc: '/e-courses/modules/process-thinking/quiz.docx',
   },
   {
     id: 'risk-based-thinking',
@@ -61,6 +67,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 40,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/risk-based-thinking/slides/manifest.json',
+    videoSrc: '/e-courses/modules/risk-based-thinking/video.mp4',
+    quizDocxSrc: '/e-courses/modules/risk-based-thinking/quiz.docx',
   },
   {
     id: 'documentation-works',
@@ -76,6 +84,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 50,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/documentation-works/slides/manifest.json',
+    videoSrc: '/e-courses/modules/documentation-works/video.mp4',
+    quizDocxSrc: '/e-courses/modules/documentation-works/quiz.docx',
   },
   {
     id: 'people-drive-quality',
@@ -91,6 +101,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 42,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/people-drive-quality/slides/manifest.json',
+    videoSrc: '/e-courses/modules/people-drive-quality/video.mp4',
+    quizDocxSrc: '/e-courses/modules/people-drive-quality/quiz.docx',
   },
   {
     id: 'monitoring-measurement',
@@ -106,6 +118,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 48,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/monitoring-measurement/slides/manifest.json',
+    videoSrc: '/e-courses/modules/monitoring-measurement/video.mp4',
+    quizDocxSrc: '/e-courses/modules/monitoring-measurement/quiz.docx',
   },
   {
     id: 'audits-capa',
@@ -121,6 +135,8 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 55,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/audits-capa/slides/manifest.json',
+    videoSrc: '/e-courses/modules/audits-capa/video.mp4',
+    quizDocxSrc: '/e-courses/modules/audits-capa/quiz.docx',
   },
   {
     id: 'continual-improvement',
@@ -136,5 +152,7 @@ export const COURSE_MODULES: CourseModule[] = [
     estimatedMinutes: 50,
     skillLevel: 'Intermediate',
     slidesManifest: '/e-courses/modules/continual-improvement/slides/manifest.json',
+    videoSrc: '/e-courses/modules/continual-improvement/video.mp4',
+    quizDocxSrc: '/e-courses/modules/continual-improvement/quiz.docx',
   },
 ];

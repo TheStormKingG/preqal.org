@@ -1,28 +1,69 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
 import NativeSlideDeck from '../components/ecourses/NativeSlideDeck';
+import GatedModuleVideo from '../components/ecourses/GatedModuleVideo';
+import ModuleQuizPanel from '../components/ecourses/ModuleQuizPanel';
+import {
+  canOpenModuleIndex,
+  moduleGateComplete,
+  quizDone,
+  slidesDone,
+  videoDone,
+} from '../components/ecourses/ecourseProgress';
+import type { CourseModule } from '../components/ecourses/types';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
+
+function ModuleStepStrip({ mod }: { mod: CourseModule }) {
+  if (!mod.slidesManifest && !mod.videoSrc && !mod.quizDocxSrc) return null;
+  const s1 = slidesDone(mod);
+  const s2 = videoDone(mod);
+  const s3 = quizDone(mod);
+  const steps = [
+    { key: 'slides', label: 'Slides', done: s1, optional: !mod.slidesManifest },
+    { key: 'video', label: 'Video', done: s2, optional: !mod.videoSrc },
+    { key: 'quiz', label: 'Quiz', done: s3, optional: !mod.quizDocxSrc },
+  ].filter((x) => !x.optional);
+  if (steps.length === 0) return null;
+  return (
+    <ol className="flex flex-wrap items-center gap-2 mb-6" aria-label="Module progress steps">
+      {steps.map((step, i) => (
+        <li key={step.key} className="flex items-center gap-2 text-xs font-bold text-slate-600">
+          {i > 0 ? <ChevronRight className="h-3.5 w-3.5 text-slate-400 shrink-0" aria-hidden /> : null}
+          <span
+            className={[
+              'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg',
+              step.done ? 'bg-emerald-500/15 text-emerald-800' : 'neu-pressed-sm text-slate-500',
+            ].join(' ')}
+          >
+            {step.done ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" aria-hidden /> : null}
+            {step.label}
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 const ECourseLearn: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
-  const [nativeDeckComplete, setNativeDeckComplete] = useState(
-    () => !Boolean(COURSE_MODULES[0]?.slidesManifest)
-  );
+  const [, bumpGating] = useReducer((x: number) => x + 1, 0);
 
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
   const courseProgressPct = Math.min(100, Math.round(((activeIndex + 1) / total) * 100));
 
-  const moduleAdvanceBlocked = Boolean(current.slidesManifest && !nativeDeckComplete);
+  const onNativeDeckCompleteChange = useCallback(() => {
+    bumpGating();
+  }, []);
 
-  const onNativeDeckCompleteChange = useCallback((complete: boolean) => {
-    setNativeDeckComplete(complete);
+  const onGatingProgress = useCallback(() => {
+    bumpGating();
   }, []);
 
   const toggleModule = useCallback((id: string) => {
@@ -38,12 +79,8 @@ const ECourseLearn: React.FC = () => {
     setExpandedModuleIds((prev) => new Set(prev).add(current.id));
   }, [current.id]);
 
-  useEffect(() => {
-    setNativeDeckComplete(!current.slidesManifest);
-  }, [current.slidesManifest, current.id]);
-
   const selectLesson = (moduleIndex: number) => {
-    if (moduleIndex > activeIndex && moduleAdvanceBlocked) return;
+    if (moduleIndex > activeIndex && !canOpenModuleIndex(COURSE_MODULES, moduleIndex)) return;
     setActiveIndex(moduleIndex);
     setSidebarOpen(false);
   };
@@ -132,6 +169,7 @@ const ECourseLearn: React.FC = () => {
                 {COURSE_MODULES.map((mod, moduleIndex) => {
                   const expanded = expandedModuleIds.has(mod.id);
                   const isActiveModule = moduleIndex === activeIndex;
+                  const forwardBlocked = moduleIndex > activeIndex && !canOpenModuleIndex(COURSE_MODULES, moduleIndex);
                   return (
                     <div key={mod.id} className="rounded-xl overflow-hidden">
                       <button
@@ -155,10 +193,10 @@ const ECourseLearn: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => selectLesson(moduleIndex)}
-                            disabled={moduleIndex > activeIndex && moduleAdvanceBlocked}
+                            disabled={forwardBlocked}
                             title={
-                              moduleIndex > activeIndex && moduleAdvanceBlocked
-                                ? 'Finish all slides in this module to continue'
+                              forwardBlocked
+                                ? 'Finish slides, video, and quiz in each earlier module to continue'
                                 : undefined
                             }
                             className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg text-left text-sm transition-all ${
@@ -169,7 +207,11 @@ const ECourseLearn: React.FC = () => {
                           >
                             <span className="mt-0.5 shrink-0">
                               {moduleIndex < activeIndex ? (
-                                <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden />
+                                moduleGateComplete(mod) ? (
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden />
+                                ) : (
+                                  <Circle className="h-4 w-4 text-amber-500" aria-hidden />
+                                )
                               ) : isActiveModule ? (
                                 <span className="flex h-4 w-4 items-center justify-center" aria-hidden>
                                   <span className="h-2.5 w-2.5 rounded-full bg-amber-500 ring-2 ring-amber-400/50 shadow-sm" />
@@ -205,6 +247,26 @@ const ECourseLearn: React.FC = () => {
                     moduleId={current.id}
                     manifestPath={current.slidesManifest}
                     onAllSlidesReadChange={onNativeDeckCompleteChange}
+                  />
+                ) : null}
+                <ModuleStepStrip mod={current} />
+                {current.videoSrc ? (
+                  <GatedModuleVideo
+                    key={`video-${current.id}`}
+                    moduleId={current.id}
+                    src={current.videoSrc}
+                    unlocked={slidesDone(current)}
+                    onProgress={onGatingProgress}
+                    onCompleteChange={onGatingProgress}
+                  />
+                ) : null}
+                {current.quizDocxSrc ? (
+                  <ModuleQuizPanel
+                    key={`quiz-${current.id}`}
+                    moduleId={current.id}
+                    docxSrc={current.quizDocxSrc}
+                    unlocked={videoDone(current)}
+                    onAckChange={onGatingProgress}
                   />
                 ) : null}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">
