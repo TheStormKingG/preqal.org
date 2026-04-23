@@ -74,6 +74,27 @@ body {
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
 }
+
+/* E-course gated video: −10s / +10s floater on the picture */
+@keyframes ecourseVideoSkipFloat {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  14% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-56px);
+  }
+}
+.animate-ecourse-skip-float {
+  animation: ecourseVideoSkipFloat 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
