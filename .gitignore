@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Large e-course sources — run `npm run sync-qms-media` to copy into `public/`
-QMS Module Videos/
-QMS Module Quizzes/
+# Copied at build time from ./QMS Module Videos (see npm run build). Do not commit full MP4s here.
+public/e-courses/modules/*/video.mp4
