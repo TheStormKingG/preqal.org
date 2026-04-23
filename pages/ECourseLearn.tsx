@@ -264,7 +264,6 @@ const ECourseLearn: React.FC = () => {
                   <ModuleQuizPanel
                     key={`quiz-${current.id}`}
                     moduleId={current.id}
-                    docxSrc={current.quizDocxSrc}
                     unlocked={videoDone(current)}
                     onAckChange={onGatingProgress}
                   />

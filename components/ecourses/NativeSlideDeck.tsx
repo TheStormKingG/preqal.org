@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import SlideLayerStage, { type SlideLayerFile } from './SlideLayerStage';
 import { SlideContentShield } from './SlideContentShield';
+import { useFullscreen } from './useFullscreen';
 
 type SlideRefV2 = { layers: string };
 
@@ -58,6 +59,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
   const [dwellMs, setDwellMs] = useState(0);
   const dwellOriginRef = useRef<number>(0);
   const fontsLoadedRef = useRef(false);
+  const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
 
   const slideCount = manifest?.slides.length ?? 0;
   const minDwellSeconds = manifest?.minDwellSeconds ?? 18;
@@ -207,10 +209,35 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
   return (
     <section className="mb-8 shrink-0" aria-label="Lesson slides">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
-      <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5">
-        <SlideContentShield className="relative flex items-center justify-center min-h-[min(50vh,520px)] sm:min-h-[480px] bg-slate-100 p-2 sm:p-3">
+      <div
+        ref={fsRef}
+        className={[
+          'neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5 flex flex-col min-h-0',
+          fsOpen ? '[&:fullscreen]:rounded-none [&:fullscreen]:min-h-[100dvh] [&:fullscreen]:ring-0' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <div className="flex justify-end px-3 py-2 border-b border-slate-200/60 bg-[#e8ecf2] shrink-0">
+          <button
+            type="button"
+            onClick={() => void toggleFs()}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm transition-all"
+            aria-pressed={fsOpen}
+            aria-label={fsOpen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          >
+            {fsOpen ? <Minimize2 className="h-3.5 w-3.5 shrink-0" aria-hidden /> : <Maximize2 className="h-3.5 w-3.5 shrink-0" aria-hidden />}
+            {fsOpen ? 'Exit' : 'Fullscreen'}
+          </button>
+        </div>
+        <SlideContentShield
+          className={[
+            'relative flex items-center justify-center bg-slate-100 p-2 sm:p-3',
+            fsOpen ? 'flex-1 min-h-0' : 'min-h-[min(50vh,520px)] sm:min-h-[480px]',
+          ].join(' ')}
+        >
           {currentLayers?.version === 2 ? (
-            <div className="w-full max-w-[min(100%,1280px)]">
+            <div className={['w-full max-w-[min(100%,1280px)]', fsOpen ? 'max-h-full flex items-center justify-center' : ''].filter(Boolean).join(' ')}>
               <SlideLayerStage data={currentLayers} />
             </div>
           ) : currentRaster ? (
@@ -218,7 +245,11 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
               src={publicAssetAbsoluteUrl(currentRaster)}
               alt={`Slide ${slideIndex + 1} of ${slideCount}`}
               draggable={false}
-              className="max-h-[min(50vh,520px)] sm:max-h-[min(70vh,640px)] w-full object-contain"
+              className={
+                fsOpen
+                  ? 'max-h-full max-w-full w-auto h-auto object-contain'
+                  : 'max-h-[min(50vh,520px)] sm:max-h-[min(70vh,640px)] w-full object-contain'
+              }
               loading={slideIndex === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
@@ -226,7 +257,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
             <p className="text-sm text-slate-600">Loading slide…</p>
           )}
         </SlideContentShield>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 bg-[#e8ecf2] border-t border-slate-200/60 shrink-0">
           <p className="text-xs text-slate-600 tabular-nums">
             Slide {slideIndex + 1} of {slideCount}
           </p>

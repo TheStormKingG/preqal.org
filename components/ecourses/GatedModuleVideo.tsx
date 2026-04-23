@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FastForward, Pause, Play, Undo2 } from 'lucide-react';
+import { FastForward, Maximize2, Minimize2, Pause, Play, Undo2 } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import { setVideoComplete, videoCompleteFromStorage } from './ecourseProgress';
+import { useFullscreen } from './useFullscreen';
 
 const LS_PROGRESS = 'ecourse-video-progress:';
 /** Seconds ahead of max-watched that we tolerate (buffer / keyframe jitter). */
@@ -61,6 +62,7 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
   const progressBarRef = useRef<HTMLDivElement>(null);
   const dragPointerId = useRef<number | null>(null);
   const skipFloatSeq = useRef(0);
+  const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
 
   const absSrc = publicAssetAbsoluteUrl(src);
 
@@ -345,16 +347,49 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
           </span>
         ) : null}
       </div>
-      <div className="neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5">
+      <div
+        ref={fsRef}
+        className={[
+          'neu-pressed-sm rounded-2xl overflow-hidden ring-1 ring-slate-200/50 bg-slate-900/5',
+          fsOpen
+            ? '[&:fullscreen]:rounded-none [&:fullscreen]:min-h-[100dvh] [&:fullscreen]:flex [&:fullscreen]:flex-col [&:fullscreen]:ring-0'
+            : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <div className="flex justify-end px-3 py-2 border-b border-slate-200/60 bg-[#e8ecf2] shrink-0">
+          <button
+            type="button"
+            onClick={() => void toggleFs()}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm transition-all"
+            aria-pressed={fsOpen}
+            aria-label={fsOpen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          >
+            {fsOpen ? <Minimize2 className="h-3.5 w-3.5 shrink-0" aria-hidden /> : <Maximize2 className="h-3.5 w-3.5 shrink-0" aria-hidden />}
+            {fsOpen ? 'Exit' : 'Fullscreen'}
+          </button>
+        </div>
         {loadError ? (
           <p className="text-sm text-red-700 px-4 py-3">{loadError}</p>
         ) : null}
-        <div className="relative bg-black">
+        <div
+          className={[
+            'relative bg-black',
+            fsOpen ? 'flex-1 min-h-0 flex items-center justify-center' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           <video
             key={`${moduleId}-${absSrc}`}
             ref={videoRef}
             src={absSrc}
-            className="w-full max-h-[min(56vh,520px)] object-contain block mx-auto"
+            className={
+              fsOpen
+                ? 'max-h-full max-w-full w-auto h-auto object-contain'
+                : 'w-full max-h-[min(56vh,520px)] object-contain block mx-auto'
+            }
             playsInline
             preload="auto"
             controls={false}
@@ -388,7 +423,7 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
             </div>
           ) : null}
         </div>
-        <div className="border-t border-slate-200/60 bg-[#e8ecf2] px-4 pt-3 pb-3">
+        <div className="border-t border-slate-200/60 bg-[#e8ecf2] px-4 pt-3 pb-3 shrink-0">
           <div
             ref={progressBarRef}
             role="slider"

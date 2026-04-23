@@ -13,6 +13,6 @@ export interface CourseModule {
   slidesManifest?: string;
   /** Public URL path to module intro video (e.g. `/e-courses/modules/{id}/video.mp4`). */
   videoSrc?: string;
-  /** Public URL path to original quiz document for download (optional). */
+  /** Present when the module has a quiz (source .docx in public for generators; no download in UI). */
   quizDocxSrc?: string;
 }

@@ -95,6 +95,34 @@ body {
 .animate-ecourse-skip-float {
   animation: ecourseVideoSkipFloat 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* E-course module quiz: one question at a time */
+@keyframes ecourseQuizOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+}
+@keyframes ecourseQuizInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-ecourse-quiz-out {
+  animation: ecourseQuizOutLeft 0.38s ease-in forwards;
+}
+.animate-ecourse-quiz-in {
+  animation: ecourseQuizInFromRight 0.42s ease-out forwards;
+}
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
