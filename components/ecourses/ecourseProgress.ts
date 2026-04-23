@@ -1,5 +1,14 @@
 import type { CourseModule } from './types';
 
+/** At least 70% correct answers required to mark the module quiz passed (integer-safe for any N). */
+export const QUIZ_PASS_NUMERATOR = 7;
+export const QUIZ_PASS_DENOMINATOR = 10;
+
+export function quizScoreMeetsPassMark(correct: number, total: number): boolean {
+  if (total <= 0) return false;
+  return correct * QUIZ_PASS_DENOMINATOR >= QUIZ_PASS_NUMERATOR * total;
+}
+
 const LS_SLIDES = 'ecourse-slides-read:';
 const LS_VIDEO_COMPLETE = 'ecourse-video-complete:';
 const LS_QUIZ_ACK = 'ecourse-quiz-ack:';

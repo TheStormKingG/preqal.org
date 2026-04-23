@@ -123,6 +123,43 @@ body {
 .animate-ecourse-quiz-in {
   animation: ecourseQuizInFromRight 0.42s ease-out forwards;
 }
+
+/* E-course sidebar: ribbon flies to step bullet */
+@keyframes ecourseRibbonPop {
+  0% {
+    transform: scale(0.12);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  78% {
+    transform: scale(0.94);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-ecourse-ribbon-pop {
+  animation: ecourseRibbonPop 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes ecourseConfettiBurst {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--ec-dx), var(--ec-dy)) rotate(var(--ec-rot)) scale(0.35);
+    opacity: 0;
+  }
+}
+.ecourse-confetti-particle {
+  animation: ecourseConfettiBurst 0.75s ease-out forwards;
+}
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }

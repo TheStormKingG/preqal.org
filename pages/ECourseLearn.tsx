@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -13,6 +13,7 @@ import {
   slidesDone,
   videoDone,
 } from '../components/ecourses/ecourseProgress';
+import EcourseRibbonFlyover, { ECOURSE_RIBBON_SRC, parseRibbonTargetKey, ribbonTargetKey } from '../components/ecourses/EcourseRibbonFlyover';
 import type { CourseModule } from '../components/ecourses/types';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
@@ -25,7 +26,7 @@ function ModuleStepStrip({ mod }: { mod: CourseModule }) {
   const steps = [
     { key: 'slides', label: 'Slides', done: s1, optional: !mod.slidesManifest },
     { key: 'video', label: 'Video', done: s2, optional: !mod.videoSrc },
-    { key: 'quiz', label: 'Quiz', done: s3, optional: !mod.quizDocxSrc },
+    { key: 'quiz', label: 'Quiz (70%+)', done: s3, optional: !mod.quizDocxSrc },
   ].filter((x) => !x.optional);
   if (steps.length === 0) return null;
   return (
@@ -48,11 +49,21 @@ function ModuleStepStrip({ mod }: { mod: CourseModule }) {
   );
 }
 
+function moduleGateSnapshot(): Record<string, { s: boolean; v: boolean; q: boolean }> {
+  const o: Record<string, { s: boolean; v: boolean; q: boolean }> = {};
+  for (const m of COURSE_MODULES) {
+    o[m.id] = { s: slidesDone(m), v: videoDone(m), q: quizDone(m) };
+  }
+  return o;
+}
+
 const ECourseLearn: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
   const [, bumpGating] = useReducer((x: number) => x + 1, 0);
+  const [flyQueue, setFlyQueue] = useState<string[]>([]);
+  const prevGateSnapRef = useRef<Record<string, { s: boolean; v: boolean; q: boolean }> | null>(null);
 
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
@@ -78,6 +89,38 @@ const ECourseLearn: React.FC = () => {
   useEffect(() => {
     setExpandedModuleIds((prev) => new Set(prev).add(current.id));
   }, [current.id]);
+
+  useEffect(() => {
+    if (prevGateSnapRef.current === null) {
+      prevGateSnapRef.current = moduleGateSnapshot();
+      return;
+    }
+    const next = moduleGateSnapshot();
+    const prev = prevGateSnapRef.current;
+    const keys: string[] = [];
+    for (const m of COURSE_MODULES) {
+      const p = prev[m.id] ?? { s: false, v: false, q: false };
+      const n = next[m.id];
+      if (n.s && !p.s) keys.push(ribbonTargetKey(m.id, 'slides'));
+      if (n.v && !p.v) keys.push(ribbonTargetKey(m.id, 'video'));
+      if (n.q && !p.q) keys.push(ribbonTargetKey(m.id, 'quiz'));
+    }
+    prevGateSnapRef.current = next;
+    if (keys.length === 0) return;
+    const expand = new Set(
+      keys.map((k) => parseRibbonTargetKey(k)?.moduleId).filter((id): id is string => Boolean(id)),
+    );
+    setExpandedModuleIds((prev) => {
+      const n = new Set(prev);
+      expand.forEach((id) => n.add(id));
+      return n;
+    });
+    setFlyQueue((q) => [...q, ...keys]);
+  }, [bumpGating]);
+
+  const onRibbonFlyDone = useCallback(() => {
+    setFlyQueue((q) => q.slice(1));
+  }, []);
 
   const selectLesson = (moduleIndex: number) => {
     if (moduleIndex > activeIndex && !canOpenModuleIndex(COURSE_MODULES, moduleIndex)) return;
@@ -196,7 +239,7 @@ const ECourseLearn: React.FC = () => {
                             disabled={forwardBlocked}
                             title={
                               forwardBlocked
-                                ? 'Finish slides, video, and quiz in each earlier module to continue'
+                                ? 'Finish slides, video, and quiz (70%+ on quiz) in each earlier module to continue'
                                 : undefined
                             }
                             className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg text-left text-sm transition-all ${
@@ -226,6 +269,65 @@ const ECourseLearn: React.FC = () => {
                                 ~{mod.estimatedMinutes} min
                                 {mod.comingSoon ? ' · Coming soon' : ''}
                               </span>
+                              <ul className="mt-2 space-y-1 pl-0 list-none" aria-label="Module steps">
+                                {mod.slidesManifest ? (
+                                  <li className="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+                                    <span
+                                      data-ecourse-ribbon-target={ribbonTargetKey(mod.id, 'slides')}
+                                      className="inline-flex h-4 w-4 shrink-0 items-center justify-center"
+                                    >
+                                      <img
+                                        src={ECOURSE_RIBBON_SRC}
+                                        alt=""
+                                        className={[
+                                          'h-4 w-4 object-contain transition-all duration-300',
+                                          slidesDone(mod) ? 'opacity-100' : 'opacity-50 grayscale',
+                                        ].join(' ')}
+                                        decoding="async"
+                                      />
+                                    </span>
+                                    Slides
+                                  </li>
+                                ) : null}
+                                {mod.videoSrc ? (
+                                  <li className="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+                                    <span
+                                      data-ecourse-ribbon-target={ribbonTargetKey(mod.id, 'video')}
+                                      className="inline-flex h-4 w-4 shrink-0 items-center justify-center"
+                                    >
+                                      <img
+                                        src={ECOURSE_RIBBON_SRC}
+                                        alt=""
+                                        className={[
+                                          'h-4 w-4 object-contain transition-all duration-300',
+                                          videoDone(mod) ? 'opacity-100' : 'opacity-50 grayscale',
+                                        ].join(' ')}
+                                        decoding="async"
+                                      />
+                                    </span>
+                                    Video
+                                  </li>
+                                ) : null}
+                                {mod.quizDocxSrc ? (
+                                  <li className="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+                                    <span
+                                      data-ecourse-ribbon-target={ribbonTargetKey(mod.id, 'quiz')}
+                                      className="inline-flex h-4 w-4 shrink-0 items-center justify-center"
+                                    >
+                                      <img
+                                        src={ECOURSE_RIBBON_SRC}
+                                        alt=""
+                                        className={[
+                                          'h-4 w-4 object-contain transition-all duration-300',
+                                          quizDone(mod) ? 'opacity-100' : 'opacity-50 grayscale',
+                                        ].join(' ')}
+                                        decoding="async"
+                                      />
+                                    </span>
+                                    Quiz
+                                  </li>
+                                ) : null}
+                              </ul>
                             </span>
                           </button>
                         </div>
@@ -308,6 +410,7 @@ const ECourseLearn: React.FC = () => {
           </main>
         </div>
       </div>
+      {flyQueue[0] ? <EcourseRibbonFlyover key={flyQueue[0]} flyKey={flyQueue[0]} onDone={onRibbonFlyDone} /> : null}
     </>
   );
 };

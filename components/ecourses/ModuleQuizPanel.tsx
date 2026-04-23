@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Maximize2, Minimize2, RotateCcw, XCircle } from 'lucide-react';
-import { quizAckFromStorage, setQuizAck } from './ecourseProgress';
+import { quizAckFromStorage, quizScoreMeetsPassMark, setQuizAck } from './ecourseProgress';
 import { MODULE_QUIZ_BANK, type QuizChoiceKey, type QuizQuestion } from './moduleQuizBank.generated';
 import { useFullscreen } from './useFullscreen';
 
@@ -45,6 +45,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
   const isLast = total > 0 && questionIndex >= total - 1;
   const correctCount = useMemo(() => countCorrect(questions, responses), [questions, responses]);
   const allCorrect = total > 0 && correctCount === total;
+  const passedCourse = total > 0 && quizScoreMeetsPassMark(correctCount, total);
 
   const resetRunner = useCallback(() => {
     setQuestionIndex(0);
@@ -161,6 +162,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
           {showGrading ? (
             <p className="text-xs font-bold text-slate-600 tabular-nums">
               Results · {correctCount} / {total} correct
+              {passedCourse ? <span className="ml-2 text-emerald-700">· Pass</span> : <span className="ml-2 text-amber-800">· Below 70%</span>}
             </p>
           ) : (
             <p className="text-xs font-bold text-slate-600 tabular-nums">
@@ -312,27 +314,34 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                 <p className="text-sm font-bold text-slate-800">
                   Score: <span className="tabular-nums">{correctCount}</span> / {total}
                 </p>
-                {!allCorrect && !acked ? (
-                  <p className="text-sm text-slate-600">Every answer must be correct to continue the course. Review the answer key above, then try the quiz again.</p>
+                {!passedCourse && !acked ? (
+                  <p className="text-sm text-slate-600">
+                    You need at least <strong>70%</strong> correct to continue the course (unlimited attempts). Review the answer key above, then try again.
+                  </p>
                 ) : null}
-                {!allCorrect && acked ? (
-                  <p className="text-sm text-slate-600">Review the answer key above. You can try again for practice — your course completion is already saved.</p>
+                {!passedCourse && acked ? (
+                  <p className="text-sm text-slate-600">
+                    Review the answer key above. Try again for practice — your course completion is already saved.
+                  </p>
                 ) : null}
-                {allCorrect && !acked ? (
-                  <p className="text-sm text-emerald-900 font-semibold">Perfect score. You can continue the course.</p>
+                {passedCourse && !acked ? (
+                  <p className="text-sm text-emerald-900 font-semibold">
+                    {allCorrect ? 'Perfect score.' : 'You met the 70% pass mark.'} You can continue the course.
+                  </p>
+                ) : null}
+                {passedCourse && acked ? (
+                  <p className="text-sm text-slate-600">Great practice run. You can close when you are ready.</p>
                 ) : null}
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
-                  {!allCorrect ? (
-                    <button
-                      type="button"
-                      onClick={resetRunner}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
-                    >
-                      <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
-                      Try again
-                    </button>
-                  ) : null}
-                  {allCorrect && !acked ? (
+                  <button
+                    type="button"
+                    onClick={resetRunner}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
+                  >
+                    <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
+                    Try again
+                  </button>
+                  {passedCourse && !acked ? (
                     <button
                       type="button"
                       onClick={markCourseDone}
@@ -341,7 +350,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                       Continue course
                     </button>
                   ) : null}
-                  {allCorrect && acked ? (
+                  {passedCourse && acked ? (
                     <button
                       type="button"
                       onClick={() => {
