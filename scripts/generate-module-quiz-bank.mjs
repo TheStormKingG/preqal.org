@@ -94,9 +94,14 @@ function parseQuestions(paras) {
   return questions;
 }
 
-function parseAnswers(paras) {
+/**
+ * Parses the Answer Key section into per-question correct letter + explanation text from the .docx.
+ * Supports: "N. Correct Answer: C ...", "N. B) explanation...", "N. C explanation..." (not "Correct...").
+ */
+function parseAnswerKey(paras) {
   let inKey = false;
-  const answers = {};
+  /** @type {Record<number, { correct: string; explanation: string }>} */
+  const entries = {};
   for (const p of paras) {
     const trimmed = p.trim();
     if (/^answer key/i.test(trimmed) || /^-+$/.test(trimmed)) {
@@ -104,21 +109,32 @@ function parseAnswers(paras) {
       continue;
     }
     if (!inKey) continue;
-    const am0 = trimmed.match(/^(\d+)\.\s*Correct Answer:\s*([A-D])\b/i);
-    const am1 = trimmed.match(/^(\d+)\.\s*([A-D])\)\s*(.+)$/);
-    const am2 = trimmed.match(/^(\d+)\.\s+([A-D])\s+(.+)$/);
-    const am = am0 || am1 || am2;
-    if (am) {
-      answers[parseInt(am[1], 10)] = am[2].toUpperCase();
+    if (!trimmed || trimmed === '.') continue;
+
+    let m = trimmed.match(/^(\d+)\.\s*Correct Answer:\s*([A-D])\b\s*(.*)$/i);
+    if (m) {
+      entries[+m[1]] = { correct: m[2].toUpperCase(), explanation: (m[3] || '').trim() };
+      continue;
+    }
+    if (/^\d+\.\s*Correct\b/i.test(trimmed)) continue;
+
+    m = trimmed.match(/^(\d+)\.\s*([A-D])\)\s*(.*)$/);
+    if (m) {
+      entries[+m[1]] = { correct: m[2].toUpperCase(), explanation: (m[3] || '').trim() };
+      continue;
+    }
+    m = trimmed.match(/^(\d+)\.\s*([A-D])\s+(.+)$/);
+    if (m) {
+      entries[+m[1]] = { correct: m[2].toUpperCase(), explanation: (m[3] || '').trim() };
     }
   }
-  return answers;
+  return entries;
 }
 
 function parseDocxParagraphs(paras) {
   return {
     questions: parseQuestions(paras),
-    answers: parseAnswers(paras),
+    answerKey: parseAnswerKey(paras),
   };
 }
 
@@ -129,12 +145,12 @@ function buildModuleQuiz(id) {
     return [];
   }
   const paras = extractParagraphs(docx);
-  const { questions, answers } = parseDocxParagraphs(paras);
+  const { questions, answerKey } = parseDocxParagraphs(paras);
   const sorted = questions.sort((a, b) => a.n - b.n);
   const out = [];
   for (const q of sorted) {
-    const correct = answers[q.n];
-    if (!correct || !['A', 'B', 'C', 'D'].includes(correct)) {
+    const row = answerKey[q.n];
+    if (!row || !row.correct || !['A', 'B', 'C', 'D'].includes(row.correct)) {
       console.warn(`[generate-module-quiz-bank] ${id} Q${q.n}: missing answer, skip`);
       continue;
     }
@@ -147,7 +163,8 @@ function buildModuleQuiz(id) {
         { key: 'C', text: q.C },
         { key: 'D', text: q.D },
       ],
-      correct,
+      correct: row.correct,
+      explanation: row.explanation || '',
     });
   }
   return out;
@@ -170,6 +187,8 @@ export type QuizQuestion = {
   question: string;
   choices: { key: QuizChoiceKey; text: string }[];
   correct: QuizChoiceKey;
+  /** Rationale from the quiz document answer key (may be empty if not present). */
+  explanation: string;
 };
 
 export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = ${JSON.stringify(bank, null, 2)};

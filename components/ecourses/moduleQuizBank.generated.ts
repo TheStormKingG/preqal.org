@@ -8,6 +8,8 @@ export type QuizQuestion = {
   question: string;
   choices: { key: QuizChoiceKey; text: string }[];
   correct: QuizChoiceKey;
+  /** Rationale from the quiz document answer key (may be empty if not present). */
+  explanation: string;
 };
 
 export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
@@ -33,7 +35,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Systematic work is only necessary for large corporations."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "The training explicitly contrasts random and systematic work by noting that random work relies entirely on chance, whereas a structured system intentionally creates consistent, predictable results by design"
     },
     {
       "id": 2,
@@ -56,7 +59,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "There is no clear structure guiding how work should be done, leading to repeated problems and no path to improvement."
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "Businesses fail not due to unmotivated staff, but because lacking a clear, defined structure means there is no reference point to prevent repeating problems or build upon past organizational successes"
     },
     {
       "id": 3,
@@ -79,7 +83,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The formal job titles of the management team."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "An organization’s invisible structure consists of the underlying rules and habits shaping results, specifically its decision-making patterns, task prioritization and flow, and its habitual approach to handling workplace problems"
     },
     {
       "id": 4,
@@ -102,7 +107,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Policy, Procedure, and Purchasing."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "Every effective management system relies on three interconnected pillars to remain stable: the people performing the work, the processes guiding that work, and the evidence confirming it was done correctly"
     },
     {
       "id": 5,
@@ -125,7 +131,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To motivate the people performing the work."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Evidence serves as the definitive record proving that work was properly completed, enabling the organization to objectively verify performance, identify deviations, and drive targeted improvements based entirely on facts"
     },
     {
       "id": 6,
@@ -148,7 +155,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Stage 4 — Control"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "During Stage 3, known as Structure, organizations transition from mere awareness by actively documenting processes, clearly defining employee roles, and allowing consistent standards to finally take shape across operations"
     },
     {
       "id": 7,
@@ -171,7 +179,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Only factories truly benefit from management systems."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Whether on a farm, in a factory, or inside an office, the key insight is that a management system does not require complexity; its true purpose is ensuring reliable consistency"
     },
     {
       "id": 8,
@@ -194,7 +203,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The customers are expecting too much from the new hire."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "When new hires make mistakes due to unclear instructions, it highlights a broken system—specifically the absence of documented guidance and structured onboarding, rather than a lack of employee ability"
     },
     {
       "id": 9,
@@ -217,7 +227,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Quality only applies to the final product, not the daily routines."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "The new mindset recognizes that quality is not simply an extra task; it is the absolute foundation of daily operations that ensures consistent value, reduces waste, and strengthens customer trust"
     },
     {
       "id": 10,
@@ -240,7 +251,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "You can identify exactly which employee is causing delays."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "When you finally learn to see the system, you stop merely reacting to symptoms and begin proactively designing better outcomes by intentionally improving the very processes that produce your results"
     }
   ],
   "quality-iso-simplified": [
@@ -265,7 +277,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Creating the highest-end product regardless of cost"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Meeting expectations consistently. Quality is not about perfection or being overly expensive; it is about ensuring the customer gets exactly what they expected and that nothing goes wrong, time after time"
     },
     {
       "id": 2,
@@ -288,7 +301,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The organization creates a competitive advantage through lower operating costs."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "The product or service works as intended in the real conditions it was designed for. This is the specific definition of \"fitness for use,\" distinguishing it from \"conformance to requirements,\" which focuses strictly on meeting defined specifications"
     },
     {
       "id": 3,
@@ -311,7 +325,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The level of customer trust built over a long period of time."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "How consistently processes are followed inside the organization. Internal quality focuses strictly on systems, internal compliance, operating efficiency, and doing things correctly every time, rather than the direct, external end-user experience"
     },
     {
       "id": 4,
@@ -334,7 +349,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Operational waste, delays, and necessary rework."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Investments in training, inspections, and prevention activities. These are proactive, necessary investments designed to stop defects before they happen, whereas failures, returns, and waste represent the damaging cost of poor quality"
     },
     {
       "id": 5,
@@ -357,7 +373,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Prevention activities are an unnecessary financial burden for most businesses."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "It is always cheaper to prevent problems than to fix them after they occur. Organizations that invest heavily in prevention significantly reduce long-term failures, turning quality into a powerful financial advantage rather than a costly business burden"
     },
     {
       "id": 6,
@@ -380,7 +397,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Having the fastest possible response time when issuing apologies."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Consistent performance delivered the exact same way every time. Customers inherently remember reliable patterns rather than isolated moments of brilliance; steady reliability is the true foundation for building lasting trust and strong relationships"
     },
     {
       "id": 7,
@@ -403,7 +421,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "As a mandatory set of paperwork designed only for external auditors."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "As a structured framework for building a system that works reliably. ISO 9001 does not dictate exactly how to run your unique business; instead, it provides the vital architecture needed to consistently deliver quality outcomes"
     },
     {
       "id": 8,
@@ -426,7 +445,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Eliminating Documentation"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Evidence-Based Decisions. Quality is never accidental and relies on powerful guiding principles like evidence-based decisions, ensuring that important organizational choices are properly grounded in actual data and analysis"
     },
     {
       "id": 9,
@@ -449,7 +469,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To intentionally slow down the work process so mistakes aren't made."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "To support clarity, consistency, and accountability in everyday work. Documentation is not merely paperwork for its own sake; it effectively removes ambiguity, ensures repeatable work, and makes it possible to trace problems to their root causes"
     },
     {
       "id": 10,
@@ -472,7 +493,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It should be the sole, isolated responsibility of the quality control department."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "It should be built into the system from the very start. Quality cannot simply be inspected into a product at the end of a process; it must be intelligently designed into the very systems that create the outcome"
     }
   ],
   "process-thinking": [
@@ -497,7 +519,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To eliminate the need for process owners"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Process thinking serves as the foundation of an effective QMS by shifting focus to how work truly flows, transforming initial good intentions into predictable, consistent outcomes"
     },
     {
       "id": 2,
@@ -520,7 +543,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Tasks are strictly documented, but processes are informal."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "While isolated tasks only generate standalone effort, a process connects these individual tasks into a sequence that actually produces a meaningful outcome or result"
     },
     {
       "id": 3,
@@ -543,7 +567,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "In the support processes only."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "If an output is incorrect, the root cause is never outside the workflow; it is always found in either the starting input or the transformative activity steps"
     },
     {
       "id": 4,
@@ -566,7 +591,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "\"Who can I hand this off to?\""
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "A flow mindset recognizes that steps depend on each other, shifting the focus from isolated actions to asking how every individual step connects to the larger system"
     },
     {
       "id": 5,
@@ -589,7 +615,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It is a tool used strictly to define process owners."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Process mapping reveals insights written text cannot. The module's key insight states that if you are unable to visually sketch the workflow, your understanding of it remains incomplete"
     },
     {
       "id": 6,
@@ -612,7 +639,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Supplier, Input, Process, Output, Customer"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "SIPOC is a high-level visual tool standing for Supplier, Input, Process, Output, and Customer, effectively demonstrating how these five elements connect people, materials, and final outcomes"
     },
     {
       "id": 7,
@@ -635,7 +663,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "A process that exists solely to support QMS documentation."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Core processes, such as production or order fulfillment, directly create the value the customer pays for, whereas support processes (like IT or HR) merely enable those core processes"
     },
     {
       "id": 8,
@@ -658,7 +687,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Because every individual task requires a designated executive."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "Ownership must be explicitly assigned rather than assumed because shared responsibility often means no one takes actual accountability to ensure the process is defined, followed, and improved"
     },
     {
       "id": 9,
@@ -681,7 +711,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It only impacts support processes, not core processes."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "A bottleneck is a constraint where work slows down; regardless of how fast other parts operate, this slowest step dictates the overall speed and performance of the entire system"
     },
     {
       "id": 10,
@@ -704,7 +735,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It is not a tool — it is a new way of seeing."
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "The module emphasizes that understanding workflow gives you the power to control and improve it, framing process thinking as a fundamental \"new way of seeing\" rather than a mere tool"
     }
   ],
   "risk-based-thinking": [
@@ -729,7 +761,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "A regulatory fine from a compliance audit"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Risk is fundamentally about uncertainty; it is not the problem itself, but rather the chance that a problem or negative outcome could happen in a given process"
     },
     {
       "id": 2,
@@ -752,7 +785,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "There is no difference; the terms mean exactly the same thing."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "A hazard is the actual source of potential harm (like a wet floor), whereas risk combines the likelihood of that harm happening with how serious the impact would be"
     },
     {
       "id": 3,
@@ -775,7 +809,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Prevention guarantees that equipment will never break down."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Prevention is proactive and protects quality and trust. Correcting problems after they happen drains resources and disrupts operations, making it more expensive and less stable than stopping them early"
     },
     {
       "id": 4,
@@ -798,7 +833,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Temperature, lighting, and noise"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "Risks originate from four primary areas: people, processes, equipment, and the environment. Factors like temperature, lighting, noise, and workspace layout are explicitly categorized as environmental sources of risk"
     },
     {
       "id": 5,
@@ -821,7 +857,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Has this happened before? Who noticed it? Is it documented?"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "To effectively identify risks, you should evaluate your daily activities by asking: \"What could go wrong?\", \"Why could it go wrong?\", and \"What would happen if it did?\""
     },
     {
       "id": 6,
@@ -844,7 +881,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "People and Processes"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "To prioritize which risks need the most attention, they are scored based on two main dimensions: how often they might happen (likelihood) and how serious the resulting impact is (severity)"
     },
     {
       "id": 7,
@@ -867,7 +905,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Act Immediately"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "When combining likelihood and severity scores on the matrix, any risk that scores high in both of these dimensions requires you to \"Act Immediately\" to prevent a major failure"
     },
     {
       "id": 8,
@@ -890,7 +929,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Checklists & Inspections"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Equipment safeguards are specifically defined as physical or automated barriers designed to prevent dangerous conditions, which is a key method for putting controls and mitigations in place"
     },
     {
       "id": 9,
@@ -913,7 +953,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It allows an organisation to bypass audits if their risk score is low enough."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "Risk-based thinking helps ensure compliance by building regulatory standards directly into everyday workflows. This makes compliance a daily habit rather than a separate activity done only during audits"
     },
     {
       "id": 10,
@@ -936,7 +977,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Poor workspace lighting"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "During the delivery preparation risk-spotting exercise, incorrect labeling, damaged packaging, missing items, and delayed dispatch are specifically listed as the potential risks that need to be analyzed"
     }
   ],
   "documentation-works": [
@@ -961,7 +1003,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To replace hands-on managers"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": ") To make work clear, consistent, and repeatable. Explanation: Documentation does not exist to add extra work; it removes confusion and ensures everyone understands how to complete tasks consistently to the expected standard, making results reliable"
     },
     {
       "id": 2,
@@ -984,7 +1027,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Change Records"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": ") Standard Operating Procedures (SOPs). Explanation: SOPs specifically instruct action by providing clear, step-by-step instructions for the \"how\" of a task, whereas policies guide direction and records prove completion"
     },
     {
       "id": 3,
@@ -1007,7 +1051,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To communicate upcoming changes to the team"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": ") To provide evidence and prove that work was completed. Explanation: Records prove completion. They serve as tangible evidence that a task was achieved, providing \"the what happened\" necessary to verify results during audits and investigations"
     },
     {
       "id": 4,
@@ -1030,7 +1075,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The company CEO"
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": ") The person doing the work. Explanation: A good, simple SOP uses plain language tailored specifically for the frontline worker performing the task, rather than a manager or auditor reviewing the document"
     },
     {
       "id": 5,
@@ -1053,7 +1099,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Using complex vocabulary and jargon"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": ") Using visuals like diagrams, icons, and symbols. Explanation: Visuals such as diagrams, flowcharts, and icons replace long blocks of text, making instructions easier to understand quickly across all learning and literacy levels"
     },
     {
       "id": 6,
@@ -1076,7 +1123,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Changes are kept secret until audits occur"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": ") Outdated versions are removed or archived immediately. Explanation: To maintain control and prevent workers from following incorrect instructions, old versions must be removed or archived the moment an update is released"
     },
     {
       "id": 7,
@@ -1099,7 +1147,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "So outdated instructions remain easily accessible"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": ") To prevent confusion, inconsistency, and risk. Explanation: Without version control, different people may follow different iterations of the same process. Controlling versions ensures predictability and eliminates the chaos of uncontrolled processes"
     },
     {
       "id": 8,
@@ -1122,7 +1171,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Policy, SOP, and Record"
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": ") Version number, Date of update, and Change record. Explanation: These three elements prevent chaos by showing the document iteration, confirming it reflects current practice, and summarizing what changed to maintain a traceable history"
     },
     {
       "id": 9,
@@ -1145,7 +1195,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "They slow down the investigation process"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": ") They prove that work was done correctly and to standard. Explanation: Records are protection because they provide concrete proof of what actually happened, showing regulators and auditors that work met standards, while also establishing team accountability"
     },
     {
       "id": 10,
@@ -1168,7 +1219,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It does not define what \"properly\" means, leading to inconsistent interpretations"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": ") It does not define what \"properly\" means, leading to inconsistent interpretations. Explanation: Subjective words like \"properly\" leave instructions open to interpretation. Everyone will execute the task differently, which ultimately leads to inconsistent outcomes and a lack of accountability"
     }
   ],
   "people-drive-quality": [
@@ -1193,7 +1245,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Perfect system design guarantees flawless execution."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "A system can be perfectly designed, but it will still fail if the people executing it do not understand, follow, or care about the final outcome"
     },
     {
       "id": 2,
@@ -1216,7 +1269,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "They are identical terms in quality management."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Training only provides information and exposure. Competence requires knowledge, applied skill, and verified experience to consistently perform a task correctly over time"
     },
     {
       "id": 3,
@@ -1239,7 +1293,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Compliance applies to managers, behavior applies to floor workers."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Compliance is following rules just because you are monitored. Behavior is what people genuinely do under everyday conditions, especially when nobody is actively watching them"
     },
     {
       "id": 4,
@@ -1262,7 +1317,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Motivation and compliance"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Culture dictates how people think and act, while accountability ensures people own their results. These two forces continually reinforce and strengthen one another"
     },
     {
       "id": 5,
@@ -1285,7 +1341,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "By blaming floor workers for systemic failures."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "People follow what leaders do, not what they say. Showing commitment through consistent action—like prioritizing quality over speed—effectively embeds these values into daily operations"
     },
     {
       "id": 6,
@@ -1308,7 +1365,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Messages are passed through an automated system to track errors."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Effective communication systems must be two-directional. Teams need structured, safe channels to escalate issues, report errors, and offer feedback without fearing negative consequences from management"
     },
     {
       "id": 7,
@@ -1331,7 +1389,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Compliance"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "While purpose builds motivation, clarity builds confidence. When employees clearly know what is expected and how to do it, they act with much greater certainty and skill"
     },
     {
       "id": 8,
@@ -1354,7 +1413,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Receiving an updated manual."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Motivation is directly driven by purpose. When individuals truly understand why their work matters and how it connects to larger outcomes, they naturally develop the drive to engage"
     },
     {
       "id": 9,
@@ -1377,7 +1437,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The communication system is functioning perfectly."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "This scenario shows that employee and supervisor behavior is shaped by the surrounding system. A culture is defined by what leadership explicitly rewards, allows, or chooses to ignore"
     },
     {
       "id": 10,
@@ -1400,7 +1461,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Paper compliance is the ultimate goal of a quality system."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "The module concludes that \"people are the system.\" Processes and documents are meaningless unless the people operating them do so with intention, genuine understanding, and clear communication"
     }
   ],
   "monitoring-measurement": [
@@ -1425,7 +1487,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It completely replaces the need for critical thinking."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "- The module states that invisible performance cannot be managed. Measurement makes problems visible early, tracking performance over time so that decisions are grounded in facts, not guesses"
     },
     {
       "id": 2,
@@ -1448,7 +1511,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It is entirely unrelated to specific outcomes."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "- A metric is only useful if it helps guide improvement actions. Good metrics are clear, specific, directly linked to outcomes, and highlight real problems rather than just looking impressive"
     },
     {
       "id": 3,
@@ -1471,7 +1535,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Customer complaints received"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "- Customer complaints, monthly return rates, and end-of-production defects measure results after an event has occurred, which makes them lagging indicators that are useful for reporting but late for prevention"
     },
     {
       "id": 4,
@@ -1494,7 +1559,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To report on the monthly return rate to management"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "- Leading indicators measure factors that influence future outcomes, such as training or maintenance. This gives teams the opportunity to intervene early and proactively prevent problems before they actually occur"
     },
     {
       "id": 5,
@@ -1517,7 +1583,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The direct signal of overall customer experience"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "- According to the KPIs guide, Process Cycle Time tracks how long it takes to complete one unit of work from start to finish, reflecting overall process efficiency and speed"
     },
     {
       "id": 6,
@@ -1540,7 +1607,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Creating lagging indicators"
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "- Data alone does not create value. It requires analysis to identify patterns, trends, and anomalies so that teams can understand what is happening and why, turning data into insight"
     },
     {
       "id": 7,
@@ -1563,7 +1631,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Change your Key Performance Indicators"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "- In the decision-making framework, once data highlights a performance deviation (Identifying the Problem), the immediate next step is to Analyze the Root Cause by observing patterns driving the issue"
     },
     {
       "id": 8,
@@ -1586,7 +1655,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It is directly linked to specific business outcomes."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "- Bad metrics can create a false sense of progress because they are often vague, unrelated to actual results, or look impressive while entirely failing to support actionable decision-making"
     },
     {
       "id": 9,
@@ -1609,7 +1679,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Vague and ambiguous performance indicators"
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "- Data guides decisions but does not replace thinking. Because numbers interpreted without proper context can mislead, they must always be combined with practical process knowledge and critical thinking"
     },
     {
       "id": 10,
@@ -1632,7 +1703,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Implement a Solution"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "- After successfully implementing a solution, organizations must Validate the Result. This means looking at post-change data to confidently verify with evidence that the corrective action actually worked as intended"
     }
   ],
   "audits-capa": [
@@ -1657,7 +1729,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It creates the conditions for real improvement."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "The \"Blame Approach\" makes people fear punishment, leading them to hide mistakes"
     },
     {
       "id": 2,
@@ -1680,7 +1753,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To assign blame to specific departments for system failures."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Internal audits are self-initiated and internally managed by trained staff"
     },
     {
       "id": 3,
@@ -1703,7 +1777,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "It helps the organization prepare frantic, last-minute documentation."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Fixing only the visible symptom guarantees the problem will return"
     },
     {
       "id": 4,
@@ -1726,7 +1801,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "CA is only used in external audits, while PA is only used in internal audits."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Corrective action is reactive, aiming to eliminate the root cause of an existing nonconformity to fix the past"
     },
     {
       "id": 5,
@@ -1749,7 +1825,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Define the Issue"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "Before you can identify a root cause or implement a solution, you must first \"Define the Issue\""
     },
     {
       "id": 6,
@@ -1772,7 +1849,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Use the 5 Whys to thoroughly trace the issue back to its source."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "A problem isn't genuinely solved until the conditions are fixed"
     },
     {
       "id": 7,
@@ -1795,7 +1873,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Staff are briefed only when external auditors arrive on site."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "A continuous audit readiness mindset means organizations don't scramble to prepare"
     },
     {
       "id": 8,
@@ -1818,7 +1897,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The customer filed a formal complaint."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "By repeatedly asking \"why,\" the scenario traces the late delivery back to delayed inspection, which was ultimately caused by an inspector lacking training on the revised Standard Operating Procedure"
     },
     {
       "id": 9,
@@ -1841,7 +1921,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The internally managed logistics and compliance team."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "External audits are conducted by outside parties—such as certification bodies, regulators, or customers—to independently verify that an organization meets required standards and regulatory obligations"
     },
     {
       "id": 10,
@@ -1864,7 +1945,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Audits become focused entirely on fault-finding and performance reviews."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "When audits focus on findings rather than fault, and CAPA rigorously closes gaps, the cycle transforms challenges into capabilities, helping organizations become more resilient, compliant, and competitive over time"
     }
   ],
   "continual-improvement": [
@@ -1889,7 +1971,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "A one-time methodology for managing business risks."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Continual improvement is not an isolated event or massive overhaul"
     },
     {
       "id": 2,
@@ -1912,7 +1995,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Act"
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "The \"Do\" phase of the Plan-Do-Check-Act cycle involves implementing a proposed change on a small, controlled scale to test hypotheses without causing any disruption to the organization's broader live operations"
     },
     {
       "id": 3,
@@ -1935,7 +2019,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "They only need to be done once to be effective."
         }
       ],
-      "correct": "A"
+      "correct": "A",
+      "explanation": "Small incremental improvements are easier to test and generate far less organizational resistance than massive overhauls"
     },
     {
       "id": 4,
@@ -1958,7 +2043,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "To eliminate the need for customer feedback."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Management review is a structured process giving leaders a regular, fact-based opportunity to evaluate performance"
     },
     {
       "id": 5,
@@ -1981,7 +2067,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "By avoiding the tracking of efficiency gains."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Quality improves margins by minimizing errors and rework, which shrinks the cost of poor quality"
     },
     {
       "id": 6,
@@ -2004,7 +2091,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Level 4 — Optimized"
         }
       ],
-      "correct": "D"
+      "correct": "D",
+      "explanation": "At Level 4, known as the Optimized stage, continuous improvement is deeply embedded within daily operations"
     },
     {
       "id": 7,
@@ -2027,7 +2115,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The system proactively evolves and gets better over time."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "A Level 1 Reactive system completely lacks any structured internal processes or preventive measures"
     },
     {
       "id": 8,
@@ -2050,7 +2139,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "Frequent leadership changes"
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "Tools and processes alone cannot drive progress; people do"
     },
     {
       "id": 9,
@@ -2073,7 +2163,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "As a temporary initiative for public relations."
         }
       ],
-      "correct": "B"
+      "correct": "B",
+      "explanation": "Integrating QHSE with ESG principles proves that sustainability is a strategic advantage, not a constraint"
     },
     {
       "id": 10,
@@ -2096,7 +2187,8 @@ export const MODULE_QUIZ_BANK: Record<string, QuizQuestion[]> = {
           "text": "The organization reverts to isolated disciplines."
         }
       ],
-      "correct": "C"
+      "correct": "C",
+      "explanation": "System thinking combines process design, risk management, measurement, engagement, and improvement"
     }
   ]
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
+import { CheckCircle2, Maximize2, Minimize2, RotateCcw, XCircle } from 'lucide-react';
 import { quizAckFromStorage, setQuizAck } from './ecourseProgress';
 import { MODULE_QUIZ_BANK, type QuizChoiceKey, type QuizQuestion } from './moduleQuizBank.generated';
 import { useFullscreen } from './useFullscreen';
@@ -12,14 +12,18 @@ export interface ModuleQuizPanelProps {
 
 const LEAVE_MS = 380;
 
+function countCorrect(questions: QuizQuestion[], responses: Partial<Record<number, QuizChoiceKey>>) {
+  return questions.filter((q) => responses[q.id] === q.correct).length;
+}
+
 const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, onAckChange }) => {
   const questions = useMemo(() => MODULE_QUIZ_BANK[moduleId] ?? [], [moduleId]);
   const [acked, setAcked] = useState(() => (typeof window !== 'undefined' ? quizAckFromStorage(moduleId) : false));
   const [practiceOpen, setPracticeOpen] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [pick, setPick] = useState<QuizChoiceKey | null>(null);
-  const [wrongHint, setWrongHint] = useState(false);
-  const [finishedRun, setFinishedRun] = useState(false);
+  const [responses, setResponses] = useState<Partial<Record<number, QuizChoiceKey>>>({});
+  const [showGrading, setShowGrading] = useState(false);
   const [phase, setPhase] = useState<'in' | 'out'>('in');
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
 
@@ -31,20 +35,22 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
     setPracticeOpen(false);
     setQuestionIndex(0);
     setPick(null);
-    setWrongHint(false);
-    setFinishedRun(false);
+    setResponses({});
+    setShowGrading(false);
     setPhase('in');
   }, [moduleId]);
 
   const q: QuizQuestion | undefined = questions[questionIndex];
   const total = questions.length;
   const isLast = total > 0 && questionIndex >= total - 1;
+  const correctCount = useMemo(() => countCorrect(questions, responses), [questions, responses]);
+  const allCorrect = total > 0 && correctCount === total;
 
   const resetRunner = useCallback(() => {
     setQuestionIndex(0);
     setPick(null);
-    setWrongHint(false);
-    setFinishedRun(false);
+    setResponses({});
+    setShowGrading(false);
     setPhase('in');
   }, []);
 
@@ -58,15 +64,11 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
 
   const submitAnswer = useCallback(() => {
     if (!q || pick === null) return;
-    if (pick !== q.correct) {
-      setWrongHint(true);
-      return;
-    }
-    setWrongHint(false);
+    setResponses((prev) => ({ ...prev, [q.id]: pick }));
     setPhase('out');
     window.setTimeout(() => {
       if (isLast) {
-        setFinishedRun(true);
+        setShowGrading(true);
       } else {
         setQuestionIndex((i) => i + 1);
         setPick(null);
@@ -78,11 +80,10 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
   const selectChoice = useCallback(
     (key: QuizChoiceKey) => {
       if (acked && !practiceOpen) return;
-      if (finishedRun) return;
+      if (showGrading) return;
       setPick(key);
-      setWrongHint(false);
     },
-    [acked, finishedRun, practiceOpen],
+    [acked, practiceOpen, showGrading],
   );
 
   if (!unlocked) {
@@ -157,8 +158,10 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
           .join(' ')}
       >
         <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2 border-b border-slate-200/60 bg-[#e8ecf2]/90 shrink-0">
-          {finishedRun ? (
-            <p className="text-xs font-bold text-slate-600">Results</p>
+          {showGrading ? (
+            <p className="text-xs font-bold text-slate-600 tabular-nums">
+              Results · {correctCount} / {total} correct
+            </p>
           ) : (
             <p className="text-xs font-bold text-slate-600 tabular-nums">
               Question {questionIndex + 1} of {total}
@@ -184,7 +187,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
             .filter(Boolean)
             .join(' ')}
         >
-          {!finishedRun && q ? (
+          {!showGrading && q ? (
             <div
               key={q.id}
               className={[
@@ -222,9 +225,6 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                   );
                 })}
               </div>
-              {wrongHint ? (
-                <p className="mt-3 text-xs font-semibold text-red-700">Not quite — pick another option and submit again.</p>
-              ) : null}
               <div className="mt-5 flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200/60">
                 <button
                   type="button"
@@ -232,7 +232,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                   disabled={pick === null}
                   className="px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-45 disabled:pointer-events-none transition-colors"
                 >
-                  Submit
+                  {isLast ? 'Submit for grading' : 'Submit'}
                 </button>
                 <button
                   type="button"
@@ -246,41 +246,121 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
             </div>
           ) : null}
 
-          {finishedRun ? (
-            <div key="summary" className="animate-ecourse-quiz-in rounded-xl border border-emerald-300/60 bg-emerald-500/5 p-5 sm:p-6 text-center space-y-4">
-              <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto" aria-hidden />
-              <p className="text-base font-bold text-slate-900">All {total} answers correct</p>
-              <p className="text-sm text-slate-600">
-                {acked
-                  ? 'Nice work — your course completion is already on file.'
-                  : 'You need every answer correct to continue the course.'}
+          {showGrading ? (
+            <div key="grading" className="animate-ecourse-quiz-in space-y-8 pb-2">
+              <p className="text-sm text-slate-700">
+                Review each question below. Correct choices are marked with a check; your incorrect selections are marked with an X. The answer key from the module materials follows each question.
               </p>
-              {!acked ? (
-                <button
-                  type="button"
-                  onClick={markCourseDone}
-                  className="w-full sm:w-auto px-5 py-3 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 neu-raised-sm transition-colors"
-                >
-                  Continue course
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPracticeOpen(false);
-                    resetRunner();
-                  }}
-                  className="w-full sm:w-auto px-5 py-3 rounded-xl text-sm font-bold text-slate-800 neu-raised-sm hover:neu-pressed-sm transition-all"
-                >
-                  Done practicing
-                </button>
-              )}
+              {questions.map((question, idx) => {
+                const userPick = responses[question.id];
+                return (
+                  <article
+                    key={question.id}
+                    className="rounded-xl border border-slate-200/80 bg-white/70 p-4 sm:p-5 scroll-mt-4"
+                    aria-labelledby={`quiz-review-${moduleId}-q-${question.id}`}
+                  >
+                    <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Question {idx + 1}</p>
+                    <h3 id={`quiz-review-${moduleId}-q-${question.id}`} className="text-sm sm:text-base font-semibold text-slate-900 leading-snug mb-4">
+                      {question.question}
+                    </h3>
+                    <div className="space-y-2" role="list">
+                      {question.choices.map((c) => {
+                        const isCorrect = c.key === question.correct;
+                        const isUserPick = userPick === c.key;
+                        const userWrong = isUserPick && !isCorrect;
+                        return (
+                          <div
+                            key={c.key}
+                            role="listitem"
+                            className={[
+                              'flex gap-3 items-start rounded-lg px-3 py-2.5 border',
+                              isCorrect ? 'border-emerald-500/70 bg-emerald-500/10' : '',
+                              userWrong ? 'border-red-500/75 bg-red-500/10' : '',
+                              !isCorrect && !userWrong ? 'border-slate-200/70 bg-slate-50/80' : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                          >
+                            <span className="mt-0.5 shrink-0 w-5 h-5 flex items-center justify-center" aria-hidden>
+                              {isCorrect ? <CheckCircle2 className="h-5 w-5 text-emerald-600" /> : null}
+                              {userWrong ? <XCircle className="h-5 w-5 text-red-600" /> : null}
+                              {!isCorrect && !userWrong ? <span className="block h-5 w-5" /> : null}
+                            </span>
+                            <div className="text-sm text-slate-800 leading-relaxed min-w-0">
+                              <span className="font-bold text-slate-600">{c.key}.</span> {c.text}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-4 rounded-lg bg-slate-50 border border-slate-200/80 p-3 sm:p-4">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-600 mb-1">Answer key</p>
+                      <p className="text-sm font-semibold text-slate-800">
+                        Correct answer: <span className="text-emerald-800">{question.correct}</span>
+                      </p>
+                      {question.explanation?.trim() ? (
+                        <p className="text-sm text-slate-700 mt-2 leading-relaxed">{question.explanation.trim()}</p>
+                      ) : (
+                        <p className="text-sm text-slate-500 mt-2 italic">No additional explanation was provided in the source document for this item.</p>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+
+              <div className="rounded-xl border border-slate-200/80 bg-[#e8ecf2]/80 p-4 sm:p-5 space-y-3">
+                <p className="text-sm font-bold text-slate-800">
+                  Score: <span className="tabular-nums">{correctCount}</span> / {total}
+                </p>
+                {!allCorrect && !acked ? (
+                  <p className="text-sm text-slate-600">Every answer must be correct to continue the course. Review the answer key above, then try the quiz again.</p>
+                ) : null}
+                {!allCorrect && acked ? (
+                  <p className="text-sm text-slate-600">Review the answer key above. You can try again for practice — your course completion is already saved.</p>
+                ) : null}
+                {allCorrect && !acked ? (
+                  <p className="text-sm text-emerald-900 font-semibold">Perfect score. You can continue the course.</p>
+                ) : null}
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
+                  {!allCorrect ? (
+                    <button
+                      type="button"
+                      onClick={resetRunner}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
+                    >
+                      <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
+                      Try again
+                    </button>
+                  ) : null}
+                  {allCorrect && !acked ? (
+                    <button
+                      type="button"
+                      onClick={markCourseDone}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 neu-raised-sm transition-colors"
+                    >
+                      Continue course
+                    </button>
+                  ) : null}
+                  {allCorrect && acked ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPracticeOpen(false);
+                        resetRunner();
+                      }}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-slate-800 neu-raised-sm hover:neu-pressed-sm transition-all"
+                    >
+                      Done practicing
+                    </button>
+                  ) : null}
+                </div>
+              </div>
             </div>
           ) : null}
 
-          {!finishedRun ? (
+          {!showGrading ? (
             <p className="text-xs text-slate-500 leading-relaxed">
-              Answer each question in order. Submit moves you to the next question when your answer is correct.
+              Choose an answer for each question and submit. You can change your mind before submitting. The last question uses &quot;Submit for grading&quot; to show your full results and the answer key.
             </p>
           ) : null}
         </div>
