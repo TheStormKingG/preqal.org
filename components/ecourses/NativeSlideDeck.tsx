@@ -5,7 +5,7 @@ import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import SlideLayerStage, { type SlideLayerFile } from './SlideLayerStage';
 import { SlideContentShield } from './SlideContentShield';
 import { useFullscreen } from './useFullscreen';
-import { ECOURSE_RIBBON_SRC } from './EcourseRibbonFlyover';
+import { ECOURSE_RIBBON_SRC, type RibbonFlyScreenRect } from './EcourseRibbonFlyover';
 
 type SlideRefV2 = { layers: string };
 
@@ -54,7 +54,7 @@ export interface NativeSlideDeckProps {
   slidesReloadToken?: number;
   onAllSlidesReadChange?: (complete: boolean) => void;
   /** After user confirms the slides-complete modal: parent queues ribbon fly; persistence runs when fly ends. */
-  onSlidesFinalizeAcknowledged?: (moduleId: string, slideCount: number) => void;
+  onSlidesFinalizeAcknowledged?: (moduleId: string, slideCount: number, modalRibbonRect?: RibbonFlyScreenRect) => void;
 }
 
 const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
@@ -76,6 +76,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   const fontsLoadedRef = useRef(false);
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
   const [showCongratsModal, setShowCongratsModal] = useState(false);
+  const modalRibbonImgRef = useRef<HTMLImageElement>(null);
 
   const slideCount = manifest?.slides.length ?? 0;
   const minDwellSeconds = manifest?.minDwellSeconds ?? 18;
@@ -207,8 +208,14 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   }, [lastSlideDwellReady]);
 
   const onModalOk = useCallback(() => {
+    const el = modalRibbonImgRef.current;
+    let modalRibbonRect: RibbonFlyScreenRect | undefined;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      modalRibbonRect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    }
     setShowCongratsModal(false);
-    onSlidesFinalizeAcknowledged?.(moduleId, slideCount);
+    onSlidesFinalizeAcknowledged?.(moduleId, slideCount, modalRibbonRect);
   }, [moduleId, slideCount, onSlidesFinalizeAcknowledged]);
 
   useEffect(() => {
@@ -263,6 +270,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
           >
             <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-6 sm:p-8 shadow-neu text-center space-y-5">
               <img
+                ref={modalRibbonImgRef}
                 src={ECOURSE_RIBBON_SRC}
                 alt=""
                 className="mx-auto h-28 w-28 sm:h-36 sm:w-36 object-contain drop-shadow-xl"

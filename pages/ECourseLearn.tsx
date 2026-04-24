@@ -14,7 +14,12 @@ import {
   slidesDone,
   videoDone,
 } from '../components/ecourses/ecourseProgress';
-import EcourseRibbonFlyover, { ECOURSE_RIBBON_SRC, parseRibbonTargetKey, ribbonTargetKey } from '../components/ecourses/EcourseRibbonFlyover';
+import EcourseRibbonFlyover, {
+  ECOURSE_RIBBON_SRC,
+  parseRibbonTargetKey,
+  ribbonTargetKey,
+  type RibbonFlyScreenRect,
+} from '../components/ecourses/EcourseRibbonFlyover';
 import type { CourseModule } from '../components/ecourses/types';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
@@ -67,6 +72,7 @@ const ECourseLearn: React.FC = () => {
   const prevGateSnapRef = useRef<Record<string, { s: boolean; v: boolean; q: boolean }> | null>(null);
   const pendingSlidesFinalizeRef = useRef<{ moduleId: string; slideCount: number } | null>(null);
   const [deckReloadTick, setDeckReloadTick] = useState(0);
+  const [ribbonFlyFromRect, setRibbonFlyFromRect] = useState<RibbonFlyScreenRect | null>(null);
 
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
@@ -121,13 +127,19 @@ const ECourseLearn: React.FC = () => {
     setFlyQueue((q) => [...q, ...keys]);
   }, [bumpGating]);
 
-  const onSlidesFinalizeAcknowledged = useCallback((moduleId: string, slideCount: number) => {
-    pendingSlidesFinalizeRef.current = { moduleId, slideCount };
-    setExpandedModuleIds((prev) => new Set(prev).add(moduleId));
-    setFlyQueue((q) => [...q, ribbonTargetKey(moduleId, 'slides')]);
-  }, []);
+  const onSlidesFinalizeAcknowledged = useCallback(
+    (moduleId: string, slideCount: number, modalRibbonRect?: RibbonFlyScreenRect) => {
+      pendingSlidesFinalizeRef.current = { moduleId, slideCount };
+      setRibbonFlyFromRect(modalRibbonRect ?? null);
+      setExpandedModuleIds((prev) => new Set(prev).add(moduleId));
+      setSidebarOpen(true);
+      setFlyQueue((q) => [...q, ribbonTargetKey(moduleId, 'slides')]);
+    },
+    [],
+  );
 
   const onRibbonFlyDone = useCallback(() => {
+    setRibbonFlyFromRect(null);
     setFlyQueue((q) => {
       const doneKey = q[0] ?? null;
       const rest = q.slice(1);
@@ -438,7 +450,14 @@ const ECourseLearn: React.FC = () => {
           </main>
         </div>
       </div>
-      {flyQueue[0] ? <EcourseRibbonFlyover key={flyQueue[0]} flyKey={flyQueue[0]} onDone={onRibbonFlyDone} /> : null}
+      {flyQueue[0] ? (
+        <EcourseRibbonFlyover
+          key={flyQueue[0]}
+          flyKey={flyQueue[0]}
+          flyFromRect={ribbonFlyFromRect}
+          onDone={onRibbonFlyDone}
+        />
+      ) : null}
     </>
   );
 };

@@ -2,6 +2,9 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 
 export const ECOURSE_RIBBON_SRC = '/e-courses/ui/star-ribbon.png';
 
+/** Screen-space rect for the flying ribbon to start from (e.g. modal ribbon `getBoundingClientRect()` clone). */
+export type RibbonFlyScreenRect = { left: number; top: number; width: number; height: number };
+
 export type RibbonFlyStep = 'slides' | 'video' | 'quiz';
 
 export function ribbonTargetKey(moduleId: string, step: RibbonFlyStep): string {
@@ -33,6 +36,22 @@ function centerStyle(): React.CSSProperties {
     transition: 'none',
     opacity: 1,
   };
+}
+
+function initialStyleFromRect(origin: RibbonFlyScreenRect | null | undefined): React.CSSProperties {
+  if (origin && origin.width >= 8 && origin.height >= 8) {
+    return {
+      position: 'fixed',
+      left: origin.left,
+      top: origin.top,
+      width: origin.width,
+      height: origin.height,
+      zIndex: 401,
+      transition: 'none',
+      opacity: 1,
+    };
+  }
+  return centerStyle();
 }
 
 function ConfettiLayer() {
@@ -69,6 +88,8 @@ function ConfettiLayer() {
 
 export interface EcourseRibbonFlyoverProps {
   flyKey: string;
+  /** When set, the ribbon starts at this rect (modal ribbon) then shrinks into the sidebar target. */
+  flyFromRect?: RibbonFlyScreenRect | null;
   onDone: () => void;
 }
 
@@ -76,10 +97,11 @@ export interface EcourseRibbonFlyoverProps {
  * Full-screen celebration: ribbon pops up with confetti, then flies into a sidebar bullet target.
  * Parent should remount with `key={flyKey}` for each celebration.
  */
-const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onDone }) => {
+const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, flyFromRect, onDone }) => {
   const imgRef = useRef<HTMLImageElement>(null);
-  const [pop, setPop] = useState(true);
-  const [style, setStyle] = useState<React.CSSProperties>(centerStyle);
+  const fromModal = Boolean(flyFromRect && flyFromRect.width >= 8 && flyFromRect.height >= 8);
+  const [pop, setPop] = useState(!fromModal);
+  const [style, setStyle] = useState<React.CSSProperties>(() => initialStyleFromRect(flyFromRect));
   const finishedRef = useRef(false);
 
   const finish = () => {
@@ -91,8 +113,13 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onD
   useLayoutEffect(() => {
     finishedRef.current = false;
     document.body.style.overflow = 'hidden';
+    const fromModalOrigin = Boolean(flyFromRect && flyFromRect.width >= 8 && flyFromRect.height >= 8);
+    setStyle(initialStyleFromRect(flyFromRect));
+    setPop(!fromModalOrigin);
 
-    const popMs = 520;
+    /* Center path: pop celebration then fly. Modal path: hold at large rect (sidebar can open on mobile) then shrink to target. */
+    const preFlyDelayMs = fromModalOrigin ? 320 : 520;
+
     const flyTimer = window.setTimeout(() => {
       const el = document.querySelector(`[data-ecourse-ribbon-target="${flyKey}"]`) as HTMLElement | null;
       const r = el?.getBoundingClientRect();
@@ -120,21 +147,23 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onD
           setPop(false);
         });
       });
-    }, popMs);
+    }, preFlyDelayMs);
 
     const img = imgRef.current;
     const onTransEnd = (e: TransitionEvent) => {
       if (e.target !== img) return;
       if (!['left', 'top', 'width', 'height'].includes(e.propertyName)) return;
       img.removeEventListener('transitionend', onTransEnd);
+      img.removeEventListener('webkitTransitionEnd', onTransEnd as unknown as EventListener);
       window.setTimeout(finish, 30);
     };
 
     const attach = window.setTimeout(() => {
       img?.addEventListener('transitionend', onTransEnd);
-    }, popMs + 40);
+      img?.addEventListener('webkitTransitionEnd', onTransEnd as unknown as EventListener);
+    }, preFlyDelayMs + 40);
 
-    const failSafe = window.setTimeout(finish, 2400);
+    const failSafe = window.setTimeout(finish, fromModalOrigin ? 3200 : 2400);
 
     return () => {
       document.body.style.overflow = '';
@@ -142,8 +171,9 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onD
       window.clearTimeout(attach);
       window.clearTimeout(failSafe);
       img?.removeEventListener('transitionend', onTransEnd);
+      img?.removeEventListener('webkitTransitionEnd', onTransEnd as unknown as EventListener);
     };
-  }, [flyKey, onDone]);
+  }, [flyKey, flyFromRect, onDone]);
 
   return (
     <>
@@ -152,7 +182,12 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onD
         ref={imgRef}
         src={ECOURSE_RIBBON_SRC}
         alt=""
-        className={['pointer-events-none object-contain drop-shadow-2xl select-none', pop ? 'animate-ecourse-ribbon-pop' : ''].filter(Boolean).join(' ')}
+        className={[
+          'pointer-events-none object-contain drop-shadow-2xl select-none',
+          pop ? 'animate-ecourse-ribbon-pop' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         style={style}
         decoding="async"
       />
