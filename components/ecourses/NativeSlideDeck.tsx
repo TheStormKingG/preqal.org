@@ -76,6 +76,8 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   const fontsLoadedRef = useRef(false);
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
   const [showCongratsModal, setShowCongratsModal] = useState(false);
+  /** After first tap on Complete, label becomes "Completed" and the control stays disabled. */
+  const [completeCtaUsed, setCompleteCtaUsed] = useState(false);
   const modalRibbonImgRef = useRef<HTMLImageElement>(null);
 
   const slideCount = manifest?.slides.length ?? 0;
@@ -203,9 +205,10 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   }, [canLeaveSlide, slideCount]);
 
   const openCongratsModal = useCallback(() => {
-    if (!lastSlideDwellReady) return;
+    if (!lastSlideDwellReady || completeCtaUsed) return;
+    setCompleteCtaUsed(true);
     setShowCongratsModal(true);
-  }, [lastSlideDwellReady]);
+  }, [lastSlideDwellReady, completeCtaUsed]);
 
   const onModalOk = useCallback(() => {
     const el = modalRibbonImgRef.current;
@@ -258,6 +261,8 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
   const currentLayers = layerDocs[slideIndex];
   const currentRaster = rasterUrls[slideIndex];
   const showNextCountdown = !isLastSlide && !canLeaveSlide;
+  const slidesFullyDone = slideCount > 0 && readFlags.every(Boolean);
+  const completeButtonFinalized = completeCtaUsed || slidesFullyDone;
 
   const modal =
     showCongratsModal && typeof document !== 'undefined'
@@ -363,23 +368,32 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
               <button
                 type="button"
                 onClick={openCongratsModal}
-                disabled={!lastSlideDwellReady}
+                disabled={!lastSlideDwellReady || completeButtonFinalized}
                 aria-label={
-                  lastSlideDwellReady
-                    ? 'Complete slides for this module'
-                    : `Complete, available in ${remainingSec} seconds`
+                  completeButtonFinalized
+                    ? 'Slides completed for this module'
+                    : lastSlideDwellReady
+                      ? 'Complete slides for this module'
+                      : `Complete, available in ${remainingSec} seconds`
                 }
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 neu-raised-sm disabled:opacity-90 disabled:pointer-events-none disabled:bg-emerald-600/45 disabled:hover:bg-emerald-600/45 transition-all duration-200"
+                className={[
+                  'inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold neu-raised-sm disabled:pointer-events-none transition-all duration-200',
+                  completeButtonFinalized
+                    ? 'text-emerald-900 bg-emerald-100/90 border border-emerald-300/50 cursor-default opacity-95'
+                    : 'text-white bg-emerald-600 hover:bg-emerald-500 disabled:opacity-90 disabled:bg-emerald-600/45 disabled:hover:bg-emerald-600/45',
+                ].join(' ')}
               >
                 <span className="inline-flex items-center gap-1.5">
-                  Complete
-                  {!lastSlideDwellReady ? (
+                  {completeButtonFinalized ? 'Completed' : 'Complete'}
+                  {!completeButtonFinalized && !lastSlideDwellReady ? (
                     <span className="tabular-nums font-extrabold min-w-[2.25rem] text-center bg-black/15 rounded-lg px-1.5 py-0.5 text-xs">
                       {remainingSec}s
                     </span>
                   ) : null}
                 </span>
-                <ChevronRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+                {!completeButtonFinalized ? (
+                  <ChevronRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+                ) : null}
               </button>
             ) : (
               <button

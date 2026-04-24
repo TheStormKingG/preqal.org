@@ -165,6 +165,17 @@ const ECourseLearn: React.FC = () => {
     setSidebarOpen(false);
   };
 
+  const canProceedToNextModule =
+    activeIndex + 1 < total && canOpenModuleIndex(COURSE_MODULES, activeIndex + 1);
+
+  const onQuizPassContinue = useCallback(() => {
+    const next = activeIndex + 1;
+    if (next >= total) return;
+    if (!canOpenModuleIndex(COURSE_MODULES, next)) return;
+    setActiveIndex(next);
+    setSidebarOpen(false);
+  }, [activeIndex, total]);
+
   return (
     <>
       <SEO pageKey="eCourseLearn" />
@@ -406,8 +417,11 @@ const ECourseLearn: React.FC = () => {
                   <ModuleQuizPanel
                     key={`quiz-${current.id}`}
                     moduleId={current.id}
+                    moduleNumber={current.number}
+                    canProceedToNextModule={canProceedToNextModule}
                     unlocked={videoDone(current)}
                     onAckChange={onGatingProgress}
+                    onPassContinue={onQuizPassContinue}
                   />
                 ) : null}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">

@@ -1,13 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CheckCircle2, Maximize2, Minimize2, RotateCcw, XCircle } from 'lucide-react';
 import { quizAckFromStorage, quizScoreMeetsPassMark, setQuizAck } from './ecourseProgress';
 import { MODULE_QUIZ_BANK, type QuizChoiceKey, type QuizQuestion } from './moduleQuizBank.generated';
 import { useFullscreen } from './useFullscreen';
+import { ECOURSE_RIBBON_SRC } from './EcourseRibbonFlyover';
 
 export interface ModuleQuizPanelProps {
   moduleId: string;
+  /** Course module number for congratulations copy (e.g. 1). */
+  moduleNumber: number;
+  /** Whether the learner can open the next module after passing (parent computes from gates). */
+  canProceedToNextModule: boolean;
   unlocked: boolean;
   onAckChange?: () => void;
+  /** After pass modal OK: save quiz ack, then navigate when `canProceedToNextModule` is true. */
+  onPassContinue?: () => void;
 }
 
 const LEAVE_MS = 380;
@@ -16,7 +24,14 @@ function countCorrect(questions: QuizQuestion[], responses: Partial<Record<numbe
   return questions.filter((q) => responses[q.id] === q.correct).length;
 }
 
-const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, onAckChange }) => {
+const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({
+  moduleId,
+  moduleNumber,
+  canProceedToNextModule,
+  unlocked,
+  onAckChange,
+  onPassContinue,
+}) => {
   const questions = useMemo(() => MODULE_QUIZ_BANK[moduleId] ?? [], [moduleId]);
   const [acked, setAcked] = useState(() => (typeof window !== 'undefined' ? quizAckFromStorage(moduleId) : false));
   const [practiceOpen, setPracticeOpen] = useState(false);
@@ -25,6 +40,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
   const [responses, setResponses] = useState<Partial<Record<number, QuizChoiceKey>>>({});
   const [showGrading, setShowGrading] = useState(false);
   const [phase, setPhase] = useState<'in' | 'out'>('in');
+  const [passCelebrateOpen, setPassCelebrateOpen] = useState(false);
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
 
   useEffect(() => {
@@ -46,6 +62,12 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
   const correctCount = useMemo(() => countCorrect(questions, responses), [questions, responses]);
   const allCorrect = total > 0 && correctCount === total;
   const passedCourse = total > 0 && quizScoreMeetsPassMark(correctCount, total);
+  const showPassCelebrate = showGrading && passedCourse && !acked && !practiceOpen;
+
+  useEffect(() => {
+    if (showPassCelebrate) setPassCelebrateOpen(true);
+    else setPassCelebrateOpen(false);
+  }, [showPassCelebrate]);
 
   const resetRunner = useCallback(() => {
     setQuestionIndex(0);
@@ -62,6 +84,21 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
     resetRunner();
     onAckChange?.();
   }, [moduleId, onAckChange, resetRunner]);
+
+  const onPassModalOk = useCallback(() => {
+    setPassCelebrateOpen(false);
+    markCourseDone();
+    if (canProceedToNextModule) onPassContinue?.();
+  }, [canProceedToNextModule, markCourseDone, onPassContinue]);
+
+  useEffect(() => {
+    if (!passCelebrateOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [passCelebrateOpen]);
 
   const submitAnswer = useCallback(() => {
     if (!q || pick === null) return;
@@ -87,31 +124,76 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
     [acked, practiceOpen, showGrading],
   );
 
+  const passModal =
+    passCelebrateOpen && typeof document !== 'undefined'
+      ? createPortal(
+          <div
+            className="fixed inset-0 z-[400] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ecourse-quiz-pass-title"
+          >
+            <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-6 sm:p-8 shadow-neu text-center space-y-5">
+              <img
+                src={ECOURSE_RIBBON_SRC}
+                alt=""
+                className="mx-auto h-28 w-28 sm:h-36 sm:w-36 object-contain drop-shadow-xl"
+                decoding="async"
+              />
+              <h2 id="ecourse-quiz-pass-title" className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                Congratulations on your passing grade
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                {canProceedToNextModule
+                  ? `You passed the quiz for Module ${moduleNumber}. Tap OK to save your progress and open the next module.`
+                  : `You passed the quiz for Module ${moduleNumber}. Tap OK to save your progress.`}
+              </p>
+              <button
+                type="button"
+                onClick={onPassModalOk}
+                className="w-full sm:w-auto min-w-[8rem] px-6 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
+
   if (!unlocked) {
     return (
-      <section className="mt-8 shrink-0" aria-label="Module quiz">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Module quiz</p>
-        <div className="neu-pressed-sm rounded-2xl px-4 py-6 text-center text-sm text-slate-600">
-          Watch the full module video to unlock the quiz.
-        </div>
-      </section>
+      <>
+        {passModal}
+        <section className="mt-8 shrink-0" aria-label="Module quiz">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Module quiz</p>
+          <div className="neu-pressed-sm rounded-2xl px-4 py-6 text-center text-sm text-slate-600">
+            Watch the full module video to unlock the quiz.
+          </div>
+        </section>
+      </>
     );
   }
 
   if (questions.length === 0) {
     return (
-      <section className="mt-8 shrink-0" aria-label="Module quiz">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Module quiz</p>
-        <div className="neu-pressed-sm rounded-2xl px-4 py-5 text-sm text-slate-600">
-          <p>Interactive quiz data is not available for this module yet.</p>
-        </div>
-      </section>
+      <>
+        {passModal}
+        <section className="mt-8 shrink-0" aria-label="Module quiz">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Module quiz</p>
+          <div className="neu-pressed-sm rounded-2xl px-4 py-5 text-sm text-slate-600">
+            <p>Interactive quiz data is not available for this module yet.</p>
+          </div>
+        </section>
+      </>
     );
   }
 
   if (acked && !practiceOpen) {
     return (
-      <section className="mt-8 shrink-0" aria-label="Module quiz">
+      <>
+        {passModal}
+        <section className="mt-8 shrink-0" aria-label="Module quiz">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Module quiz</p>
           <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 neu-pressed-sm px-2 py-0.5 rounded-full">
@@ -136,11 +218,14 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
           </button>
         </div>
       </section>
+      </>
     );
   }
 
   return (
-    <section className="mt-8 shrink-0" aria-label="Module quiz">
+    <>
+      {passModal}
+      <section className="mt-8 shrink-0" aria-label="Module quiz">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
         <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Module quiz</p>
         {acked && practiceOpen ? (
@@ -326,7 +411,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                 ) : null}
                 {passedCourse && !acked ? (
                   <p className="text-sm text-emerald-900 font-semibold">
-                    {allCorrect ? 'Perfect score.' : 'You met the 70% pass mark.'} You can continue the course.
+                    {allCorrect ? 'Perfect score.' : 'You met the 70% pass mark.'} Use OK in the celebration dialog to save and continue.
                   </p>
                 ) : null}
                 {passedCourse && acked ? (
@@ -341,15 +426,6 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
                     <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
                     Try again
                   </button>
-                  {passedCourse && !acked ? (
-                    <button
-                      type="button"
-                      onClick={markCourseDone}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 neu-raised-sm transition-colors"
-                    >
-                      Continue course
-                    </button>
-                  ) : null}
                   {passedCourse && acked ? (
                     <button
                       type="button"
@@ -375,6 +451,7 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({ moduleId, unlocked, o
         </div>
       </div>
     </section>
+    </>
   );
 };
 
