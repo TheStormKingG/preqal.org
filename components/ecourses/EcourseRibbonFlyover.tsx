@@ -21,7 +21,7 @@ export function parseRibbonTargetKey(key: string): { moduleId: string; step: Rib
 
 function centerStyle(): React.CSSProperties {
   if (typeof window === 'undefined') {
-    return { position: 'fixed', left: 0, top: 0, width: 140, height: 140, zIndex: 300, transition: 'none', opacity: 1 };
+    return { position: 'fixed', left: 0, top: 0, width: 140, height: 140, zIndex: 401, transition: 'none', opacity: 1 };
   }
   return {
     position: 'fixed',
@@ -29,7 +29,7 @@ function centerStyle(): React.CSSProperties {
     top: window.innerHeight / 2 - 70,
     width: 140,
     height: 140,
-    zIndex: 300,
+    zIndex: 401,
     transition: 'none',
     opacity: 1,
   };
@@ -38,7 +38,7 @@ function centerStyle(): React.CSSProperties {
 function ConfettiLayer() {
   const colors = ['#f59e0b', '#34d399', '#818cf8', '#f472b6', '#38bdf8'];
   return (
-    <div className="pointer-events-none fixed inset-0 z-[299]" aria-hidden>
+    <div className="pointer-events-none fixed inset-0 z-[400]" aria-hidden>
       {Array.from({ length: 22 }).map((_, i) => {
         const dx = -90 + ((i * 37) % 180);
         const dy = -120 - (i % 5) * 18;
@@ -105,18 +105,20 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, onD
         ey = r.top + r.height / 2 - endH / 2;
       }
       requestAnimationFrame(() => {
-        setStyle({
-          position: 'fixed',
-          left: ex,
-          top: ey,
-          width: endW,
-          height: endH,
-          zIndex: 300,
-          transition:
-            'left 0.88s cubic-bezier(0.22, 1, 0.36, 1), top 0.88s cubic-bezier(0.22, 1, 0.36, 1), width 0.88s cubic-bezier(0.22, 1, 0.36, 1), height 0.88s cubic-bezier(0.22, 1, 0.36, 1)',
-          opacity: 1,
+        requestAnimationFrame(() => {
+          setStyle({
+            position: 'fixed',
+            left: ex,
+            top: ey,
+            width: endW,
+            height: endH,
+            zIndex: 401,
+            transition:
+              'left 0.88s cubic-bezier(0.22, 1, 0.36, 1), top 0.88s cubic-bezier(0.22, 1, 0.36, 1), width 0.88s cubic-bezier(0.22, 1, 0.36, 1), height 0.88s cubic-bezier(0.22, 1, 0.36, 1)',
+            opacity: 1,
+          });
+          setPop(false);
         });
-        setPop(false);
       });
     }, popMs);
 

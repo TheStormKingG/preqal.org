@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import SlideLayerStage, { type SlideLayerFile } from './SlideLayerStage';
 import { SlideContentShield } from './SlideContentShield';
 import { useFullscreen } from './useFullscreen';
+import { ECOURSE_RIBBON_SRC } from './EcourseRibbonFlyover';
 
 type SlideRefV2 = { layers: string };
 
@@ -23,7 +25,7 @@ function normalizeReadFlags(raw: unknown, len: number): boolean[] {
 function loadReadFlags(moduleId: string, len: number): boolean[] {
   if (typeof window === 'undefined') return Array(len).fill(false);
   try {
-    const raw = localStorage.getItem(`${LS_PREFIX}${moduleId}`);
+    const raw = window.localStorage.getItem(`${LS_PREFIX}${moduleId}`);
     if (!raw) return Array(len).fill(false);
     return normalizeReadFlags(JSON.parse(raw), len);
   } catch {
@@ -33,7 +35,7 @@ function loadReadFlags(moduleId: string, len: number): boolean[] {
 
 function saveReadFlags(moduleId: string, flags: boolean[]) {
   try {
-    localStorage.setItem(`${LS_PREFIX}${moduleId}`, JSON.stringify(flags));
+    window.localStorage.setItem(`${LS_PREFIX}${moduleId}`, JSON.stringify(flags));
   } catch {
     /* ignore quota / private mode */
   }
@@ -45,11 +47,24 @@ function isSlideRefV2(x: unknown): x is SlideRefV2 {
 
 export interface NativeSlideDeckProps {
   moduleId: string;
+  /** Course module number for congratulations copy (e.g. 1). */
+  moduleNumber: number;
   manifestPath: string;
+  /** Bumps when slides are persisted externally so read flags re-sync from storage. */
+  slidesReloadToken?: number;
   onAllSlidesReadChange?: (complete: boolean) => void;
+  /** After user confirms the slides-complete modal: parent queues ribbon fly; persistence runs when fly ends. */
+  onSlidesFinalizeAcknowledged?: (moduleId: string, slideCount: number) => void;
 }
 
-const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPath, onAllSlidesReadChange }) => {
+const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
+  moduleId,
+  moduleNumber,
+  manifestPath,
+  slidesReloadToken = 0,
+  onAllSlidesReadChange,
+  onSlidesFinalizeAcknowledged,
+}) => {
   const [manifest, setManifest] = useState<SlideManifest | null>(null);
   const [layerDocs, setLayerDocs] = useState<(SlideLayerFile | null)[]>([]);
   const [rasterUrls, setRasterUrls] = useState<(string | null)[]>([]);
@@ -60,6 +75,7 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
   const dwellOriginRef = useRef<number>(0);
   const fontsLoadedRef = useRef(false);
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
+  const [showCongratsModal, setShowCongratsModal] = useState(false);
 
   const slideCount = manifest?.slides.length ?? 0;
   const minDwellSeconds = manifest?.minDwellSeconds ?? 18;
@@ -126,8 +142,18 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
     };
   }, [manifestUrl, moduleId, onAllSlidesReadChange]);
 
+  useEffect(() => {
+    if (!manifest || slideCount === 0) return;
+    const flags = loadReadFlags(moduleId, slideCount);
+    setReadFlags(flags);
+    onAllSlidesReadChange?.(flags.every(Boolean));
+  }, [manifest, slideCount, moduleId, slidesReloadToken, onAllSlidesReadChange]);
+
   const currentSlideRead = readFlags[slideIndex] ?? false;
+  const isLastSlide = slideCount > 0 && slideIndex >= slideCount - 1;
   const canLeaveSlide = currentSlideRead || dwellMs >= minDwellMs;
+  const lastSlideDwellReady = isLastSlide && dwellMs >= minDwellMs;
+  const remainingSec = Math.max(0, Math.ceil((minDwellMs - dwellMs) / 1000));
 
   useEffect(() => {
     if (!manifest || slideCount === 0) return;
@@ -139,7 +165,10 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
     setDwellMs(0);
     const id = window.setInterval(() => {
       const elapsed = Date.now() - dwellOriginRef.current;
-      setDwellMs(elapsed);
+      setDwellMs(Math.min(elapsed, minDwellMs));
+      if (slideIndex === slideCount - 1) {
+        return;
+      }
       if (elapsed >= minDwellMs) {
         setReadFlags((prev) => {
           if (prev[slideIndex]) return prev;
@@ -172,14 +201,34 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
     setSlideIndex((i) => Math.min(slideCount - 1, i + 1));
   }, [canLeaveSlide, slideCount]);
 
+  const openCongratsModal = useCallback(() => {
+    if (!lastSlideDwellReady) return;
+    setShowCongratsModal(true);
+  }, [lastSlideDwellReady]);
+
+  const onModalOk = useCallback(() => {
+    setShowCongratsModal(false);
+    onSlidesFinalizeAcknowledged?.(moduleId, slideCount);
+  }, [moduleId, slideCount, onSlidesFinalizeAcknowledged]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (showCongratsModal) return;
       if (e.key === 'ArrowLeft') goPrevSlide();
-      if (e.key === 'ArrowRight' && canLeaveSlide) goNextSlide();
+      if (e.key === 'ArrowRight' && canLeaveSlide && !isLastSlide) goNextSlide();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goPrevSlide, goNextSlide, canLeaveSlide]);
+  }, [goPrevSlide, goNextSlide, canLeaveSlide, isLastSlide, showCongratsModal]);
+
+  useEffect(() => {
+    if (!showCongratsModal) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [showCongratsModal]);
 
   if (loadError) {
     return (
@@ -201,13 +250,44 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
 
   const currentLayers = layerDocs[slideIndex];
   const currentRaster = rasterUrls[slideIndex];
-  const remainingSec = Math.max(0, Math.ceil((minDwellMs - dwellMs) / 1000));
-  const isLastSlide = slideIndex >= slideCount - 1;
-  const nextDisabled = isLastSlide || !canLeaveSlide;
   const showNextCountdown = !isLastSlide && !canLeaveSlide;
+
+  const modal =
+    showCongratsModal && typeof document !== 'undefined'
+      ? createPortal(
+          <div
+            className="fixed inset-0 z-[400] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ecourse-slides-done-title"
+          >
+            <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-6 sm:p-8 shadow-neu text-center space-y-5">
+              <img
+                src={ECOURSE_RIBBON_SRC}
+                alt=""
+                className="mx-auto h-28 w-28 sm:h-36 sm:w-36 object-contain drop-shadow-xl"
+                decoding="async"
+              />
+              <h2 id="ecourse-slides-done-title" className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                Congratulations, you&apos;ve finished the slides for Module {moduleNumber}
+              </h2>
+              <p className="text-sm text-slate-600">Tap OK to celebrate and save your progress.</p>
+              <button
+                type="button"
+                onClick={onModalOk}
+                className="w-full sm:w-auto min-w-[8rem] px-6 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
 
   return (
     <section className="mb-8 shrink-0" aria-label="Lesson slides">
+      {modal}
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Lesson slides</p>
       <div
         ref={fsRef}
@@ -271,29 +351,49 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({ moduleId, manifestPat
               <ChevronLeft className="h-4 w-4" aria-hidden />
               Prev slide
             </button>
-            <button
-              type="button"
-              onClick={goNextSlide}
-              disabled={nextDisabled}
-              aria-label={
-                showNextCountdown
-                  ? `Next slide, available in ${remainingSec} seconds`
-                  : isLastSlide
-                    ? 'Last slide'
-                    : 'Next slide'
-              }
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-90 disabled:pointer-events-none disabled:bg-amber-500/55 disabled:hover:bg-amber-500/55 transition-all duration-200"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                Next slide
-                {showNextCountdown ? (
-                  <span className="tabular-nums font-extrabold min-w-[2.25rem] text-center bg-black/15 rounded-lg px-1.5 py-0.5 text-xs">
-                    {remainingSec}s
-                  </span>
-                ) : null}
-              </span>
-              <ChevronRight className="h-4 w-4 shrink-0" aria-hidden />
-            </button>
+            {isLastSlide ? (
+              <button
+                type="button"
+                onClick={openCongratsModal}
+                disabled={!lastSlideDwellReady}
+                aria-label={
+                  lastSlideDwellReady
+                    ? 'Complete slides for this module'
+                    : `Complete, available in ${remainingSec} seconds`
+                }
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 neu-raised-sm disabled:opacity-90 disabled:pointer-events-none disabled:bg-emerald-600/45 disabled:hover:bg-emerald-600/45 transition-all duration-200"
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  Complete
+                  {!lastSlideDwellReady ? (
+                    <span className="tabular-nums font-extrabold min-w-[2.25rem] text-center bg-black/15 rounded-lg px-1.5 py-0.5 text-xs">
+                      {remainingSec}s
+                    </span>
+                  ) : null}
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={goNextSlide}
+                disabled={!canLeaveSlide}
+                aria-label={
+                  showNextCountdown ? `Next slide, available in ${remainingSec} seconds` : 'Next slide'
+                }
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-90 disabled:pointer-events-none disabled:bg-amber-500/55 disabled:hover:bg-amber-500/55 transition-all duration-200"
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  Next slide
+                  {showNextCountdown ? (
+                    <span className="tabular-nums font-extrabold min-w-[2.25rem] text-center bg-black/15 rounded-lg px-1.5 py-0.5 text-xs">
+                      {remainingSec}s
+                    </span>
+                  ) : null}
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0" aria-hidden />
+              </button>
+            )}
           </div>
         </div>
       </div>

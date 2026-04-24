@@ -10,6 +10,7 @@ import {
   canOpenModuleIndex,
   moduleGateComplete,
   quizDone,
+  setSlidesAllComplete,
   slidesDone,
   videoDone,
 } from '../components/ecourses/ecourseProgress';
@@ -64,6 +65,8 @@ const ECourseLearn: React.FC = () => {
   const [, bumpGating] = useReducer((x: number) => x + 1, 0);
   const [flyQueue, setFlyQueue] = useState<string[]>([]);
   const prevGateSnapRef = useRef<Record<string, { s: boolean; v: boolean; q: boolean }> | null>(null);
+  const pendingSlidesFinalizeRef = useRef<{ moduleId: string; slideCount: number } | null>(null);
+  const [deckReloadTick, setDeckReloadTick] = useState(0);
 
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
@@ -101,7 +104,7 @@ const ECourseLearn: React.FC = () => {
     for (const m of COURSE_MODULES) {
       const p = prev[m.id] ?? { s: false, v: false, q: false };
       const n = next[m.id];
-      if (n.s && !p.s) keys.push(ribbonTargetKey(m.id, 'slides'));
+      /* Slides ribbon fly is queued from the deck completion modal (OK), not from gating. */
       if (n.v && !p.v) keys.push(ribbonTargetKey(m.id, 'video'));
       if (n.q && !p.q) keys.push(ribbonTargetKey(m.id, 'quiz'));
     }
@@ -118,9 +121,31 @@ const ECourseLearn: React.FC = () => {
     setFlyQueue((q) => [...q, ...keys]);
   }, [bumpGating]);
 
-  const onRibbonFlyDone = useCallback(() => {
-    setFlyQueue((q) => q.slice(1));
+  const onSlidesFinalizeAcknowledged = useCallback((moduleId: string, slideCount: number) => {
+    pendingSlidesFinalizeRef.current = { moduleId, slideCount };
+    setExpandedModuleIds((prev) => new Set(prev).add(moduleId));
+    setFlyQueue((q) => [...q, ribbonTargetKey(moduleId, 'slides')]);
   }, []);
+
+  const onRibbonFlyDone = useCallback(() => {
+    setFlyQueue((q) => {
+      const doneKey = q[0] ?? null;
+      const rest = q.slice(1);
+      if (doneKey) {
+        const parsed = parseRibbonTargetKey(doneKey);
+        const pend = pendingSlidesFinalizeRef.current;
+        if (parsed?.step === 'slides' && pend && pend.moduleId === parsed.moduleId) {
+          setSlidesAllComplete(pend.moduleId, pend.slideCount);
+          pendingSlidesFinalizeRef.current = null;
+          requestAnimationFrame(() => {
+            setDeckReloadTick((t) => t + 1);
+            bumpGating();
+          });
+        }
+      }
+      return rest;
+    });
+  }, [bumpGating]);
 
   const selectLesson = (moduleIndex: number) => {
     if (moduleIndex > activeIndex && !canOpenModuleIndex(COURSE_MODULES, moduleIndex)) return;
@@ -347,8 +372,11 @@ const ECourseLearn: React.FC = () => {
                   <NativeSlideDeck
                     key={current.id}
                     moduleId={current.id}
+                    moduleNumber={current.number}
                     manifestPath={current.slidesManifest}
+                    slidesReloadToken={deckReloadTick}
                     onAllSlidesReadChange={onNativeDeckCompleteChange}
+                    onSlidesFinalizeAcknowledged={onSlidesFinalizeAcknowledged}
                   />
                 ) : null}
                 <ModuleStepStrip mod={current} />

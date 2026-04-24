@@ -13,6 +13,16 @@ const LS_SLIDES = 'ecourse-slides-read:';
 const LS_VIDEO_COMPLETE = 'ecourse-video-complete:';
 const LS_QUIZ_ACK = 'ecourse-quiz-ack:';
 
+/** Mark every slide in the module as read (used after slides completion modal + ribbon fly). */
+export function setSlidesAllComplete(moduleId: string, slideCount: number) {
+  if (typeof window === 'undefined' || slideCount <= 0) return;
+  try {
+    window.localStorage.setItem(`${LS_SLIDES}${moduleId}`, JSON.stringify(Array.from({ length: slideCount }, () => true)));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function slidesAllReadFromStorage(moduleId: string): boolean {
   if (typeof window === 'undefined') return false;
   try {
