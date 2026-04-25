@@ -83,12 +83,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
-    // Restore session on mount
+    // Shared helper: load profile and auto-create from Google metadata if missing
+    const ensureProfile = async (u: import('@supabase/supabase-js').User): Promise<void> => {
+      const existing = await loadAndSetProfile(u.id);
+      if (!existing) {
+        const displayName =
+          (u.user_metadata?.full_name as string | undefined) ||
+          (u.user_metadata?.name as string | undefined) ||
+          u.email?.split('@')[0] ||
+          'Student';
+        await dbUpsertProfile(
+          u.id,
+          displayName,
+          u.email ?? '',
+          u.user_metadata?.avatar_url as string | undefined,
+        );
+        await loadAndSetProfile(u.id);
+      }
+    };
+
+    // Restore session on mount — auto-create profile if it's missing
     supabase.auth.getSession().then(({ data: { session } }) => {
       const u = session?.user ?? null;
       setUser(u);
       if (u) {
-        loadAndSetProfile(u.id).finally(() => setLoading(false));
+        ensureProfile(u).finally(() => setLoading(false));
       } else {
         setLoading(false);
       }
@@ -97,27 +116,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Subscribe to auth state changes (handles OAuth callback too)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const u = session?.user ?? null;
       setUser(u);
 
       if (u) {
-        const existing = await loadAndSetProfile(u.id);
-        // Auto-create profile on first Google sign-in
-        if (!existing && event === 'SIGNED_IN') {
-          const displayName =
-            (u.user_metadata?.full_name as string | undefined) ||
-            (u.user_metadata?.name as string | undefined) ||
-            u.email?.split('@')[0] ||
-            'Student';
-          await dbUpsertProfile(
-            u.id,
-            displayName,
-            u.email ?? '',
-            u.user_metadata?.avatar_url as string | undefined,
-          );
-          await loadAndSetProfile(u.id);
-        }
+        await ensureProfile(u);
       } else {
         setProfile(null);
       }
