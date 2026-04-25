@@ -1,111 +1,165 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 
-export type EcourseRegistrationRow = {
-  holder_legal_name: string;
-  course_slug: string;
-  terms_accepted_at: string;
-};
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-type AuthContextValue = {
-  session: Session | null;
+export interface EcourseProfile {
+  id: string;
+  display_name: string;
+  email: string;
+  avatar_url?: string | null;
+}
+
+export interface AuthContextType {
   user: User | null;
+  profile: EcourseProfile | null;
+  /** true while the initial session check is in flight */
   loading: boolean;
-  registration: EcourseRegistrationRow | null;
-  regLoading: boolean;
-  refreshRegistration: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-};
+  /** Save (or update) the display name — call after the user edits their name on the register page */
+  upsertProfile: (displayName: string) => Promise<void>;
+}
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+// ---------------------------------------------------------------------------
+// Context
+// ---------------------------------------------------------------------------
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  profile: null,
+  loading: true,
+  signInWithGoogle: async () => {},
+  signOut: async () => {},
+  upsertProfile: async () => {},
+});
+
+export const useAuth = () => useContext(AuthContext);
+
+// ---------------------------------------------------------------------------
+// Helpers (outside the component so they can be called freely)
+// ---------------------------------------------------------------------------
+
+async function dbUpsertProfile(
+  id: string,
+  displayName: string,
+  email: string,
+  avatarUrl?: string | null,
+): Promise<void> {
+  await supabase.from('ecourse_profiles').upsert({
+    id,
+    display_name: displayName,
+    email,
+    avatar_url: avatarUrl ?? null,
+    updated_at: new Date().toISOString(),
+  });
+}
+
+async function dbFetchProfile(userId: string): Promise<EcourseProfile | null> {
+  const { data } = await supabase
+    .from('ecourse_profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  return (data as EcourseProfile | null) ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<EcourseProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [registration, setRegistration] = useState<EcourseRegistrationRow | null>(null);
-  const [regLoading, setRegLoading] = useState(false);
 
-  const loadRegistration = useCallback(async (uid: string) => {
-    setRegLoading(true);
-    const { data, error } = await supabase
-      .from('ecourse_course_registrations')
-      .select('holder_legal_name, course_slug, terms_accepted_at')
-      .eq('user_id', uid)
-      .maybeSingle();
-    if (error) {
-      setRegistration(null);
-    } else {
-      setRegistration((data as EcourseRegistrationRow | null) ?? null);
-    }
-    setRegLoading(false);
+  const loadAndSetProfile = useCallback(async (userId: string): Promise<EcourseProfile | null> => {
+    const p = await dbFetchProfile(userId);
+    setProfile(p);
+    return p;
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (cancelled) return;
-      setSession(s);
-      setLoading(false);
-      if (s?.user) void loadRegistration(s.user.id);
+    // Restore session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        loadAndSetProfile(u.id).finally(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
+
+    // Subscribe to auth state changes (handles OAuth callback too)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      if (!s?.user) {
-        setRegistration(null);
-        return;
-      }
-      void loadRegistration(s.user.id);
-    });
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
-    };
-  }, [loadRegistration]);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
 
-  const refreshRegistration = useCallback(async () => {
-    const uid = session?.user?.id;
-    if (uid) await loadRegistration(uid);
-  }, [loadRegistration, session?.user?.id]);
+      if (u) {
+        const existing = await loadAndSetProfile(u.id);
+        // Auto-create profile on first Google sign-in
+        if (!existing && event === 'SIGNED_IN') {
+          const displayName =
+            (u.user_metadata?.full_name as string | undefined) ||
+            (u.user_metadata?.name as string | undefined) ||
+            u.email?.split('@')[0] ||
+            'Student';
+          await dbUpsertProfile(
+            u.id,
+            displayName,
+            u.email ?? '',
+            u.user_metadata?.avatar_url as string | undefined,
+          );
+          await loadAndSetProfile(u.id);
+        }
+      } else {
+        setProfile(null);
+      }
+
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [loadAndSetProfile]);
 
   const signInWithGoogle = useCallback(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/e-courses/register`,
-        queryParams: { prompt: 'select_account' },
       },
     });
-    if (error) console.error(error);
   }, []);
 
-  const signOut = useCallback(async () => {
+  const handleSignOut = useCallback(async () => {
     await supabase.auth.signOut();
-    setRegistration(null);
   }, []);
 
-  const value = useMemo(
-    () => ({
-      session,
-      user: session?.user ?? null,
-      loading,
-      registration,
-      regLoading,
-      refreshRegistration,
-      signInWithGoogle,
-      signOut,
-    }),
-    [session, loading, registration, regLoading, refreshRegistration, signInWithGoogle, signOut],
+  const upsertProfile = useCallback(
+    async (displayName: string) => {
+      if (!user) return;
+      await dbUpsertProfile(
+        user.id,
+        displayName,
+        user.email ?? '',
+        user.user_metadata?.avatar_url as string | undefined,
+      );
+      await loadAndSetProfile(user.id);
+    },
+    [user, loadAndSetProfile],
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ user, profile, loading, signInWithGoogle, signOut: handleSignOut, upsertProfile }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
-export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
-}

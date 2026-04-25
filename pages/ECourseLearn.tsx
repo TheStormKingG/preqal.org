@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, ChevronRight, Circle, Menu, X } from 'lucide-react';
+import { Award, CheckCircle2, ChevronRight, Circle, Download, Loader2, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
 import NativeSlideDeck from '../components/ecourses/NativeSlideDeck';
 import GatedModuleVideo from '../components/ecourses/GatedModuleVideo';
 import ModuleQuizPanel from '../components/ecourses/ModuleQuizPanel';
-import ECourseCertificateCallout from '../components/ecourses/ECourseCertificateCallout';
 import {
   canOpenModuleIndex,
-  entireCourseComplete,
   moduleGateComplete,
   quizDone,
   setSlidesAllComplete,
@@ -23,6 +22,10 @@ import EcourseRibbonFlyover, {
   type RibbonFlyScreenRect,
 } from '../components/ecourses/EcourseRibbonFlyover';
 import type { CourseModule } from '../components/ecourses/types';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabaseClient';
+import { certVerifyUrl, formatCertDate, generateCertKey } from '../lib/ecourseCertificateConstants';
+import { downloadCertificatePdf } from '../lib/ecourseCertificatePdf';
 
 const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
 
@@ -65,7 +68,14 @@ function moduleGateSnapshot(): Record<string, { s: boolean; v: boolean; q: boole
   return o;
 }
 
+/** One cert record from Supabase */
+interface CertRecord {
+  cert_key: string;
+  issued_at: string;
+}
+
 const ECourseLearn: React.FC = () => {
+  const { user, profile } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
@@ -76,10 +86,17 @@ const ECourseLearn: React.FC = () => {
   const [deckReloadTick, setDeckReloadTick] = useState(0);
   const [ribbonFlyFromRect, setRibbonFlyFromRect] = useState<RibbonFlyScreenRect | null>(null);
 
+  // ── Certificate state ────────────────────────────────────────────────────
+  const [isCourseComplete, setIsCourseComplete] = useState(false);
+  const [existingCert, setExistingCert] = useState<CertRecord | null>(null);
+  const [certLoading, setCertLoading] = useState(false);
+  const [certError, setCertError] = useState<string | null>(null);
+  const [certModalOpen, setCertModalOpen] = useState(false);
+  const [newlyClaimed, setNewlyClaimed] = useState<CertRecord | null>(null);
+
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
   const courseProgressPct = Math.min(100, Math.round(((activeIndex + 1) / total) * 100));
-  const allModulesComplete = entireCourseComplete(COURSE_MODULES);
 
   const onNativeDeckCompleteChange = useCallback(() => {
     bumpGating();
@@ -88,6 +105,75 @@ const ECourseLearn: React.FC = () => {
   const onGatingProgress = useCallback(() => {
     bumpGating();
   }, []);
+
+  // ── Detect full course completion ────────────────────────────────────────
+  useEffect(() => {
+    const complete = COURSE_MODULES.every((m) => moduleGateComplete(m));
+    setIsCourseComplete(complete);
+    if (complete && user) {
+      // Load existing cert (if any) so we can show download without re-issuing
+      supabase
+        .from('ecourse_certificates')
+        .select('cert_key, issued_at')
+        .eq('user_id', user.id)
+        .order('issued_at', { ascending: false })
+        .limit(1)
+        .single()
+        .then(({ data }) => {
+          if (data) setExistingCert(data as CertRecord);
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [/* bumpGating causes this to re-evaluate */]);
+
+  // Re-check whenever gating bumps
+  useEffect(() => {
+    const complete = COURSE_MODULES.every((m) => moduleGateComplete(m));
+    setIsCourseComplete(complete);
+  });
+
+  const handleClaimCert = useCallback(async () => {
+    if (!user || !profile) return;
+    setCertLoading(true);
+    setCertError(null);
+    try {
+      const activeCert = existingCert ?? newlyClaimed;
+      if (activeCert) {
+        // Already issued — just download again
+        downloadCertificatePdf({
+          recipientName: profile.display_name,
+          certKey: activeCert.cert_key,
+          issuedAt: activeCert.issued_at,
+        });
+        setCertModalOpen(true);
+        return;
+      }
+      const certKey = generateCertKey();
+      const { error } = await supabase.from('ecourse_certificates').insert({
+        cert_key: certKey,
+        user_id: user.id,
+        recipient_name: profile.display_name,
+        email: profile.email,
+        course_id: 'build-systems-that-actually-work',
+        course_title: 'E-Course: Build Systems That Actually Work',
+      });
+      if (error) throw error;
+      const rec: CertRecord = { cert_key: certKey, issued_at: new Date().toISOString() };
+      setNewlyClaimed(rec);
+      downloadCertificatePdf({
+        recipientName: profile.display_name,
+        certKey: certKey,
+        issuedAt: rec.issued_at,
+      });
+      setCertModalOpen(true);
+    } catch (e) {
+      setCertError(e instanceof Error ? e.message : 'Could not issue certificate. Please try again.');
+    } finally {
+      setCertLoading(false);
+    }
+  }, [user, profile, existingCert, newlyClaimed]);
+
+  const certRecord = newlyClaimed ?? existingCert;
 
   const toggleModule = useCallback((id: string) => {
     setExpandedModuleIds((prev) => {
@@ -394,7 +480,6 @@ const ECourseLearn: React.FC = () => {
           <main className="flex-1 min-w-0 min-h-0 lg:self-stretch flex flex-col p-2 sm:p-3 lg:p-4 overflow-hidden">
             <div className="flex-1 min-h-0 flex flex-col max-w-5xl w-full mx-auto">
               <div className="neu-card neu-raised rounded-2xl w-full h-full min-h-0 flex-1 flex flex-col overflow-y-auto border border-white/50 shadow-neu p-6 sm:p-8 lg:p-10">
-                <ECourseCertificateCallout entireCourseComplete={allModulesComplete} />
                 {current.slidesManifest ? (
                   <NativeSlideDeck
                     key={current.id}
@@ -428,6 +513,77 @@ const ECourseLearn: React.FC = () => {
                     onPassContinue={onQuizPassContinue}
                   />
                 ) : null}
+
+                {/* ── Course-complete certificate claim ─────────────────── */}
+                {isCourseComplete ? (
+                  <section
+                    className="mt-8 mb-2 shrink-0 rounded-2xl border border-amber-400/40 bg-gradient-to-br from-amber-50/80 to-white/60 neu-raised-sm p-5 sm:p-6 space-y-4"
+                    aria-label="Course certificate"
+                  >
+                    <div className="flex items-start gap-4">
+                      <img
+                        src={ECOURSE_RIBBON_SRC}
+                        alt=""
+                        className="h-14 w-14 object-contain shrink-0 drop-shadow"
+                        decoding="async"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold uppercase tracking-widest text-amber-700 mb-0.5">
+                          Course complete
+                        </p>
+                        <h3 className="text-lg font-extrabold text-slate-900 leading-snug">
+                          Congratulations — you&apos;ve finished the course!
+                        </h3>
+                        <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+                          {certRecord
+                            ? `Your certificate (ID: ${certRecord.cert_key}) was issued on ${formatCertDate(certRecord.issued_at)}.`
+                            : 'Claim your Preqal certificate of achievement and share it with your network.'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {certError ? (
+                      <p className="text-xs text-red-600 neu-pressed-sm rounded-lg px-3 py-2">{certError}</p>
+                    ) : null}
+
+                    {user && profile ? (
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={() => void handleClaimCert()}
+                          disabled={certLoading}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm disabled:opacity-60 disabled:pointer-events-none transition-colors"
+                        >
+                          {certLoading ? (
+                            <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</>
+                          ) : certRecord ? (
+                            <><Download className="h-4 w-4 shrink-0" /> Download certificate</>
+                          ) : (
+                            <><Award className="h-4 w-4 shrink-0" /> Claim certificate</>
+                          )}
+                        </button>
+                        {certRecord ? (
+                          <a
+                            href={certVerifyUrl(certRecord.cert_key)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-amber-700 neu-raised-sm hover:neu-pressed-sm transition-all"
+                          >
+                            View verification page ↗
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <Link
+                        to="/e-courses/register"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-800 neu-raised-sm hover:neu-pressed-sm transition-all"
+                      >
+                        Sign in to claim your certificate →
+                      </Link>
+                    )}
+                  </section>
+                ) : null}
+
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 flex-1 min-h-0">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">
@@ -476,6 +632,72 @@ const ECourseLearn: React.FC = () => {
           onDone={onRibbonFlyDone}
         />
       ) : null}
+
+      {/* ── Certificate issued modal ─────────────────────────────────────── */}
+      {certModalOpen && certRecord && profile
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[400] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cert-modal-title"
+            >
+              <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-6 sm:p-8 shadow-neu text-center space-y-5">
+                <img
+                  src={ECOURSE_RIBBON_SRC}
+                  alt=""
+                  className="mx-auto h-28 w-28 sm:h-36 sm:w-36 object-contain drop-shadow-xl"
+                  decoding="async"
+                />
+                <div className="space-y-1">
+                  <h2 id="cert-modal-title" className="text-lg sm:text-xl font-bold text-slate-900">
+                    Your certificate is ready!
+                  </h2>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    A PDF has been downloaded to your device.
+                  </p>
+                </div>
+                <div className="neu-pressed-sm rounded-xl p-3 text-left space-y-1">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Certificate ID</p>
+                  <p className="font-mono text-sm font-bold text-amber-700 break-all">{certRecord.cert_key}</p>
+                  <p className="text-[10px] text-slate-500">Issued: {formatCertDate(certRecord.issued_at)}</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      downloadCertificatePdf({
+                        recipientName: profile.display_name,
+                        certKey: certRecord.cert_key,
+                        issuedAt: certRecord.issued_at,
+                      });
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-400 neu-raised-sm transition-colors"
+                  >
+                    <Download className="h-4 w-4 shrink-0" aria-hidden />
+                    Download again
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCertModalOpen(false)}
+                    className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm transition-all"
+                  >
+                    Close
+                  </button>
+                </div>
+                <a
+                  href={certVerifyUrl(certRecord.cert_key)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-xs text-amber-700 hover:text-amber-600 underline underline-offset-2"
+                >
+                  View public verification page ↗
+                </a>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 };

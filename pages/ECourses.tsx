@@ -90,20 +90,12 @@ const ECourses: React.FC = () => {
             <p className="text-lg text-slate-600 max-w-3xl leading-relaxed mb-8">
               This is not theory. These are systems you can apply immediately to improve consistency, reduce errors, and scale your business with confidence.
             </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/e-courses/learn"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
-              >
-                Start Learning
-              </Link>
-              <Link
-                to="/e-courses/register"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-slate-800 neu-raised-sm hover:neu-pressed-sm transition-all"
-              >
-                Register for certificate
-              </Link>
-            </div>
+            <Link
+              to="/e-courses/learn"
+              className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
+            >
+              Start Learning
+            </Link>
           </div>
         </div>
 

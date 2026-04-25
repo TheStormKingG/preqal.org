@@ -23,9 +23,8 @@ const routeOrder = [
   '/case-studies',
   '/resources',
   '/e-courses',
-  '/e-courses/learn',
   '/e-courses/register',
-  '/e-courses/certificate/verify',
+  '/e-courses/learn',
   '/about',
   '/contact',
   '/book',
@@ -81,9 +80,9 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/e-courses" element={<ECourses />} />
-        <Route path="/e-courses/learn" element={<ECourseLearn />} />
         <Route path="/e-courses/register" element={<ECourseRegister />} />
-        <Route path="/e-courses/certificate/verify" element={<ECourseVerifyCertificate />} />
+        <Route path="/e-courses/learn" element={<ECourseLearn />} />
+        <Route path="/verify/:certKey" element={<ECourseVerifyCertificate />} />
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />
