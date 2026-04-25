@@ -6,8 +6,10 @@ import { COURSE_MODULES } from '../components/ecourses/courseModules';
 import NativeSlideDeck from '../components/ecourses/NativeSlideDeck';
 import GatedModuleVideo from '../components/ecourses/GatedModuleVideo';
 import ModuleQuizPanel from '../components/ecourses/ModuleQuizPanel';
+import ECourseCertificateCallout from '../components/ecourses/ECourseCertificateCallout';
 import {
   canOpenModuleIndex,
+  entireCourseComplete,
   moduleGateComplete,
   quizDone,
   setSlidesAllComplete,
@@ -77,6 +79,7 @@ const ECourseLearn: React.FC = () => {
   const total = COURSE_MODULES.length;
   const current = COURSE_MODULES[activeIndex];
   const courseProgressPct = Math.min(100, Math.round(((activeIndex + 1) / total) * 100));
+  const allModulesComplete = entireCourseComplete(COURSE_MODULES);
 
   const onNativeDeckCompleteChange = useCallback(() => {
     bumpGating();
@@ -391,6 +394,7 @@ const ECourseLearn: React.FC = () => {
           <main className="flex-1 min-w-0 min-h-0 lg:self-stretch flex flex-col p-2 sm:p-3 lg:p-4 overflow-hidden">
             <div className="flex-1 min-h-0 flex flex-col max-w-5xl w-full mx-auto">
               <div className="neu-card neu-raised rounded-2xl w-full h-full min-h-0 flex-1 flex flex-col overflow-y-auto border border-white/50 shadow-neu p-6 sm:p-8 lg:p-10">
+                <ECourseCertificateCallout entireCourseComplete={allModulesComplete} />
                 {current.slidesManifest ? (
                   <NativeSlideDeck
                     key={current.id}

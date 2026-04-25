@@ -68,6 +68,20 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },
+    eCourseRegister: {
+      title: 'E-Course Registration | Preqal',
+      description: 'Sign in with Google and register for the Preqal QMS e-course to receive a verifiable certificate of completion.',
+      canonical: `${BASE_URL}/e-courses/register`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
+    eCourseVerifyCertificate: {
+      title: 'Verify E-Course Certificate | Preqal',
+      description: 'Verify a Preqal QMS e-course certificate by certificate ID.',
+      canonical: `${BASE_URL}/e-courses/certificate/verify`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
     book: {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',

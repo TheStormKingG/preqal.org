@@ -89,3 +89,8 @@ export function canOpenModuleIndex(modules: CourseModule[], targetIndex: number)
   }
   return true;
 }
+
+/** True when every module in the catalog passes the local slide/video/quiz gate (browser storage). */
+export function entireCourseComplete(modules: CourseModule[]): boolean {
+  return modules.length > 0 && modules.every(moduleGateComplete);
+}

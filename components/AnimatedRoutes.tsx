@@ -14,6 +14,8 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import TermsOfService from '../pages/TermsOfService';
 import ECourses from '../pages/ECourses';
 import ECourseLearn from '../pages/ECourseLearn';
+import ECourseRegister from '../pages/ECourseRegister';
+import ECourseVerifyCertificate from '../pages/ECourseVerifyCertificate';
 
 const routeOrder = [
   '/',
@@ -22,6 +24,8 @@ const routeOrder = [
   '/resources',
   '/e-courses',
   '/e-courses/learn',
+  '/e-courses/register',
+  '/e-courses/certificate/verify',
   '/about',
   '/contact',
   '/book',
@@ -78,6 +82,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/resources" element={<Resources />} />
         <Route path="/e-courses" element={<ECourses />} />
         <Route path="/e-courses/learn" element={<ECourseLearn />} />
+        <Route path="/e-courses/register" element={<ECourseRegister />} />
+        <Route path="/e-courses/certificate/verify" element={<ECourseVerifyCertificate />} />
         <Route path="/about" element={<About />} />
         <Route path="/book" element={<BookScan />} />
         <Route path="/contact" element={<ContactUs />} />

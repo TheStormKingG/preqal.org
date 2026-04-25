@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
+import { AuthProvider } from './contexts/AuthContext';
 import { initGA } from './src/analytics/ga';
 
 const ConditionalNavbar: React.FC = () => {
@@ -66,6 +67,7 @@ const App: React.FC = () => {
   return (
     <HelmetProvider>
       <Router>
+        <AuthProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
 
@@ -79,6 +81,7 @@ const App: React.FC = () => {
           </main>
           <ConditionalFooter />
         </div>
+        </AuthProvider>
       </Router>
     </HelmetProvider>
   );
