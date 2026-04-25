@@ -7,7 +7,7 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
-  const { user, profile, signInWithGoogle, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,14 +144,7 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
               </div>
-            ) : (
-              <Link
-                to="/e-courses/register"
-                className="px-5 py-2 rounded-xl text-xs font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm transition-all"
-              >
-                Sign in
-              </Link>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile toggle */}
@@ -210,15 +203,7 @@ const Navbar: React.FC = () => {
                   Sign out
                 </button>
               </div>
-            ) : (
-              <Link
-                to="/e-courses/register"
-                onClick={() => setIsOpen(false)}
-                className="block w-full text-center mt-1 px-5 py-3 rounded-xl text-sm font-bold text-slate-700 neu-raised-sm hover:neu-pressed-sm transition-all"
-              >
-                Sign in
-              </Link>
-            )}
+            ) : null}
           </div>
         </div>
       )}
