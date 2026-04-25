@@ -22,6 +22,8 @@ export interface AuthContextType {
   signOut: () => Promise<void>;
   /** Save (or update) the display name — call after the user edits their name on the register page */
   upsertProfile: (displayName: string) => Promise<void>;
+  /** Re-fetch (or auto-create) the profile for the currently signed-in user */
+  refreshProfile: () => Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -35,6 +37,7 @@ const AuthContext = createContext<AuthContextType>({
   signInWithGoogle: async () => {},
   signOut: async () => {},
   upsertProfile: async () => {},
+  refreshProfile: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -116,17 +119,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Subscribe to auth state changes (handles OAuth callback too)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
       setUser(u);
 
       if (u) {
-        await ensureProfile(u);
+        ensureProfile(u)
+          .catch(() => { /* profile stays null; user can retry */ })
+          .finally(() => setLoading(false));
       } else {
         setProfile(null);
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -159,9 +163,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [user, loadAndSetProfile],
   );
 
+  const refreshProfile = useCallback(async () => {
+    if (!user) return;
+    const existing = await loadAndSetProfile(user.id);
+    if (!existing) {
+      const displayName =
+        (user.user_metadata?.full_name as string | undefined) ||
+        (user.user_metadata?.name as string | undefined) ||
+        user.email?.split('@')[0] ||
+        'Student';
+      await dbUpsertProfile(
+        user.id,
+        displayName,
+        user.email ?? '',
+        user.user_metadata?.avatar_url as string | undefined,
+      );
+      await loadAndSetProfile(user.id);
+    }
+  }, [user, loadAndSetProfile]);
+
   return (
     <AuthContext.Provider
-      value={{ user, profile, loading, signInWithGoogle, signOut: handleSignOut, upsertProfile }}
+      value={{ user, profile, loading, signInWithGoogle, signOut: handleSignOut, upsertProfile, refreshProfile }}
     >
       {children}
     </AuthContext.Provider>

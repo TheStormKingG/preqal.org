@@ -75,7 +75,7 @@ interface CertRecord {
 }
 
 const ECourseLearn: React.FC = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
@@ -602,6 +602,15 @@ const ECourseLearn: React.FC = () => {
                           </a>
                         ) : null}
                       </div>
+                    ) : user ? (
+                      /* Signed in but profile not yet loaded — retry without leaving the page */
+                      <button
+                        type="button"
+                        onClick={() => void refreshProfile()}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-800 neu-raised-sm hover:neu-pressed-sm transition-all"
+                      >
+                        <Loader2 className="h-4 w-4 animate-spin" /> Loading profile…
+                      </button>
                     ) : (
                       <Link
                         to="/e-courses/register"
