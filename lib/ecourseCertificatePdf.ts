@@ -56,6 +56,8 @@ function hline(doc: jsPDF, y: number, x1: number, x2: number, color: [number,num
 
 export interface CertPdfParams {
   recipientName: string;
+  /** Google account email — printed on the certificate to bind it to the account */
+  recipientEmail: string;
   certKey: string;
   /** Date the certificate was issued (or "now" if generating fresh) */
   issuedAt: Date | string;
@@ -68,7 +70,7 @@ export interface CertPdfParams {
  * Returns the blob URL for optional additional handling (preview, etc.).
  */
 export function downloadCertificatePdf(params: CertPdfParams): string {
-  const { recipientName, certKey, issuedAt } = params;
+  const { recipientName, recipientEmail, certKey, issuedAt } = params;
   const issuedStr = formatCertDate(issuedAt);
   const verifyUrl = certVerifyUrl(certKey);
   const W = 210; // page width mm
@@ -129,22 +131,28 @@ export function downloadCertificatePdf(params: CertPdfParams): string {
   const nx = W / 2 - approxNameW / 2;
   hline(doc, 84, nx, nx + approxNameW, C.gold, 0.6);
 
+  // ── Google account email (identity binding) ───────────────────────────────
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  textColor(doc, C.slate400);
+  doc.text(recipientEmail.toLowerCase(), W / 2, 91, { align: 'center' });
+
   // ── Body text ─────────────────────────────────────────────────────────────
-  centered(doc, 'has successfully completed and received a passing grade in', 95, 9, 'normal', C.slate300);
+  centered(doc, 'has successfully completed and received a passing grade in', 100, 9, 'normal', C.slate300);
 
   // ── Course title ──────────────────────────────────────────────────────────
-  centered(doc, CERT_COURSE_TITLE.toUpperCase(), 111, 13, 'bold', C.gold);
-  centered(doc, CERT_COURSE_SUBTITLE, 120, 8.5, 'normal', C.white);
-  centered(doc, CERT_COURSE_LEGAL, 128, 7.5, 'normal', C.slate400);
+  centered(doc, CERT_COURSE_TITLE.toUpperCase(), 116, 13, 'bold', C.gold);
+  centered(doc, CERT_COURSE_SUBTITLE, 125, 8.5, 'normal', C.white);
+  centered(doc, CERT_COURSE_LEGAL, 133, 7.5, 'normal', C.slate400);
 
   // ── Mid divider ───────────────────────────────────────────────────────────
-  hline(doc, 137, 20, 190, C.goldDim, 0.4);
+  hline(doc, 142, 20, 190, C.goldDim, 0.4);
 
   // ── V E R I F I E D stamp ─────────────────────────────────────────────────
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   textColor(doc, C.gold);
-  doc.text('V E R I F I E D   C E R T I F I C A T E', W / 2, 147, { align: 'center' });
+  doc.text('V E R I F I E D   C E R T I F I C A T E', W / 2, 152, { align: 'center' });
 
   // ── Cert ID + Issue date (two-column) ─────────────────────────────────────
   const leftX  = 32;
@@ -153,46 +161,46 @@ export function downloadCertificatePdf(params: CertPdfParams): string {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   textColor(doc, C.slate400);
-  doc.text('VALID CERTIFICATE ID', leftX, 159);
-  doc.text('DATE ISSUED', rightX, 159);
+  doc.text('VALID CERTIFICATE ID', leftX, 164);
+  doc.text('DATE ISSUED', rightX, 164);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9.5);
   textColor(doc, C.gold);
-  doc.text(certKey, leftX, 167);
-  doc.text(issuedStr, rightX, 167);
+  doc.text(certKey, leftX, 172);
+  doc.text(issuedStr, rightX, 172);
 
   // ── Verification URL ──────────────────────────────────────────────────────
-  hline(doc, 173, 20, 190, C.goldDim, 0.3);
+  hline(doc, 178, 20, 190, C.goldDim, 0.3);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   textColor(doc, C.slate400);
-  doc.text('Verify this certificate at:', W / 2, 180, { align: 'center' });
+  doc.text('Verify this certificate at:', W / 2, 185, { align: 'center' });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
   textColor(doc, C.gold);
-  doc.text(verifyUrl, W / 2, 186, { align: 'center' });
+  doc.text(verifyUrl, W / 2, 191, { align: 'center' });
 
   // ── Signature area ────────────────────────────────────────────────────────
-  hline(doc, 200, 20, 190, C.goldDim, 0.3);
+  hline(doc, 205, 20, 190, C.goldDim, 0.3);
 
   // Signature line at ~70mm from left
   const sigX  = 55;
   const sigX2 = 105;
-  hline(doc, 220, sigX, sigX2, C.slate500, 0.5);
+  hline(doc, 225, sigX, sigX2, C.slate500, 0.5);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   textColor(doc, C.white);
-  doc.text(CERT_SIGNATORY_NAME, (sigX + sigX2) / 2, 227, { align: 'center' });
+  doc.text(CERT_SIGNATORY_NAME, (sigX + sigX2) / 2, 232, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   textColor(doc, C.slate400);
-  doc.text(CERT_SIGNATORY_TITLE, (sigX + sigX2) / 2, 233, { align: 'center' });
-  doc.text(CERT_SIGNATORY_ORG, (sigX + sigX2) / 2, 239, { align: 'center' });
+  doc.text(CERT_SIGNATORY_TITLE, (sigX + sigX2) / 2, 238, { align: 'center' });
+  doc.text(CERT_SIGNATORY_ORG, (sigX + sigX2) / 2, 244, { align: 'center' });
 
   // ── Bottom ornament ───────────────────────────────────────────────────────
   hline(doc, 253, 20, 190, C.gold, 0.8);

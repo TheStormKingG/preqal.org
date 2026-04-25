@@ -17,19 +17,29 @@ export const CERT_VERIFY_BASE_URL = 'https://preqal.org/verify/';
 /**
  * Generate a unique, human-readable certificate key.
  *
- * Format: PREQAL-YYYYMM-XXXXXX
- *   YYYYMM  — calendar year + zero-padded month (encodes approximate issue period)
- *   XXXXXX  — 6 random base-36 uppercase characters (≈ 2.18 billion combinations per month)
+ * Format: PREQAL-YYYYMM-XXXXXXXX
+ *   YYYYMM    — calendar year + zero-padded month (encodes issue period)
+ *   XXXXXXXX  — 8 cryptographically random base-36 uppercase characters
+ *               (~2.82 trillion combinations per month; guessing probability < 1/trillion)
  *
- * Example: PREQAL-202604-K8M3XN
+ * Example: PREQAL-202604-K8M3XN2A
  *
- * The key is stored with a UNIQUE constraint in Supabase, so any (extremely unlikely)
+ * Uses crypto.getRandomValues() for true randomness (not Math.random()).
+ * The key is stored with a UNIQUE constraint in Supabase, so any (astronomically unlikely)
  * collision will surface as a DB error and the caller can retry.
  */
 export function generateCertKey(): string {
   const now = new Date();
   const ym = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const rand = Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, '0');
+  const buf = new Uint8Array(12);
+  crypto.getRandomValues(buf);
+  const rand = Array.from(buf)
+    .map((b) => b.toString(36))
+    .join('')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 8)
+    .padEnd(8, '0');
   return `PREQAL-${ym}-${rand}`;
 }
 

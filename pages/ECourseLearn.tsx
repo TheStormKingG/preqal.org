@@ -142,6 +142,7 @@ const ECourseLearn: React.FC = () => {
         // Already issued — just download again
         downloadCertificatePdf({
           recipientName: profile.display_name,
+          recipientEmail: profile.email,
           certKey: activeCert.cert_key,
           issuedAt: activeCert.issued_at,
         });
@@ -157,11 +158,39 @@ const ECourseLearn: React.FC = () => {
         course_id: 'build-systems-that-actually-work',
         course_title: 'E-Course: Build Systems That Actually Work',
       });
-      if (error) throw error;
+
+      if (error) {
+        // Unique constraint on (user_id, course_id) — cert already exists, load it
+        if (error.code === '23505') {
+          const { data: existing } = await supabase
+            .from('ecourse_certificates')
+            .select('cert_key, issued_at')
+            .eq('user_id', user.id)
+            .eq('course_id', 'build-systems-that-actually-work')
+            .order('issued_at', { ascending: false })
+            .limit(1)
+            .single();
+          if (existing) {
+            const rec = existing as CertRecord;
+            setExistingCert(rec);
+            downloadCertificatePdf({
+              recipientName: profile.display_name,
+              recipientEmail: profile.email,
+              certKey: rec.cert_key,
+              issuedAt: rec.issued_at,
+            });
+            setCertModalOpen(true);
+            return;
+          }
+        }
+        throw error;
+      }
+
       const rec: CertRecord = { cert_key: certKey, issued_at: new Date().toISOString() };
       setNewlyClaimed(rec);
       downloadCertificatePdf({
         recipientName: profile.display_name,
+        recipientEmail: profile.email,
         certKey: certKey,
         issuedAt: rec.issued_at,
       });
@@ -668,6 +697,7 @@ const ECourseLearn: React.FC = () => {
                     onClick={() => {
                       downloadCertificatePdf({
                         recipientName: profile.display_name,
+                        recipientEmail: profile.email,
                         certKey: certRecord.cert_key,
                         issuedAt: certRecord.issued_at,
                       });
