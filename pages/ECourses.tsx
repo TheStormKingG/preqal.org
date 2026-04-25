@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, SlidersHorizontal, TrendingUp } from 'lucide-react';
 import SEO from '../components/SEO';
 import Section from '../components/ecourses/Section';
 import CourseCard from '../components/ecourses/CourseCard';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
 import { useRevealOnScroll } from '../components/ecourses/useRevealOnScroll';
+import { useAuth } from '../contexts/AuthContext';
 
 const CourseCardReveal: React.FC<{
   module: (typeof COURSE_MODULES)[number];
@@ -39,6 +40,12 @@ const CourseCardReveal: React.FC<{
 
 const ECourses: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleStartCourse = () => {
+    navigate(user ? '/e-courses/learn' : '/e-courses/register');
+  };
 
   const handleToggle = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -90,12 +97,13 @@ const ECourses: React.FC = () => {
             <p className="text-lg text-slate-600 max-w-3xl leading-relaxed mb-8">
               This is not theory. These are systems you can apply immediately to improve consistency, reduce errors, and scale your business with confidence.
             </p>
-            <Link
-              to="/e-courses/learn"
+            <button
+              type="button"
+              onClick={handleStartCourse}
               className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
             >
               Start Learning
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -151,12 +159,13 @@ const ECourses: React.FC = () => {
                 The difference between struggling operations and high-performing organizations is not effort—it is structure.
               </p>
               <div className="mt-10">
-                <Link
-                  to="/e-courses/learn"
+                <button
+                  type="button"
+                  onClick={handleStartCourse}
                   className="inline-flex items-center justify-center px-6 py-3 text-base font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-all neu-raised-sm"
                 >
                   Begin Course
-                </Link>
+                </button>
               </div>
             </div>
           </div>
