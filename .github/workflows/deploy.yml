@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
+          lfs: false
       
       - name: Get commit SHA
         id: commit
@@ -49,9 +49,6 @@ jobs:
       
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-
-      - name: Git LFS
-        run: git lfs install
       
       - name: Build
         env:
@@ -65,6 +62,10 @@ jobs:
           VITE_EMAILJS_MDST_USER_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_MDST_USER_TEMPLATE_ID }}
           VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
           VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
+          # When set to a Supabase Storage (or CDN) base URL, videos are served from there
+          # instead of being built into the dist. Set this in GitHub → Settings → Secrets.
+          # Example: https://[project].supabase.co/storage/v1/object/public/ecourse-videos
+          VITE_VIDEO_BASE_URL: ${{ secrets.VITE_VIDEO_BASE_URL }}
         run: |
           # Verify environment variables are set (without exposing values)
           if [ -z "$VITE_SUPABASE_URL" ]; then
