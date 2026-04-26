@@ -52,6 +52,46 @@ function imageToDataUrl(img: HTMLImageElement, opacity = 1): string {
   return canvas.toDataURL('image/png');
 }
 
+/**
+ * Convert a JPG-on-white-background (e.g. a signature scan) to a transparent
+ * PNG so it can sit cleanly on the cream certificate background.
+ * Pixels brighter than `threshold` (0–255) become fully transparent.
+ */
+function imageToTransparentPng(img: HTMLImageElement, threshold = 235): string {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth || img.width;
+  canvas.height = img.naturalHeight || img.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return '';
+  ctx.drawImage(img, 0, 0);
+  try {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = imageData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i];
+      const g = d[i + 1];
+      const b = d[i + 2];
+      // White-ish pixel → transparent
+      if (r > threshold && g > threshold && b > threshold) {
+        d[i + 3] = 0;
+      } else {
+        // Boost contrast on remaining ink
+        const dark = (r + g + b) / 3 < 100;
+        if (dark) {
+          d[i] = 25;
+          d[i + 1] = 35;
+          d[i + 2] = 60;
+          d[i + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(imageData, 0, 0);
+  } catch {
+    /* canvas tainted — return as-is */
+  }
+  return canvas.toDataURL('image/png');
+}
+
 // ---------------------------------------------------------------------------
 // Drawing helpers
 // ---------------------------------------------------------------------------
@@ -102,13 +142,13 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   fill(doc, C.cream);
   doc.rect(0, 0, W, H, 'F');
 
-  // ── Decorative ribbon watermark (faded, centred behind text) ─────────────
+  // ── Decorative rosette watermark (faded, centred behind text) ────────────
   try {
-    const ribbon = await loadImage(`${import.meta.env.BASE_URL}e-courses/ui/star-ribbon.png`);
-    const ribbonData = imageToDataUrl(ribbon, 0.07); // very faded
-    const rH = 150;
-    const rW = (ribbon.naturalWidth / ribbon.naturalHeight) * rH;
-    doc.addImage(ribbonData, 'PNG', (W - rW) / 2, (H - rH) / 2, rW, rH);
+    const rosette = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20E-Course%20Certificate.png`);
+    const rosetteData = imageToDataUrl(rosette, 0.10); // faded but visible
+    const rH = 165;
+    const rW = (rosette.naturalWidth / rosette.naturalHeight) * rH;
+    doc.addImage(rosetteData, 'PNG', (W - rW) / 2, (H - rH) / 2, rW, rH);
   } catch {
     /* asset not reachable — skip watermark gracefully */
   }
@@ -133,7 +173,7 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
 
   // ── TOP-RIGHT: Preqal hex icon (icon-only, large) ────────────────────────
   try {
-    const hex = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-7.png`);
+    const hex = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20Logo%20Sep25-7.png`);
     const hexData = imageToDataUrl(hex);
     const hH = 30;
     const hW = (hex.naturalWidth / hex.naturalHeight) * hH;
@@ -144,50 +184,41 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
     doc.circle(W - 28, 35, 12, 'F');
   }
 
-  // ── RIGHT MIDDLE: Signature (rendered as elegant italic + flourish) ──────
-  // We don't have a real handwritten signature scan; render the signatory
-  // name in Times italic with a hand-drawn flourish line underneath.
+  // ── RIGHT MIDDLE: Real handwritten signature (white background removed) ──
   const sigCenterX = W - 28;
-  const sigBaseline = 95;
-
-  doc.setFont('times', 'italic');
-  doc.setFontSize(20);
-  textColor(doc, C.ink);
-  doc.text('Stefan Gravesande', sigCenterX, sigBaseline, { align: 'center' });
-
-  // Hand-drawn flourish underline (bezier curve gives it a more "ink" feel)
-  stroke(doc, C.ink);
-  doc.setLineWidth(0.4);
-  const flourishY = sigBaseline + 2.5;
-  doc.lines(
-    [
-      [10, -1.5],
-      [25, 0.5],
-      [10, -1],
-    ],
-    sigCenterX - 22,
-    flourishY,
-    [1, 1],
-    'S',
-    false,
-  );
+  let sigImgBottomY = 100;
+  try {
+    const sig = await loadImage(`${import.meta.env.BASE_URL}certlayers/Stefan%20Signature%20new.jpg`);
+    const sigPng = imageToTransparentPng(sig);
+    const sH = 26;
+    const sW = (sig.naturalWidth / sig.naturalHeight) * sH;
+    doc.addImage(sigPng, 'PNG', sigCenterX - sW / 2, 78, sW, sH);
+    sigImgBottomY = 78 + sH;
+  } catch {
+    /* fallback — italic name as signature substitute */
+    doc.setFont('times', 'italic');
+    doc.setFontSize(20);
+    textColor(doc, C.ink);
+    doc.text('Stefan Gravesande', sigCenterX, 95, { align: 'center' });
+    sigImgBottomY = 100;
+  }
 
   // Divider line beneath signature
   stroke(doc, C.subtle);
   doc.setLineWidth(0.3);
-  doc.line(sigCenterX - 30, sigBaseline + 8, sigCenterX + 30, sigBaseline + 8);
+  doc.line(sigCenterX - 30, sigImgBottomY + 1, sigCenterX + 30, sigImgBottomY + 1);
 
   // Signatory name + title (printed)
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   textColor(doc, C.text);
-  doc.text(CERT_SIGNATORY_NAME.toUpperCase(), sigCenterX, sigBaseline + 14, { align: 'center' });
+  doc.text(CERT_SIGNATORY_NAME.toUpperCase(), sigCenterX, sigImgBottomY + 7, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text(CERT_SIGNATORY_TITLE.toUpperCase(), sigCenterX, sigBaseline + 19, { align: 'center' });
-  doc.text(CERT_SIGNATORY_ORG.toUpperCase(), sigCenterX, sigBaseline + 23, { align: 'center' });
+  doc.text(CERT_SIGNATORY_TITLE.toUpperCase(), sigCenterX, sigImgBottomY + 12, { align: 'center' });
+  doc.text(CERT_SIGNATORY_ORG.toUpperCase(), sigCenterX, sigImgBottomY + 16, { align: 'center' });
 
   // ── LEFT MIDDLE: Recipient body block ────────────────────────────────────
   const leftX = 22;
@@ -233,17 +264,24 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   textColor(doc, C.subtle);
   doc.text(CERT_COURSE_LEGAL.toUpperCase(), leftX, 145, { charSpace: 0.5, maxWidth: leftMaxWidth });
 
-  // ── BOTTOM-LEFT: Preqal full logo + verified label + issue date ─────────
+  // ── BOTTOM-LEFT: Preqal hex + wordmark + verified label + issue date ────
   const footY = 175;
+  let wordmarkRightEdgeX = leftX;
   try {
-    const logoFull = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
-    const logoData = imageToDataUrl(logoFull);
-    const flH = 14;
-    const flW = (logoFull.naturalWidth / logoFull.naturalHeight) * flH;
-    doc.addImage(logoData, 'PNG', leftX, footY - 4, flW, flH);
+    const footHex = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20Logo%20Sep25-7.png`);
+    const fhH = 11;
+    const fhW = (footHex.naturalWidth / footHex.naturalHeight) * fhH;
+    doc.addImage(imageToDataUrl(footHex), 'PNG', leftX, footY - 3, fhW, fhH);
+
+    const wordmark = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20Logo%20Sep25-11.png`);
+    const wH = 7;
+    const wW = (wordmark.naturalWidth / wordmark.naturalHeight) * wH;
+    doc.addImage(imageToDataUrl(wordmark), 'PNG', leftX + fhW + 2, footY + 0.2, wW, wH);
+    wordmarkRightEdgeX = leftX + fhW + 2 + wW;
   } catch {
     /* no-op */
   }
+  void wordmarkRightEdgeX;
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
