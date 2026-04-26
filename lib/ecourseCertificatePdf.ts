@@ -23,6 +23,7 @@ const C = {
   subtle:   [120, 120, 120] as [number, number, number],  // #787878 — small caps
   navy:     [ 30,  58, 122] as [number, number, number],  // #1e3a7a — cert ID accent
   amber:    [245, 158,  11] as [number, number, number],  // #f59e0b — Preqal orange
+  ink:      [ 25,  35,  60] as [number, number, number],  // #19233c — signature ink
 };
 
 // ---------------------------------------------------------------------------
@@ -104,7 +105,7 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   // ── Decorative ribbon watermark (faded, centred behind text) ─────────────
   try {
     const ribbon = await loadImage(`${import.meta.env.BASE_URL}e-courses/ui/star-ribbon.png`);
-    const ribbonData = imageToDataUrl(ribbon, 0.08); // very faded
+    const ribbonData = imageToDataUrl(ribbon, 0.07); // very faded
     const rH = 150;
     const rW = (ribbon.naturalWidth / ribbon.naturalHeight) * rH;
     doc.addImage(ribbonData, 'PNG', (W - rW) / 2, (H - rH) / 2, rW, rH);
@@ -130,66 +131,80 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   textColor(doc, C.greenDk);
   doc.text('CERTIFICATE OF ACHIEVEMENT', 22, 47, { charSpace: 2.5 });
 
-  // ── TOP-RIGHT: Preqal hex logo (orange star) ─────────────────────────────
+  // ── TOP-RIGHT: Preqal hex icon (icon-only, large) ────────────────────────
   try {
-    const logo = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
-    const logoData = imageToDataUrl(logo);
-    // Hex-only crop: the logo file is wide (logo + word). Place the whole thing
-    // in the top-right at moderate height; design tolerance is fine.
-    const lH = 22;
-    const lW = (logo.naturalWidth / logo.naturalHeight) * lH;
-    doc.addImage(logoData, 'PNG', W - 22 - lW, 22, lW, lH);
+    const hex = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-7.png`);
+    const hexData = imageToDataUrl(hex);
+    const hH = 30;
+    const hW = (hex.naturalWidth / hex.naturalHeight) * hH;
+    doc.addImage(hexData, 'PNG', W - 28 - hW / 2, 22, hW, hH);
   } catch {
     /* fallback — draw amber hex placeholder */
     fill(doc, C.amber);
-    doc.circle(W - 30, 33, 9, 'F');
+    doc.circle(W - 28, 35, 12, 'F');
   }
 
-  // ── RIGHT MIDDLE: Signature block ────────────────────────────────────────
-  let sigBottomY = 100;
-  try {
-    const sig = await loadImage(`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`);
-    const sigData = imageToDataUrl(sig);
-    const sH = 18;
-    const sW = (sig.naturalWidth / sig.naturalHeight) * sH;
-    const sX = W - 30 - sW / 2;
-    doc.addImage(sigData, 'PNG', sX, 80, sW, sH);
-    sigBottomY = 80 + sH + 2;
-  } catch {
-    /* fallback — draw a simple ink-style line */
-    stroke(doc, C.text);
-    doc.setLineWidth(0.4);
-    doc.line(W - 65, 95, W - 35, 95);
-    sigBottomY = 100;
-  }
+  // ── RIGHT MIDDLE: Signature (rendered as elegant italic + flourish) ──────
+  // We don't have a real handwritten signature scan; render the signatory
+  // name in Times italic with a hand-drawn flourish line underneath.
+  const sigCenterX = W - 28;
+  const sigBaseline = 95;
 
-  // Signatory name + title under signature
+  doc.setFont('times', 'italic');
+  doc.setFontSize(20);
+  textColor(doc, C.ink);
+  doc.text('Stefan Gravesande', sigCenterX, sigBaseline, { align: 'center' });
+
+  // Hand-drawn flourish underline (bezier curve gives it a more "ink" feel)
+  stroke(doc, C.ink);
+  doc.setLineWidth(0.4);
+  const flourishY = sigBaseline + 2.5;
+  doc.lines(
+    [
+      [10, -1.5],
+      [25, 0.5],
+      [10, -1],
+    ],
+    sigCenterX - 22,
+    flourishY,
+    [1, 1],
+    'S',
+    false,
+  );
+
+  // Divider line beneath signature
+  stroke(doc, C.subtle);
+  doc.setLineWidth(0.3);
+  doc.line(sigCenterX - 30, sigBaseline + 8, sigCenterX + 30, sigBaseline + 8);
+
+  // Signatory name + title (printed)
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   textColor(doc, C.text);
-  doc.text(CERT_SIGNATORY_NAME.toUpperCase(), W - 30, sigBottomY + 4, { align: 'center' });
+  doc.text(CERT_SIGNATORY_NAME.toUpperCase(), sigCenterX, sigBaseline + 14, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text(CERT_SIGNATORY_TITLE.toUpperCase(), W - 30, sigBottomY + 9, { align: 'center' });
-  doc.text(CERT_SIGNATORY_ORG.toUpperCase(), W - 30, sigBottomY + 13, { align: 'center' });
+  doc.text(CERT_SIGNATORY_TITLE.toUpperCase(), sigCenterX, sigBaseline + 19, { align: 'center' });
+  doc.text(CERT_SIGNATORY_ORG.toUpperCase(), sigCenterX, sigBaseline + 23, { align: 'center' });
 
   // ── LEFT MIDDLE: Recipient body block ────────────────────────────────────
   const leftX = 22;
+  const leftMaxWidth = 175; // keep body text well clear of right-side signature block
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   textColor(doc, C.subtle);
   doc.text('THIS IS TO CERTIFY THAT', leftX, 85, { charSpace: 1.2 });
 
-  // Recipient name — use Times italic as elegant substitute for cursive
+  // Recipient name — Times italic
   doc.setFont('times', 'italic');
   const nameLen = recipientName.length;
-  const nameSize = nameLen > 32 ? 28 : nameLen > 22 ? 34 : 40;
+  const nameSize = nameLen > 32 ? 26 : nameLen > 22 ? 32 : 38;
   doc.setFontSize(nameSize);
   textColor(doc, C.text);
-  doc.text(recipientName, leftX, 105);
+  doc.text(recipientName, leftX, 105, { maxWidth: leftMaxWidth });
 
   // Email binding (small, under name)
   doc.setFont('helvetica', 'normal');
@@ -206,26 +221,26 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
   textColor(doc, C.text);
-  doc.text(CERT_COURSE_TITLE.toUpperCase(), leftX, 132);
+  doc.text(CERT_COURSE_TITLE.toUpperCase(), leftX, 132, { maxWidth: leftMaxWidth });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   textColor(doc, C.text);
-  doc.text(CERT_COURSE_SUBTITLE.toUpperCase(), leftX, 139, { charSpace: 0.5 });
+  doc.text(CERT_COURSE_SUBTITLE.toUpperCase(), leftX, 139, { charSpace: 0.5, maxWidth: leftMaxWidth });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text(CERT_COURSE_LEGAL.toUpperCase(), leftX, 145, { charSpace: 0.5 });
+  doc.text(CERT_COURSE_LEGAL.toUpperCase(), leftX, 145, { charSpace: 0.5, maxWidth: leftMaxWidth });
 
-  // ── BOTTOM-LEFT: small Preqal logo + verified label + issue date ────────
+  // ── BOTTOM-LEFT: Preqal full logo + verified label + issue date ─────────
   const footY = 175;
   try {
-    const logoSm = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
-    const logoSmData = imageToDataUrl(logoSm);
-    const slH = 11;
-    const slW = (logoSm.naturalWidth / logoSm.naturalHeight) * slH;
-    doc.addImage(logoSmData, 'PNG', leftX, footY - 1, slW, slH);
+    const logoFull = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
+    const logoData = imageToDataUrl(logoFull);
+    const flH = 14;
+    const flW = (logoFull.naturalWidth / logoFull.naturalHeight) * flH;
+    doc.addImage(logoData, 'PNG', leftX, footY - 4, flW, flH);
   } catch {
     /* no-op */
   }
@@ -240,13 +255,13 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   textColor(doc, C.subtle);
   doc.text(`ISSUED: ${issuedStr}`, leftX, footY + 19);
 
-  // ── BOTTOM-RIGHT: Cert ID block ──────────────────────────────────────────
-  const rightEdge = W - 22;
+  // ── BOTTOM-RIGHT: Cert ID block (kept well within inner border) ─────────
+  const rightEdge = W - 24; // inner border is at W-11; pad inward 13mm
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text('VALID CERTIFICATE ID', rightEdge, footY + 9, { align: 'right', charSpace: 1.2 });
+  doc.text('VALID CERTIFICATE ID', rightEdge, footY + 9, { align: 'right', charSpace: 0.8 });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
