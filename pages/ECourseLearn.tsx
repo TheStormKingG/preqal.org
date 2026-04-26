@@ -140,7 +140,7 @@ const ECourseLearn: React.FC = () => {
       const activeCert = existingCert ?? newlyClaimed;
       if (activeCert) {
         // Already issued — just download again
-        downloadCertificatePdf({
+        await downloadCertificatePdf({
           recipientName: profile.display_name,
           recipientEmail: profile.email,
           certKey: activeCert.cert_key,
@@ -173,7 +173,7 @@ const ECourseLearn: React.FC = () => {
           if (existing) {
             const rec = existing as CertRecord;
             setExistingCert(rec);
-            downloadCertificatePdf({
+            await downloadCertificatePdf({
               recipientName: profile.display_name,
               recipientEmail: profile.email,
               certKey: rec.cert_key,
@@ -188,7 +188,7 @@ const ECourseLearn: React.FC = () => {
 
       const rec: CertRecord = { cert_key: certKey, issued_at: new Date().toISOString() };
       setNewlyClaimed(rec);
-      downloadCertificatePdf({
+      await downloadCertificatePdf({
         recipientName: profile.display_name,
         recipientEmail: profile.email,
         certKey: certKey,
@@ -704,7 +704,7 @@ const ECourseLearn: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      downloadCertificatePdf({
+                      void downloadCertificatePdf({
                         recipientName: profile.display_name,
                         recipientEmail: profile.email,
                         certKey: certRecord.cert_key,

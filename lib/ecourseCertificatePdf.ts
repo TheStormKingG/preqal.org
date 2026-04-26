@@ -15,18 +15,44 @@ import {
 // ---------------------------------------------------------------------------
 
 const C = {
-  bg:       [15,  23, 42]  as [number, number, number],  // slate-900  #0f172a
-  bgCard:   [22,  34, 58]  as [number, number, number],  // slightly lighter panel
-  gold:     [245, 158, 11] as [number, number, number],  // amber-500  #f59e0b
-  goldDim:  [180, 115,  8] as [number, number, number],  // amber-700 (borders)
-  white:    [248, 250, 252] as [number, number, number], // slate-50
-  slate300: [148, 163, 184] as [number, number, number], // slate-300
-  slate400: [100, 116, 139] as [number, number, number], // slate-400
-  slate500: [ 71,  85, 105] as [number, number, number], // slate-500
+  cream:    [253, 246, 232] as [number, number, number],  // #fdf6e8 — warm cream bg
+  border:   [142, 181, 179] as [number, number, number],  // #8eb5b3 — light teal border
+  green:    [ 74, 141, 126] as [number, number, number],  // #4a8d7e — sage VERIFIED
+  greenDk:  [ 53, 110,  98] as [number, number, number],  // #356e62 — slightly darker
+  text:     [ 51,  51,  51] as [number, number, number],  // #333    — body
+  subtle:   [120, 120, 120] as [number, number, number],  // #787878 — small caps
+  navy:     [ 30,  58, 122] as [number, number, number],  // #1e3a7a — cert ID accent
+  amber:    [245, 158,  11] as [number, number, number],  // #f59e0b — Preqal orange
 };
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Asset loader (browser-only) — returns HTMLImageElement once decoded
+// ---------------------------------------------------------------------------
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = src;
+  });
+}
+
+/** Convert an HTMLImageElement to a data URL via canvas (works for non-CORS too) */
+function imageToDataUrl(img: HTMLImageElement, opacity = 1): string {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth || img.width;
+  canvas.height = img.naturalHeight || img.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return '';
+  if (opacity < 1) ctx.globalAlpha = opacity;
+  ctx.drawImage(img, 0, 0);
+  return canvas.toDataURL('image/png');
+}
+
+// ---------------------------------------------------------------------------
+// Drawing helpers
 // ---------------------------------------------------------------------------
 
 function fill(doc: jsPDF, c: [number, number, number]) {
@@ -38,20 +64,9 @@ function stroke(doc: jsPDF, c: [number, number, number]) {
 function textColor(doc: jsPDF, c: [number, number, number]) {
   doc.setTextColor(...c);
 }
-function centered(doc: jsPDF, text: string, y: number, size: number, style: string, color: [number,number,number]) {
-  doc.setFont('helvetica', style);
-  doc.setFontSize(size);
-  textColor(doc, color);
-  doc.text(text, 105, y, { align: 'center' });
-}
-function hline(doc: jsPDF, y: number, x1: number, x2: number, color: [number,number,number], width = 0.5) {
-  stroke(doc, color);
-  doc.setLineWidth(width);
-  doc.line(x1, y, x2, y);
-}
 
 // ---------------------------------------------------------------------------
-// Main export
+// Public API
 // ---------------------------------------------------------------------------
 
 export interface CertPdfParams {
@@ -66,161 +81,189 @@ export interface CertPdfParams {
 /**
  * Generate the Preqal E-Course certificate PDF and trigger a browser download.
  *
- * Uses jsPDF — A4 portrait (210 × 297 mm), dark neumorphic brand style.
+ * Layout: A4 LANDSCAPE (297 × 210 mm), light cream background, sage-green
+ * "VERIFIED" header, Preqal hex logo top-right, signature mid-right, recipient
+ * details mid-left, footer corners with cert ID and issue date.
+ *
  * Returns the blob URL for optional additional handling (preview, etc.).
  */
-export function downloadCertificatePdf(params: CertPdfParams): string {
+export async function downloadCertificatePdf(params: CertPdfParams): Promise<string> {
   const { recipientName, recipientEmail, certKey, issuedAt } = params;
   const issuedStr = formatCertDate(issuedAt);
   const verifyUrl = certVerifyUrl(certKey);
-  const W = 210; // page width mm
 
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 297;  // landscape A4 width  (mm)
+  const H = 210;  // landscape A4 height (mm)
+
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
   // ── Background ────────────────────────────────────────────────────────────
-  fill(doc, C.bg);
-  doc.rect(0, 0, 210, 297, 'F');
+  fill(doc, C.cream);
+  doc.rect(0, 0, W, H, 'F');
 
-  // ── Outer gold border ─────────────────────────────────────────────────────
-  stroke(doc, C.gold);
-  doc.setLineWidth(1.2);
-  doc.rect(8, 8, 194, 281, 'S');
+  // ── Decorative ribbon watermark (faded, centred behind text) ─────────────
+  try {
+    const ribbon = await loadImage(`${import.meta.env.BASE_URL}e-courses/ui/star-ribbon.png`);
+    const ribbonData = imageToDataUrl(ribbon, 0.08); // very faded
+    const rH = 150;
+    const rW = (ribbon.naturalWidth / ribbon.naturalHeight) * rH;
+    doc.addImage(ribbonData, 'PNG', (W - rW) / 2, (H - rH) / 2, rW, rH);
+  } catch {
+    /* asset not reachable — skip watermark gracefully */
+  }
 
-  // ── Inner thin border ─────────────────────────────────────────────────────
-  stroke(doc, C.goldDim);
-  doc.setLineWidth(0.3);
-  doc.rect(11, 11, 188, 275, 'S');
+  // ── Borders (double thin teal frame) ──────────────────────────────────────
+  stroke(doc, C.border);
+  doc.setLineWidth(0.6);
+  doc.rect(8, 8, W - 16, H - 16, 'S');
+  doc.setLineWidth(0.25);
+  doc.rect(11, 11, W - 22, H - 22, 'S');
 
-  // ── Top badge area ────────────────────────────────────────────────────────
-  fill(doc, C.bgCard);
-  doc.rect(11, 11, 188, 38, 'F');
-
-  // PREQAL INC  (small label)
+  // ── TOP-LEFT: VERIFIED + CERTIFICATE OF ACHIEVEMENT ──────────────────────
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7.5);
-  textColor(doc, C.slate400);
-  doc.text('PREQAL INC', W / 2, 20, { align: 'center', charSpace: 1.5 });
+  doc.setFontSize(44);
+  textColor(doc, C.green);
+  doc.text('VERIFIED', 22, 38, { charSpace: 4 });
 
-  // CERTIFICATE OF  (line 1)
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(24);
-  textColor(doc, C.white);
-  doc.text('CERTIFICATE', W / 2, 31, { align: 'center' });
-
-  // OF ACHIEVEMENT  (line 2, amber)
   doc.setFontSize(11);
-  textColor(doc, C.gold);
-  doc.text('OF ACHIEVEMENT', W / 2, 39, { align: 'center', charSpace: 1 });
+  textColor(doc, C.greenDk);
+  doc.text('CERTIFICATE OF ACHIEVEMENT', 22, 47, { charSpace: 2.5 });
 
-  // ── Divider under badge ───────────────────────────────────────────────────
-  hline(doc, 50, 20, 190, C.gold, 0.8);
+  // ── TOP-RIGHT: Preqal hex logo (orange star) ─────────────────────────────
+  try {
+    const logo = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
+    const logoData = imageToDataUrl(logo);
+    // Hex-only crop: the logo file is wide (logo + word). Place the whole thing
+    // in the top-right at moderate height; design tolerance is fine.
+    const lH = 22;
+    const lW = (logo.naturalWidth / logo.naturalHeight) * lH;
+    doc.addImage(logoData, 'PNG', W - 22 - lW, 22, lW, lH);
+  } catch {
+    /* fallback — draw amber hex placeholder */
+    fill(doc, C.amber);
+    doc.circle(W - 30, 33, 9, 'F');
+  }
 
-  // ── "This is to certify that" ─────────────────────────────────────────────
-  centered(doc, 'This is to certify that', 62, 9.5, 'italic', C.slate300);
+  // ── RIGHT MIDDLE: Signature block ────────────────────────────────────────
+  let sigBottomY = 100;
+  try {
+    const sig = await loadImage(`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5).png`);
+    const sigData = imageToDataUrl(sig);
+    const sH = 18;
+    const sW = (sig.naturalWidth / sig.naturalHeight) * sH;
+    const sX = W - 30 - sW / 2;
+    doc.addImage(sigData, 'PNG', sX, 80, sW, sH);
+    sigBottomY = 80 + sH + 2;
+  } catch {
+    /* fallback — draw a simple ink-style line */
+    stroke(doc, C.text);
+    doc.setLineWidth(0.4);
+    doc.line(W - 65, 95, W - 35, 95);
+    sigBottomY = 100;
+  }
 
-  // ── Recipient Name (large) ────────────────────────────────────────────────
-  const nameLen = recipientName.length;
-  const nameFontSize = nameLen > 28 ? 18 : nameLen > 20 ? 22 : 26;
+  // Signatory name + title under signature
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(nameFontSize);
-  textColor(doc, C.white);
-  doc.text(recipientName.toUpperCase(), W / 2, 80, { align: 'center' });
-
-  // Amber underline under name
-  const approxNameW = Math.min(nameLen * (nameFontSize * 0.52), 160);
-  const nx = W / 2 - approxNameW / 2;
-  hline(doc, 84, nx, nx + approxNameW, C.gold, 0.6);
-
-  // ── Google account email (identity binding) ───────────────────────────────
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  textColor(doc, C.slate400);
-  doc.text(recipientEmail.toLowerCase(), W / 2, 91, { align: 'center' });
-
-  // ── Body text ─────────────────────────────────────────────────────────────
-  centered(doc, 'has successfully completed and received a passing grade in', 100, 9, 'normal', C.slate300);
-
-  // ── Course title ──────────────────────────────────────────────────────────
-  centered(doc, CERT_COURSE_TITLE.toUpperCase(), 116, 13, 'bold', C.gold);
-  centered(doc, CERT_COURSE_SUBTITLE, 125, 8.5, 'normal', C.white);
-  centered(doc, CERT_COURSE_LEGAL, 133, 7.5, 'normal', C.slate400);
-
-  // ── Mid divider ───────────────────────────────────────────────────────────
-  hline(doc, 142, 20, 190, C.goldDim, 0.4);
-
-  // ── V E R I F I E D stamp ─────────────────────────────────────────────────
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  textColor(doc, C.gold);
-  doc.text('V E R I F I E D   C E R T I F I C A T E', W / 2, 152, { align: 'center' });
-
-  // ── Cert ID + Issue date (two-column) ─────────────────────────────────────
-  const leftX  = 32;
-  const rightX = 148;
+  doc.setFontSize(10);
+  textColor(doc, C.text);
+  doc.text(CERT_SIGNATORY_NAME.toUpperCase(), W - 30, sigBottomY + 4, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  textColor(doc, C.slate400);
-  doc.text('VALID CERTIFICATE ID', leftX, 164);
-  doc.text('DATE ISSUED', rightX, 164);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9.5);
-  textColor(doc, C.gold);
-  doc.text(certKey, leftX, 172);
-  doc.text(issuedStr, rightX, 172);
-
-  // ── Verification URL ──────────────────────────────────────────────────────
-  hline(doc, 178, 20, 190, C.goldDim, 0.3);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  textColor(doc, C.slate400);
-  doc.text('Verify this certificate at:', W / 2, 185, { align: 'center' });
-
-  doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
-  textColor(doc, C.gold);
-  doc.text(verifyUrl, W / 2, 191, { align: 'center' });
+  textColor(doc, C.subtle);
+  doc.text(CERT_SIGNATORY_TITLE.toUpperCase(), W - 30, sigBottomY + 9, { align: 'center' });
+  doc.text(CERT_SIGNATORY_ORG.toUpperCase(), W - 30, sigBottomY + 13, { align: 'center' });
 
-  // ── Signature area ────────────────────────────────────────────────────────
-  hline(doc, 205, 20, 190, C.goldDim, 0.3);
+  // ── LEFT MIDDLE: Recipient body block ────────────────────────────────────
+  const leftX = 22;
 
-  // Signature line at ~70mm from left
-  const sigX  = 55;
-  const sigX2 = 105;
-  hline(doc, 225, sigX, sigX2, C.slate500, 0.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  textColor(doc, C.subtle);
+  doc.text('THIS IS TO CERTIFY THAT', leftX, 85, { charSpace: 1.2 });
+
+  // Recipient name — use Times italic as elegant substitute for cursive
+  doc.setFont('times', 'italic');
+  const nameLen = recipientName.length;
+  const nameSize = nameLen > 32 ? 28 : nameLen > 22 ? 34 : 40;
+  doc.setFontSize(nameSize);
+  textColor(doc, C.text);
+  doc.text(recipientName, leftX, 105);
+
+  // Email binding (small, under name)
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  textColor(doc, C.subtle);
+  doc.text(recipientEmail.toLowerCase(), leftX, 111);
+
+  // Body lines
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  textColor(doc, C.subtle);
+  doc.text('SUCCESSFULLY COMPLETED AND RECEIVED A PASSING GRADE IN', leftX, 122, { charSpace: 1 });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  textColor(doc, C.text);
+  doc.text(CERT_COURSE_TITLE.toUpperCase(), leftX, 132);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  textColor(doc, C.text);
+  doc.text(CERT_COURSE_SUBTITLE.toUpperCase(), leftX, 139, { charSpace: 0.5 });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  textColor(doc, C.subtle);
+  doc.text(CERT_COURSE_LEGAL.toUpperCase(), leftX, 145, { charSpace: 0.5 });
+
+  // ── BOTTOM-LEFT: small Preqal logo + verified label + issue date ────────
+  const footY = 175;
+  try {
+    const logoSm = await loadImage(`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9.png`);
+    const logoSmData = imageToDataUrl(logoSm);
+    const slH = 11;
+    const slW = (logoSm.naturalWidth / logoSm.naturalHeight) * slH;
+    doc.addImage(logoSmData, 'PNG', leftX, footY - 1, slW, slH);
+  } catch {
+    /* no-op */
+  }
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
-  textColor(doc, C.white);
-  doc.text(CERT_SIGNATORY_NAME, (sigX + sigX2) / 2, 232, { align: 'center' });
+  textColor(doc, C.text);
+  doc.text('VERIFIED CERTIFICATE', leftX, footY + 14, { charSpace: 1.2 });
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(8);
+  textColor(doc, C.subtle);
+  doc.text(`ISSUED: ${issuedStr}`, leftX, footY + 19);
+
+  // ── BOTTOM-RIGHT: Cert ID block ──────────────────────────────────────────
+  const rightEdge = W - 22;
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  textColor(doc, C.slate400);
-  doc.text(CERT_SIGNATORY_TITLE, (sigX + sigX2) / 2, 238, { align: 'center' });
-  doc.text(CERT_SIGNATORY_ORG, (sigX + sigX2) / 2, 244, { align: 'center' });
+  doc.setFontSize(8.5);
+  textColor(doc, C.subtle);
+  doc.text('VALID CERTIFICATE ID', rightEdge, footY + 9, { align: 'right', charSpace: 1.2 });
 
-  // ── Bottom ornament ───────────────────────────────────────────────────────
-  hline(doc, 253, 20, 190, C.gold, 0.8);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  textColor(doc, C.navy);
+  doc.text(certKey, rightEdge, footY + 15, { align: 'right' });
 
+  // Verify URL — very small, below cert ID
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5);
-  textColor(doc, C.slate500);
-  doc.text(
-    'This certificate is issued by Preqal Inc and is digitally verifiable at preqal.org',
-    W / 2,
-    260,
-    { align: 'center' },
-  );
+  textColor(doc, C.subtle);
+  doc.text(`Verify at ${verifyUrl}`, rightEdge, footY + 19, { align: 'right' });
 
   // ── Save ──────────────────────────────────────────────────────────────────
   const safeName = recipientName.replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_');
   const filename = `Preqal_Certificate_${safeName}_${certKey}.pdf`;
   doc.save(filename);
 
-  // Return blob URL for potential preview
   const blob = doc.output('blob');
   return URL.createObjectURL(blob);
 }
