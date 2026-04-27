@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-[30px]">
             {navLinks.map((link) => {
               const active = isActive(link.path);
               const isQuote = link.path === '/business-growth-assessment';
