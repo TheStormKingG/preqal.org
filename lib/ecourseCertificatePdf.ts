@@ -275,31 +275,33 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   textColor(doc, C.text);
+  // Inner border bottom edge = H - 11 = 199mm. All footer text must sit ≤ 197.
+  // Offsets from (footLogoY + logoH) = 188:  +1=189, +5=193, +9=197  ✓
   doc.text('VERIFIED CERTIFICATE', leftX, footLogoY + logoH + 5, { charSpace: 1.2 });
 
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text(`ISSUED: ${issuedStr}`, leftX, footLogoY + logoH + 10);
+  doc.text(`ISSUED: ${issuedStr}`, leftX, footLogoY + logoH + 9);
 
   // ── BOTTOM-RIGHT: Cert ID block — right-anchored at sigRightEdge ─────────
-  // charSpace intentionally omitted on the label — jsPDF can add trailing
-  // spacing after the last glyph when charSpace > 0, causing right bleed.
+  // charSpace intentionally omitted — jsPDF adds trailing spacing after the
+  // last glyph when charSpace > 0, pushing the right edge past the anchor.
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text('VALID CERTIFICATE ID', sigRightEdge, footLogoY + logoH + 3, { align: 'right' });
+  doc.text('VALID CERTIFICATE ID', sigRightEdge, footLogoY + logoH + 1, { align: 'right' });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   textColor(doc, C.navy);
-  doc.text(certKey, sigRightEdge, footLogoY + logoH + 9, { align: 'right' });
+  doc.text(certKey, sigRightEdge, footLogoY + logoH + 6, { align: 'right' });
 
-  // Verify URL — very small, below cert ID
+  // Verify URL — very small, sits at y=197 — comfortably inside inner border
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5);
   textColor(doc, C.subtle);
-  doc.text(`Verify at ${verifyUrl}`, sigRightEdge, footLogoY + logoH + 14, { align: 'right' });
+  doc.text(`Verify at ${verifyUrl}`, sigRightEdge, footLogoY + logoH + 9, { align: 'right' });
 
   // ── Save ──────────────────────────────────────────────────────────────────
   const safeName = recipientName.replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_');

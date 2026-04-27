@@ -81,6 +81,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/e-courses"                  element={<ECourses />} />
         <Route path="/e-courses/register"         element={<ECourseRegister />} />
         <Route path="/e-courses/learn"            element={<ECourseLearn />} />
+        {/* Certificate verification — hidden from nav, accessible via PDF link */}
+        <Route path="/verify"                     element={<ECourseVerifyCertificate />} />
         <Route path="/verify/:certKey"            element={<ECourseVerifyCertificate />} />
         <Route path="/about"                      element={<About />} />
         <Route path="/book"                       element={<BookScan />} />
