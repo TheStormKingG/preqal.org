@@ -126,9 +126,9 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   const W = 297;  // landscape A4 width  (mm)
   const H = 210;  // landscape A4 height (mm)
 
-  // Safe right edge: inner border sits at W-11=286; pad 3mm inward → 283mm.
-  // All right-side elements are right-anchored here so nothing can bleed.
-  const sigRightEdge = W - 14;  // 283 mm
+  // Safe right edge: inner border sits at W-11=286; we pad 22mm from page edge
+  // (= 275mm) so all right-anchored elements have comfortable clearance.
+  const sigRightEdge = W - 22;  // 275 mm
 
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
@@ -260,13 +260,14 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   textColor(doc, C.subtle);
   doc.text(CERT_COURSE_LEGAL.toUpperCase(), leftX, 145, { charSpace: 0.5, maxWidth: leftMaxWidth });
 
-  // ── BOTTOM-LEFT: Single Preqal logo (Sep25-10) + verified label ──────────
-  const footY = 175;
+  // ── BOTTOM-LEFT: Single Preqal logo (Sep25-10) — 3× size + verified label ─
+  // Logo is 36mm tall; starts at y=152 so it ends at 188, leaving room for text.
+  const footLogoY = 152;
+  const logoH     = 36;
   try {
-    const logo  = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20Logo%20Sep25-10.png`);
-    const lH    = 12;
-    const lW    = (logo.naturalWidth / logo.naturalHeight) * lH;
-    doc.addImage(imageToDataUrl(logo), 'PNG', leftX, footY - 4, lW, lH);
+    const logo = await loadImage(`${import.meta.env.BASE_URL}certlayers/Preqal%20Logo%20Sep25-10.png`);
+    const lW   = (logo.naturalWidth / logo.naturalHeight) * logoH;
+    doc.addImage(imageToDataUrl(logo), 'PNG', leftX, footLogoY, lW, logoH);
   } catch {
     /* no-op */
   }
@@ -274,29 +275,31 @@ export async function downloadCertificatePdf(params: CertPdfParams): Promise<str
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   textColor(doc, C.text);
-  doc.text('VERIFIED CERTIFICATE', leftX, footY + 14, { charSpace: 1.2 });
+  doc.text('VERIFIED CERTIFICATE', leftX, footLogoY + logoH + 5, { charSpace: 1.2 });
 
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text(`ISSUED: ${issuedStr}`, leftX, footY + 19);
+  doc.text(`ISSUED: ${issuedStr}`, leftX, footLogoY + logoH + 10);
 
   // ── BOTTOM-RIGHT: Cert ID block — right-anchored at sigRightEdge ─────────
+  // charSpace intentionally omitted on the label — jsPDF can add trailing
+  // spacing after the last glyph when charSpace > 0, causing right bleed.
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   textColor(doc, C.subtle);
-  doc.text('VALID CERTIFICATE ID', sigRightEdge, footY + 9, { align: 'right', charSpace: 0.8 });
+  doc.text('VALID CERTIFICATE ID', sigRightEdge, footLogoY + logoH + 3, { align: 'right' });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   textColor(doc, C.navy);
-  doc.text(certKey, sigRightEdge, footY + 15, { align: 'right' });
+  doc.text(certKey, sigRightEdge, footLogoY + logoH + 9, { align: 'right' });
 
   // Verify URL — very small, below cert ID
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5);
   textColor(doc, C.subtle);
-  doc.text(`Verify at ${verifyUrl}`, sigRightEdge, footY + 19, { align: 'right' });
+  doc.text(`Verify at ${verifyUrl}`, sigRightEdge, footLogoY + logoH + 14, { align: 'right' });
 
   // ── Save ──────────────────────────────────────────────────────────────────
   const safeName = recipientName.replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_');
