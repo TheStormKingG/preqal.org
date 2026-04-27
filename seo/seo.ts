@@ -63,7 +63,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
     },
     eCourseLearn: {
       title: 'E-Course Player | Preqal — QMS Modules',
-      description: 'Work through Preqal’s practical QMS e-course: nine modules with clear outcomes, pacing, and navigation—built for real operations.',
+      description: 'Work through Preqal's practical QMS e-course: nine modules with clear outcomes, pacing, and navigation—built for real operations.',
       canonical: `${BASE_URL}/e-courses/learn`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
@@ -72,6 +72,13 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',
       canonical: `${BASE_URL}/book`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
+    quoteClassifier: {
+      title: 'ISO System Quote Classifier | Preqal',
+      description: 'Find your Preqal ISO management system pricing tier in minutes. Answer a few questions about your business size and complexity — we\'ll classify you instantly.',
+      canonical: `${BASE_URL}/quote-classifier`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },
@@ -106,4 +113,3 @@ export const getSeoMeta = (pageKey: string): SEOData => {
 
   return seoMap[pageKey] || seoMap.home;
 };
-

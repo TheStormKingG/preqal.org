@@ -16,6 +16,7 @@ import ECourses from '../pages/ECourses';
 import ECourseLearn from '../pages/ECourseLearn';
 import ECourseRegister from '../pages/ECourseRegister';
 import ECourseVerifyCertificate from '../pages/ECourseVerifyCertificate';
+import QuoteClassifier from '../pages/QuoteClassifier';
 
 const routeOrder = [
   '/',
@@ -28,6 +29,7 @@ const routeOrder = [
   '/about',
   '/contact',
   '/book',
+  '/quote-classifier',
   '/preqal-not-prequel',
   '/privacy-policy',
   '/terms-of-service',
@@ -41,16 +43,13 @@ const AnimatedRoutes: React.FC = () => {
 
   useEffect(() => {
     if (location.pathname !== displayLocation.pathname) {
-      // Determine direction
       const currentIndex = routeOrder.indexOf(displayLocation.pathname);
       const nextIndex = routeOrder.indexOf(location.pathname);
-      
       if (nextIndex > currentIndex) {
         setDirection('forward');
       } else {
         setDirection('backward');
       }
-
       setTransitionStage('exit');
     }
   }, [location, displayLocation]);
@@ -60,7 +59,7 @@ const AnimatedRoutes: React.FC = () => {
       const timeout = setTimeout(() => {
         setDisplayLocation(location);
         setTransitionStage('enter');
-      }, 300); // Match animation duration
+      }, 300);
       return () => clearTimeout(timeout);
     }
   }, [transitionStage, location]);
@@ -75,22 +74,23 @@ const AnimatedRoutes: React.FC = () => {
   return (
     <div className={`page-transition ${getAnimationClass()}`}>
       <Routes location={displayLocation}>
-        <Route path="/" element={<Home />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/case-studies" element={<CaseStudies />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/e-courses" element={<ECourses />} />
+        <Route path="/"                  element={<Home />} />
+        <Route path="/services"          element={<Services />} />
+        <Route path="/case-studies"      element={<CaseStudies />} />
+        <Route path="/resources"         element={<Resources />} />
+        <Route path="/e-courses"         element={<ECourses />} />
         <Route path="/e-courses/register" element={<ECourseRegister />} />
-        <Route path="/e-courses/learn" element={<ECourseLearn />} />
-        <Route path="/verify/:certKey" element={<ECourseVerifyCertificate />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/book" element={<BookScan />} />
-        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/e-courses/learn"   element={<ECourseLearn />} />
+        <Route path="/verify/:certKey"   element={<ECourseVerifyCertificate />} />
+        <Route path="/about"             element={<About />} />
+        <Route path="/book"              element={<BookScan />} />
+        <Route path="/contact"           element={<ContactUs />} />
+        <Route path="/quote-classifier"  element={<QuoteClassifier />} />
         <Route path="/preqal-not-prequel" element={<PreqalNotPrequel />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/privacy-policy"    element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service"  element={<TermsOfService />} />
         {/* Hidden tool route - not in navigation */}
-        <Route path="/tools/mdst" element={<MDST />} />
+        <Route path="/tools/mdst"        element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
       </Routes>
     </div>
@@ -98,7 +98,3 @@ const AnimatedRoutes: React.FC = () => {
 };
 
 export default AnimatedRoutes;
-
-
-
-

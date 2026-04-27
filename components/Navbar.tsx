@@ -27,13 +27,14 @@ const Navbar: React.FC = () => {
   }, [isOpen]);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Services', path: '/services' },
+    { name: 'Home',         path: '/' },
+    { name: 'Services',     path: '/services' },
     { name: 'Case Studies', path: '/case-studies' },
-    { name: 'Resources', path: '/resources' },
-    { name: 'E-Course', path: '/e-courses' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Resources',    path: '/resources' },
+    { name: 'E-Course',     path: '/e-courses' },
+    { name: 'About',        path: '/about' },
+    { name: 'Contact',      path: '/contact' },
+    { name: 'Get a Quote',  path: '/quote-classifier' },
   ];
 
   const isActive = (path: string) => {
@@ -73,24 +74,44 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Desktop */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-all duration-200 relative ${
-                  isActive(link.path)
-                    ? 'text-slate-900 font-bold'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                {link.name}
-                {isActive(link.path) && (
-                  <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-amber-500 rounded-full" />
-                )}
-              </Link>
-            ))}
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center space-x-6">
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              const isQuote = link.path === '/quote-classifier';
+              if (isQuote) {
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all neu-raised-sm ${
+                      active
+                        ? 'bg-amber-500 text-white'
+                        : 'text-amber-600 hover:bg-amber-500 hover:text-white border border-amber-400'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`text-sm font-medium transition-all duration-200 relative ${
+                    active
+                      ? 'text-slate-900 font-bold'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  {link.name}
+                  {active && (
+                    <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-amber-500 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+
             <Link
               to="/book"
               className="px-6 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
@@ -160,27 +181,47 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
+      {/* Mobile menu */}
       {isOpen && (
         <div
           className="md:hidden bg-[#e0e5ec] shadow-[0_6px_12px_#a3b1c6] relative z-50"
           style={{ animation: 'slideDown 0.3s ease-out' }}
         >
           <div className="px-4 pt-3 pb-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all ${
-                  isActive(link.path)
-                    ? 'neu-pressed-sm text-amber-600 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 neu-raised-sm'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              const isQuote = link.path === '/quote-classifier';
+              if (isQuote) {
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-3 rounded-xl text-base font-bold transition-all text-center ${
+                      active
+                        ? 'bg-amber-500 text-white neu-pressed-sm'
+                        : 'bg-amber-500/10 text-amber-600 border border-amber-300 neu-raised-sm'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all ${
+                    active
+                      ? 'neu-pressed-sm text-amber-600 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 neu-raised-sm'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
             <Link
               to="/book"
               onClick={() => setIsOpen(false)}
@@ -188,6 +229,7 @@ const Navbar: React.FC = () => {
             >
               Book Diagnosis
             </Link>
+
             {/* Auth — mobile */}
             {user ? (
               <div className="mt-1 pt-3 border-t border-slate-200/60 space-y-1">
