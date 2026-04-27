@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FastForward, Maximize2, Minimize2, Pause, Play, Undo2 } from 'lucide-react';
+import { FastForward, Maximize2, Minimize2, Pause, Play, Undo2, VideoOff } from 'lucide-react';
 import { publicAssetAbsoluteUrl } from './slideAssetUrl';
 import { setVideoComplete, videoCompleteFromStorage } from './ecourseProgress';
 import { useFullscreen } from './useFullscreen';
@@ -370,9 +370,6 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
             {fsOpen ? 'Exit' : 'Fullscreen'}
           </button>
         </div>
-        {loadError ? (
-          <p className="text-sm text-red-700 px-4 py-3">{loadError}</p>
-        ) : null}
         <div
           className={[
             'relative bg-black',
@@ -381,6 +378,21 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
             .filter(Boolean)
             .join(' ')}
         >
+          {/* User-facing video unavailable placeholder — shown instead of the black screen */}
+          {loadError ? (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#1a1f2e] px-6 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-700/60">
+                <VideoOff className="h-8 w-8 text-slate-400" aria-hidden />
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-sm font-bold text-slate-200">Video coming soon</p>
+                <p className="text-xs text-slate-400 leading-relaxed max-w-xs">
+                  This module video is being prepared and will be available shortly.
+                  The slides and quiz are fully accessible in the meantime.
+                </p>
+              </div>
+            </div>
+          ) : null}
           <video
             key={`${moduleId}-${absSrc}`}
             ref={videoRef}
@@ -407,11 +419,7 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
             onEnded={onEnded}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
-            onError={() =>
-              setLoadError(
-                'Could not load this video. Run npm run sync-qms-media to copy full videos from QMS Module Videos into public/, then rebuild and deploy.',
-              )
-            }
+            onError={() => setLoadError('unavailable')}
           />
           {skipFloater ? (
             <div
