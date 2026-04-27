@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
               to="/book"
               className="px-6 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
             >
-              Book Diagnosis
+              Free 1hr Consult
             </Link>
 
             {/* Auth */}
@@ -227,7 +227,7 @@ const Navbar: React.FC = () => {
               onClick={() => setIsOpen(false)}
               className="block w-full text-center mt-3 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-400 transition-colors neu-raised-sm"
             >
-              Book Diagnosis
+              Free 1hr Consult
             </Link>
 
             {/* Auth — mobile */}
