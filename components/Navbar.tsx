@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-3">
             {navLinks.map((link) => {
               const active = isActive(link.path);
               const isQuote = link.path === '/business-growth-assessment';
@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all neu-raised-sm ${
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all neu-raised-sm ${
                       active
                         ? 'bg-amber-500 text-white'
                         : 'text-amber-600 hover:bg-amber-500 hover:text-white border border-amber-400'
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-sm font-medium transition-all duration-200 relative ${
+                  className={`whitespace-nowrap text-sm font-medium transition-all duration-200 relative ${
                     active
                       ? 'text-slate-900 font-bold'
                       : 'text-slate-500 hover:text-slate-800'
@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
 
             <Link
               to="/book"
-              className="px-6 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
+              className="whitespace-nowrap px-5 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
             >
               Free 1hr Consult
             </Link>
