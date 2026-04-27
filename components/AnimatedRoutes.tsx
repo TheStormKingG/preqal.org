@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
 import Services from '../pages/Services';
 import CaseStudies from '../pages/CaseStudies';
@@ -16,7 +16,7 @@ import ECourses from '../pages/ECourses';
 import ECourseLearn from '../pages/ECourseLearn';
 import ECourseRegister from '../pages/ECourseRegister';
 import ECourseVerifyCertificate from '../pages/ECourseVerifyCertificate';
-import QuoteClassifier from '../pages/QuoteClassifier';
+import BusinessGrowthAssessment from '../pages/BusinessGrowthAssessment';
 
 const routeOrder = [
   '/',
@@ -29,7 +29,7 @@ const routeOrder = [
   '/about',
   '/contact',
   '/book',
-  '/quote-classifier',
+  '/business-growth-assessment',
   '/preqal-not-prequel',
   '/privacy-policy',
   '/terms-of-service',
@@ -74,23 +74,25 @@ const AnimatedRoutes: React.FC = () => {
   return (
     <div className={`page-transition ${getAnimationClass()}`}>
       <Routes location={displayLocation}>
-        <Route path="/"                  element={<Home />} />
-        <Route path="/services"          element={<Services />} />
-        <Route path="/case-studies"      element={<CaseStudies />} />
-        <Route path="/resources"         element={<Resources />} />
-        <Route path="/e-courses"         element={<ECourses />} />
-        <Route path="/e-courses/register" element={<ECourseRegister />} />
-        <Route path="/e-courses/learn"   element={<ECourseLearn />} />
-        <Route path="/verify/:certKey"   element={<ECourseVerifyCertificate />} />
-        <Route path="/about"             element={<About />} />
-        <Route path="/book"              element={<BookScan />} />
-        <Route path="/contact"           element={<ContactUs />} />
-        <Route path="/quote-classifier"  element={<QuoteClassifier />} />
-        <Route path="/preqal-not-prequel" element={<PreqalNotPrequel />} />
-        <Route path="/privacy-policy"    element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service"  element={<TermsOfService />} />
+        <Route path="/"                           element={<Home />} />
+        <Route path="/services"                   element={<Services />} />
+        <Route path="/case-studies"               element={<CaseStudies />} />
+        <Route path="/resources"                  element={<Resources />} />
+        <Route path="/e-courses"                  element={<ECourses />} />
+        <Route path="/e-courses/register"         element={<ECourseRegister />} />
+        <Route path="/e-courses/learn"            element={<ECourseLearn />} />
+        <Route path="/verify/:certKey"            element={<ECourseVerifyCertificate />} />
+        <Route path="/about"                      element={<About />} />
+        <Route path="/book"                       element={<BookScan />} />
+        <Route path="/contact"                    element={<ContactUs />} />
+        <Route path="/business-growth-assessment" element={<BusinessGrowthAssessment />} />
+        {/* Redirect old slug to new one */}
+        <Route path="/quote-classifier"           element={<Navigate to="/business-growth-assessment" replace />} />
+        <Route path="/preqal-not-prequel"         element={<PreqalNotPrequel />} />
+        <Route path="/privacy-policy"             element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service"           element={<TermsOfService />} />
         {/* Hidden tool route - not in navigation */}
-        <Route path="/tools/mdst"        element={<MDST />} />
+        <Route path="/tools/mdst"                 element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
       </Routes>
     </div>

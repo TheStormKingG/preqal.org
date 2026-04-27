@@ -75,10 +75,18 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },
+    businessGrowthAssessment: {
+      title: 'Business Growth Investment Assessment | Preqal',
+      description: 'Help Preqal understand your organisation so we can recommend the right level of support. Complete our Business Growth Investment Assessment to request a tailored quote.',
+      canonical: `${BASE_URL}/business-growth-assessment`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
+    // Legacy key — kept so any existing SEO component references don't break
     quoteClassifier: {
-      title: 'ISO System Quote Classifier | Preqal',
-      description: 'Find your Preqal ISO management system pricing tier in minutes. Answer a few questions about your business size and complexity — we\'ll classify you instantly.',
-      canonical: `${BASE_URL}/quote-classifier`,
+      title: 'Business Growth Investment Assessment | Preqal',
+      description: 'Help Preqal understand your organisation so we can recommend the right level of support. Complete our Business Growth Investment Assessment to request a tailored quote.',
+      canonical: `${BASE_URL}/business-growth-assessment`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },

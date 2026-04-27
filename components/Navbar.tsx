@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
     { name: 'E-Course',     path: '/e-courses' },
     { name: 'About',        path: '/about' },
     { name: 'Contact',      path: '/contact' },
-    { name: 'Get a Quote',  path: '/quote-classifier' },
+    { name: 'Get a Quote',  path: '/business-growth-assessment' },
   ];
 
   const isActive = (path: string) => {
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => {
               const active = isActive(link.path);
-              const isQuote = link.path === '/quote-classifier';
+              const isQuote = link.path === '/business-growth-assessment';
               if (isQuote) {
                 return (
                   <Link
@@ -190,7 +190,7 @@ const Navbar: React.FC = () => {
           <div className="px-4 pt-3 pb-4 space-y-2">
             {navLinks.map((link) => {
               const active = isActive(link.path);
-              const isQuote = link.path === '/quote-classifier';
+              const isQuote = link.path === '/business-growth-assessment';
               if (isQuote) {
                 return (
                   <Link
