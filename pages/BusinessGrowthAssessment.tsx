@@ -302,7 +302,7 @@ const BusinessGrowthAssessment: React.FC = () => {
     try {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
-        import.meta.env.VITE_EMAILJS_BGA_TEMPLATE_ID || 'template_c3b29pd',
+        import.meta.env.VITE_EMAILJS_BGA_TEMPLATE_ID || 'template_a4rhrbq',
         {
           subject:        'Business Growth Assessment',
           service_name:   'Business Growth Assessment',
