@@ -27,7 +27,7 @@ import { supabase } from '../lib/supabaseClient';
 import { certVerifyUrl, formatCertDate, generateCertKey } from '../lib/ecourseCertificateConstants';
 import { downloadCertificatePdf } from '../lib/ecourseCertificatePdf';
 
-const COURSE_DISPLAY_TITLE = 'Build Systems That Actually Work';
+const COURSE_DISPLAY_TITLE = 'Quality Management Systems Foundations';
 
 function ModuleStepStrip({ mod }: { mod: CourseModule }) {
   if (!mod.slidesManifest && !mod.videoSrc && !mod.quizDocxSrc) return null;
@@ -156,7 +156,7 @@ const ECourseLearn: React.FC = () => {
         recipient_name: profile.display_name,
         email: profile.email,
         course_id: 'build-systems-that-actually-work',
-        course_title: 'E-Course: Build Systems That Actually Work',
+        course_title: 'E-Course: Quality Management Systems Foundations',
       });
 
       if (error) {

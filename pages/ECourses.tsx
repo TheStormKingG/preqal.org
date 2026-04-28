@@ -89,7 +89,7 @@ const ECourses: React.FC = () => {
               </span>
             </div>
             <h1 className="text-4xl font-bold text-slate-900 mb-4 text-balance">
-              E-Course: Build Systems That Actually Work
+              Quality Management Systems Foundations
             </h1>
             <p className="text-xl text-slate-500 max-w-3xl leading-relaxed mb-4">
               Learn how to design, control, and improve real-world operations using practical Quality Management Systems.
