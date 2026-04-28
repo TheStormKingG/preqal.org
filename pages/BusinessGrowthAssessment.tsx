@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Users, Layers, Settings, CheckCircle2, X, ChevronRight,
   Building2, Zap, TrendingUp, Award, BarChart3, Loader2,
@@ -642,7 +643,7 @@ const BusinessGrowthAssessment: React.FC = () => {
       </div>{/* /min-h-screen */}
 
       {/* ── Modal ────────────────────────────────────────────────────────────── */}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center p-4 glass-backdrop"
           onClick={e => { if (e.target === e.currentTarget) closeModal(); }}
@@ -1013,7 +1014,7 @@ const BusinessGrowthAssessment: React.FC = () => {
             </div>{/* /p-8 */}
           </div>{/* /modal */}
         </div>
-      )}
+      , document.body)}
     </>
   );
 };
