@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import emailjs from '@emailjs/browser';
 import {
   Users, Layers, Settings, CheckCircle2, X, ChevronRight,
   Building2, Zap, TrendingUp, Award, BarChart3, Loader2,
@@ -299,74 +300,43 @@ const BusinessGrowthAssessment: React.FC = () => {
     console.log('[Preqal Business Growth Assessment] Submission:', submission);
 
     try {
-      // ─── TODO: Save to Supabase ───────────────────────────────────────────
-      // 1. Create a `growth_assessment_submissions` table in Supabase with
-      //    columns matching the submission object above (snake_case).
-      // 2. Uncomment the supabase import at the top of this file.
-      // 3. Uncomment and adapt the block below:
-      //
-      // const { error: dbError } = await supabase
-      //   .from('growth_assessment_submissions')
-      //   .insert([{
-      //     company_name:              submission.companyName,
-      //     contact_person_name:       submission.contactPersonName,
-      //     email:                     submission.email,
-      //     staff_size:                submission.staffSize,
-      //     number_of_services:        submission.numberOfServices,
-      //     avg_processes_per_service: submission.avgProcessesPerService,
-      //     business_description:      submission.businessDescription,
-      //     base_tier:                 submission.baseTier,
-      //     complexity_score:          submission.complexityScore,
-      //     recommended_tier:          submission.recommendedTier,
-      //     recommended_tier_name:     submission.recommendedTierName,
-      //     submitted_at:              submission.timestamp,
-      //   }]);
-      // if (dbError) throw dbError;
-      // ─────────────────────────────────────────────────────────────────────
-
-      // ─── TODO: Email notification (EmailJS) ───────────────────────────────
-      // Create a template named 'template_growth_assessment' in EmailJS, then:
-      //
-      // import emailjs from '@emailjs/browser';
-      // await emailjs.send(
-      //   import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      //   'template_growth_assessment',
-      //   {
-      //     to_email:             'assessments@preqal.org',
-      //     company_name:         submission.companyName,
-      //     contact_name:         submission.contactPersonName,
-      //     reply_to:             submission.email,
-      //     staff_size:           submission.staffSize,
-      //     num_services:         submission.numberOfServices,
-      //     avg_processes:        submission.avgProcessesPerService,
-      //     business_description: submission.businessDescription ?? 'Not provided',
-      //     recommended_tier:     `Tier ${submission.recommendedTier} — ${submission.recommendedTierName}`,
-      //     submitted_at:         submission.timestamp,
-      //   },
-      //   import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
-      // );
-      // ─────────────────────────────────────────────────────────────────────
-
-      // ─── TODO: CRM / Contact database ────────────────────────────────────
-      // Push to HubSpot, Pipedrive, or your CRM of choice:
-      //
-      // await fetch('/api/crm-contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email:       submission.email,
-      //     name:        submission.contactPersonName,
-      //     company:     submission.companyName,
-      //     tier:        submission.recommendedTier,
-      //     tier_name:   submission.recommendedTierName,
-      //     source:      'business_growth_assessment',
-      //   }),
-      // });
-      // ─────────────────────────────────────────────────────────────────────
-
-      // Remove the line below once real async calls above are wired
-      await new Promise<void>(resolve => setTimeout(resolve, 700));
-
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
+        import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
+        {
+          subject:        'Business Growth Assessment',
+          service_name:   'Business Growth Assessment',
+          name:           submission.contactPersonName,
+          email:          submission.email,
+          phone:          'Not provided',
+          company:        submission.companyName,
+          business_type:  'Assessment submission',
+          message:        submission.businessDescription ?? 'Not provided',
+          session_style:  'Virtual',
+          submitted_at:   new Date(submission.timestamp).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long', timeZone: 'UTC' }),
+          formatted_data: [
+            'Business Growth Assessment',
+            '',
+            `Company:               ${submission.companyName}`,
+            `Contact:               ${submission.contactPersonName}`,
+            `Email:                 ${submission.email}`,
+            '',
+            '── Organisation Profile ──',
+            `Staff Size:            ${submission.staffSize}`,
+            `Number of Services:    ${submission.numberOfServices}`,
+            `Avg Processes/Service: ${submission.avgProcessesPerService}`,
+            `Business Description:  ${submission.businessDescription ?? 'Not provided'}`,
+            '',
+            '── Classification Result ──',
+            `Base Tier:             ${submission.baseTier}`,
+            `Complexity Score:      ${submission.complexityScore}`,
+            `Recommended Tier:      Tier ${submission.recommendedTier} — ${submission.recommendedTierName}`,
+            '',
+            `Submitted:             ${new Date(submission.timestamp).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}`,
+          ].join('\n'),
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq',
+      );
       setSubmitStatus('success');
     } catch (err) {
       console.error('[BusinessGrowthAssessment] Submission error:', err);
