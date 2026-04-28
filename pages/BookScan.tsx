@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Send, CheckCircle2, Phone, Calendar, Loader2 } from 'lucide-react';
+import { Send, CheckCircle2, Phone, Loader2 } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
@@ -43,14 +43,14 @@ const BookScan: React.FC = () => {
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
         import.meta.env.VITE_EMAILJS_SERVICE_REQUEST_TEMPLATE_ID || 'template_c3b29pd',
         {
-          subject: 'Service Request', service_name: serviceName || 'Quality Risk Scan™',
+          subject: 'Service Request', service_name: serviceName || 'Free 1hr Consult',
           name: formData.name.trim(), email: formData.email.trim().toLowerCase(),
           phone: `${formData.dial_code} ${formData.phone.trim()}`,
           company: formData.company.trim() || 'Not provided',
           business_type: formData.businessType || 'Not specified',
           message: formData.concern.trim(), session_style: formData.sessionStyle,
           submitted_at: new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long', timeZone: 'UTC' }),
-          formatted_data: `Service Request\n\nService: ${serviceName || 'Quality Risk Scan™'}\nName: ${formData.name.trim()}\nEmail: ${formData.email.trim().toLowerCase()}\nPhone: ${formData.dial_code} ${formData.phone.trim()}\nCompany: ${formData.company.trim() || 'Not provided'}\nCompany Type: ${formData.businessType || 'Not specified'}\nPreferred Session: ${formData.sessionStyle}\nMessage: ${formData.concern.trim()}\nSubmitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}`,
+          formatted_data: `Service Request\n\nService: ${serviceName || 'Free 1hr Consult'}\nName: ${formData.name.trim()}\nEmail: ${formData.email.trim().toLowerCase()}\nPhone: ${formData.dial_code} ${formData.phone.trim()}\nCompany: ${formData.company.trim() || 'Not provided'}\nCompany Type: ${formData.businessType || 'Not specified'}\nPreferred Session: ${formData.sessionStyle}\nMessage: ${formData.concern.trim()}\nSubmitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}`,
         },
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
       );
@@ -89,16 +89,16 @@ const BookScan: React.FC = () => {
     ],
     formTitle: "Project Inquiry"
   } : {
-    title: "Book a Risk Scan",
-    subtitle: "Stop guessing about your compliance status. Get a Preqal professional diagnostic of your current systems against regulatory standards.",
-    detailedDescription: serviceDescriptions['Quality Risk Scan™'],
-    stepsTitle: "What happens next?",
+    title: "Book Your Free 1hr Consult",
+    subtitle: "Not sure where to start? Spend an hour with Stefan to map out your quality challenges and get a clear direction — at no cost.",
+    detailedDescription: "A focused, no-pressure virtual session where we look at your current operations, identify your top compliance or quality risks, and outline a practical path forward. You leave with clarity on where you stand and what to do next.",
+    stepsTitle: "What to expect",
     steps: [
-      { num: 1, title: "Initial Discovery", desc: "15-min call to understand your immediate pain points." },
-      { num: 2, title: "Diagnostic Session", desc: "Virtual or on-site review of your key documents and flows." },
-      { num: 3, title: "Action Plan", desc: "You receive a 'Red Flag Report' and a proposal for fixes." }
+      { num: 1, title: "Submit Your Details", desc: "Fill out the form and we'll confirm your slot within 24 hours." },
+      { num: 2, title: "Virtual Session", desc: "A focused one-hour call with Stefan — no slides, just real conversation." },
+      { num: 3, title: "Clear Next Steps", desc: "You'll leave knowing exactly where you stand and what to do next." }
     ],
-    formTitle: "Start Your Diagnostic"
+    formTitle: "Reserve Your Hour"
   };
 
   const inputClass = "w-full px-4 py-3 rounded-xl outline-none transition-all text-slate-800 placeholder-slate-400 neu-pressed-sm focus:neu-pressed";
@@ -114,7 +114,7 @@ const BookScan: React.FC = () => {
             </div>
             <h2 className="text-2xl font-bold text-slate-900 mb-2">Request Received</h2>
             <p className="text-slate-600 mb-6 leading-relaxed">
-              Thank you, {formData.name}. Stefan will review your details regarding "{serviceName || 'Risk Scan'}" and contact you within 24 hours.
+              Thank you, {formData.name}. Stefan will review your details regarding "{serviceName || 'Free 1hr Consult'}" and contact you within 24 hours.
             </p>
             <button onClick={() => setStatus('idle')} className="text-amber-600 font-semibold hover:text-amber-500 transition-colors">Submit another request</button>
           </div>
@@ -229,25 +229,9 @@ const BookScan: React.FC = () => {
                   <label className="block text-sm font-medium text-slate-600 mb-1">Message</label>
                   <textarea name="concern" rows={4} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." value={formData.concern} onChange={handleChange} />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-600 mb-3">Preferred Session Style</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    {(['Virtual', 'On-Site'] as const).map((style) => (
-                      <button
-                        key={style}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, sessionStyle: style })}
-                        className={`flex items-center justify-center px-4 py-3 rounded-xl transition-all duration-300 ${
-                          formData.sessionStyle === style
-                            ? 'neu-pressed text-amber-700 font-bold'
-                            : 'neu-raised-sm text-slate-500 hover:text-slate-700'
-                        }`}
-                      >
-                        {style === 'Virtual' ? <Phone className="h-4 w-4 mr-2" /> : <Calendar className="h-4 w-4 mr-2" />}
-                        {style}
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex items-center gap-2 px-4 py-3 rounded-xl neu-pressed-sm text-amber-700 font-medium text-sm w-fit">
+                  <Phone className="h-4 w-4" />
+                  Virtual Session
                 </div>
                 <div className="space-y-3">
                   <label className="flex items-start gap-3 cursor-pointer group">
