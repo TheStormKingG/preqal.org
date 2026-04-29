@@ -294,7 +294,7 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Employee Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">All personnel — full-time, part-time, contractors and casuals. Drives the organisation chart above.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('emp')">+ Add Employee</button>
+          <button class="btn btn-amber btn-sm" onclick="openEmpAddModal()">+ Add Employee</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
@@ -499,49 +499,124 @@
   </div>
 </div>
 
-<!-- ══ EMPLOYEE MODAL ══ -->
+<!-- ══ EMPLOYEE MODAL (Full HR Edit Form) ══ -->
 <div class="modal-overlay" id="modal-emp" onclick="closeModal('emp',event)">
-  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+  <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
-      <h3 class="text-base font-bold text-slate-900" id="emp-modal-title">Add Employee</h3>
+      <h3 class="text-base font-bold text-slate-900" id="emp-modal-title">Edit Employee</h3>
       <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('emp')">×</button>
     </div>
-    <div class="p-6 space-y-4">
+    <div class="p-6 space-y-6">
       <input type="hidden" id="emp-id">
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Full Name *</label><input id="emp-full-name" class="field" type="text" placeholder="Jane Smith"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Position / Title *</label><input id="emp-position" class="field" type="text" placeholder="Quality Manager"></div>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Department</label><input id="emp-department" class="field" type="text" placeholder="Operations"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Employment Type</label>
-          <select id="emp-employment-type" class="field"><option>Full-Time</option><option>Part-Time</option><option>Contractor</option><option>Casual</option></select>
-        </div>
-      </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Reports To</label>
-        <select id="emp-manager-id" class="field"><option value="">— No manager (top of hierarchy) —</option></select>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email</label><input id="emp-email" class="field" type="email" placeholder="jane@preqal.org"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Phone</label><input id="emp-phone" class="field" type="text" placeholder="+61 400 000 000"></div>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Start Date</label><input id="emp-start-date" class="field" type="date"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
-          <select id="emp-status" class="field"><option value="active">Active</option><option value="on_leave">On Leave</option><option value="inactive">Inactive</option></select>
-        </div>
-      </div>
+
+      <!-- § Employment -->
       <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Qualifications &amp; Competencies</label>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">👔 Employment</p>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Full Name *</label><input id="emp-full-name" class="field" type="text" placeholder="Jane Smith"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Position / Title *</label><input id="emp-position" class="field" type="text" placeholder="Quality Manager"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Department</label><input id="emp-department" class="field" type="text" placeholder="Operations"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Employment Type</label>
+              <select id="emp-employment-type" class="field"><option>Full-Time</option><option>Part-Time</option><option>Contractor</option><option>Casual</option></select>
+            </div>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Reports To</label>
+            <select id="emp-manager-id" class="field"><option value="">— No manager (top of hierarchy) —</option></select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email</label><input id="emp-email" class="field" type="email" placeholder="jane@preqal.org"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Phone</label><input id="emp-phone" class="field" type="text" placeholder="+61 400 000 000"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Start Date</label><input id="emp-start-date" class="field" type="date"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+              <select id="emp-status" class="field"><option value="active">Active</option><option value="on_leave">On Leave</option><option value="inactive">Inactive</option></select>
+            </div>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="emp-notes" class="field" rows="2" placeholder="Any additional notes…"></textarea></div>
+        </div>
+      </div>
+
+      <!-- § Personal Details -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🪪 Personal Details</p>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Date of Birth</label><input id="emp-dob" class="field" type="date"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Marital Status</label>
+              <select id="emp-marital-status" class="field"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option><option>Separated</option><option>Other</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">NIS Number</label><input id="emp-nis" class="field" type="text" placeholder="NIS-123456"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">TIN Number</label><input id="emp-tin" class="field" type="text" placeholder="TIN-123456"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Dependents</label><input id="emp-dependents" class="field" type="number" min="0" placeholder="0"></div>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">ID / Passport Number</label><input id="emp-id-passport" class="field" type="text" placeholder="Passport or national ID number"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Residential Address</label><textarea id="emp-address" class="field" rows="2" placeholder="Full residential address…"></textarea></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Religion</label><input id="emp-religion" class="field" type="text" placeholder="Optional"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hobby / Interest</label><input id="emp-hobby" class="field" type="text" placeholder="Optional"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- § Health & Dietary -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🏥 Health &amp; Dietary</p>
+        <div class="space-y-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Dietary Restriction</label>
+            <select id="emp-dietary" class="field"><option value="">None</option><option>Vegetarian</option><option>Vegan</option><option>Halal</option><option>Kosher</option><option>Gluten-Free</option><option>Nut-Free</option><option>Lactose-Free</option><option>Other</option></select>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Allergies</label><textarea id="emp-allergies" class="field" rows="2" placeholder="List any known allergies…"></textarea></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Medical Conditions</label><textarea id="emp-medical" class="field" rows="2" placeholder="Any medical conditions relevant to the workplace…"></textarea></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Disabilities</label><textarea id="emp-disabilities" class="field" rows="2" placeholder="Any disabilities or accommodations required…"></textarea></div>
+        </div>
+      </div>
+
+      <!-- § Banking -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🏦 Banking Details</p>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Bank Name</label><input id="emp-bank-name" class="field" type="text" placeholder="e.g. Republic Bank"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Branch</label><input id="emp-bank-branch" class="field" type="text" placeholder="e.g. Port of Spain"></div>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Account Number</label><input id="emp-bank-account" class="field" type="text" placeholder="Account number"></div>
+        </div>
+      </div>
+
+      <!-- § Qualifications -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🎓 Qualifications &amp; Competencies</p>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-slate-400">Name, awarding institution, and date obtained.</span>
           <button type="button" onclick="addQualEntry()" class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px">+ Add</button>
         </div>
-        <div id="qual-list" class="space-y-2">
-          <!-- populated dynamically -->
-        </div>
+        <div id="qual-list" class="space-y-2"></div>
         <p id="qual-empty" class="text-xs text-slate-400 text-center py-3 neu-pressed-sm rounded-xl">No qualifications added yet. Click + Add above.</p>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="emp-notes" class="field" rows="2" placeholder="Any additional notes…"></textarea></div>
+
+      <!-- § Documents -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📎 Documents &amp; Links</p>
+        <div class="space-y-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Profile Picture URL</label><input id="emp-profile-pic" class="field" type="url" placeholder="https://… (direct image link)"></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Offer Letter URL</label><input id="emp-offer-letter-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description URL</label><input id="emp-jd-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Signed Contract URL</label><input id="emp-contract-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé URL</label><input id="emp-cv-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance URL</label><input id="emp-police-clearance-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+        </div>
+      </div>
+
       <p id="emp-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
@@ -756,6 +831,98 @@
   </div>
 </div>
 
+<!-- ══ ADD EMPLOYEE MODAL (Quick-Add by HR) ══ -->
+<div class="modal-overlay" id="modal-emp-add" onclick="closeModal('emp-add',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Add New Employee</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Fill in employment details — an onboarding link will be generated for the employee to complete their own profile.</p>
+      </div>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('emp-add')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Full Name *</label><input id="emp-add-full-name" class="field" type="text" placeholder="Jane Smith"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Position / Title *</label><input id="emp-add-position" class="field" type="text" placeholder="Quality Manager"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Department</label><input id="emp-add-department" class="field" type="text" placeholder="Operations"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Employment Type</label>
+          <select id="emp-add-employment-type" class="field"><option>Full-Time</option><option>Part-Time</option><option>Contractor</option><option>Casual</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Reports To</label>
+        <select id="emp-add-manager-id" class="field"><option value="">— No manager (top of hierarchy) —</option></select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email</label><input id="emp-add-email" class="field" type="email" placeholder="jane@preqal.org"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Start Date</label><input id="emp-add-start-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description URL</label><input id="emp-add-jd-url" class="field" type="url" placeholder="https://drive.google.com/… (included in onboarding link)"></div>
+      <p id="emp-add-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+      <!-- Onboarding Link (shown after save) -->
+      <div id="emp-add-link-section" style="display:none">
+        <div class="neu-pressed-sm rounded-xl p-4">
+          <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-3">✓ Employee created — share this onboarding link</p>
+          <p class="text-xs text-slate-500 mb-3">Send this link to the employee along with their offer letter. They'll complete their personal details, upload documents and sign in with their email.</p>
+          <div class="flex gap-2">
+            <input id="emp-add-onboarding-link" class="field" type="text" readonly style="font-size:11px;font-family:monospace">
+            <button id="copy-link-btn" onclick="copyOnboardingLink()" class="btn btn-amber btn-sm" style="white-space:nowrap">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('emp-add')">Close</button>
+      <button class="btn btn-amber" onclick="saveEmployeeQuick()" id="emp-add-save-btn">Save &amp; Get Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EMPLOYEE CARD MODAL ══ -->
+<div class="modal-overlay" id="modal-emp-card" onclick="closeModal('emp-card',event)">
+  <div class="neu-card rounded-2xl w-full max-w-sm" onclick="event.stopPropagation()" style="max-height:90vh;overflow-y:auto">
+    <!-- Print-ready card content -->
+    <div id="emp-card-printable">
+      <div class="flex flex-col items-center pt-8 pb-6 px-6">
+        <div id="card-avatar" class="w-24 h-24 rounded-full flex items-center justify-center font-bold text-4xl mb-4 overflow-hidden flex-shrink-0" style="background:rgba(245,158,11,.15);color:#b45309;box-shadow:4px 4px 8px #a3b1c6,-4px -4px 8px #ffffff"></div>
+        <p class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-1" id="card-id"></p>
+        <h2 class="text-xl font-bold text-slate-900 text-center leading-tight mb-0.5" id="card-name"></h2>
+        <p class="text-sm font-semibold text-slate-500 text-center mb-1" id="card-position"></p>
+        <p class="text-xs text-slate-400 text-center" id="card-dept"></p>
+        <span class="mt-2 badge badge-amber text-xs" id="card-type"></span>
+      </div>
+      <div class="px-6 pb-4 space-y-3" style="border-top:1px solid rgba(163,177,198,.2);padding-top:16px">
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400 w-5 flex-shrink-0 mt-0.5">👤</span>
+          <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Reports To</p><p class="text-sm font-semibold text-slate-800" id="card-reports-to"></p></div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400 w-5 flex-shrink-0 mt-0.5">✉️</span>
+          <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Email</p><p class="text-sm font-semibold text-slate-800" id="card-email"></p></div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400 w-5 flex-shrink-0 mt-0.5">📅</span>
+          <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Start Date</p><p class="text-sm font-semibold text-slate-800" id="card-start"></p></div>
+        </div>
+      </div>
+      <!-- Document links — hidden in print -->
+      <div id="card-docs-wrapper" class="px-6 pb-6" style="border-top:1px solid rgba(163,177,198,.2);padding-top:16px">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3" id="card-docs-label">Documents</p>
+        <div id="card-docs-section" class="space-y-1"></div>
+      </div>
+    </div>
+    <div class="px-6 pb-5 flex justify-between gap-3">
+      <button id="emp-card-print-btn" onclick="printCard()" class="btn btn-ghost btn-sm">🖨 Print</button>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('emp-card')">Close</button>
+        <button id="emp-card-edit-btn" onclick="editEmployeeFromCard()" class="btn btn-amber btn-sm">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const SB_URL='https://gndcjmxxgtnoidxgcdnx.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDY5NjYsImV4cCI6MjA4MTcyMjk2Nn0.hPhVHtHzp67Upukemoo8ZTwDcOCVHLrKfOwaITnbBLY';
@@ -865,7 +1032,7 @@ async function openModal(type,id){
     capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
     audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary'],
     org:['org-id','org-entity-name','org-entity-type','org-contact-name','org-contact-email','org-contact-phone','org-status','org-role-responsibility','org-relevance','org-review-date','org-notes'],
-    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes'],
+    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes','emp-profile-pic','emp-dob','emp-nis','emp-tin','emp-id-passport','emp-address','emp-marital-status','emp-dependents','emp-religion','emp-hobby','emp-dietary','emp-allergies','emp-medical','emp-disabilities','emp-bank-name','emp-bank-branch','emp-bank-account','emp-offer-letter-url','emp-jd-url','emp-contract-url','emp-cv-url','emp-police-clearance-url'],
     legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
     hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
     qr:['qr-id','qr-title','qr-category','qr-status','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
@@ -908,7 +1075,7 @@ async function openModal(type,id){
       capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},
       audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'},
       org:{id:'org-id',entity_name:'org-entity-name',entity_type:'org-entity-type',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',role_responsibility:'org-role-responsibility',relevance:'org-relevance',review_date:'org-review-date',notes:'org-notes'},
-      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes'},
+      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes',profile_picture_url:'emp-profile-pic',date_of_birth:'emp-dob',nis_number:'emp-nis',tin_number:'emp-tin',id_passport_number:'emp-id-passport',address:'emp-address',marital_status:'emp-marital-status',num_dependents:'emp-dependents',religion:'emp-religion',hobby:'emp-hobby',dietary_restriction:'emp-dietary',allergies:'emp-allergies',medical_conditions:'emp-medical',disabilities:'emp-disabilities',bank_name:'emp-bank-name',bank_branch:'emp-bank-branch',bank_account_number:'emp-bank-account',offer_letter_url:'emp-offer-letter-url',job_description_url:'emp-jd-url',signed_contract_url:'emp-contract-url',cv_url:'emp-cv-url',police_clearance_url:'emp-police-clearance-url'},
       legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
       hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
       qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
@@ -1129,7 +1296,7 @@ function buildOrgTree(emps,parentId){
   const children=emps.filter(e=>e.manager_id===parentId);
   if(!children.length)return'';
   return`<ul>${children.map(e=>`<li>
-    <div class="org-node" onclick="editEmployee('${e.id}')">
+    <div class="org-node" onclick="viewEmployee('${e.id}')">
       <div class="org-avatar">${e.full_name.charAt(0).toUpperCase()}</div>
       <div class="org-name">${esc(e.full_name)}</div>
       <div class="org-title">${esc(e.position||'')}</div>
@@ -1144,7 +1311,7 @@ function renderOrgChart(emps){
   const empIds=new Set(emps.map(e=>e.id));
   const roots=emps.filter(e=>!e.manager_id||!empIds.has(e.manager_id));
   tree.innerHTML=`<div class="org-tree"><ul>${roots.map(r=>`<li>
-    <div class="org-node" onclick="editEmployee('${r.id}')">
+    <div class="org-node" onclick="viewEmployee('${r.id}')">
       <div class="org-avatar">${r.full_name.charAt(0).toUpperCase()}</div>
       <div class="org-name">${esc(r.full_name)}</div>
       <div class="org-title">${esc(r.position||'')}</div>
@@ -1179,6 +1346,128 @@ function removeQualEntry(btn){
   syncQualEmpty();
 }
 
+// ── ADD EMPLOYEE QUICK MODAL ──────────────────────────────────────────────
+async function openEmpAddModal(){
+  ['emp-add-full-name','emp-add-position','emp-add-department','emp-add-email','emp-add-start-date','emp-add-jd-url'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';});
+  document.getElementById('emp-add-employment-type').value='Full-Time';
+  document.getElementById('emp-add-error').textContent='';
+  document.getElementById('emp-add-link-section').style.display='none';
+  document.getElementById('emp-add-save-btn').disabled=false;
+  document.getElementById('emp-add-save-btn').textContent='Save & Get Link';
+  const sel=document.getElementById('emp-add-manager-id');
+  const{data:allEmps}=await sb.from('qms_employees').select('id,full_name,position').eq('status','active').order('full_name');
+  sel.innerHTML='<option value="">— No manager (top of hierarchy) —</option>'+(allEmps||[]).map(e=>`<option value="${e.id}">${esc(e.full_name)}${e.position?` · ${esc(e.position)}`:''}</option>`).join('');
+  document.getElementById('modal-emp-add').classList.add('open');
+}
+async function saveEmployeeQuick(){
+  const err=document.getElementById('emp-add-error'),btn=document.getElementById('emp-add-save-btn');
+  err.textContent='';
+  const name=document.getElementById('emp-add-full-name').value.trim(),pos=document.getElementById('emp-add-position').value.trim();
+  if(!name||!pos){err.textContent='Full name and position are required.';return;}
+  btn.disabled=true;btn.textContent='Saving…';
+  const{count}=await sb.from('qms_employees').select('id',{count:'exact',head:true});
+  const recordId=`EMP-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  const token=crypto.randomUUID();
+  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-add-department').value.trim()||null,employment_type:document.getElementById('emp-add-employment-type').value,manager_id:document.getElementById('emp-add-manager-id').value||null,email:document.getElementById('emp-add-email').value.trim()||null,start_date:document.getElementById('emp-add-start-date').value||null,job_description_url:document.getElementById('emp-add-jd-url').value.trim()||null,status:'active',onboarding_status:'pending',onboarding_token:token,updated_at:new Date().toISOString()};
+  const{error}=await sb.from('qms_employees').insert([payload]);
+  btn.disabled=false;btn.textContent='Save & Get Link';
+  if(error){err.textContent=error.message;return;}
+  const link=`${window.location.origin}/employee-onboarding.html?token=${token}`;
+  document.getElementById('emp-add-onboarding-link').value=link;
+  document.getElementById('emp-add-link-section').style.display='block';
+  document.getElementById('emp-add-save-btn').style.display='none';
+  loadEmployees();loadOverview();
+}
+function copyOnboardingLink(){
+  const input=document.getElementById('emp-add-onboarding-link');
+  navigator.clipboard.writeText(input.value).then(()=>{
+    const btn=document.getElementById('copy-link-btn');btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='Copy',2500);
+  });
+}
+
+// ── EMPLOYEE CARD ─────────────────────────────────────────────────────────
+async function viewEmployee(id){
+  if(!empCache[id]){const{data}=await sb.from('qms_employees').select('*').eq('id',id).single();if(data)empCache[id]=data;}
+  const r=empCache[id];if(!r)return;
+  // Populate manager name (may need to fetch if not cached)
+  let mgrName='—';
+  if(r.manager_id){
+    if(!empCache[r.manager_id]){const{data:m}=await sb.from('qms_employees').select('id,full_name').eq('id',r.manager_id).single();if(m)empCache[m.id]=m;}
+    mgrName=empCache[r.manager_id]?.full_name||'—';
+  }
+  // Avatar
+  const av=document.getElementById('card-avatar');
+  if(r.profile_picture_url){
+    av.innerHTML=`<img src="${esc(r.profile_picture_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.innerHTML='${r.full_name.charAt(0).toUpperCase()}'">`;
+  } else {
+    av.textContent=r.full_name.charAt(0).toUpperCase();
+  }
+  set('card-id',r.record_id||'–');
+  set('card-name',r.full_name||'–');
+  set('card-position',r.position||'–');
+  set('card-dept',r.department||'–');
+  set('card-type',r.employment_type||'–');
+  set('card-reports-to',mgrName);
+  set('card-email',r.email||'–');
+  set('card-start',r.start_date?fmtDate(r.start_date):'–');
+  // Document links
+  const docs=[{label:'Offer Letter',url:r.offer_letter_url},{label:'Job Description',url:r.job_description_url},{label:'Signed Contract',url:r.signed_contract_url},{label:'CV / Résumé',url:r.cv_url},{label:'Police Clearance',url:r.police_clearance_url}].filter(d=>d.url);
+  document.getElementById('card-docs-section').innerHTML=docs.length?docs.map(d=>`<a href="${esc(d.url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#b45309;padding:4px 0;text-decoration:none">📎 ${esc(d.label)} ↗</a>`).join(''):'<p style="font-size:13px;color:#94a3b8">No documents on file.</p>';
+  document.getElementById('card-docs-wrapper').style.display=docs.length?'block':'none';
+  document.getElementById('modal-emp-card').dataset.empId=id;
+  document.getElementById('modal-emp-card').classList.add('open');
+}
+function editEmployeeFromCard(){
+  const id=document.getElementById('modal-emp-card').dataset.empId;
+  closeModal('emp-card');
+  if(id)editEmployee(id);
+}
+function printCard(){
+  const content=document.getElementById('emp-card-printable').cloneNode(true);
+  // Remove document links from the print copy
+  const docsWrap=content.querySelector('#card-docs-wrapper');
+  if(docsWrap)docsWrap.remove();
+  const name=document.getElementById('card-name').textContent||'Employee';
+  const w=window.open('','_blank','width=480,height=640');
+  w.document.write(`<!DOCTYPE html><html><head><title>${name} — Employee Card</title><style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#334155;max-width:380px;margin:0 auto;padding:32px 24px}
+    .card-avatar{width:88px;height:88px;border-radius:50%;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;margin:0 auto 16px;overflow:hidden}
+    .card-avatar img{width:100%;height:100%;object-fit:cover}
+    .card-id{text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#f59e0b;margin-bottom:6px}
+    .card-name{text-align:center;font-size:20px;font-weight:700;margin-bottom:4px}
+    .card-pos{text-align:center;font-size:14px;color:#64748b;margin-bottom:2px}
+    .card-dept{text-align:center;font-size:12px;color:#94a3b8;margin-bottom:8px}
+    .card-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(245,158,11,.12);color:#b45309;margin-bottom:16px}
+    .divider{border:none;border-top:1px solid #e2e8f0;margin:16px 0}
+    .field-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+    .field-icon{width:20px;flex-shrink:0;font-size:14px;margin-top:2px}
+    .field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:2px}
+    .field-value{font-size:13px;font-weight:600;color:#334155}
+    @media print{button{display:none}}
+  </style></head><body>
+    ${content.innerHTML.replace(/<button[^>]*>.*?<\/button>/g,'').replace(/<[^>]*id="card-id"[^>]*>/,'<p class="card-id"').replace(/<[^>]*id="card-name"[^>]*>/,'<h2 class="card-name"').replace(/<[^>]*id="card-position"[^>]*>/,'<p class="card-pos"').replace(/<[^>]*id="card-dept"[^>]*>/,'<p class="card-dept"')}
+  </body></html>`);
+  // Simpler approach: just rebuild the print content
+  w.document.close();
+  w.document.title=`${name} — Employee Card`;
+  // Override with clean content
+  w.document.body.innerHTML=`
+    <div class="card-avatar">${document.getElementById('card-avatar').innerHTML||name.charAt(0)}</div>
+    <p class="card-id">${document.getElementById('card-id').textContent}</p>
+    <h2 class="card-name">${document.getElementById('card-name').textContent}</h2>
+    <p class="card-pos">${document.getElementById('card-position').textContent}</p>
+    <p class="card-dept">${document.getElementById('card-dept').textContent}</p>
+    <div style="text-align:center"><span class="card-badge">${document.getElementById('card-type').textContent}</span></div>
+    <hr class="divider">
+    <div class="field-row"><span class="field-icon">👤</span><div><div class="field-label">Reports To</div><div class="field-value">${document.getElementById('card-reports-to').textContent}</div></div></div>
+    <div class="field-row"><span class="field-icon">✉️</span><div><div class="field-label">Email</div><div class="field-value">${document.getElementById('card-email').textContent}</div></div></div>
+    <div class="field-row"><span class="field-icon">📅</span><div><div class="field-label">Start Date</div><div class="field-value">${document.getElementById('card-start').textContent}</div></div></div>
+  `;
+  setTimeout(()=>w.print(),200);
+}
+
 // ── EMPLOYEE REGISTER ─────────────────────────────────────────────────────
 const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'badge-amber'};
 let empCache={};
@@ -1204,7 +1493,7 @@ async function loadEmployees(){
       <td class="td-muted">${r.start_date?fmtDate(r.start_date):'–'}</td>
       <td>${(()=>{const q=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);return q.length?q.map(x=>`<span class="badge badge-blue" style="margin:1px 2px;white-space:nowrap">${esc(x.name)}</span>`).join(''):'<span class="td-muted">–</span>';})()}</td>
       <td><div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm" onclick="editEmployee('${r.id}')">Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="viewEmployee('${r.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="delRecord('qms_employees','${r.id}','emp')">Del</button>
       </div></td>
     </tr>`;
@@ -1228,7 +1517,7 @@ async function saveEmployee(){
     institute:row.querySelector('.qual-institute').value.trim(),
     date_obtained:row.querySelector('.qual-date').value||null
   })).filter(q=>q.name);
-  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:document.getElementById('emp-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:document.getElementById('emp-notes').value.trim()||null,profile_picture_url:document.getElementById('emp-profile-pic').value.trim()||null,date_of_birth:document.getElementById('emp-dob').value||null,nis_number:document.getElementById('emp-nis').value.trim()||null,tin_number:document.getElementById('emp-tin').value.trim()||null,id_passport_number:document.getElementById('emp-id-passport').value.trim()||null,address:document.getElementById('emp-address').value.trim()||null,marital_status:document.getElementById('emp-marital-status').value||null,num_dependents:document.getElementById('emp-dependents').value?parseInt(document.getElementById('emp-dependents').value):null,religion:document.getElementById('emp-religion').value.trim()||null,hobby:document.getElementById('emp-hobby').value.trim()||null,dietary_restriction:document.getElementById('emp-dietary').value||null,allergies:document.getElementById('emp-allergies').value.trim()||null,medical_conditions:document.getElementById('emp-medical').value.trim()||null,disabilities:document.getElementById('emp-disabilities').value.trim()||null,bank_name:document.getElementById('emp-bank-name').value.trim()||null,bank_branch:document.getElementById('emp-bank-branch').value.trim()||null,bank_account_number:document.getElementById('emp-bank-account').value.trim()||null,offer_letter_url:document.getElementById('emp-offer-letter-url').value.trim()||null,job_description_url:document.getElementById('emp-jd-url').value.trim()||null,signed_contract_url:document.getElementById('emp-contract-url').value.trim()||null,cv_url:document.getElementById('emp-cv-url').value.trim()||null,police_clearance_url:document.getElementById('emp-police-clearance-url').value.trim()||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([payload]);
   btn.disabled=false;btn.textContent='Save Employee';
@@ -1467,7 +1756,7 @@ function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div
 function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')['doc','org','emp','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));
+  if(e.key==='Escape')['doc','org','emp','emp-add','emp-card','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();

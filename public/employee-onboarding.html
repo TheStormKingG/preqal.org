@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preqal · Employee Onboarding</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']},boxShadow:{'neu':'6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff','neu-sm':'3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff'}}}}</script>
+<style>
+  @font-face{font-family:'Inter';font-weight:400;font-display:swap;src:url('/fonts/inter/Inter-400.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:500;font-display:swap;src:url('/fonts/inter/Inter-500.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:600;font-display:swap;src:url('/fonts/inter/Inter-600.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:700;font-display:swap;src:url('/fonts/inter/Inter-700.woff2') format('woff2')}
+  body{font-family:'Inter',system-ui,sans-serif;background:#e0e5ec;color:#334155;min-height:100vh}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  .neu-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff}
+  .neu-raised{box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .neu-pressed{box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#e0e5ec}::-webkit-scrollbar-thumb{background:#a3b1c6;border-radius:5px}::-webkit-scrollbar-thumb:hover{background:#f59e0b}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeInUp .45s ease-out forwards}
+  .field{width:100%;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;border:none;border-radius:.75rem;padding:10px 14px;font-size:14px;color:#334155;font-family:inherit;outline:none;transition:box-shadow .2s}
+  .field:focus{box-shadow:inset 2px 2px 6px #a3b1c6,inset -2px -2px 6px #ffffff,0 0 0 3px rgba(245,158,11,.18)}
+  .field::placeholder{color:#94a3b8}
+  select.field option{background:#e0e5ec;color:#334155}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:.75rem;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .18s}
+  .btn-amber{background:#f59e0b;color:#fff;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-amber:hover{background:#d97706}
+  .btn-ghost{background:#e0e5ec;color:#64748b;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-ghost:hover{color:#334155}
+  .section-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#b45309;padding:4px 0 8px;margin-top:4px}
+  .divider{height:1px;background:rgba(163,177,198,.3);margin:8px 0 16px}
+  .qual-entry{display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center}
+  .avatar-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .avatar-initials{width:80px;height:80px;border-radius:50%;background:rgba(245,158,11,.15);color:#b45309;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .doc-link{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:.75rem;font-size:13px;font-weight:600;color:#b45309;background:rgba(245,158,11,.08);text-decoration:none;transition:background .15s}
+  .doc-link:hover{background:rgba(245,158,11,.15)}
+  .step-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#f59e0b;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen" class="min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div style="width:40px;height:40px;border:3px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite;margin:0 auto 16px"></div>
+    <p class="text-sm text-slate-500">Loading your onboarding form…</p>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div id="error-screen" style="display:none" class="min-h-screen flex items-center justify-center p-6">
+  <div class="neu-card rounded-2xl p-10 w-full max-w-md text-center">
+    <div class="text-5xl mb-4">⚠️</div>
+    <h1 class="text-xl font-bold text-slate-900 mb-2">Invalid Link</h1>
+    <p class="text-sm text-slate-500" id="error-msg">This onboarding link is invalid or has already been used.</p>
+    <a href="/" class="btn btn-ghost mt-6">← Back to Preqal</a>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="success-screen" style="display:none" class="min-h-screen flex items-center justify-center p-6">
+  <div class="neu-card rounded-2xl p-10 w-full max-w-md text-center fade-in">
+    <div class="text-5xl mb-4">🎉</div>
+    <h1 class="text-2xl font-bold text-slate-900 mb-2">Onboarding Complete!</h1>
+    <p class="text-sm text-slate-500 mb-2">Thank you, <strong id="success-name"></strong>. Your information has been saved.</p>
+    <p class="text-sm text-slate-400">The HR team will be in touch shortly. Welcome to the team!</p>
+    <a href="/" class="btn btn-amber mt-8">Visit Preqal.org</a>
+  </div>
+</div>
+
+<!-- ONBOARDING FORM -->
+<div id="form-screen" style="display:none">
+
+  <!-- HEADER -->
+  <header style="background:rgba(224,229,236,.92);backdrop-filter:blur(16px);box-shadow:0 4px 8px #a3b1c6;position:sticky;top:0;z-index:50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6" style="display:flex;align-items:center;height:72px;gap:12px">
+      <a href="/"><picture>
+        <source type="image/avif" srcset="/Preqal%20Logo%20Sep25-9-200.avif">
+        <img src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal" style="height:7rem;width:auto">
+      </picture></a>
+      <span class="neu-pressed px-3 py-1 rounded-full text-xs font-bold text-amber-700 uppercase tracking-wide">Employee Onboarding</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+
+    <!-- Welcome -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <p class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">Welcome to Preqal</p>
+      <h1 class="text-2xl font-bold text-slate-900 mb-1">Hi <span id="welcome-name">there</span> 👋</h1>
+      <p class="text-slate-500 text-sm">Please complete this onboarding form. Your employer has attached your offer letter, job description and contract below. Fill in your personal details and upload your documents to get started.</p>
+      <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="neu-pressed rounded-xl p-3"><div class="text-xs text-slate-400 mb-0.5">Position</div><div class="text-sm font-bold text-slate-800" id="info-position">—</div></div>
+        <div class="neu-pressed rounded-xl p-3"><div class="text-xs text-slate-400 mb-0.5">Department</div><div class="text-sm font-bold text-slate-800" id="info-dept">—</div></div>
+        <div class="neu-pressed rounded-xl p-3"><div class="text-xs text-slate-400 mb-0.5">Employment</div><div class="text-sm font-bold text-slate-800" id="info-type">—</div></div>
+        <div class="neu-pressed rounded-xl p-3"><div class="text-xs text-slate-400 mb-0.5">Start Date</div><div class="text-sm font-bold text-slate-800" id="info-start">—</div></div>
+      </div>
+    </div>
+
+    <!-- Employer Documents -->
+    <div class="neu-card rounded-2xl p-6 fade-in" id="employer-docs-section">
+      <div class="section-header">📎 Documents from Preqal</div>
+      <div class="divider"></div>
+      <div class="flex flex-wrap gap-3" id="employer-docs-list">
+        <span class="text-sm text-slate-400">No documents attached yet.</span>
+      </div>
+    </div>
+
+    <!-- THE FORM -->
+    <form id="onboarding-form" onsubmit="submitOnboarding(event)">
+
+      <!-- Profile Picture -->
+      <div class="neu-card rounded-2xl p-6 fade-in">
+        <div class="section-header">🖼 Profile Picture</div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <div id="pic-preview-wrap">
+            <div class="avatar-initials" id="pic-initials">?</div>
+          </div>
+          <div style="flex:1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Profile Picture URL</label>
+            <input id="ob-profile-pic" class="field" type="url" placeholder="https://… (Google, LinkedIn, or direct image URL)" oninput="previewPic()">
+            <p class="text-xs text-slate-400 mt-1.5">Paste a direct link to your headshot. Your Google profile picture URL works perfectly.</p>
+            <p id="pic-auto-note" style="display:none" class="text-xs text-amber-700 mt-1 font-medium">✓ Auto-loaded from your Google account</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Details -->
+      <div class="neu-card rounded-2xl p-6 fade-in mt-4">
+        <div class="section-header">👤 Personal Details</div>
+        <div class="divider"></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Date of Birth *</label><input id="ob-dob" class="field" type="date" required></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Marital Status</label>
+            <select id="ob-marital" class="field"><option value="">Select…</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option><option>Separated</option></select>
+          </div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">NIS Number</label><input id="ob-nis" class="field" type="text" placeholder="National Insurance Scheme #"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">TIN</label><input id="ob-tin" class="field" type="text" placeholder="Tax Identification Number"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">ID / Passport Number</label><input id="ob-id-passport" class="field" type="text" placeholder="National ID or Passport #"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Number of Dependents</label><input id="ob-dependents" class="field" type="number" min="0" value="0"></div>
+        </div>
+        <div class="mt-4"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Home Address</label><textarea id="ob-address" class="field" rows="2" placeholder="Full residential address…"></textarea></div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Religion <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="ob-religion" class="field" type="text" placeholder="e.g. Christian, Muslim, Hindu…"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hobby <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="ob-hobby" class="field" type="text" placeholder="e.g. Photography, Hiking…"></div>
+        </div>
+      </div>
+
+      <!-- Health & Dietary -->
+      <div class="neu-card rounded-2xl p-6 fade-in mt-4">
+        <div class="section-header">🏥 Health &amp; Dietary</div>
+        <div class="divider"></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Dietary Restriction</label>
+            <select id="ob-dietary" class="field"><option value="None">None</option><option value="Vegetarian">Vegetarian</option><option value="No Pork">No Pork</option><option value="Pescatarian">Pescatarian</option><option value="Vegan">Vegan</option></select>
+          </div>
+        </div>
+        <div class="mt-4"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Allergies <span style="font-weight:400;text-transform:none;letter-spacing:0">(leave blank if none)</span></label><textarea id="ob-allergies" class="field" rows="2" placeholder="List any known allergies…"></textarea></div>
+        <div class="mt-4"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Medical Conditions <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><textarea id="ob-medical" class="field" rows="2" placeholder="Any conditions the employer should be aware of…"></textarea></div>
+        <div class="mt-4"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Disabilities <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><textarea id="ob-disabilities" class="field" rows="2" placeholder="Any disabilities or accessibility requirements…"></textarea></div>
+      </div>
+
+      <!-- Banking -->
+      <div class="neu-card rounded-2xl p-6 fade-in mt-4">
+        <div class="section-header">🏦 Banking Information</div>
+        <div class="divider"></div>
+        <p class="text-xs text-slate-400 mb-4">This information is used for payroll processing only.</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Bank Name</label><input id="ob-bank-name" class="field" type="text" placeholder="e.g. Republic Bank"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Branch</label><input id="ob-bank-branch" class="field" type="text" placeholder="e.g. Port of Spain"></div>
+          <div class="col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Account Number</label><input id="ob-bank-account" class="field" type="text" placeholder="Bank account number"></div>
+        </div>
+      </div>
+
+      <!-- Qualifications -->
+      <div class="neu-card rounded-2xl p-6 fade-in mt-4">
+        <div class="flex items-center justify-between">
+          <div class="section-header" style="margin:0;padding:0">🎓 Qualifications &amp; Competencies</div>
+          <button type="button" onclick="addObQual()" class="btn btn-ghost" style="padding:5px 12px;font-size:12px">+ Add</button>
+        </div>
+        <div class="divider" style="margin-top:12px"></div>
+        <div id="ob-qual-list" class="space-y-2"></div>
+        <p id="ob-qual-empty" class="text-xs text-slate-400 text-center py-3 neu-pressed rounded-xl">No qualifications added yet.</p>
+      </div>
+
+      <!-- Documents -->
+      <div class="neu-card rounded-2xl p-6 fade-in mt-4">
+        <div class="section-header">📄 Your Documents</div>
+        <div class="divider"></div>
+        <p class="text-xs text-slate-400 mb-4">Upload your documents to Google Drive or Dropbox and paste the shareable link below.</p>
+        <div class="space-y-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé *</label><input id="ob-cv" class="field" type="url" placeholder="https://drive.google.com/…" required></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance</label><input id="ob-police" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-6">
+        <p id="ob-error" class="text-sm text-red-600 mb-3 min-h-5 font-medium"></p>
+        <button type="submit" class="btn btn-amber w-full text-base" id="ob-submit-btn" style="padding:14px">
+          <span id="ob-submit-text">Submit Onboarding Form</span>
+        </button>
+        <p class="text-xs text-slate-400 text-center mt-3">By submitting you confirm that all information provided is accurate.</p>
+      </div>
+
+    </form>
+  </main>
+</div>
+
+<script>
+const SB_URL='https://gndcjmxxgtnoidxgcdnx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDY5NjYsImV4cCI6MjA4MTcyMjk2Nn0.hPhVHtHzp67Upukemoo8ZTwDcOCVHLrKfOwaITnbBLY';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+let employeeId=null;
+let employeeName='';
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(iso){if(!iso)return'–';return new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+async function init(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('token');
+  if(!token){showError('No onboarding token found in this link.');return;}
+
+  const{data,error}=await sb.from('qms_employees').select('*').eq('onboarding_token',token).single();
+  if(error||!data){showError('This onboarding link is invalid or has expired.');return;}
+  if(data.onboarding_status==='complete'){showError('This onboarding form has already been completed. Contact HR if you need to update your information.');}
+
+  employeeId=data.id;
+  employeeName=data.full_name||'there';
+
+  // Populate welcome info
+  document.getElementById('welcome-name').textContent=data.full_name||'there';
+  document.getElementById('info-position').textContent=data.position||'—';
+  document.getElementById('info-dept').textContent=data.department||'—';
+  document.getElementById('info-type').textContent=data.employment_type||'—';
+  document.getElementById('info-start').textContent=data.start_date?fmtDate(data.start_date):'—';
+  document.getElementById('success-name').textContent=data.full_name||'';
+  document.getElementById('pic-initials').textContent=(data.full_name||'?').charAt(0).toUpperCase();
+
+  // Employer docs
+  const docList=document.getElementById('employer-docs-list');
+  const docs=[];
+  if(data.offer_letter_url)docs.push({label:'📝 Offer Letter',url:data.offer_letter_url});
+  if(data.job_description_url)docs.push({label:'📋 Job Description',url:data.job_description_url});
+  if(data.signed_contract_url)docs.push({label:'✍️ Contract',url:data.signed_contract_url});
+  if(docs.length){
+    docList.innerHTML=docs.map(d=>`<a href="${esc(d.url)}" target="_blank" rel="noopener" class="doc-link">${d.label} ↗</a>`).join('');
+  }
+
+  // Pre-fill if partially completed
+  if(data.profile_picture_url){document.getElementById('ob-profile-pic').value=data.profile_picture_url;previewPic();}
+  if(data.date_of_birth)document.getElementById('ob-dob').value=data.date_of_birth;
+  if(data.marital_status)document.getElementById('ob-marital').value=data.marital_status;
+  if(data.nis_number)document.getElementById('ob-nis').value=data.nis_number;
+  if(data.tin_number)document.getElementById('ob-tin').value=data.tin_number;
+  if(data.id_passport_number)document.getElementById('ob-id-passport').value=data.id_passport_number;
+  if(data.num_dependents!=null)document.getElementById('ob-dependents').value=data.num_dependents;
+  if(data.address)document.getElementById('ob-address').value=data.address;
+  if(data.religion)document.getElementById('ob-religion').value=data.religion;
+  if(data.hobby)document.getElementById('ob-hobby').value=data.hobby;
+  if(data.dietary_restriction)document.getElementById('ob-dietary').value=data.dietary_restriction;
+  if(data.allergies)document.getElementById('ob-allergies').value=data.allergies;
+  if(data.medical_conditions)document.getElementById('ob-medical').value=data.medical_conditions;
+  if(data.disabilities)document.getElementById('ob-disabilities').value=data.disabilities;
+  if(data.bank_name)document.getElementById('ob-bank-name').value=data.bank_name;
+  if(data.bank_branch)document.getElementById('ob-bank-branch').value=data.bank_branch;
+  if(data.bank_account_number)document.getElementById('ob-bank-account').value=data.bank_account_number;
+  if(data.cv_url)document.getElementById('ob-cv').value=data.cv_url;
+  if(data.police_clearance_url)document.getElementById('ob-police').value=data.police_clearance_url;
+  // Qualifications
+  const quals=Array.isArray(data.qualifications_json)?data.qualifications_json:(data.qualifications_json?JSON.parse(data.qualifications_json):[]);
+  quals.forEach(q=>addObQual(q.name||'',q.institute||'',q.date_obtained||''));
+
+  // Try auto-load Google avatar from session
+  const{data:{session}}=await sb.auth.getSession();
+  if(session?.user?.user_metadata?.avatar_url&&!document.getElementById('ob-profile-pic').value){
+    document.getElementById('ob-profile-pic').value=session.user.user_metadata.avatar_url;
+    document.getElementById('pic-auto-note').style.display='block';
+    previewPic();
+  }
+
+  hide('loading-screen');
+  show('form-screen');
+}
+
+function showError(msg){
+  document.getElementById('error-msg').textContent=msg;
+  hide('loading-screen');
+  show('error-screen');
+}
+
+function previewPic(){
+  const url=document.getElementById('ob-profile-pic').value.trim();
+  const wrap=document.getElementById('pic-preview-wrap');
+  const initials=document.getElementById('pic-initials');
+  if(url){
+    wrap.innerHTML=`<img src="${esc(url)}" class="avatar-preview" onerror="this.style.display='none'" alt="Profile">`;
+  } else {
+    wrap.innerHTML=`<div class="avatar-initials" id="pic-initials">${(employeeName||'?').charAt(0).toUpperCase()}</div>`;
+  }
+}
+
+// Qualifications
+function syncObQualEmpty(){
+  const list=document.getElementById('ob-qual-list');
+  const empty=document.getElementById('ob-qual-empty');
+  empty.style.display=list.children.length?'none':'block';
+}
+function addObQual(name='',institute='',date=''){
+  const list=document.getElementById('ob-qual-list');
+  const row=document.createElement('div');
+  row.className='qual-entry';
+  row.innerHTML=`
+    <input class="field qual-name" type="text" placeholder="Qualification" value="${esc(name)}" style="padding:8px 10px;font-size:13px">
+    <input class="field qual-institute" type="text" placeholder="Institute" value="${esc(institute)}" style="padding:8px 10px;font-size:13px">
+    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:130px">
+    <button type="button" onclick="this.closest('.qual-entry').remove();syncObQualEmpty()" class="btn btn-ghost" style="padding:8px 10px;font-size:18px;color:#b91c1c">×</button>`;
+  list.appendChild(row);
+  syncObQualEmpty();
+}
+
+async function submitOnboarding(e){
+  e.preventDefault();
+  if(!employeeId){return;}
+  const err=document.getElementById('ob-error'),btn=document.getElementById('ob-submit-btn');
+  err.textContent='';
+  const dob=document.getElementById('ob-dob').value;
+  const cv=document.getElementById('ob-cv').value.trim();
+  if(!dob){err.textContent='Date of birth is required.';return;}
+  if(!cv){err.textContent='CV / Résumé link is required.';return;}
+
+  const quals=Array.from(document.querySelectorAll('#ob-qual-list .qual-entry')).map(row=>({
+    name:row.querySelector('.qual-name').value.trim(),
+    institute:row.querySelector('.qual-institute').value.trim(),
+    date_obtained:row.querySelector('.qual-date').value||null
+  })).filter(q=>q.name);
+
+  const payload={
+    profile_picture_url:document.getElementById('ob-profile-pic').value.trim()||null,
+    date_of_birth:dob,
+    marital_status:document.getElementById('ob-marital').value||null,
+    nis_number:document.getElementById('ob-nis').value.trim()||null,
+    tin_number:document.getElementById('ob-tin').value.trim()||null,
+    id_passport_number:document.getElementById('ob-id-passport').value.trim()||null,
+    num_dependents:parseInt(document.getElementById('ob-dependents').value)||0,
+    address:document.getElementById('ob-address').value.trim()||null,
+    religion:document.getElementById('ob-religion').value.trim()||null,
+    hobby:document.getElementById('ob-hobby').value.trim()||null,
+    dietary_restriction:document.getElementById('ob-dietary').value,
+    allergies:document.getElementById('ob-allergies').value.trim()||null,
+    medical_conditions:document.getElementById('ob-medical').value.trim()||null,
+    disabilities:document.getElementById('ob-disabilities').value.trim()||null,
+    bank_name:document.getElementById('ob-bank-name').value.trim()||null,
+    bank_branch:document.getElementById('ob-bank-branch').value.trim()||null,
+    bank_account_number:document.getElementById('ob-bank-account').value.trim()||null,
+    cv_url:cv,
+    police_clearance_url:document.getElementById('ob-police').value.trim()||null,
+    qualifications_json:quals,
+    onboarding_status:'complete',
+    onboarding_submitted_at:new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  };
+
+  btn.disabled=true;document.getElementById('ob-submit-text').textContent='Submitting…';
+  const{error}=await sb.from('qms_employees').update(payload).eq('id',employeeId);
+  btn.disabled=false;document.getElementById('ob-submit-text').textContent='Submit Onboarding Form';
+  if(error){err.textContent=error.message;return;}
+  hide('form-screen');
+  show('success-screen');
+}
+
+init();
+</script>
+</body>
+</html>
