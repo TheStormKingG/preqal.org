@@ -43,8 +43,13 @@ const ECourses: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
   const handleStartCourse = () => {
-    navigate(user ? '/e-courses/learn' : '/e-courses/register');
+    if (user && ADMIN_EMAILS.includes((user.email ?? '').toLowerCase())) {
+      window.location.href = '/admin-dashboard.html';
+    } else {
+      navigate(user ? '/e-courses/learn' : '/e-courses/register');
+    }
   };
 
   const handleToggle = (id: string) => {

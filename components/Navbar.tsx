@@ -147,13 +147,21 @@ const Navbar: React.FC = () => {
                       <p className="text-xs font-bold text-slate-800 truncate">{profile?.display_name}</p>
                       <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
                     </div>
-                    <Link
-                      to="/e-courses/learn"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-white/60 transition-colors"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        const adminEmails = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
+                        if (adminEmails.includes((user.email ?? '').toLowerCase())) {
+                          window.location.href = '/admin-dashboard.html';
+                        } else {
+                          window.location.href = '/e-courses/learn';
+                        }
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-white/60 transition-colors"
                     >
                       My course
-                    </Link>
+                    </button>
                     <button
                       type="button"
                       onClick={() => { setUserMenuOpen(false); void signOut(); }}
