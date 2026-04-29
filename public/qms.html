@@ -313,8 +313,8 @@
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>Risk ID</th><th>Hazard</th><th>Category</th><th>Location / Activity</th><th>Persons at Risk</th><th>L</th><th>C</th><th>Rating</th><th>Level</th><th>Responsible</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="hse-tbody"><tr><td colspan="12" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            <thead><tr><th>Risk ID</th><th>Hazard</th><th>Category</th><th>Activity / Location</th><th>Persons at Risk</th><th>Harm Potential</th><th>L</th><th>C</th><th>Rating</th><th>Level</th><th>Controls Applied</th><th>Res. Rating</th><th>ALARP</th><th>Source</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="hse-tbody"><tr><td colspan="16" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -364,8 +364,8 @@
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>Risk ID</th><th>Title</th><th>Category</th><th>Affected Process</th><th>L</th><th>I</th><th>Rating</th><th>Level</th><th>Owner</th><th>Treatment Action</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="qr-tbody"><tr><td colspan="12" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            <thead><tr><th>Risk ID</th><th>Title</th><th>Type</th><th>Category</th><th>Source</th><th>Process</th><th>L</th><th>I</th><th>Rating</th><th>Level</th><th>Treatment Option</th><th>Owner</th><th>Res. Rating</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="qr-tbody"><tr><td colspan="15" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -946,31 +946,56 @@
   </div>
 </div>
 
-<!-- ══ HSE RISK MODAL ══ -->
+<!-- ══ HSE RISK MODAL (ISO 45001 §6.1.2 HIRA) ══ -->
 <div class="modal-overlay" id="modal-hse" onclick="closeModal('hse',event)">
   <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
-      <h3 class="text-base font-bold text-slate-900" id="hse-modal-title">Add HSE Risk</h3>
+      <h3 class="text-base font-bold text-slate-900" id="hse-modal-title">Add HSE Risk (HIRA)</h3>
       <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('hse')">×</button>
     </div>
     <div class="p-6 space-y-4">
       <input type="hidden" id="hse-id">
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hazard Description *</label><input id="hse-hazard" class="field" type="text" placeholder="Describe the hazard concisely"></div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🦺 Hazard Identification (ISO 45001 §6.1.2.1)</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source</label>
+          <select id="hse-source" class="field">
+            <option value="Manual">Manual Entry</option>
+            <option value="Context Register">Context Register (§4.1)</option>
+            <option value="Workplace Inspection">Workplace Inspection</option>
+            <option value="Incident Investigation">Incident Investigation</option>
+            <option value="Near Miss">Near Miss Report</option>
+            <option value="Employee Report">Employee Hazard Report</option>
+            <option value="Legal Review">Legal / Regulatory Review</option>
+            <option value="Management Review">Management Review</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source Reference <span class="text-slate-300 font-normal">(ID)</span></label><input id="hse-source-ref" class="field" type="text" placeholder="e.g. CTX-2025-001"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hazard Description *</label><input id="hse-hazard" class="field" type="text" placeholder="What is the hazard? (e.g. Exposed electrical wiring, Manual handling of heavy loads)"></div>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hazard Category</label>
-          <select id="hse-category" class="field"><option>Physical</option><option>Chemical</option><option>Biological</option><option>Ergonomic</option><option>Psychosocial</option><option>Environmental</option><option>Fire</option><option>Electrical</option><option>Other</option></select>
+          <select id="hse-category" class="field">
+            <option>Physical</option><option>Chemical</option><option>Biological</option>
+            <option>Ergonomic / Biomechanical</option><option>Psychosocial</option>
+            <option>Environmental / Climate</option><option>Fire / Explosion</option>
+            <option>Electrical</option><option>Mechanical</option><option>Gravitational / Falls</option>
+            <option>Radiation</option><option>Noise / Vibration</option><option>Other</option>
+          </select>
         </div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
-          <select id="hse-status" class="field"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="closed">Closed</option><option value="reviewed">Reviewed</option></select>
-        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Work Activity / Task</label><input id="hse-activity-task" class="field" type="text" placeholder="e.g. Roof maintenance, Chemical mixing"></div>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Location / Activity</label><input id="hse-location" class="field" type="text" placeholder="Where or during what activity"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Persons at Risk</label><input id="hse-persons" class="field" type="text" placeholder="Who could be harmed?"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Location</label><input id="hse-location" class="field" type="text" placeholder="Where does this hazard exist?"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Persons at Risk</label><input id="hse-persons" class="field" type="text" placeholder="e.g. All staff, Electricians, Visitors"></div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Existing Controls</label><textarea id="hse-existing-controls" class="field" rows="2" placeholder="Controls already in place to manage this hazard…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Hazard Event <span class="text-slate-300 font-normal">(what could go wrong)</span></label><textarea id="hse-hazard-event" class="field" rows="2" placeholder="e.g. Contact with live wire causing electrocution"></textarea></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Harm Potential <span class="text-slate-300 font-normal">(injury / illness)</span></label><textarea id="hse-harm-potential" class="field" rows="2" placeholder="e.g. Electrical burns, fatality, musculoskeletal injury"></textarea></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Applicable Legal Requirement</label><input id="hse-legal-requirement" class="field" type="text" placeholder="e.g. OSH Act 1997, OSHA 29 CFR 1910.303"></div>
       <div class="neu-pressed-sm rounded-xl p-4">
-        <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-3">Initial Risk Rating (1 = Very Low, 5 = Very High)</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-3">⚖️ Inherent Risk Rating <span class="font-normal text-slate-400">(before controls — 1 = Negligible, 5 = Catastrophic)</span></p>
         <div class="grid grid-cols-3 gap-4">
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Likelihood</label><input id="hse-likelihood" class="field" type="number" min="1" max="5" value="3" oninput="calcHSERating()"></div>
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Consequence</label><input id="hse-consequence" class="field" type="number" min="1" max="5" value="3" oninput="calcHSERating()"></div>
@@ -979,13 +1004,42 @@
           </div>
         </div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Additional Controls Required</label><textarea id="hse-additional-controls" class="field" rows="2" placeholder="What further controls are recommended?"></textarea></div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-1" style="border-bottom:1px solid rgba(245,158,11,.2)">🏗 Hierarchy of Controls <span class="font-normal text-slate-400 normal-case">(ISO 45001 §8.1.2 — apply highest level possible)</span></p>
+      <div class="space-y-3">
+        <div class="flex gap-3 items-start">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1" style="background:#065f46">1</div>
+          <div class="flex-1"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Elimination — remove the hazard entirely</label><textarea id="hse-ctrl-elimination" class="field" rows="1" placeholder="e.g. Remove the task from the process, decommission equipment…" style="padding:7px 10px;font-size:12px"></textarea></div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1" style="background:#0f766e">2</div>
+          <div class="flex-1"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Substitution — replace with something safer</label><textarea id="hse-ctrl-substitution" class="field" rows="1" placeholder="e.g. Use water-based solvent instead of chemical, lighter materials…" style="padding:7px 10px;font-size:12px"></textarea></div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1" style="background:#1d4ed8">3</div>
+          <div class="flex-1"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Engineering Controls — isolate people from the hazard</label><textarea id="hse-ctrl-engineering" class="field" rows="1" placeholder="e.g. Machine guards, ventilation systems, interlocks, barriers…" style="padding:7px 10px;font-size:12px"></textarea></div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1" style="background:#b45309">4</div>
+          <div class="flex-1"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Administrative Controls — change the way people work</label><textarea id="hse-ctrl-administrative" class="field" rows="1" placeholder="e.g. Safe work procedures, job rotation, training, permit-to-work, signage…" style="padding:7px 10px;font-size:12px"></textarea></div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1" style="background:#b91c1c">5</div>
+          <div class="flex-1"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">PPE — last resort, protect the worker</label><textarea id="hse-ctrl-ppe" class="field" rows="1" placeholder="e.g. Hard hat, safety boots, gloves, respirator, ear protection…" style="padding:7px 10px;font-size:12px"></textarea></div>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Additional Controls Required</label><textarea id="hse-additional-controls" class="field" rows="2" placeholder="Any further controls needed beyond what is listed above…"></textarea></div>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Responsible Person</label><input id="hse-responsible" class="field" type="text" placeholder="Name or role"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Target Date</label><input id="hse-target-date" class="field" type="date"></div>
       </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Date Assessed</label><input id="hse-date-assessed" class="field" type="date"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="hse-status" class="field"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="closed">Closed</option><option value="reviewed">Reviewed</option></select>
+        </div>
+      </div>
       <div class="neu-pressed-sm rounded-xl p-4">
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">Residual Risk Rating (after controls)</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">📉 Residual Risk Rating <span class="font-normal">(after controls — must be ALARP)</span></p>
         <div class="grid grid-cols-3 gap-4">
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Res. Likelihood</label><input id="hse-res-likelihood" class="field" type="number" min="1" max="5" placeholder="1–5" oninput="calcHSEResidual()"></div>
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Res. Consequence</label><input id="hse-res-consequence" class="field" type="number" min="1" max="5" placeholder="1–5" oninput="calcHSEResidual()"></div>
@@ -993,21 +1047,23 @@
             <div class="field flex items-center justify-center font-bold" id="hse-res-rating-display" style="cursor:default">–</div>
           </div>
         </div>
+        <div class="mt-3 flex items-center gap-3">
+          <input type="checkbox" id="hse-alarp" class="w-4 h-4 accent-amber-500">
+          <label for="hse-alarp" class="text-xs font-semibold text-slate-600">Residual risk is <strong>ALARP</strong> (As Low As Reasonably Practicable) — justification documented</label>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="hse-review-date" class="field" type="date"></div>
-      </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="hse-notes" class="field" rows="2" placeholder="Additional notes…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="hse-review-date" class="field" type="date"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="hse-notes" class="field" rows="2" placeholder="Additional context, incident history, or references…"></textarea></div>
       <p id="hse-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
       <button class="btn btn-ghost" onclick="closeModal('hse')">Cancel</button>
-      <button class="btn btn-amber" onclick="saveHSE()" id="hse-save-btn">Save Risk</button>
+      <button class="btn btn-amber" onclick="saveHSE()" id="hse-save-btn">Save HSE Risk</button>
     </div>
   </div>
 </div>
 
-<!-- ══ QUALITY RISK MODAL ══ -->
+<!-- ══ QUALITY RISK MODAL (ISO 9001 §6.1) ══ -->
 <div class="modal-overlay" id="modal-qr" onclick="closeModal('qr',event)">
   <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
@@ -1016,24 +1072,66 @@
     </div>
     <div class="p-6 space-y-4">
       <input type="hidden" id="qr-id">
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk Title *</label><input id="qr-title" class="field" type="text" placeholder="Brief title for this quality risk"></div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📋 Risk Identification</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk / Opportunity Title *</label><input id="qr-title" class="field" type="text" placeholder="Brief, descriptive title"></div>
       <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Type</label>
+          <select id="qr-risk-type" class="field">
+            <option value="Risk">⚠️ Risk — negative outcome</option>
+            <option value="Opportunity">🚀 Opportunity — positive outcome</option>
+          </select>
+        </div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
-          <select id="qr-category" class="field"><option>Process</option><option>Product/Service</option><option>Customer</option><option>Supplier</option><option>Resource</option><option>Compliance</option><option>Strategic</option><option>Other</option></select>
-        </div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
-          <select id="qr-status" class="field"><option value="open">Open</option><option value="under_treatment">Under Treatment</option><option value="accepted">Accepted</option><option value="closed">Closed</option></select>
+          <select id="qr-category" class="field">
+            <option>Process</option><option>Product / Service</option><option>Customer</option>
+            <option>Supplier / Procurement</option><option>Resource / Competence</option>
+            <option>Compliance / Legal</option><option>Strategic / Context</option>
+            <option>Infrastructure / Technology</option><option>Information / Data</option><option>Other</option>
+          </select>
         </div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk Description</label><textarea id="qr-description" class="field" rows="2" placeholder="Describe the risk in detail…"></textarea></div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Cause</label><textarea id="qr-cause" class="field" rows="2" placeholder="What could cause this risk to occur?"></textarea></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Consequence</label><textarea id="qr-consequence" class="field" rows="2" placeholder="What could happen if this risk occurs?"></textarea></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source</label>
+          <select id="qr-source" class="field">
+            <option value="Manual">Manual Entry</option>
+            <option value="Context Register">Context Register (§4.1)</option>
+            <option value="Interested Party">Interested Party (§4.2)</option>
+            <option value="Process Review">Process Review</option>
+            <option value="Internal Audit">Internal Audit</option>
+            <option value="NCR">Non-Conformance (NCR)</option>
+            <option value="Customer Feedback">Customer Feedback</option>
+            <option value="Management Review">Management Review</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source Reference <span class="text-slate-300 font-normal">(ID/ref)</span></label><input id="qr-source-ref" class="field" type="text" placeholder="e.g. CTX-2025-001, NCR-2025-003"></div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Affected Process</label><input id="qr-affected-process" class="field" type="text" placeholder="e.g. Client Onboarding, Document Control, Auditing"></div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Existing Controls</label><textarea id="qr-existing-controls" class="field" rows="2" placeholder="Controls already in place…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">QMS Process</label>
+          <select id="qr-qms-process" class="field">
+            <option value="">— Select process —</option>
+            <option>Context &amp; Strategy</option><option>Leadership &amp; Policy</option>
+            <option>Planning &amp; Objectives</option><option>Resources &amp; Competence</option>
+            <option>Communication</option><option>Document Control</option>
+            <option>Operational Planning</option><option>Customer &amp; Sales</option>
+            <option>Design &amp; Development</option><option>Procurement &amp; Suppliers</option>
+            <option>Production &amp; Service Delivery</option><option>Monitoring &amp; Measurement</option>
+            <option>Internal Audit</option><option>Management Review</option>
+            <option>Nonconformity &amp; CAPA</option><option>Other</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Date Raised</label><input id="qr-date-raised" class="field" type="date"></div>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-1" style="border-bottom:1px solid rgba(245,158,11,.2)">🔍 Risk Analysis</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk / Opportunity Description</label><textarea id="qr-description" class="field" rows="2" placeholder="Describe fully — what could happen, under what conditions?"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Cause(s)</label><textarea id="qr-cause" class="field" rows="2" placeholder="Root cause(s) — what drives this risk?"></textarea></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Consequence(s)</label><textarea id="qr-consequence" class="field" rows="2" placeholder="What would happen if this risk materialised?"></textarea></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Affected Process / Area</label><input id="qr-affected-process" class="field" type="text" placeholder="e.g. Client Onboarding, Document Control, Procurement"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Existing Controls</label><textarea id="qr-existing-controls" class="field" rows="2" placeholder="Controls already in place that reduce this risk…"></textarea></div>
       <div class="neu-pressed-sm rounded-xl p-4">
-        <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-3">Initial Risk Rating (1 = Very Low, 5 = Very High)</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-3">⚖️ Inherent Risk Rating <span class="font-normal text-slate-400">(before treatment — 1 = Negligible, 5 = Critical)</span></p>
         <div class="grid grid-cols-3 gap-4">
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Likelihood</label><input id="qr-likelihood" class="field" type="number" min="1" max="5" value="3" oninput="calcQRRating()"></div>
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Impact</label><input id="qr-impact" class="field" type="number" min="1" max="5" value="3" oninput="calcQRRating()"></div>
@@ -1042,13 +1140,36 @@
           </div>
         </div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Treatment Action</label><textarea id="qr-treatment" class="field" rows="2" placeholder="What will be done to reduce or eliminate this risk?"></textarea></div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-1" style="border-bottom:1px solid rgba(245,158,11,.2)">🛠 Treatment &amp; Response</p>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk Owner</label><input id="qr-owner" class="field" type="text" placeholder="Name or role"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Treatment Option <span class="text-slate-300 font-normal">(ISO 9001 §6.1)</span></label>
+          <select id="qr-treatment-option" class="field">
+            <option value="">— Select —</option>
+            <option value="Avoid">🚫 Avoid — eliminate the risk entirely</option>
+            <option value="Reduce">⬇️ Reduce — mitigate likelihood or impact</option>
+            <option value="Transfer">🔄 Transfer — share via insurance/contract</option>
+            <option value="Accept">✅ Accept — tolerate within risk appetite</option>
+            <option value="Exploit">🚀 Exploit — maximise opportunity</option>
+            <option value="Enhance">📈 Enhance — increase opportunity likelihood</option>
+            <option value="Share">🤝 Share — share to increase opportunity</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="qr-status" class="field">
+            <option value="open">Open</option>
+            <option value="under_treatment">Under Treatment</option>
+            <option value="accepted">Accepted / Tolerated</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Treatment Action</label><textarea id="qr-treatment" class="field" rows="2" placeholder="Specific actions to treat this risk — what, by whom, by when?"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Risk Owner</label><input id="qr-owner" class="field" type="text" placeholder="Name or role responsible"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Target Date</label><input id="qr-target-date" class="field" type="date"></div>
       </div>
       <div class="neu-pressed-sm rounded-xl p-4">
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">Residual Risk Rating (after treatment)</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">📉 Residual Risk Rating <span class="font-normal">(after treatment)</span></p>
         <div class="grid grid-cols-3 gap-4">
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Res. Likelihood</label><input id="qr-res-likelihood" class="field" type="number" min="1" max="5" placeholder="1–5" oninput="calcQRResidual()"></div>
           <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Res. Impact</label><input id="qr-res-impact" class="field" type="number" min="1" max="5" placeholder="1–5" oninput="calcQRResidual()"></div>
@@ -1057,16 +1178,26 @@
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="qr-review-date" class="field" type="date"></div>
-      </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="qr-notes" class="field" rows="2" placeholder="Additional notes…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="qr-review-date" class="field" type="date"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="qr-notes" class="field" rows="2" placeholder="Additional context, assumptions, or references…"></textarea></div>
       <p id="qr-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
       <button class="btn btn-ghost" onclick="closeModal('qr')">Cancel</button>
       <button class="btn btn-amber" onclick="saveQR()" id="qr-save-btn">Save Risk</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ TOAST NOTIFICATION ══ -->
+<div id="toast-notification" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:none;max-width:380px">
+  <div class="neu-card rounded-2xl px-5 py-4 flex items-start gap-3" style="box-shadow:0 8px 32px rgba(0,0,0,.15)">
+    <span id="toast-icon" style="font-size:20px;flex-shrink:0">✅</span>
+    <div class="flex-1">
+      <p id="toast-title" class="text-sm font-bold text-slate-800"></p>
+      <p id="toast-body" class="text-xs text-slate-500 mt-0.5"></p>
+    </div>
+    <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600 text-lg leading-none ml-2">×</button>
   </div>
 </div>
 
@@ -1327,8 +1458,8 @@ async function openModal(type,id){
     org:['org-id','org-entity-name','org-context-type','org-entity-type','org-priority','org-needs-expectations','org-relevant-requirements','org-engagement-method','org-role-responsibility','org-contact-name','org-contact-email','org-contact-phone','org-status','org-review-date','org-notes'],
     emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes','emp-profile-pic','emp-dob','emp-nis','emp-tin','emp-id-passport','emp-address','emp-marital-status','emp-dependents','emp-religion','emp-hobby','emp-dietary','emp-allergies','emp-medical','emp-disabilities','emp-bank-name','emp-bank-branch','emp-bank-account','emp-gross','emp-net'],
     legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
-    hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
-    qr:['qr-id','qr-title','qr-category','qr-status','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
+    hse:['hse-id','hse-source','hse-source-ref','hse-hazard','hse-category','hse-activity-task','hse-location','hse-persons','hse-hazard-event','hse-harm-potential','hse-legal-requirement','hse-existing-controls','hse-likelihood','hse-consequence','hse-ctrl-elimination','hse-ctrl-substitution','hse-ctrl-engineering','hse-ctrl-administrative','hse-ctrl-ppe','hse-additional-controls','hse-responsible','hse-target-date','hse-date-assessed','hse-status','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
+    qr:['qr-id','qr-title','qr-risk-type','qr-category','qr-source','qr-source-ref','qr-qms-process','qr-date-raised','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment-option','qr-status','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
   };
   const defaults={
     doc:{'doc-version':'1.0','doc-category':'Policy','doc-status':'draft'},
@@ -1338,8 +1469,8 @@ async function openModal(type,id){
     org:{'org-context-type':'External','org-entity-type':'Customer','org-priority':'Medium','org-status':'active'},
     emp:{'emp-employment-type':'Full-Time','emp-status':'active'},
     legal:{'legal-category':'Legislation','legal-jurisdiction':'Federal','legal-compliance':'monitoring'},
-    hse:{'hse-category':'Physical','hse-status':'open','hse-likelihood':'3','hse-consequence':'3'},
-    qr:{'qr-category':'Process','qr-status':'open','qr-likelihood':'3','qr-impact':'3'}
+    hse:{'hse-source':'Manual','hse-category':'Physical','hse-status':'open','hse-likelihood':'3','hse-consequence':'3','hse-date-assessed':new Date().toISOString().split('T')[0]},
+    qr:{'qr-source':'Manual','qr-risk-type':'Risk','qr-category':'Process','qr-status':'open','qr-likelihood':'3','qr-impact':'3','qr-date-raised':new Date().toISOString().split('T')[0]}
   };
   const titles={doc:'Add Document',ncr:'Raise NCR',capa:'Add CAPA',audit:'Log Audit',org:'Add Interested Party',emp:'Add Employee',legal:'Add Legal Obligation',hse:'Add HSE Risk',qr:'Add Quality Risk'};
   const editLabels={doc:'Edit Document',ncr:'Edit NCR',capa:'Edit CAPA',audit:'Edit Audit',org:'Edit Interested Party',emp:'Edit Employee',legal:'Edit Obligation',hse:'Edit HSE Risk',qr:'Edit Quality Risk'};
@@ -1347,7 +1478,7 @@ async function openModal(type,id){
   fields[type].forEach(f=>{const el=document.getElementById(f);if(!el)return;el.value=(defaults[type]&&defaults[type][f]!=null)?defaults[type][f]:'';});
   if(type==='ncr')document.getElementById('ncr-create-capa').checked=false;
   document.getElementById(`${type}-error`).textContent='';
-  if(type==='hse'){calcHSERating();calcHSEResidual();}
+  if(type==='hse'){const al=document.getElementById('hse-alarp');if(al)al.checked=false;calcHSERating();calcHSEResidual();}
   if(type==='qr'){calcQRRating();calcQRResidual();}
   // Employee modal setup
   if(type==='emp'){
@@ -1370,8 +1501,8 @@ async function openModal(type,id){
       org:{id:'org-id',entity_name:'org-entity-name',context_type:'org-context-type',entity_type:'org-entity-type',priority:'org-priority',needs_expectations:'org-needs-expectations',relevant_requirements:'org-relevant-requirements',engagement_method:'org-engagement-method',role_responsibility:'org-role-responsibility',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',review_date:'org-review-date',notes:'org-notes'},
       emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes',date_of_birth:'emp-dob',nis_number:'emp-nis',tin_number:'emp-tin',id_passport_number:'emp-id-passport',address:'emp-address',marital_status:'emp-marital-status',num_dependents:'emp-dependents',religion:'emp-religion',hobby:'emp-hobby',dietary_restriction:'emp-dietary',allergies:'emp-allergies',medical_conditions:'emp-medical',disabilities:'emp-disabilities',bank_name:'emp-bank-name',bank_branch:'emp-bank-branch',bank_account_number:'emp-bank-account',gross_salary:'emp-gross',net_salary:'emp-net'},
       legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
-      hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
-      qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
+      hse:{id:'hse-id',source:'hse-source',source_ref:'hse-source-ref',hazard:'hse-hazard',hazard_category:'hse-category',activity_task:'hse-activity-task',location_activity:'hse-location',persons_at_risk:'hse-persons',hazard_event:'hse-hazard-event',harm_potential:'hse-harm-potential',legal_requirement:'hse-legal-requirement',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',ctrl_elimination:'hse-ctrl-elimination',ctrl_substitution:'hse-ctrl-substitution',ctrl_engineering:'hse-ctrl-engineering',ctrl_administrative:'hse-ctrl-administrative',ctrl_ppe:'hse-ctrl-ppe',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',date_assessed:'hse-date-assessed',status:'hse-status',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
+      qr:{id:'qr-id',risk_title:'qr-title',risk_type:'qr-risk-type',risk_category:'qr-category',source:'qr-source',source_ref:'qr-source-ref',qms_process:'qr-qms-process',date_raised:'qr-date-raised',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_option:'qr-treatment-option',status:'qr-status',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
     };
     Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
     // Populate compliance obligation boolean for org
@@ -1421,7 +1552,11 @@ async function openModal(type,id){
       if(r.gross_salary){setTimeout(()=>salaryFromGross('edit'),50);}
       else if(r.net_salary){setTimeout(()=>salaryFromNet('edit'),50);}
     }
-    if(type==='hse'){calcHSERating();calcHSEResidual();}
+    if(type==='hse'){
+      const alarp=document.getElementById('hse-alarp');
+      if(alarp&&caches[type]&&caches[type][id])alarp.checked=!!(caches[type][id].alarp_justified);
+      calcHSERating();calcHSEResidual();
+    }
     if(type==='qr'){calcQRRating();calcQRResidual();}
   }
   document.getElementById(`modal-${type}`).classList.add('open');
@@ -2176,6 +2311,119 @@ async function saveIssue(){
   btn.disabled=false;btn.textContent='Save Issue';
   if(error){err.textContent=error.message;return;}
   closeModal('issue');loadIssues();
+  // Auto-route medium/high issues to the appropriate risk register
+  await autoRouteToRisk(payload,id);
+}
+
+// ── AUTO-ROUTING: Context Issue → Risk Register ───────────────────────────
+// Classification logic based on ISO 45001 (HSE) vs ISO 9001 (QR):
+//   → HSE if factor_type is Environmental / Climate Change / Physical / Biological / Chemical / Ergonomic / Fire / Radiation / Noise
+//   → HSE if swot_type is Threat/Weakness AND issue description contains OH&S keywords
+//   → QR for all other medium/high issues
+const HSE_FACTOR_TYPES=['Environmental','Climate Change'];
+const HSE_KEYWORDS=/\b(injur|health|safety|hazard|fire|chemical|biological|ergon|psycho|ppe|radiation|noise|vibrat|accident|incident|fatality|electr|manual.handl|toxic|exposure|falls?|burn|cut|strain|sprain)\b/i;
+function isHSEIssue(payload){
+  if(HSE_FACTOR_TYPES.includes(payload.factor_type))return true;
+  if(payload.swot_type==='Threat'&&HSE_KEYWORDS.test(payload.issue_description||''))return true;
+  return false;
+}
+async function autoRouteToRisk(payload,existingIssueId){
+  const rating=payload.impact_level&&payload.likelihood?payload.impact_level*payload.likelihood:0;
+  if(rating<5)return; // Only Medium (5-9) or High (10-16) or Critical (17+)
+  const level=riskLevel(rating);
+  // Only route Threats and Weaknesses (negative issues) and Opportunities
+  const swot=payload.swot_type;
+  if(!swot&&rating<5)return; // No routing if unclassified and low risk
+  const routeToHSE=isHSEIssue(payload);
+  // Check if this context issue already has a linked risk (don't double-create on edit)
+  if(existingIssueId&&issueCache[existingIssueId]?.linked_risk_id)return;
+  if(routeToHSE){
+    // Create HSE risk entry
+    const{count}=await sb.from('qms_hse_risk').select('id',{count:'exact',head:true});
+    const riskId=`HSE-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+    const hsePayload={
+      risk_id:riskId,
+      source:'Context Register',
+      source_ref:payload.record_id,
+      hazard:payload.issue_description,
+      hazard_category:payload.factor_type==='Climate Change'?'Environmental / Climate':payload.factor_type,
+      persons_at_risk:'To be assessed',
+      likelihood:payload.likelihood,
+      consequence:payload.impact_level,
+      risk_rating:rating,
+      existing_controls:payload.response_action||null,
+      responsible_person:payload.owner||null,
+      review_date:payload.review_date||null,
+      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Potential impact: ${payload.potential_impact||'—'}`,
+      status:'open',
+      date_assessed:new Date().toISOString().split('T')[0],
+      updated_at:new Date().toISOString()
+    };
+    const{error}=await sb.from('qms_hse_risk').insert([hsePayload]);
+    if(!error){
+      // Update context issue with linked risk ID
+      if(payload.id)await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'hse'}).eq('id',payload.id);
+      loadHSE();loadIssues();
+      showToast('🦺','Routed to HSE Risk Register',`${riskId} created — ${level.label} risk (${rating}/25). Open the HSE Register to complete the HIRA assessment.`);
+    }
+  } else {
+    // Create Quality Risk entry
+    const{count}=await sb.from('qms_quality_risk').select('id',{count:'exact',head:true});
+    const riskId=`QR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+    const isOpp=(swot==='Opportunity'||swot==='Strength');
+    const qrPayload={
+      risk_id:riskId,
+      risk_type:isOpp?'Opportunity':'Risk',
+      source:'Context Register',
+      source_ref:payload.record_id,
+      risk_title:payload.issue_description.substring(0,120),
+      risk_category:contextCategoryToQRCategory(payload.factor_type),
+      qms_process:'Context & Strategy',
+      date_raised:new Date().toISOString().split('T')[0],
+      risk_description:payload.issue_description,
+      potential_cause:`${payload.factor_type||''} factor — ${swot||''}`,
+      potential_consequence:payload.potential_impact||null,
+      existing_controls:payload.response_action||null,
+      likelihood:payload.likelihood,
+      impact:payload.impact_level,
+      risk_rating:rating,
+      risk_owner:payload.owner||null,
+      review_date:payload.review_date||null,
+      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}.`,
+      status:'open',
+      updated_at:new Date().toISOString()
+    };
+    const{error}=await sb.from('qms_quality_risk').insert([qrPayload]);
+    if(!error){
+      if(payload.id)await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'qr'}).eq('id',payload.id);
+      loadQR();loadIssues();
+      const icon=isOpp?'🚀':'⚠️';
+      showToast(icon,`Routed to Quality Risk Register`,`${riskId} created — ${level.label} ${isOpp?'opportunity':'risk'} (${rating}/25). Open the Quality Risk Register to complete the assessment.`);
+    }
+  }
+}
+function contextCategoryToQRCategory(factorType){
+  const map={Political:'Compliance / Legal',Economic:'Strategic / Context',Social:'Strategic / Context',Technological:'Infrastructure / Technology',Legal:'Compliance / Legal',Environmental:'Compliance / Legal','Climate Change':'Compliance / Legal',Organisational:'Process',Market:'Strategic / Context'};
+  return map[factorType]||'Strategic / Context';
+}
+
+// ── TOAST NOTIFICATIONS ────────────────────────────────────────────────────
+let _toastTimer=null;
+function showToast(icon,title,body,duration=6000){
+  document.getElementById('toast-icon').textContent=icon;
+  document.getElementById('toast-title').textContent=title;
+  document.getElementById('toast-body').textContent=body;
+  const el=document.getElementById('toast-notification');
+  el.style.display='block';
+  el.style.opacity='0';el.style.transform='translateY(12px)';
+  requestAnimationFrame(()=>{el.style.transition='opacity .3s,transform .3s';el.style.opacity='1';el.style.transform='translateY(0)';});
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(hideToast,duration);
+}
+function hideToast(){
+  const el=document.getElementById('toast-notification');
+  el.style.opacity='0';el.style.transform='translateY(12px)';
+  setTimeout(()=>{el.style.display='none';},300);
 }
 
 // ── INTERESTED PARTIES (§4.2) ─────────────────────────────────────────────
@@ -2259,26 +2507,32 @@ function calcHSEResidual(){
 const HSE_STATUS_BADGE={open:'badge-red',in_progress:'badge-amber',closed:'badge-green',reviewed:'badge-green'};
 let hseCache={};
 async function loadHSE(){
-  const tb=document.getElementById('hse-tbody');tb.innerHTML=rowSpin(12);
+  const tb=document.getElementById('hse-tbody');tb.innerHTML=rowSpin(16);
   const{data,error}=await sb.from('qms_hse_risk').select('*').order('risk_rating',{ascending:false});
-  if(error){tb.innerHTML=emptyRow(12,error.message);return;}
-  if(!data?.length){tb.innerHTML=emptyRow(12);return;}
+  if(error){tb.innerHTML=emptyRow(16,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(16);return;}
   hseCache=Object.fromEntries(data.map(r=>[r.id,r]));
   tb.innerHTML=data.map(r=>{
     const lvl=riskLevel(r.risk_rating||0);
+    const rlvl=r.residual_rating?riskLevel(r.residual_rating):null;
+    const ctrlApplied=[r.ctrl_elimination&&'E',r.ctrl_substitution&&'S',r.ctrl_engineering&&'Eng',r.ctrl_administrative&&'Adm',r.ctrl_ppe&&'PPE'].filter(Boolean);
     return`<tr>
       <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.risk_id)}</td>
-      <td class="font-semibold" style="max-width:160px;white-space:normal">${esc(r.hazard)}</td>
-      <td><span class="badge badge-slate">${esc(r.hazard_category)}</span></td>
-      <td class="td-muted">${esc(r.location_activity||'–')}</td>
-      <td class="td-muted">${esc(r.persons_at_risk||'–')}</td>
+      <td class="font-semibold" style="max-width:140px;white-space:normal">${esc(r.hazard)}</td>
+      <td><span class="badge badge-slate" style="white-space:nowrap">${esc(r.hazard_category||'–')}</span></td>
+      <td class="td-muted text-xs">${esc((r.activity_task?r.activity_task+' · ':'')+( r.location_activity||''))||'–'}</td>
+      <td class="td-muted text-xs">${esc(r.persons_at_risk||'–')}</td>
+      <td class="td-muted text-xs" style="max-width:120px;white-space:normal">${esc(r.harm_potential||'–')}</td>
       <td class="text-center font-bold">${r.likelihood??'–'}</td>
       <td class="text-center font-bold">${r.consequence??'–'}</td>
       <td class="text-center font-bold">${r.risk_rating??'–'}</td>
       <td><span class="badge ${lvl.cls}">${lvl.label}</span></td>
-      <td class="td-muted">${esc(r.responsible_person||'–')}</td>
+      <td>${ctrlApplied.length?ctrlApplied.map(c=>`<span class="badge badge-blue" style="margin:1px 2px">${c}</span>`).join(''):'<span class="td-muted">–</span>'}</td>
+      <td class="text-center">${rlvl?`<span class="badge ${rlvl.cls}">${r.residual_rating} ${rlvl.label}</span>`:'<span class="td-muted">–</span>'}</td>
+      <td class="text-center">${r.alarp_justified?'<span class="badge badge-green">✓</span>':'<span class="td-muted">–</span>'}</td>
+      <td class="td-muted text-xs">${r.source_ref?`<span class="font-mono text-amber-700">${esc(r.source_ref)}</span>`:(r.source?esc(r.source):'–')}</td>
       <td><span class="badge ${HSE_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
-      <td><div class="flex gap-2">
+      <td><div class="flex gap-1">
         <button class="btn btn-ghost btn-sm" onclick="editHSE('${r.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="delRecord('qms_hse_risk','${r.id}','hse')">Del</button>
       </div></td>
@@ -2297,11 +2551,12 @@ async function saveHSE(){
     const{count}=await sb.from('qms_hse_risk').select('id',{count:'exact',head:true});
     riskId=`HSE-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
+  const g=f=>document.getElementById(f)?.value?.trim()||null;
   const l=parseInt(document.getElementById('hse-likelihood').value)||3;
   const c=parseInt(document.getElementById('hse-consequence').value)||3;
   const rl=parseInt(document.getElementById('hse-res-likelihood').value)||null;
   const rc=parseInt(document.getElementById('hse-res-consequence').value)||null;
-  const payload={risk_id:riskId,hazard,hazard_category:document.getElementById('hse-category').value,location_activity:document.getElementById('hse-location').value.trim()||null,persons_at_risk:document.getElementById('hse-persons').value.trim()||null,existing_controls:document.getElementById('hse-existing-controls').value.trim()||null,likelihood:l,consequence:c,risk_rating:l*c,additional_controls:document.getElementById('hse-additional-controls').value.trim()||null,responsible_person:document.getElementById('hse-responsible').value.trim()||null,target_date:document.getElementById('hse-target-date').value||null,residual_likelihood:rl,residual_consequence:rc,residual_rating:rl&&rc?rl*rc:null,status:document.getElementById('hse-status').value,review_date:document.getElementById('hse-review-date').value||null,notes:document.getElementById('hse-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  const payload={risk_id:riskId,source:document.getElementById('hse-source').value,source_ref:g('hse-source-ref'),hazard,hazard_category:document.getElementById('hse-category').value,activity_task:g('hse-activity-task'),location_activity:g('hse-location'),persons_at_risk:g('hse-persons'),hazard_event:g('hse-hazard-event'),harm_potential:g('hse-harm-potential'),legal_requirement:g('hse-legal-requirement'),existing_controls:g('hse-existing-controls'),likelihood:l,consequence:c,risk_rating:l*c,ctrl_elimination:g('hse-ctrl-elimination'),ctrl_substitution:g('hse-ctrl-substitution'),ctrl_engineering:g('hse-ctrl-engineering'),ctrl_administrative:g('hse-ctrl-administrative'),ctrl_ppe:g('hse-ctrl-ppe'),additional_controls:g('hse-additional-controls'),responsible_person:g('hse-responsible'),target_date:document.getElementById('hse-target-date').value||null,date_assessed:document.getElementById('hse-date-assessed').value||null,residual_likelihood:rl,residual_consequence:rc,residual_rating:rl&&rc?rl*rc:null,alarp_justified:document.getElementById('hse-alarp')?.checked||false,status:document.getElementById('hse-status').value,review_date:document.getElementById('hse-review-date').value||null,notes:g('hse-notes'),updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_hse_risk').update(payload).eq('id',id):await sb.from('qms_hse_risk').insert([payload]);
   btn.disabled=false;btn.textContent='Save Risk';
@@ -2325,26 +2580,32 @@ function calcQRResidual(){
 const QR_STATUS_BADGE={open:'badge-red',under_treatment:'badge-amber',accepted:'badge-blue',closed:'badge-green'};
 let qrCache={};
 async function loadQR(){
-  const tb=document.getElementById('qr-tbody');tb.innerHTML=rowSpin(12);
+  const tb=document.getElementById('qr-tbody');tb.innerHTML=rowSpin(15);
   const{data,error}=await sb.from('qms_quality_risk').select('*').order('risk_rating',{ascending:false});
-  if(error){tb.innerHTML=emptyRow(12,error.message);return;}
-  if(!data?.length){tb.innerHTML=emptyRow(12);return;}
+  if(error){tb.innerHTML=emptyRow(15,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(15);return;}
   qrCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  const TREAT_ICON={Avoid:'🚫',Reduce:'⬇️',Transfer:'🔄',Accept:'✅',Exploit:'🚀',Enhance:'📈',Share:'🤝'};
   tb.innerHTML=data.map(r=>{
     const lvl=riskLevel(r.risk_rating||0);
+    const rlvl=r.residual_rating?riskLevel(r.residual_rating):null;
+    const isOpp=(r.risk_type==='Opportunity');
     return`<tr>
       <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.risk_id)}</td>
-      <td class="font-semibold" style="max-width:160px;white-space:normal">${esc(r.risk_title)}</td>
-      <td><span class="badge badge-blue">${esc(r.risk_category)}</span></td>
-      <td class="td-muted">${esc(r.affected_process||'–')}</td>
+      <td class="font-semibold" style="max-width:150px;white-space:normal">${esc(r.risk_title)}</td>
+      <td><span class="badge ${isOpp?'badge-green':'badge-red'}" style="white-space:nowrap">${isOpp?'🚀 Opp':'⚠️ Risk'}</span></td>
+      <td><span class="badge badge-blue" style="white-space:nowrap">${esc(r.risk_category||'–')}</span></td>
+      <td class="td-muted text-xs">${r.source_ref?`<span class="font-mono text-amber-700">${esc(r.source_ref)}</span>`:(r.source?esc(r.source):'–')}</td>
+      <td class="td-muted text-xs">${esc(r.qms_process||'–')}</td>
       <td class="text-center font-bold">${r.likelihood??'–'}</td>
       <td class="text-center font-bold">${r.impact??'–'}</td>
       <td class="text-center font-bold">${r.risk_rating??'–'}</td>
       <td><span class="badge ${lvl.cls}">${lvl.label}</span></td>
-      <td class="td-muted">${esc(r.risk_owner||'–')}</td>
-      <td style="max-width:160px;white-space:normal;font-size:12px">${esc(r.treatment_action||'–')}</td>
+      <td class="td-muted text-xs">${r.treatment_option?`${TREAT_ICON[r.treatment_option]||''} ${esc(r.treatment_option)}`:'–'}</td>
+      <td class="td-muted text-xs">${esc(r.risk_owner||'–')}</td>
+      <td class="text-center">${rlvl?`<span class="badge ${rlvl.cls}">${r.residual_rating} ${rlvl.label}</span>`:'<span class="td-muted">–</span>'}</td>
       <td><span class="badge ${QR_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
-      <td><div class="flex gap-2">
+      <td><div class="flex gap-1">
         <button class="btn btn-ghost btn-sm" onclick="editQR('${r.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="delRecord('qms_quality_risk','${r.id}','qr')">Del</button>
       </div></td>
@@ -2363,11 +2624,12 @@ async function saveQR(){
     const{count}=await sb.from('qms_quality_risk').select('id',{count:'exact',head:true});
     riskId=`QR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
+  const gq=f=>document.getElementById(f)?.value?.trim()||null;
   const l=parseInt(document.getElementById('qr-likelihood').value)||3;
   const i=parseInt(document.getElementById('qr-impact').value)||3;
   const rl=parseInt(document.getElementById('qr-res-likelihood').value)||null;
   const ri=parseInt(document.getElementById('qr-res-impact').value)||null;
-  const payload={risk_id:riskId,risk_title:title,risk_category:document.getElementById('qr-category').value,risk_description:document.getElementById('qr-description').value.trim()||null,potential_cause:document.getElementById('qr-cause').value.trim()||null,potential_consequence:document.getElementById('qr-consequence').value.trim()||null,affected_process:document.getElementById('qr-affected-process').value.trim()||null,existing_controls:document.getElementById('qr-existing-controls').value.trim()||null,likelihood:l,impact:i,risk_rating:l*i,treatment_action:document.getElementById('qr-treatment').value.trim()||null,risk_owner:document.getElementById('qr-owner').value.trim()||null,target_date:document.getElementById('qr-target-date').value||null,residual_likelihood:rl,residual_impact:ri,residual_rating:rl&&ri?rl*ri:null,status:document.getElementById('qr-status').value,review_date:document.getElementById('qr-review-date').value||null,notes:document.getElementById('qr-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  const payload={risk_id:riskId,risk_title:title,risk_type:document.getElementById('qr-risk-type').value,risk_category:document.getElementById('qr-category').value,source:document.getElementById('qr-source').value,source_ref:gq('qr-source-ref'),qms_process:gq('qr-qms-process'),date_raised:document.getElementById('qr-date-raised').value||null,risk_description:gq('qr-description'),potential_cause:gq('qr-cause'),potential_consequence:gq('qr-consequence'),affected_process:gq('qr-affected-process'),existing_controls:gq('qr-existing-controls'),likelihood:l,impact:i,risk_rating:l*i,treatment_option:gq('qr-treatment-option'),treatment_action:gq('qr-treatment'),risk_owner:gq('qr-owner'),target_date:document.getElementById('qr-target-date').value||null,residual_likelihood:rl,residual_impact:ri,residual_rating:rl&&ri?rl*ri:null,status:document.getElementById('qr-status').value,review_date:document.getElementById('qr-review-date').value||null,notes:gq('qr-notes'),updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_quality_risk').update(payload).eq('id',id):await sb.from('qms_quality_risk').insert([payload]);
   btn.disabled=false;btn.textContent='Save Risk';
