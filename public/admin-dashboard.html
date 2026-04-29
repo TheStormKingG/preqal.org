@@ -308,7 +308,7 @@
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Industry</th><th>Tier</th><th>Employees</th><th>Services</th><th>Proc/Svc</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Pipeline</th><th>Onboarding</th><th>Tier</th><th>Source</th><th>Contract</th><th>Next Action</th><th>Due</th><th>Actions</th></tr></thead>
             <tbody id="crm-tbody"><tr><td colspan="11" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
@@ -327,30 +327,77 @@
     </div>
     <div class="p-7 space-y-5">
       <input type="hidden" id="crm-id">
-      <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Company Name *</label><input id="crm-company" class="field" type="text" placeholder="Acme Corporation Ltd."></div>
-      <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Address</label><input id="crm-address" class="field" type="text" placeholder="123 Main St, Georgetown, Guyana"></div>
+
+      <!-- Company Info -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600">Company</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Company Name *</label><input id="crm-company" class="field" type="text" placeholder="Acme Corporation Ltd."></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Address</label><input id="crm-address" class="field" type="text" placeholder="123 Main St, Georgetown, Guyana"></div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Contact Name *</label><input id="crm-contact-name" class="field" type="text" placeholder="Jane Smith"></div>
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Contact Tel</label><input id="crm-contact-tel" class="field" type="tel" placeholder="+592 600-0000"></div>
-      </div>
-      <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Contact Email</label><input id="crm-contact-email" class="field" type="email" placeholder="jane@acme.com"></div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Industry</label>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Industry</label>
           <select id="crm-industry" class="field"><option value="">Select…</option><option>Agriculture</option><option>Construction</option><option>Education</option><option>Energy &amp; Utilities</option><option>Financial Services</option><option>Food &amp; Beverage</option><option>Government</option><option>Healthcare</option><option>Hospitality &amp; Tourism</option><option>Information Technology</option><option>Legal Services</option><option>Logistics &amp; Transport</option><option>Manufacturing</option><option>Media &amp; Communications</option><option>Mining &amp; Extraction</option><option>Non-Profit</option><option>Professional Services</option><option>Real Estate</option><option>Retail</option><option>Other</option></select>
         </div>
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Tier</label>
-          <select id="crm-tier" class="field"><option value="">Select…</option><option>T1</option><option>T2</option><option>T3</option><option>T4</option><option>T5</option><option>T6</option></select>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Tier</label>
+          <select id="crm-tier" class="field"><option value="">Select…</option><option>Starter</option><option>Growth</option><option>Scale</option></select>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-4">
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Employees</label><input id="crm-employees" class="field" type="number" min="1" placeholder="0"></div>
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Services</label><input id="crm-services" class="field" type="number" min="1" placeholder="0"></div>
-        <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Proc / Service</label><input id="crm-processes" class="field" type="number" min="1" placeholder="0"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Employees</label><input id="crm-employees" class="field" type="number" min="1" placeholder="0"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Services</label><input id="crm-services" class="field" type="number" min="1" placeholder="0"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Proc / Service</label><input id="crm-processes" class="field" type="number" min="1" placeholder="0"></div>
       </div>
-      <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Status</label>
-        <select id="crm-status" class="field"><option value="active">Active</option><option value="onboarding">Onboarding</option><option value="paused">Paused</option><option value="churned">Churned</option></select>
+
+      <!-- Contact -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Contact</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Name *</label><input id="crm-contact-name" class="field" type="text" placeholder="Jane Smith"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Tel</label><input id="crm-contact-tel" class="field" type="tel" placeholder="+592 600-0000"></div>
       </div>
-      <div><label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Notes</label><textarea id="crm-notes" class="field" rows="3" placeholder="Internal notes…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Email</label><input id="crm-contact-email" class="field" type="email" placeholder="jane@acme.com"></div>
+
+      <!-- Pipeline -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Pipeline & Onboarding</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Pipeline Stage</label>
+          <select id="crm-pipeline" class="field">
+            <option value="prospect">Prospect</option>
+            <option value="qualified">Qualified</option>
+            <option value="proposal_sent">Proposal Sent</option>
+            <option value="negotiating">Negotiating</option>
+            <option value="closed_won">Closed Won ✓</option>
+            <option value="closed_lost">Closed Lost</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Onboarding Stage</label>
+          <select id="crm-onboarding" class="field">
+            <option value="not_started">Not Started</option>
+            <option value="welcome">1 · Welcome</option>
+            <option value="discovery">2 · Discovery</option>
+            <option value="design">3 · Design</option>
+            <option value="implementation">4 · Implementation</option>
+            <option value="sign_off">5 · Sign-Off</option>
+            <option value="retention">6 · Retention</option>
+            <option value="complete">Complete</option>
+          </select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Lead Source</label>
+        <select id="crm-source" class="field"><option value="">Select…</option><option>LinkedIn</option><option>Facebook</option><option>Substack</option><option>Organic / SEO</option><option>Referral</option><option>Outbound</option><option>Other</option></select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contract Value</label><input id="crm-contract-value" class="field" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Client Since</label><input id="crm-client-since" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Renewal Date <span style="font-weight:400;text-transform:none;letter-spacing:0">(retainer clients)</span></label><input id="crm-renewal-date" class="field" type="date"></div>
+
+      <!-- Next Action -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Next Action</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Next Action</label><input id="crm-next-action" class="field" type="text" placeholder="Send proposal, Follow up call, Schedule kickoff…"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Due Date</label><input id="crm-next-action-date" class="field" type="date"></div>
+
+      <!-- Notes -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Notes</p>
+      <div><textarea id="crm-notes" class="field" rows="4" placeholder="Meeting summaries, key context, important details…"></textarea></div>
+
       <p id="crm-save-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-7 py-5 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
@@ -535,29 +582,38 @@ async function loadTraffic(period) {
 }
 
 // ── CRM ───────────────────────────────────────────────────────────────────
+const PIPELINE_BADGE={prospect:'badge-slate',qualified:'badge-blue',proposal_sent:'badge-blue',negotiating:'badge-amber',closed_won:'badge-green',closed_lost:'badge-slate'};
+const PIPELINE_LABEL={prospect:'Prospect',qualified:'Qualified',proposal_sent:'Proposal Sent',negotiating:'Negotiating',closed_won:'✓ Closed Won',closed_lost:'Closed Lost'};
+const ONBOARDING_BADGE={not_started:'badge-slate',welcome:'badge-blue',discovery:'badge-blue',design:'badge-blue',implementation:'badge-amber',sign_off:'badge-green',retention:'badge-green',complete:'badge-green'};
+const ONBOARDING_LABEL={not_started:'–',welcome:'1 · Welcome',discovery:'2 · Discovery',design:'3 · Design',implementation:'4 · Impl.',sign_off:'5 · Sign-Off',retention:'6 · Retention',complete:'Complete'};
 async function loadCRM() {
   const tb=document.getElementById('crm-tbody');tb.innerHTML=row(11);
   const{data,error}=await sb.from('crm_clients').select('*').order('created_at',{ascending:false});
   if(error){tb.innerHTML=empty(11,error.message);return;}
   set('ov-crm',data?.length??0);
   if(!data?.length){tb.innerHTML=empty(11);return;}
-  const sm={active:'badge-green',onboarding:'badge-blue',paused:'badge-amber',churned:'badge-slate'};
-  tb.innerHTML=data.map(r=>`<tr>
-    <td class="font-semibold">${esc(r.company_name)}</td>
-    <td>${esc(r.contact_name||'–')}</td>
-    <td>${esc(r.contact_email||'–')}</td>
-    <td class="td-muted">${esc(r.contact_tel||'–')}</td>
-    <td class="td-muted">${esc(r.industry_category||'–')}</td>
-    <td><span class="badge badge-amber">${esc(r.tier||'–')}</span></td>
-    <td class="text-center">${r.num_employees??'–'}</td>
-    <td class="text-center">${r.num_services??'–'}</td>
-    <td class="text-center">${r.num_processes_per_service??'–'}</td>
-    <td><span class="badge ${sm[r.status]||'badge-slate'}">${esc(r.status||'–')}</span></td>
-    <td><div class="flex gap-2">
-      <button class="btn btn-ghost btn-sm" onclick="editClient('${r.id}')">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteClient('${r.id}','${esc(r.company_name)}')">Delete</button>
-    </div></td>
-  </tr>`).join('');
+  tb.innerHTML=data.map(r=>{
+    const ps=r.pipeline_stage||'prospect',os=r.onboarding_stage||'not_started';
+    const due=r.next_action_date?fmtDate(r.next_action_date):'–';
+    const dueCls=r.next_action_date&&new Date(r.next_action_date)<new Date()?'style="color:#b91c1c;font-weight:700"':'';
+    const cv=r.contract_value!=null?'$'+Number(r.contract_value).toLocaleString('en'):'–';
+    return`<tr>
+      <td class="font-semibold">${esc(r.company_name)}</td>
+      <td>${esc(r.contact_name||'–')}</td>
+      <td class="td-muted" style="font-size:12px">${esc(r.contact_email||'–')}</td>
+      <td><span class="badge ${PIPELINE_BADGE[ps]||'badge-slate'}">${PIPELINE_LABEL[ps]||esc(ps)}</span></td>
+      <td><span class="badge ${ONBOARDING_BADGE[os]||'badge-slate'}" style="font-size:10px">${ONBOARDING_LABEL[os]||esc(os)}</span></td>
+      <td><span class="badge badge-amber">${esc(r.tier||'–')}</span></td>
+      <td class="td-muted">${esc(r.source||'–')}</td>
+      <td class="font-medium">${cv}</td>
+      <td style="max-width:160px;white-space:normal;font-size:12px;line-height:1.4">${esc(r.next_action||'–')}</td>
+      <td class="td-muted" ${dueCls}>${due}</td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="editClient('${r.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${r.id}','${esc(r.company_name)}')">Del</button>
+      </div></td>
+    </tr>`;
+  }).join('');
   clientCache=Object.fromEntries(data.map(r=>[r.id,r]));
 }
 
@@ -566,10 +622,13 @@ async function openClientModal(id){
   document.getElementById('crm-modal-title').textContent=id?'Edit Client':'Add Client';
   document.getElementById('crm-id').value=id||'';
   document.getElementById('crm-save-error').textContent='';
-  ['company','address','contact-name','contact-tel','contact-email','notes'].forEach(f=>document.getElementById('crm-'+f).value='');
-  ['industry','tier'].forEach(f=>document.getElementById('crm-'+f).value='');
-  ['employees','services','processes'].forEach(f=>document.getElementById('crm-'+f).value='');
-  document.getElementById('crm-status').value='active';
+  // Reset all fields
+  ['company','address','contact-name','contact-tel','contact-email','next-action','notes'].forEach(f=>document.getElementById('crm-'+f).value='');
+  ['industry','tier','source'].forEach(f=>document.getElementById('crm-'+f).value='');
+  ['employees','services','processes','contract-value'].forEach(f=>document.getElementById('crm-'+f).value='');
+  ['client-since','renewal-date','next-action-date'].forEach(f=>document.getElementById('crm-'+f).value='');
+  document.getElementById('crm-pipeline').value='prospect';
+  document.getElementById('crm-onboarding').value='not_started';
   if(id&&clientCache[id]){
     const r=clientCache[id];
     document.getElementById('crm-company').value=r.company_name||'';
@@ -582,8 +641,15 @@ async function openClientModal(id){
     document.getElementById('crm-employees').value=r.num_employees||'';
     document.getElementById('crm-services').value=r.num_services||'';
     document.getElementById('crm-processes').value=r.num_processes_per_service||'';
+    document.getElementById('crm-pipeline').value=r.pipeline_stage||'prospect';
+    document.getElementById('crm-onboarding').value=r.onboarding_stage||'not_started';
+    document.getElementById('crm-source').value=r.source||'';
+    document.getElementById('crm-contract-value').value=r.contract_value!=null?r.contract_value:'';
+    document.getElementById('crm-client-since').value=r.client_since||'';
+    document.getElementById('crm-renewal-date').value=r.renewal_date||'';
+    document.getElementById('crm-next-action').value=r.next_action||'';
+    document.getElementById('crm-next-action-date').value=r.next_action_date||'';
     document.getElementById('crm-notes').value=r.notes||'';
-    document.getElementById('crm-status').value=r.status||'active';
   }
   document.getElementById('crm-modal-overlay').classList.add('open');
 }
@@ -601,7 +667,29 @@ async function saveClient(){
   errEl.textContent='';
   const company=document.getElementById('crm-company').value.trim(),contact=document.getElementById('crm-contact-name').value.trim();
   if(!company||!contact){errEl.textContent='Company name and contact name are required.';return;}
-  const payload={company_name:company,address:document.getElementById('crm-address').value.trim()||null,contact_name:contact,contact_tel:document.getElementById('crm-contact-tel').value.trim()||null,contact_email:document.getElementById('crm-contact-email').value.trim()||null,industry_category:document.getElementById('crm-industry').value||null,tier:document.getElementById('crm-tier').value||null,num_employees:parseInt(document.getElementById('crm-employees').value)||null,num_services:parseInt(document.getElementById('crm-services').value)||null,num_processes_per_service:parseInt(document.getElementById('crm-processes').value)||null,notes:document.getElementById('crm-notes').value.trim()||null,status:document.getElementById('crm-status').value,updated_at:new Date().toISOString()};
+  const cv=document.getElementById('crm-contract-value').value;
+  const payload={
+    company_name:company,
+    address:document.getElementById('crm-address').value.trim()||null,
+    contact_name:contact,
+    contact_tel:document.getElementById('crm-contact-tel').value.trim()||null,
+    contact_email:document.getElementById('crm-contact-email').value.trim()||null,
+    industry_category:document.getElementById('crm-industry').value||null,
+    tier:document.getElementById('crm-tier').value||null,
+    num_employees:parseInt(document.getElementById('crm-employees').value)||null,
+    num_services:parseInt(document.getElementById('crm-services').value)||null,
+    num_processes_per_service:parseInt(document.getElementById('crm-processes').value)||null,
+    pipeline_stage:document.getElementById('crm-pipeline').value||'prospect',
+    onboarding_stage:document.getElementById('crm-onboarding').value||'not_started',
+    source:document.getElementById('crm-source').value||null,
+    contract_value:cv!==''?parseFloat(cv):null,
+    client_since:document.getElementById('crm-client-since').value||null,
+    renewal_date:document.getElementById('crm-renewal-date').value||null,
+    next_action:document.getElementById('crm-next-action').value.trim()||null,
+    next_action_date:document.getElementById('crm-next-action-date').value||null,
+    notes:document.getElementById('crm-notes').value.trim()||null,
+    updated_at:new Date().toISOString()
+  };
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('crm_clients').update(payload).eq('id',id):await sb.from('crm_clients').insert([payload]);
   btn.disabled=false;btn.textContent='Save Client';
