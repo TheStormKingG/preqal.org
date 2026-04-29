@@ -295,10 +295,6 @@
             <tbody id="traffic-tbody"><tr><td colspan="5" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
-        <div class="neu-card rounded-2xl p-6">
-          <p class="text-sm font-bold text-amber-700 mb-4">📡 Enable tracking — paste this snippet into the <code class="neu-pressed-sm px-1.5 py-0.5 rounded text-xs">&lt;head&gt;</code> of every page on preqal.org</p>
-          <pre class="neu-pressed-sm rounded-xl p-4 text-xs text-slate-700 overflow-x-auto leading-relaxed"><code id="tracking-snippet"></code></pre>
-        </div>
       </div>
 
       <!-- ── CRM ── -->
@@ -390,7 +386,6 @@ function handleSession(session) {
   document.getElementById('header-name').textContent = name;
   document.getElementById('header-avatar').textContent = email[0].toUpperCase();
   document.getElementById('greeting-name').textContent = name;
-  setTrackingSnippet();
   loadAll();
 }
 async function signIn() {
@@ -621,9 +616,6 @@ async function deleteClient(id,name){
   delete clientCache[id];loadCRM();loadOverview();
 }
 
-function setTrackingSnippet(){
-  document.getElementById('tracking-snippet').textContent=`<!-- Preqal Analytics — add to <head> of every page -->\n<script>\n(function(){\n  const SB_URL='${SUPABASE_URL}',SB_KEY='${SUPABASE_KEY}',VID_KEY='preqal_vid';\n  let vid=localStorage.getItem(VID_KEY),isNew=!vid;\n  if(!vid){vid=crypto.randomUUID();localStorage.setItem(VID_KEY,vid);}\n  fetch(SB_URL+'/rest/v1/page_views',{method:'POST',\n    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},\n    body:JSON.stringify({page_path:location.pathname,page_title:document.title,referrer:document.referrer||null,visitor_id:vid,is_new_visitor:isNew,user_agent:navigator.userAgent})\n  });\n})();\n<\/script>`;
-}
 
 function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
