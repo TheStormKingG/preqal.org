@@ -146,7 +146,7 @@
       <!-- Overview stats -->
       <div class="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-8 fade-in">
         <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📁</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Documents</div><div class="text-2xl font-bold text-slate-900" id="ov-docs">–</div><div class="text-xs text-slate-400 mt-0.5">active</div></div>
-        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🏢</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Organisation</div><div class="text-2xl font-bold text-slate-900" id="ov-org">–</div><div class="text-xs text-slate-400 mt-0.5">entities</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🏢</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Context</div><div class="text-2xl font-bold text-slate-900" id="ov-org">–</div><div class="text-xs text-slate-400 mt-0.5">parties</div></div>
         <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">👥</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Employees</div><div class="text-2xl font-bold text-slate-900" id="ov-emp">–</div><div class="text-xs text-slate-400 mt-0.5">active</div></div>
         <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📜</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Legal</div><div class="text-2xl font-bold text-slate-900" id="ov-legal">–</div><div class="text-xs text-slate-400 mt-0.5">obligations</div></div>
         <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📊</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Quality Risks</div><div class="text-2xl font-bold text-slate-900" id="ov-qr">–</div><div class="text-xs text-slate-400 mt-0.5">open</div></div>
@@ -175,7 +175,7 @@
       <!-- Tab Nav -->
       <div class="neu-card rounded-2xl px-4 py-3 mb-6 flex gap-2 flex-wrap fade-in">
         <button class="tab-btn active" id="tab-docs"  onclick="switchTab('docs')">📁 Documents</button>
-        <button class="tab-btn"        id="tab-org"   onclick="switchTab('org')">🏢 Organisation</button>
+        <button class="tab-btn"        id="tab-org"   onclick="switchTab('org')">🏢 Context</button>
         <button class="tab-btn"        id="tab-emp"   onclick="switchTab('emp')">👥 Employees</button>
         <button class="tab-btn"        id="tab-legal" onclick="switchTab('legal')">📜 Legal</button>
         <button class="tab-btn"        id="tab-qr"    onclick="switchTab('qr')">📊 Quality Risks</button>
@@ -253,21 +253,53 @@
         </div></div>
       </div>
 
-      <!-- ── ORGANISATION REGISTER ── -->
+      <!-- ── CONTEXT OF THE ORGANISATION ── -->
       <div id="section-org" class="section-anchor fade-in" style="display:none">
-        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
-          <div>
-            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Organisation &amp; Context Register</h3>
-            <p class="text-sm text-slate-500 mt-0.5">Interested parties, key contacts, suppliers, regulators and internal stakeholders relevant to the QMS.</p>
-          </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Entry</button>
+        <!-- Header -->
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-slate-900 tracking-tight">Context of the Organisation</h3>
+          <p class="text-sm text-slate-500 mt-0.5">ISO 9001:2015 Clause 4 — Internal &amp; external issues (§4.1) and interested parties (§4.2).</p>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
-          <table>
-            <thead><tr><th>ID</th><th>Entity / Name</th><th>Type</th><th>Contact</th><th>Role / Responsibility</th><th>Relevance to QMS</th><th>Status</th><th>Review Date</th><th>Actions</th></tr></thead>
-            <tbody id="org-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
-          </table>
-        </div></div>
+
+        <!-- Sub-tabs -->
+        <div class="neu-card rounded-2xl px-4 py-3 mb-5 flex gap-2 flex-wrap">
+          <button class="tab-btn active" id="ctx-tab-issues" onclick="switchCtxTab('issues')">⚡ Issues Register <span class="text-xs opacity-60">(§4.1)</span></button>
+          <button class="tab-btn"        id="ctx-tab-parties" onclick="switchCtxTab('parties')">🤝 Interested Parties <span class="text-xs opacity-60">(§4.2)</span></button>
+        </div>
+
+        <!-- §4.1 Issues Register -->
+        <div id="ctx-section-issues">
+          <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+            <div>
+              <p class="text-sm font-semibold text-slate-700">Internal &amp; External Issues (ISO 9001 §4.1)</p>
+              <p class="text-xs text-slate-400 mt-0.5">All factors — PESTLE, SWOT, climate change — that affect the QMS and strategic direction.</p>
+            </div>
+            <button class="btn btn-amber btn-sm" onclick="openModal('issue')">+ Add Issue</button>
+          </div>
+          <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Issue / Factor</th><th>Category</th><th>Type</th><th>SWOT</th><th>Impact Area</th><th>Impact</th><th>Likelihood</th><th>Rating</th><th>Response</th><th>Owner</th><th>Status</th><th>Review</th><th>Actions</th></tr></thead>
+              <tbody id="issue-tbody"><tr><td colspan="14" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            </table>
+          </div></div>
+        </div>
+
+        <!-- §4.2 Interested Parties Register -->
+        <div id="ctx-section-parties" style="display:none">
+          <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+            <div>
+              <p class="text-sm font-semibold text-slate-700">Interested Parties (ISO 9001 §4.2)</p>
+              <p class="text-xs text-slate-400 mt-0.5">All parties whose needs and expectations are relevant to the QMS.</p>
+            </div>
+            <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Party</button>
+          </div>
+          <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Name / Entity</th><th>Context</th><th>Party Type</th><th>Needs &amp; Expectations</th><th>Requirements</th><th>Compliance</th><th>Priority</th><th>Engagement</th><th>Status</th><th>Review</th><th>Actions</th></tr></thead>
+              <tbody id="org-tbody"><tr><td colspan="12" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            </table>
+          </div></div>
+        </div>
       </div>
 
       <!-- ── HSE RISK REGISTER ── -->
@@ -754,40 +786,162 @@
   </div>
 </div>
 
-<!-- ══ ORGANISATION MODAL ══ -->
+<!-- ══ INTERESTED PARTY MODAL (§4.2) ══ -->
 <div class="modal-overlay" id="modal-org" onclick="closeModal('org',event)">
-  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+  <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
-      <h3 class="text-base font-bold text-slate-900" id="org-modal-title">Add Organisation Entry</h3>
+      <h3 class="text-base font-bold text-slate-900" id="org-modal-title">Add Interested Party</h3>
       <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('org')">×</button>
     </div>
     <div class="p-6 space-y-4">
       <input type="hidden" id="org-id">
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🤝 Party Identity</p>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Entity / Name *</label><input id="org-entity-name" class="field" type="text" placeholder="Company or person name"></div>
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Type</label>
-          <select id="org-entity-type" class="field"><option>Internal</option><option>External</option><option>Supplier</option><option>Customer</option><option>Regulator</option><option>Partner</option><option>Interested Party</option></select>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Name / Entity *</label><input id="org-entity-name" class="field" type="text" placeholder="Organisation or person name"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Context</label>
+          <select id="org-context-type" class="field">
+            <option value="External">External</option>
+            <option value="Internal">Internal</option>
+          </select>
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Name</label><input id="org-contact-name" class="field" type="text" placeholder="Primary contact"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Party Type</label>
+          <select id="org-entity-type" class="field">
+            <option>Customer</option><option>Supplier</option><option>Regulator</option><option>Employee</option>
+            <option>Employee Representative</option><option>Shareholder / Owner</option><option>Certification Body</option>
+            <option>Government Agency</option><option>Community / Public</option><option>Partner / JV</option>
+            <option>Competitor</option><option>Media</option><option>Other</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Priority</label>
+          <select id="org-priority" class="field">
+            <option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📋 QMS Requirements</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Needs &amp; Expectations</label><textarea id="org-needs-expectations" class="field" rows="2" placeholder="What does this party need or expect from the organisation?"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Relevant Requirements <span class="text-slate-300 font-normal">(standards, laws, contracts, specifications)</span></label><textarea id="org-relevant-requirements" class="field" rows="2" placeholder="e.g. ISO 9001, contract clause 7, Health & Safety Act"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Compliance Obligation?</label>
+          <select id="org-compliance-obligation" class="field">
+            <option value="false">No — monitored voluntarily</option>
+            <option value="true">Yes — mandatory / legal</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Engagement Method</label><input id="org-engagement-method" class="field" type="text" placeholder="e.g. quarterly review, survey, contract"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Role / Responsibility in QMS</label><textarea id="org-role-responsibility" class="field" rows="2" placeholder="What role do they play in the quality management system?"></textarea></div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📞 Contact Details</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Name</label><input id="org-contact-name" class="field" type="text" placeholder="Primary contact person"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Email</label><input id="org-contact-email" class="field" type="email" placeholder="email@example.com"></div>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Phone</label><input id="org-contact-phone" class="field" type="text" placeholder="+61 400 000 000"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Phone</label><input id="org-contact-phone" class="field" type="text" placeholder="+592 000 0000"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
           <select id="org-status" class="field"><option value="active">Active</option><option value="inactive">Inactive</option><option value="under_review">Under Review</option></select>
         </div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Role / Responsibility</label><textarea id="org-role-responsibility" class="field" rows="2" placeholder="What role or responsibility do they hold in relation to quality?"></textarea></div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Relevance to QMS</label><textarea id="org-relevance" class="field" rows="2" placeholder="Why are they relevant to the management system?"></textarea></div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="org-review-date" class="field" type="date"></div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="org-notes" class="field" rows="2" placeholder="Any additional notes…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="org-review-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="org-notes" class="field" rows="2" placeholder="Any additional context or notes…"></textarea></div>
       <p id="org-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
       <button class="btn btn-ghost" onclick="closeModal('org')">Cancel</button>
-      <button class="btn btn-amber" onclick="saveOrg()" id="org-save-btn">Save Entry</button>
+      <button class="btn btn-amber" onclick="saveOrg()" id="org-save-btn">Save Party</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONTEXT ISSUES MODAL (§4.1) ══ -->
+<div class="modal-overlay" id="modal-issue" onclick="closeModal('issue',event)">
+  <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="issue-modal-title">Add Context Issue</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('issue')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="issue-id">
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">⚡ Issue Classification</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Issue / Factor Description *</label><textarea id="issue-description" class="field" rows="3" placeholder="Describe the internal or external issue, factor, or trend affecting the organisation…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
+          <select id="issue-context-category" class="field">
+            <option value="External">External</option>
+            <option value="Internal">Internal</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Factor Type (PESTLE)</label>
+          <select id="issue-factor-type" class="field">
+            <option value="Political">🏛 Political</option>
+            <option value="Economic">💰 Economic</option>
+            <option value="Social">👥 Social / Demographic</option>
+            <option value="Technological">💻 Technological</option>
+            <option value="Legal">⚖️ Legal / Regulatory</option>
+            <option value="Environmental">🌿 Environmental</option>
+            <option value="Climate Change">🌍 Climate Change</option>
+            <option value="Organisational">🏢 Organisational (Internal)</option>
+            <option value="Market">📈 Market / Competitive</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">SWOT Classification</label>
+          <select id="issue-swot-type" class="field">
+            <option value="">— Not classified —</option>
+            <option value="Strength">💪 Strength (Internal positive)</option>
+            <option value="Weakness">⚠️ Weakness (Internal negative)</option>
+            <option value="Opportunity">🚀 Opportunity (External positive)</option>
+            <option value="Threat">🔴 Threat (External negative)</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="issue-status" class="field">
+            <option value="active">Active — being monitored</option>
+            <option value="monitored">Monitored — low concern</option>
+            <option value="closed">Closed — no longer relevant</option>
+          </select>
+        </div>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📊 Impact &amp; Risk Assessment</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Impact on QMS / Business</label><textarea id="issue-potential-impact" class="field" rows="2" placeholder="Which QMS objectives, processes, products or services could this affect?"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Impact Level <span class="text-slate-400 font-normal">(1 = Low, 5 = Critical)</span></label>
+          <select id="issue-impact-level" class="field" onchange="calcIssueRating()">
+            <option value="">—</option><option value="1">1 — Negligible</option><option value="2">2 — Minor</option>
+            <option value="3">3 — Moderate</option><option value="4">4 — Significant</option><option value="5">5 — Critical</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Likelihood <span class="text-slate-400 font-normal">(1 = Rare, 5 = Certain)</span></label>
+          <select id="issue-likelihood" class="field" onchange="calcIssueRating()">
+            <option value="">—</option><option value="1">1 — Rare</option><option value="2">2 — Unlikely</option>
+            <option value="3">3 — Possible</option><option value="4">4 — Likely</option><option value="5">5 — Almost Certain</option>
+          </select>
+        </div>
+      </div>
+      <div class="neu-pressed-sm rounded-xl px-4 py-3 flex items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Risk Rating:</span>
+        <span id="issue-rating-display" class="text-base font-bold text-slate-400">— (select impact &amp; likelihood)</span>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-2" style="border-bottom:1px solid rgba(245,158,11,.2)">🛠 Response &amp; Monitoring</p>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Response / Action</label><textarea id="issue-response-action" class="field" rows="2" placeholder="How is the organisation addressing or monitoring this issue?"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Owner / Responsible</label><input id="issue-owner" class="field" type="text" placeholder="Name or department"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="issue-review-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="issue-notes" class="field" rows="2" placeholder="Any additional context or source references…"></textarea></div>
+      <p id="issue-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('issue')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveIssue()" id="issue-save-btn">Save Issue</button>
     </div>
   </div>
 </div>
@@ -1115,7 +1269,7 @@ function switchTab(tab){
 
 // ── LOAD ALL ──────────────────────────────────────────────────────────────
 async function loadAll(){
-  loadOverview();loadDocs();loadOrg();loadEmployees();loadLegal();loadQR();loadHSE();loadNCR();loadCAPA();loadAudit();
+  loadOverview();loadDocs();loadOrg();loadIssues();loadEmployees();loadLegal();loadQR();loadHSE();loadNCR();loadCAPA();loadAudit();
 }
 
 async function loadOverview(){
@@ -1163,13 +1317,14 @@ async function loadDocs(){
 
 async function editDoc(id){if(!docCache[id]){const{data}=await sb.from('qms_documents').select('*').eq('id',id).single();if(data)docCache[id]=data;}openModal('doc',id);}
 async function openModal(type,id){
+  if(type==='issue'){openIssueModal(id);return;}
   const caches={doc:docCache,ncr:ncrCache,capa:capaCache,audit:auditCache,org:orgCache,emp:empCache,legal:legalCache,hse:hseCache,qr:qrCache};
   const fields={
     doc:['doc-id','doc-doc-id','doc-title','doc-category','doc-version','doc-status','doc-owner','doc-file-url','doc-issue-date','doc-review-date','doc-description'],
     ncr:['ncr-id','ncr-title','ncr-description','ncr-source','ncr-severity','ncr-detected-by','ncr-detected-date','ncr-process-area','ncr-status','ncr-immediate-action','ncr-root-cause'],
     capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
     audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary'],
-    org:['org-id','org-entity-name','org-entity-type','org-contact-name','org-contact-email','org-contact-phone','org-status','org-role-responsibility','org-relevance','org-review-date','org-notes'],
+    org:['org-id','org-entity-name','org-context-type','org-entity-type','org-priority','org-needs-expectations','org-relevant-requirements','org-engagement-method','org-role-responsibility','org-contact-name','org-contact-email','org-contact-phone','org-status','org-review-date','org-notes'],
     emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes','emp-profile-pic','emp-dob','emp-nis','emp-tin','emp-id-passport','emp-address','emp-marital-status','emp-dependents','emp-religion','emp-hobby','emp-dietary','emp-allergies','emp-medical','emp-disabilities','emp-bank-name','emp-bank-branch','emp-bank-account','emp-gross','emp-net'],
     legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
     hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
@@ -1180,14 +1335,14 @@ async function openModal(type,id){
     ncr:{'ncr-severity':'minor','ncr-status':'open','ncr-detected-date':new Date().toISOString().split('T')[0]},
     capa:{'capa-type':'corrective','capa-status':'open'},
     audit:{'audit-type':'Internal','audit-status':'planned','audit-minor':'0','audit-major':'0','audit-obs':'0'},
-    org:{'org-entity-type':'Internal','org-status':'active'},
+    org:{'org-context-type':'External','org-entity-type':'Customer','org-priority':'Medium','org-status':'active'},
     emp:{'emp-employment-type':'Full-Time','emp-status':'active'},
     legal:{'legal-category':'Legislation','legal-jurisdiction':'Federal','legal-compliance':'monitoring'},
     hse:{'hse-category':'Physical','hse-status':'open','hse-likelihood':'3','hse-consequence':'3'},
     qr:{'qr-category':'Process','qr-status':'open','qr-likelihood':'3','qr-impact':'3'}
   };
-  const titles={doc:'Add Document',ncr:'Raise NCR',capa:'Add CAPA',audit:'Log Audit',org:'Add Organisation Entry',emp:'Add Employee',legal:'Add Legal Obligation',hse:'Add HSE Risk',qr:'Add Quality Risk'};
-  const editLabels={doc:'Edit Document',ncr:'Edit NCR',capa:'Edit CAPA',audit:'Edit Audit',org:'Edit Entry',emp:'Edit Employee',legal:'Edit Obligation',hse:'Edit HSE Risk',qr:'Edit Quality Risk'};
+  const titles={doc:'Add Document',ncr:'Raise NCR',capa:'Add CAPA',audit:'Log Audit',org:'Add Interested Party',emp:'Add Employee',legal:'Add Legal Obligation',hse:'Add HSE Risk',qr:'Add Quality Risk'};
+  const editLabels={doc:'Edit Document',ncr:'Edit NCR',capa:'Edit CAPA',audit:'Edit Audit',org:'Edit Interested Party',emp:'Edit Employee',legal:'Edit Obligation',hse:'Edit HSE Risk',qr:'Edit Quality Risk'};
   document.getElementById(`${type}-modal-title`).textContent=id?editLabels[type]:titles[type];
   fields[type].forEach(f=>{const el=document.getElementById(f);if(!el)return;el.value=(defaults[type]&&defaults[type][f]!=null)?defaults[type][f]:'';});
   if(type==='ncr')document.getElementById('ncr-create-capa').checked=false;
@@ -1212,13 +1367,18 @@ async function openModal(type,id){
       ncr:{id:'ncr-id',title:'ncr-title',description:'ncr-description',source:'ncr-source',severity:'ncr-severity',detected_by:'ncr-detected-by',detected_date:'ncr-detected-date',process_area:'ncr-process-area',status:'ncr-status',immediate_action:'ncr-immediate-action',root_cause:'ncr-root-cause'},
       capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},
       audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'},
-      org:{id:'org-id',entity_name:'org-entity-name',entity_type:'org-entity-type',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',role_responsibility:'org-role-responsibility',relevance:'org-relevance',review_date:'org-review-date',notes:'org-notes'},
+      org:{id:'org-id',entity_name:'org-entity-name',context_type:'org-context-type',entity_type:'org-entity-type',priority:'org-priority',needs_expectations:'org-needs-expectations',relevant_requirements:'org-relevant-requirements',engagement_method:'org-engagement-method',role_responsibility:'org-role-responsibility',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',review_date:'org-review-date',notes:'org-notes'},
       emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes',date_of_birth:'emp-dob',nis_number:'emp-nis',tin_number:'emp-tin',id_passport_number:'emp-id-passport',address:'emp-address',marital_status:'emp-marital-status',num_dependents:'emp-dependents',religion:'emp-religion',hobby:'emp-hobby',dietary_restriction:'emp-dietary',allergies:'emp-allergies',medical_conditions:'emp-medical',disabilities:'emp-disabilities',bank_name:'emp-bank-name',bank_branch:'emp-bank-branch',bank_account_number:'emp-bank-account',gross_salary:'emp-gross',net_salary:'emp-net'},
       legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
       hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
       qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
     };
     Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
+    // Populate compliance obligation boolean for org
+    if(type==='org'){
+      const co=document.getElementById('org-compliance-obligation');
+      if(co)co.value=r.compliance_obligation?'true':'false';
+    }
     // Set manager dropdown value + populate qualifications + doc fields
     if(type==='emp'){
       if(r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
@@ -1481,7 +1641,7 @@ async function executeDelete(){
   cancelDelete();
   const{error}=await sb.from(table).delete().eq('id',id);
   if(error){alert('Error: '+error.message);return;}
-  const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,emp:()=>{loadEmployees();renderOrgChart(Object.values(empCache).filter(e=>e.status==='active'));},legal:loadLegal,hse:loadHSE,qr:loadQR};
+  const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,issue:loadIssues,emp:()=>{loadEmployees();renderOrgChart(Object.values(empCache).filter(e=>e.status==='active'));},legal:loadLegal,hse:loadHSE,qr:loadQR};
   if(loaders[type])loaders[type]();
   loadOverview();
 }
@@ -1912,24 +2072,136 @@ async function saveLegal(){
 
 // ── ORGANISATION REGISTER ─────────────────────────────────────────────────
 const ORG_TYPE_BADGE={Internal:'badge-blue',External:'badge-slate',Supplier:'badge-amber',Customer:'badge-green',Regulator:'badge-red','Interested Party':'badge-slate',Partner:'badge-blue'};
+// ── CONTEXT TAB SWITCHER ──────────────────────────────────────────────────
+function switchCtxTab(tab){
+  ['issues','parties'].forEach(t=>{
+    document.getElementById(`ctx-section-${t}`).style.display=t===tab?'block':'none';
+    document.getElementById(`ctx-tab-${t}`).classList.toggle('active',t===tab);
+  });
+}
+
+// ── CONTEXT ISSUES (§4.1) ────────────────────────────────────────────────
+const ISSUE_STATUS_BADGE={active:'badge-amber',monitored:'badge-blue',closed:'badge-slate'};
+const ISSUE_SWOT_BADGE={Strength:'badge-green',Weakness:'badge-red',Opportunity:'badge-blue',Threat:'badge-red'};
+let issueCache={};
+function issueRatingBadge(r){if(!r)return'<span class="td-muted">–</span>';if(r<=4)return`<span class="badge badge-green">${r} Low</span>`;if(r<=9)return`<span class="badge badge-amber">${r} Med</span>`;if(r<=16)return`<span class="badge" style="background:rgba(239,68,68,.12);color:#b91c1c">${r} High</span>`;return`<span class="badge" style="background:rgba(239,68,68,.18);color:#7f1d1d">${r} Crit</span>`;}
+function calcIssueRating(){
+  const il=parseInt(document.getElementById('issue-impact-level').value)||0;
+  const lh=parseInt(document.getElementById('issue-likelihood').value)||0;
+  const r=il*lh;
+  const el=document.getElementById('issue-rating-display');
+  if(!r){el.textContent='— (select impact & likelihood)';el.style.color='#94a3b8';return;}
+  const label=r<=4?'Low':r<=9?'Medium':r<=16?'High':'Critical';
+  const col=r<=4?'#065f46':r<=9?'#b45309':'#b91c1c';
+  el.textContent=`${r} — ${label}`;el.style.color=col;
+}
+async function loadIssues(){
+  const tb=document.getElementById('issue-tbody');tb.innerHTML=rowSpin(14);
+  const{data,error}=await sb.from('qms_context_issues').select('*').order('created_at',{ascending:false});
+  if(error){tb.innerHTML=emptyRow(14,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(14);return;}
+  issueCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  const FACTOR_ICON={Political:'🏛',Economic:'💰',Social:'👥',Technological:'💻',Legal:'⚖️',Environmental:'🌿','Climate Change':'🌍',Organisational:'🏢',Market:'📈',Other:'•'};
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.record_id||'–')}</td>
+    <td style="max-width:200px;white-space:normal;font-size:12px;font-weight:600">${esc(r.issue_description)}</td>
+    <td><span class="badge ${r.context_category==='Internal'?'badge-blue':'badge-amber'}">${esc(r.context_category)}</span></td>
+    <td class="td-muted text-xs">${FACTOR_ICON[r.factor_type]||'•'} ${esc(r.factor_type||'–')}</td>
+    <td>${r.swot_type?`<span class="badge ${ISSUE_SWOT_BADGE[r.swot_type]||'badge-slate'}">${esc(r.swot_type)}</span>`:'<span class="td-muted">–</span>'}</td>
+    <td style="max-width:160px;white-space:normal;font-size:12px" class="td-muted">${esc(r.potential_impact||'–')}</td>
+    <td class="text-center">${r.impact_level?`<span class="badge badge-slate">${r.impact_level}</span>`:'<span class="td-muted">–</span>'}</td>
+    <td class="text-center">${r.likelihood?`<span class="badge badge-slate">${r.likelihood}</span>`:'<span class="td-muted">–</span>'}</td>
+    <td class="text-center">${issueRatingBadge(r.risk_rating)}</td>
+    <td style="max-width:160px;white-space:normal;font-size:12px" class="td-muted">${esc(r.response_action||'–')}</td>
+    <td class="td-muted text-xs">${esc(r.owner||'–')}</td>
+    <td><span class="badge ${ISSUE_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
+    <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
+    <td><div class="flex gap-1">
+      <button class="btn btn-ghost btn-sm" onclick="editIssue('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delRecord('qms_context_issues','${r.id}','issue')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+function openIssueModal(id){
+  ['issue-id','issue-description','issue-potential-impact','issue-response-action','issue-owner','issue-notes'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';});
+  document.getElementById('issue-context-category').value='External';
+  document.getElementById('issue-factor-type').value='Political';
+  document.getElementById('issue-swot-type').value='';
+  document.getElementById('issue-status').value='active';
+  document.getElementById('issue-impact-level').value='';
+  document.getElementById('issue-likelihood').value='';
+  document.getElementById('issue-review-date').value='';
+  document.getElementById('issue-error').textContent='';
+  calcIssueRating();
+  if(id&&issueCache[id]){
+    const r=issueCache[id];
+    const map={id:'issue-id',issue_description:'issue-description',context_category:'issue-context-category',factor_type:'issue-factor-type',swot_type:'issue-swot-type',potential_impact:'issue-potential-impact',response_action:'issue-response-action',owner:'issue-owner',status:'issue-status',review_date:'issue-review-date',notes:'issue-notes'};
+    Object.entries(map).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
+    if(r.impact_level)document.getElementById('issue-impact-level').value=r.impact_level;
+    if(r.likelihood)document.getElementById('issue-likelihood').value=r.likelihood;
+    calcIssueRating();
+    document.getElementById('issue-modal-title').textContent='Edit Context Issue';
+  } else {
+    document.getElementById('issue-modal-title').textContent='Add Context Issue';
+  }
+  document.getElementById('modal-issue').classList.add('open');
+}
+async function editIssue(id){
+  if(!issueCache[id]){const{data}=await sb.from('qms_context_issues').select('*').eq('id',id).single();if(data)issueCache[id]=data;}
+  openIssueModal(id);
+}
+async function saveIssue(){
+  const id=document.getElementById('issue-id').value;
+  const err=document.getElementById('issue-error'),btn=document.getElementById('issue-save-btn');
+  err.textContent='';
+  const desc=document.getElementById('issue-description').value.trim();
+  if(!desc){err.textContent='Issue description is required.';return;}
+  let recordId=id&&issueCache[id]?issueCache[id].record_id:null;
+  if(!recordId){const{count}=await sb.from('qms_context_issues').select('id',{count:'exact',head:true});recordId=`CTX-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;}
+  const g=f=>document.getElementById(f)?.value?.trim()||null;
+  const payload={
+    record_id:recordId,issue_description:desc,
+    context_category:document.getElementById('issue-context-category').value,
+    factor_type:g('issue-factor-type'),swot_type:g('issue-swot-type')||null,
+    potential_impact:g('issue-potential-impact'),
+    impact_level:parseInt(document.getElementById('issue-impact-level').value)||null,
+    likelihood:parseInt(document.getElementById('issue-likelihood').value)||null,
+    response_action:g('issue-response-action'),owner:g('issue-owner'),
+    status:document.getElementById('issue-status').value,
+    review_date:document.getElementById('issue-review-date').value||null,
+    notes:g('issue-notes'),updated_at:new Date().toISOString()
+  };
+  btn.disabled=true;btn.textContent='Saving…';
+  const{error}=id?await sb.from('qms_context_issues').update(payload).eq('id',id):await sb.from('qms_context_issues').insert([payload]);
+  btn.disabled=false;btn.textContent='Save Issue';
+  if(error){err.textContent=error.message;return;}
+  closeModal('issue');loadIssues();
+}
+
+// ── INTERESTED PARTIES (§4.2) ─────────────────────────────────────────────
 const ORG_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',under_review:'badge-amber'};
+const ORG_PRIORITY_BADGE={High:'badge-red',Medium:'badge-amber',Low:'badge-green'};
+const ORG_CONTEXT_BADGE={Internal:'badge-blue',External:'badge-slate'};
 let orgCache={};
 async function loadOrg(){
-  const tb=document.getElementById('org-tbody');tb.innerHTML=rowSpin(9);
+  const tb=document.getElementById('org-tbody');tb.innerHTML=rowSpin(12);
   const{data,error}=await sb.from('qms_org_register').select('*').order('entity_name');
-  if(error){tb.innerHTML=emptyRow(9,error.message);return;}
-  if(!data?.length){tb.innerHTML=emptyRow(9);return;}
+  if(error){tb.innerHTML=emptyRow(12,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(12);return;}
   orgCache=Object.fromEntries(data.map(r=>[r.id,r]));
   tb.innerHTML=data.map(r=>`<tr>
     <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.record_id)}</td>
     <td class="font-semibold">${esc(r.entity_name)}</td>
-    <td><span class="badge ${ORG_TYPE_BADGE[r.entity_type]||'badge-slate'}">${esc(r.entity_type)}</span></td>
-    <td class="td-muted">${esc(r.contact_name||'–')}</td>
-    <td style="max-width:180px;white-space:normal;font-size:12px">${esc(r.role_responsibility||'–')}</td>
-    <td style="max-width:180px;white-space:normal;font-size:12px">${esc(r.relevance||'–')}</td>
+    <td><span class="badge ${ORG_CONTEXT_BADGE[r.context_type||'External']||'badge-slate'}">${esc(r.context_type||'External')}</span></td>
+    <td><span class="badge badge-slate" style="white-space:nowrap">${esc(r.entity_type||'–')}</span></td>
+    <td style="max-width:180px;white-space:normal;font-size:12px" class="td-muted">${esc(r.needs_expectations||'–')}</td>
+    <td style="max-width:150px;white-space:normal;font-size:12px" class="td-muted">${esc(r.relevant_requirements||'–')}</td>
+    <td class="text-center">${r.compliance_obligation?'<span class="badge badge-red">Yes</span>':'<span class="td-muted">No</span>'}</td>
+    <td>${r.priority?`<span class="badge ${ORG_PRIORITY_BADGE[r.priority]||'badge-slate'}">${esc(r.priority)}</span>`:'<span class="td-muted">–</span>'}</td>
+    <td class="td-muted text-xs">${esc(r.engagement_method||'–')}</td>
     <td><span class="badge ${ORG_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
     <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
-    <td><div class="flex gap-2">
+    <td><div class="flex gap-1">
       <button class="btn btn-ghost btn-sm" onclick="editOrg('${r.id}')">Edit</button>
       <button class="btn btn-danger btn-sm" onclick="delRecord('qms_org_register','${r.id}','org')">Del</button>
     </div></td>
@@ -1947,10 +2219,25 @@ async function saveOrg(){
     const{count}=await sb.from('qms_org_register').select('id',{count:'exact',head:true});
     recordId=`ORG-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
-  const payload={record_id:recordId,entity_name:name,entity_type:document.getElementById('org-entity-type').value,contact_name:document.getElementById('org-contact-name').value.trim()||null,contact_email:document.getElementById('org-contact-email').value.trim()||null,contact_phone:document.getElementById('org-contact-phone').value.trim()||null,status:document.getElementById('org-status').value,role_responsibility:document.getElementById('org-role-responsibility').value.trim()||null,relevance:document.getElementById('org-relevance').value.trim()||null,review_date:document.getElementById('org-review-date').value||null,notes:document.getElementById('org-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  const g=f=>document.getElementById(f)?.value?.trim()||null;
+  const payload={
+    record_id:recordId,entity_name:name,
+    context_type:document.getElementById('org-context-type').value,
+    entity_type:document.getElementById('org-entity-type').value,
+    priority:document.getElementById('org-priority').value,
+    needs_expectations:g('org-needs-expectations'),
+    relevant_requirements:g('org-relevant-requirements'),
+    compliance_obligation:document.getElementById('org-compliance-obligation').value==='true',
+    engagement_method:g('org-engagement-method'),
+    role_responsibility:g('org-role-responsibility'),
+    contact_name:g('org-contact-name'),contact_email:g('org-contact-email'),contact_phone:g('org-contact-phone'),
+    status:document.getElementById('org-status').value,
+    review_date:document.getElementById('org-review-date').value||null,
+    notes:g('org-notes'),updated_at:new Date().toISOString()
+  };
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_org_register').update(payload).eq('id',id):await sb.from('qms_org_register').insert([payload]);
-  btn.disabled=false;btn.textContent='Save Entry';
+  btn.disabled=false;btn.textContent='Save Party';
   if(error){err.textContent=error.message;return;}
   closeModal('org');loadOrg();loadOverview();
 }
@@ -2096,7 +2383,7 @@ function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div
 function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){['doc','org','emp','emp-add','emp-card','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));cancelDelete();}
+  if(e.key==='Escape'){['doc','org','issue','emp','emp-add','emp-card','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));cancelDelete();}
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();
