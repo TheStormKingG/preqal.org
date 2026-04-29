@@ -11,12 +11,9 @@
     theme: {
       extend: {
         fontFamily: { sans: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','Arial','sans-serif'] },
-        colors: { 'neu-bg':'#e0e5ec','neu-dark':'#a3b1c6','neu-light':'#ffffff' },
         boxShadow: {
           'neu':       '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff',
           'neu-sm':    '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff',
-          'neu-lg':    '10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff',
-          'neu-in':    'inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff',
           'neu-in-sm': 'inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff',
           'nav':       '0 4px 8px #a3b1c6',
         }
@@ -34,11 +31,8 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
   .neu-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff}
-  .neu-raised{box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff}
   .neu-raised-sm{box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
-  .neu-pressed{box-shadow:inset 3px 3px 6px #a3b1c6,inset -3px -3px 6px #ffffff}
   .neu-pressed-sm{box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff}
-  .neu-flat{background:#e0e5ec;box-shadow:4px 4px 8px #a3b1c6,-4px -4px 8px #ffffff}
 
   ::-webkit-scrollbar{width:8px;height:8px}
   ::-webkit-scrollbar-track{background:#e0e5ec}
@@ -49,10 +43,6 @@
   .fade-in{animation:fadeInUp .45s ease-out forwards}
   @keyframes spin{to{transform:rotate(360deg)}}
   .spinner{display:inline-block;width:22px;height:22px;border:2px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite}
-
-  .tab-active{background:rgba(255,255,255,0.75);box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff;color:#b45309;font-weight:700}
-  .tab-inactive{color:#64748b;font-weight:500}
-  .tab-inactive:hover{color:#334155}
 
   .tbl-wrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;min-width:580px}
@@ -68,7 +58,6 @@
   .badge-green{background:rgba(16,185,129,.12);color:#065f46}
   .badge-blue{background:rgba(99,102,241,.1);color:#4338ca}
   .badge-slate{background:rgba(100,116,139,.1);color:#475569}
-  .badge-red{background:rgba(239,68,68,.1);color:#b91c1c}
 
   .field{width:100%;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;border:none;border-radius:.75rem;padding:10px 14px;font-size:14px;color:#334155;font-family:inherit;outline:none;transition:box-shadow .2s}
   .field:focus{box-shadow:inset 2px 2px 6px #a3b1c6,inset -2px -2px 6px #ffffff,0 0 0 3px rgba(245,158,11,.18)}
@@ -85,6 +74,11 @@
   .btn-sm{padding:6px 12px;font-size:12px;border-radius:.5rem}
   .btn-full{width:100%}
 
+  /* Clickable stat card */
+  .stat-card{cursor:pointer;transition:all .2s}
+  .stat-card:hover{transform:translateY(-2px);box-shadow:8px 8px 16px #a3b1c6,-8px -8px 16px #ffffff}
+  .stat-card:active{transform:translateY(0);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff}
+
   .modal-overlay{position:fixed;inset:0;background:rgba(224,229,236,.85);backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
   .modal-overlay.open{opacity:1;visibility:visible}
 
@@ -93,6 +87,9 @@
 
   .prog-track{height:6px;background:rgba(163,177,198,.3);border-radius:3px;overflow:hidden;box-shadow:inset 1px 1px 3px #a3b1c6}
   .prog-fill{height:100%;background:#f59e0b;border-radius:3px;transition:width .4s}
+
+  /* Section anchor offset for fixed nav */
+  .section-anchor{scroll-margin-top:100px}
 </style>
 </head>
 <body class="min-h-screen">
@@ -180,61 +177,55 @@
 
   <div class="h-20 flex-shrink-0"></div>
 
-  <!-- TAB NAV -->
-  <div class="sticky top-20 z-40" style="background:rgba(224,229,236,.95);backdrop-filter:blur(8px);box-shadow:0 2px 6px #a3b1c6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex items-center gap-1 py-2 overflow-x-auto">
-        <button class="tab-active tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('overview',this)">Overview</button>
-        <button class="tab-inactive tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('leads',this)">Leads <span class="neu-pressed-sm ml-1 text-xs px-2 py-0.5 rounded-full text-amber-700 font-bold" id="count-leads">–</span></button>
-        <button class="tab-inactive tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('quotes',this)">Quote Submissions <span class="neu-pressed-sm ml-1 text-xs px-2 py-0.5 rounded-full text-amber-700 font-bold" id="count-quotes">–</span></button>
-        <button class="tab-inactive tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('course',this)">Course <span class="neu-pressed-sm ml-1 text-xs px-2 py-0.5 rounded-full text-amber-700 font-bold" id="count-course">–</span></button>
-        <button class="tab-inactive tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('traffic',this)">Site Traffic</button>
-        <button class="tab-inactive tab-btn px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap" onclick="switchTab('crm',this)">CRM <span class="neu-pressed-sm ml-1 text-xs px-2 py-0.5 rounded-full text-amber-700 font-bold" id="count-crm">–</span></button>
-      </nav>
-    </div>
-  </div>
-
-  <!-- MAIN -->
+  <!-- MAIN — single scrolling page -->
   <main class="flex-1 py-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
 
-      <!-- OVERVIEW -->
-      <div id="panel-overview" class="panel fade-in">
+      <!-- ── OVERVIEW STATS ── -->
+      <div class="fade-in">
         <h2 class="text-3xl font-bold text-slate-900 tracking-tight mb-1">Good to see you, <span id="greeting-name" class="text-amber-600">Stefan</span>.</h2>
-        <p class="text-slate-500 mb-10">Here's everything at a glance.</p>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">📋</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Leads</div><div class="text-3xl font-bold text-slate-900" id="ov-leads">–</div></div>
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">💬</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Quotes</div><div class="text-3xl font-bold text-slate-900" id="ov-quotes">–</div></div>
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">🎓</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Enrolled</div><div class="text-3xl font-bold text-slate-900" id="ov-course">–</div></div>
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">🏆</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Certified</div><div class="text-3xl font-bold text-slate-900" id="ov-certs">–</div></div>
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">🏢</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">CRM Clients</div><div class="text-3xl font-bold text-slate-900" id="ov-crm">–</div></div>
-          <div class="neu-card rounded-2xl p-5"><div class="text-2xl mb-2">📈</div><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Views (30d)</div><div class="text-3xl font-bold text-slate-900" id="ov-views">–</div></div>
-        </div>
-        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-5">Quick Links</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a href="https://www.linkedin.com/company/preqal" target="_blank" class="neu-card rounded-2xl p-5 flex items-center gap-4 hover:neu-raised transition-all group">
-            <div class="neu-pressed-sm w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></div>
-            <div><div class="text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors">LinkedIn</div><div class="text-xs text-slate-400">Preqal Company Page</div></div>
-          </a>
-          <a href="https://www.facebook.com/preqal" target="_blank" class="neu-card rounded-2xl p-5 flex items-center gap-4 hover:neu-raised transition-all group">
-            <div class="neu-pressed-sm w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1877f2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
-            <div><div class="text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors">Facebook</div><div class="text-xs text-slate-400">Preqal Page</div></div>
-          </a>
-          <a href="https://planetaryquality.substack.com" target="_blank" class="neu-card rounded-2xl p-5 flex items-center gap-4 hover:neu-raised transition-all group">
-            <div class="neu-pressed-sm w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b00"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg></div>
-            <div><div class="text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors">Substack</div><div class="text-xs text-slate-400">Planetary Quality</div></div>
-          </a>
-          <a href="https://supabase.com/dashboard/project/gndcjmxxgtnoidxgcdnx" target="_blank" class="neu-card rounded-2xl p-5 flex items-center gap-4 hover:neu-raised transition-all group">
-            <div class="neu-pressed-sm w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3ecf8e"><path d="M11.9 1.036c-.015-.986-1.26-1.41-1.874-.637L.764 12.05C.231 12.83.785 13.9 1.75 13.9h8.84l.006 9.068c.015.986 1.26 1.409 1.874.637l9.262-11.653c.533-.779-.021-1.847-.985-1.847h-8.839L11.9 1.036z"/></svg></div>
-            <div><div class="text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors">Supabase</div><div class="text-xs text-slate-400">Database &amp; Auth</div></div>
-          </a>
+        <p class="text-slate-500 mb-8">Click any card to jump to that section.</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('leads')">
+            <div class="text-2xl mb-2">📋</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Leads</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-leads">–</div>
+          </div>
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('quotes')">
+            <div class="text-2xl mb-2">💬</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Quotes</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-quotes">–</div>
+          </div>
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('course')">
+            <div class="text-2xl mb-2">🎓</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Enrolled</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-course">–</div>
+          </div>
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('course')">
+            <div class="text-2xl mb-2">🏆</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Certified</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-certs">–</div>
+          </div>
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('crm')">
+            <div class="text-2xl mb-2">🏢</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">CRM Clients</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-crm">–</div>
+          </div>
+          <div class="neu-card rounded-2xl p-5 stat-card" onclick="scrollTo('traffic')">
+            <div class="text-2xl mb-2">📈</div>
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Views (30d)</div>
+            <div class="text-3xl font-bold text-slate-900" id="ov-views">–</div>
+          </div>
         </div>
       </div>
 
-      <!-- LEADS -->
-      <div id="panel-leads" class="panel hidden fade-in">
-        <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
-          <div><h2 class="text-2xl font-bold text-slate-900 tracking-tight">Lead Submissions</h2><p class="text-sm text-slate-500 mt-1">All entries from the website lead capture form.</p></div>
+      <!-- ── LEADS ── -->
+      <div id="section-leads" class="section-anchor fade-in">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Lead Submissions</h3>
+            <p class="text-sm text-slate-500 mt-0.5">All entries from the website lead capture form.</p>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="loadLeads()">↻ Refresh</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
@@ -245,10 +236,13 @@
         </div></div>
       </div>
 
-      <!-- QUOTES -->
-      <div id="panel-quotes" class="panel hidden fade-in">
-        <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
-          <div><h2 class="text-2xl font-bold text-slate-900 tracking-tight">Quote Submissions</h2><p class="text-sm text-slate-500 mt-1">Pricing enquiries from the Quote Classifier.</p></div>
+      <!-- ── QUOTE SUBMISSIONS ── -->
+      <div id="section-quotes" class="section-anchor fade-in">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Quote Submissions</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Pricing enquiries from the Quote Classifier.</p>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="loadQuotes()">↻ Refresh</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
@@ -259,10 +253,13 @@
         </div></div>
       </div>
 
-      <!-- COURSE -->
-      <div id="panel-course" class="panel hidden fade-in">
-        <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
-          <div><h2 class="text-2xl font-bold text-slate-900 tracking-tight">Course Participants</h2><p class="text-sm text-slate-500 mt-1">E-Course: Quality Management Systems Foundations &middot; 9 modules</p></div>
+      <!-- ── COURSE ── -->
+      <div id="section-course" class="section-anchor fade-in">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Course Participants</h3>
+            <p class="text-sm text-slate-500 mt-0.5">E-Course: Quality Management Systems Foundations &middot; 9 modules</p>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="loadCourse()">↻ Refresh</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
@@ -273,24 +270,26 @@
         </div></div>
       </div>
 
-      <!-- TRAFFIC -->
-      <div id="panel-traffic" class="panel hidden fade-in">
-        <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
-          <div><h2 class="text-2xl font-bold text-slate-900 tracking-tight">Site Traffic</h2><p class="text-sm text-slate-500 mt-1">Page view analytics from preqal.org.</p></div>
+      <!-- ── SITE TRAFFIC ── -->
+      <div id="section-traffic" class="section-anchor fade-in">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Site Traffic</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Page view analytics from preqal.org.</p>
+          </div>
           <div class="neu-pressed-sm flex rounded-xl p-1 gap-1">
             <button class="period-active period-tab px-4 py-1.5 rounded-lg text-xs transition-all" onclick="switchPeriod('day',this)">Day</button>
             <button class="period-inactive period-tab px-4 py-1.5 rounded-lg text-xs transition-all" onclick="switchPeriod('week',this)">Week</button>
             <button class="period-inactive period-tab px-4 py-1.5 rounded-lg text-xs transition-all" onclick="switchPeriod('month',this)">Month</button>
           </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div class="neu-card rounded-2xl p-5"><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Total Views</div><div class="text-3xl font-bold text-slate-900" id="tr-views">–</div><div class="text-xs text-slate-400 mt-1" id="tr-period-label">today</div></div>
           <div class="neu-card rounded-2xl p-5"><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">New Visitors</div><div class="text-3xl font-bold text-slate-900" id="tr-new">–</div></div>
           <div class="neu-card rounded-2xl p-5"><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Returning</div><div class="text-3xl font-bold text-slate-900" id="tr-returning">–</div></div>
           <div class="neu-card rounded-2xl p-5"><div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Pages Tracked</div><div class="text-3xl font-bold text-slate-900" id="tr-pages">–</div></div>
         </div>
-        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Visits by Page</h3>
-        <div class="neu-card rounded-2xl overflow-hidden mb-8"><div class="tbl-wrap">
+        <div class="neu-card rounded-2xl overflow-hidden mb-6"><div class="tbl-wrap">
           <table>
             <thead><tr><th>#</th><th>Page</th><th>Title</th><th>Views</th><th>New Visitors</th></tr></thead>
             <tbody id="traffic-tbody"><tr><td colspan="5" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -302,10 +301,13 @@
         </div>
       </div>
 
-      <!-- CRM -->
-      <div id="panel-crm" class="panel hidden fade-in">
-        <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
-          <div><h2 class="text-2xl font-bold text-slate-900 tracking-tight">Client CRM</h2><p class="text-sm text-slate-500 mt-1">All onboarded Preqal clients and account details.</p></div>
+      <!-- ── CRM ── -->
+      <div id="section-crm" class="section-anchor fade-in pb-16">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Client CRM</h3>
+            <p class="text-sm text-slate-500 mt-0.5">All onboarded Preqal clients and account details.</p>
+          </div>
           <button class="btn btn-amber btn-sm" onclick="openClientModal()">+ Add Client</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
@@ -370,6 +372,7 @@ const COURSE_URL    = '/e-courses/learn';
 const TOTAL_MODULES = 9;
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ── AUTH ──────────────────────────────────────────────────────────────────
 async function init() {
   const { data:{ session } } = await sb.auth.getSession();
   if (session) handleSession(session);
@@ -388,44 +391,48 @@ function handleSession(session) {
   document.getElementById('header-avatar').textContent = email[0].toUpperCase();
   document.getElementById('greeting-name').textContent = name;
   setTrackingSnippet();
-  loadOverview();
+  loadAll();
 }
 async function signIn() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  const btn   = document.getElementById('login-btn');
-  errEl.textContent = ''; errEl.style.color = '#b91c1c';
-  btn.disabled = true; document.getElementById('login-btn-text').textContent = 'Signing in…';
-  const { error } = await sb.auth.signInWithPassword({ email, password:pass });
-  if (error) errEl.textContent = error.message;
-  btn.disabled = false; document.getElementById('login-btn-text').textContent = 'Sign In';
+  const email=document.getElementById('login-email').value.trim(),pass=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');
+  errEl.textContent='';errEl.style.color='#b91c1c';btn.disabled=true;
+  document.getElementById('login-btn-text').textContent='Signing in…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error)errEl.textContent=error.message;
+  btn.disabled=false;document.getElementById('login-btn-text').textContent='Sign In';
 }
 async function signInMagicLink() {
-  const email = document.getElementById('login-email').value.trim();
-  const errEl = document.getElementById('login-error');
-  if (!email) { errEl.textContent='Enter your email first.'; errEl.style.color='#b91c1c'; return; }
-  const btn = document.querySelector('[onclick="signInMagicLink()"]');
-  btn.disabled=true; document.getElementById('magic-btn-text').textContent='Sending…';
-  const { error } = await sb.auth.signInWithOtp({ email });
-  errEl.textContent = error ? error.message : '✓ Magic link sent — check your inbox.';
-  errEl.style.color = error ? '#b91c1c' : '#059669';
-  btn.disabled=false; document.getElementById('magic-btn-text').textContent='Send Magic Link';
+  const email=document.getElementById('login-email').value.trim();
+  const errEl=document.getElementById('login-error');
+  if(!email){errEl.textContent='Enter your email first.';errEl.style.color='#b91c1c';return;}
+  const btn=document.querySelector('[onclick="signInMagicLink()"]');
+  btn.disabled=true;document.getElementById('magic-btn-text').textContent='Sending…';
+  const{error}=await sb.auth.signInWithOtp({email});
+  errEl.textContent=error?error.message:'✓ Magic link sent — check your inbox.';
+  errEl.style.color=error?'#b91c1c':'#059669';
+  btn.disabled=false;document.getElementById('magic-btn-text').textContent='Send Magic Link';
 }
-async function signOut() { await sb.auth.signOut(); location.reload(); }
+async function signOut(){await sb.auth.signOut();location.reload();}
 
-let tabLoaded={};
-function switchTab(name,btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('tab-active');b.classList.add('tab-inactive');});
-  btn.classList.remove('tab-inactive'); btn.classList.add('tab-active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
-  const p=document.getElementById('panel-'+name); p.classList.remove('hidden'); p.classList.add('fade-in');
-  if(!tabLoaded[name]){tabLoaded[name]=true;loadTab(name);}
+// ── SCROLL TO SECTION ──────────────────────────────────────────────────────
+function scrollTo(section) {
+  document.getElementById('section-'+section).scrollIntoView({behavior:'smooth'});
 }
-function loadTab(n){if(n==='leads')loadLeads();if(n==='quotes')loadQuotes();if(n==='course')loadCourse();if(n==='traffic')loadTraffic('day');if(n==='crm')loadCRM();}
 
-async function loadOverview(){
-  const [leads,quotes,profiles,certs,crm,views]=await Promise.all([
+// ── LOAD ALL ──────────────────────────────────────────────────────────────
+async function loadAll() {
+  loadOverview();
+  loadLeads();
+  loadQuotes();
+  loadCourse();
+  loadTraffic('day');
+  loadCRM();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────
+async function loadOverview() {
+  const[leads,quotes,profiles,certs,crm,views]=await Promise.all([
     sb.from('template_leads').select('id',{count:'exact',head:true}),
     sb.from('quote_submissions').select('id',{count:'exact',head:true}),
     sb.from('ecourse_profiles').select('id',{count:'exact',head:true}),
@@ -433,53 +440,85 @@ async function loadOverview(){
     sb.from('crm_clients').select('id',{count:'exact',head:true}),
     sb.from('page_views').select('id',{count:'exact',head:true}).gte('visited_at',new Date(Date.now()-30*86400000).toISOString())
   ]);
-  set('ov-leads',leads.count??0);set('ov-quotes',quotes.count??0);set('ov-course',profiles.count??0);
-  set('ov-certs',certs.count??0);set('ov-crm',crm.count??0);set('ov-views',views.count??0);
-  set('count-leads',leads.count??0);set('count-quotes',quotes.count??0);set('count-course',profiles.count??0);set('count-crm',crm.count??0);
+  set('ov-leads',leads.count??0);set('ov-quotes',quotes.count??0);
+  set('ov-course',profiles.count??0);set('ov-certs',certs.count??0);
+  set('ov-crm',crm.count??0);set('ov-views',views.count??0);
 }
 
-async function loadLeads(){
-  const tb=document.getElementById('leads-tbody'); tb.innerHTML=row(10);
+// ── LEADS ─────────────────────────────────────────────────────────────────
+async function loadLeads() {
+  const tb=document.getElementById('leads-tbody');tb.innerHTML=row(10);
   const{data,error}=await sb.from('template_leads').select('*').order('created_at',{ascending:false});
   if(error||!data?.length){tb.innerHTML=empty(10,error?.message);return;}
-  set('count-leads',data.length);
-  tb.innerHTML=data.map(r=>`<tr><td class="td-muted">${fmtDate(r.created_at)}</td><td class="font-medium">${esc(r.first_name||'')}</td><td>${esc(r.last_name||'')}</td><td>${esc(r.email||'')}</td><td class="font-medium">${esc(r.company||'')}</td><td class="td-muted">${esc(r.job_title||'–')}</td><td class="td-muted">${r.dial_code?r.dial_code+' ':''}${esc(r.phone_number||'–')}</td><td style="max-width:220px;white-space:normal;line-height:1.4">${esc(r.most_pressing_quality_problem||'–')}</td><td><span class="badge badge-blue">${esc(r.source_page||'–')}</span></td><td class="td-muted">${(r.country_iso||'–').toUpperCase()}</td></tr>`).join('');
+  set('ov-leads',data.length);
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="td-muted">${fmtDate(r.created_at)}</td>
+    <td class="font-medium">${esc(r.first_name||'')}</td>
+    <td>${esc(r.last_name||'')}</td>
+    <td>${esc(r.email||'')}</td>
+    <td class="font-medium">${esc(r.company||'')}</td>
+    <td class="td-muted">${esc(r.job_title||'–')}</td>
+    <td class="td-muted">${r.dial_code?r.dial_code+' ':''}${esc(r.phone_number||'–')}</td>
+    <td style="max-width:220px;white-space:normal;line-height:1.4">${esc(r.most_pressing_quality_problem||'–')}</td>
+    <td><span class="badge badge-blue">${esc(r.source_page||'–')}</span></td>
+    <td class="td-muted">${(r.country_iso||'–').toUpperCase()}</td>
+  </tr>`).join('');
 }
 
-async function loadQuotes(){
-  const tb=document.getElementById('quotes-tbody'); tb.innerHTML=row(9);
+// ── QUOTES ────────────────────────────────────────────────────────────────
+async function loadQuotes() {
+  const tb=document.getElementById('quotes-tbody');tb.innerHTML=row(9);
   const{data,error}=await sb.from('quote_submissions').select('*').order('created_at',{ascending:false});
   if(error||!data?.length){tb.innerHTML=empty(9,error?.message);return;}
-  set('count-quotes',data.length);
-  tb.innerHTML=data.map(r=>`<tr><td class="td-muted">${fmtDate(r.created_at)}</td><td class="font-medium">${esc(r.company_name||'')}</td><td>${esc(r.contact_person||'')}</td><td>${esc(r.email||'')}</td><td><span class="badge badge-slate">${esc(r.staff_size||'–')}</span></td><td class="text-center">${r.num_services??'–'}</td><td class="td-muted">${esc(r.avg_processes||'–')}</td><td class="text-center">${r.complexity_score!=null?Number(r.complexity_score).toFixed(1):'–'}</td><td><span class="badge badge-amber">${esc(r.recommended_tier||'–')}</span></td></tr>`).join('');
+  set('ov-quotes',data.length);
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="td-muted">${fmtDate(r.created_at)}</td>
+    <td class="font-medium">${esc(r.company_name||'')}</td>
+    <td>${esc(r.contact_person||'')}</td>
+    <td>${esc(r.email||'')}</td>
+    <td><span class="badge badge-slate">${esc(r.staff_size||'–')}</span></td>
+    <td class="text-center">${r.num_services??'–'}</td>
+    <td class="td-muted">${esc(r.avg_processes||'–')}</td>
+    <td class="text-center">${r.complexity_score!=null?Number(r.complexity_score).toFixed(1):'–'}</td>
+    <td><span class="badge badge-amber">${esc(r.recommended_tier||'–')}</span></td>
+  </tr>`).join('');
 }
 
-async function loadCourse(){
-  const tb=document.getElementById('course-tbody'); tb.innerHTML=row(6);
+// ── COURSE ────────────────────────────────────────────────────────────────
+async function loadCourse() {
+  const tb=document.getElementById('course-tbody');tb.innerHTML=row(6);
   const[{data:profiles},{data:progress},{data:certs}]=await Promise.all([
     sb.from('ecourse_profiles').select('*').order('created_at',{ascending:false}),
     sb.from('ecourse_module_progress').select('user_id,module_id,module_title,completed_at'),
     sb.from('ecourse_certificates').select('*')
   ]);
   if(!profiles?.length){tb.innerHTML=empty(6);return;}
-  set('count-course',profiles.length);
+  set('ov-course',profiles.length);
   const pm={};(progress||[]).forEach(p=>{if(!pm[p.user_id])pm[p.user_id]=[];pm[p.user_id].push(p);});
   const cm={};(certs||[]).forEach(c=>{if(c.user_id)cm[c.user_id]=c;});
+  set('ov-certs',Object.keys(cm).length);
   tb.innerHTML=profiles.map(p=>{
     const mods=pm[p.id]||[],pct=Math.round((mods.length/TOTAL_MODULES)*100),cert=cm[p.id];
     const ml=mods.length?mods.map(m=>`<span class="badge badge-green" style="margin:1px 2px">${esc(m.module_title||m.module_id)}</span>`).join(''):'<span class="td-muted">—</span>';
     const cl=cert?`<a href="/certificate/${cert.cert_key}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-900 transition-colors">🏆 View Certificate</a>`:'<span class="td-muted text-xs">–</span>';
-    return`<tr><td class="font-semibold">${esc(p.display_name||'–')}</td><td>${esc(p.email||'')}</td><td class="td-muted">${fmtDate(p.created_at)}</td><td style="white-space:normal;max-width:280px">${ml}</td><td style="min-width:140px"><div class="flex items-center gap-2"><div class="prog-track flex-1"><div class="prog-fill" style="width:${pct}%"></div></div><span class="td-muted text-xs w-10">${mods.length}/${TOTAL_MODULES}</span></div></td><td>${cl}</td></tr>`;
+    return`<tr>
+      <td class="font-semibold">${esc(p.display_name||'–')}</td>
+      <td>${esc(p.email||'')}</td>
+      <td class="td-muted">${fmtDate(p.created_at)}</td>
+      <td style="white-space:normal;max-width:280px">${ml}</td>
+      <td style="min-width:140px"><div class="flex items-center gap-2"><div class="prog-track flex-1"><div class="prog-fill" style="width:${pct}%"></div></div><span class="td-muted text-xs w-10">${mods.length}/${TOTAL_MODULES}</span></div></td>
+      <td>${cl}</td>
+    </tr>`;
   }).join('');
 }
 
-let currentPeriod='day';
+// ── TRAFFIC ───────────────────────────────────────────────────────────────
 function switchPeriod(p,btn){
   document.querySelectorAll('.period-tab').forEach(b=>{b.classList.remove('period-active');b.classList.add('period-inactive');});
   btn.classList.remove('period-inactive');btn.classList.add('period-active');
-  currentPeriod=p;loadTraffic(p);
+  loadTraffic(p);
 }
-async function loadTraffic(period){
+async function loadTraffic(period) {
   const tb=document.getElementById('traffic-tbody');tb.innerHTML=row(5);
   const ms={day:86400000,week:7*86400000,month:30*86400000};
   const since=new Date(Date.now()-ms[period]).toISOString();
@@ -490,18 +529,40 @@ async function loadTraffic(period){
   rows.forEach(r=>{const k=r.page_path||'/';if(!pg[k])pg[k]={title:r.page_title||k,views:0,newV:0};pg[k].views++;if(r.is_new_visitor)pg[k].newV++;});
   const pages=Object.entries(pg).sort((a,b)=>b[1].views-a[1].views);
   set('tr-views',rows.length);set('tr-new',newV);set('tr-returning',rows.length-newV);set('tr-pages',pages.length);
-  if(!pages.length){tb.innerHTML=empty(5,'No page views yet. Add the tracking snippet to your site.');return;}
-  tb.innerHTML=pages.map(([path,info],i)=>`<tr><td class="td-muted">${i+1}</td><td><code class="text-xs text-amber-700 font-medium">${esc(path)}</code></td><td class="td-muted">${esc(info.title)}</td><td class="font-bold">${info.views}</td><td class="td-muted">${info.newV}</td></tr>`).join('');
+  if(!pages.length){tb.innerHTML=empty(5,'No page views yet. Add the tracking snippet below to your site.');return;}
+  tb.innerHTML=pages.map(([path,info],i)=>`<tr>
+    <td class="td-muted">${i+1}</td>
+    <td><code class="text-xs text-amber-700 font-medium">${esc(path)}</code></td>
+    <td class="td-muted">${esc(info.title)}</td>
+    <td class="font-bold">${info.views}</td>
+    <td class="td-muted">${info.newV}</td>
+  </tr>`).join('');
 }
 
-async function loadCRM(){
+// ── CRM ───────────────────────────────────────────────────────────────────
+async function loadCRM() {
   const tb=document.getElementById('crm-tbody');tb.innerHTML=row(11);
   const{data,error}=await sb.from('crm_clients').select('*').order('created_at',{ascending:false});
   if(error){tb.innerHTML=empty(11,error.message);return;}
-  set('count-crm',data?.length??0);
+  set('ov-crm',data?.length??0);
   if(!data?.length){tb.innerHTML=empty(11);return;}
   const sm={active:'badge-green',onboarding:'badge-blue',paused:'badge-amber',churned:'badge-slate'};
-  tb.innerHTML=data.map(r=>`<tr><td class="font-semibold">${esc(r.company_name)}</td><td>${esc(r.contact_name||'–')}</td><td>${esc(r.contact_email||'–')}</td><td class="td-muted">${esc(r.contact_tel||'–')}</td><td class="td-muted">${esc(r.industry_category||'–')}</td><td><span class="badge badge-amber">${esc(r.tier||'–')}</span></td><td class="text-center">${r.num_employees??'–'}</td><td class="text-center">${r.num_services??'–'}</td><td class="text-center">${r.num_processes_per_service??'–'}</td><td><span class="badge ${sm[r.status]||'badge-slate'}">${esc(r.status||'–')}</span></td><td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editClient('${r.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteClient('${r.id}','${esc(r.company_name)}')">Delete</button></div></td></tr>`).join('');
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-semibold">${esc(r.company_name)}</td>
+    <td>${esc(r.contact_name||'–')}</td>
+    <td>${esc(r.contact_email||'–')}</td>
+    <td class="td-muted">${esc(r.contact_tel||'–')}</td>
+    <td class="td-muted">${esc(r.industry_category||'–')}</td>
+    <td><span class="badge badge-amber">${esc(r.tier||'–')}</span></td>
+    <td class="text-center">${r.num_employees??'–'}</td>
+    <td class="text-center">${r.num_services??'–'}</td>
+    <td class="text-center">${r.num_processes_per_service??'–'}</td>
+    <td><span class="badge ${sm[r.status]||'badge-slate'}">${esc(r.status||'–')}</span></td>
+    <td><div class="flex gap-2">
+      <button class="btn btn-ghost btn-sm" onclick="editClient('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteClient('${r.id}','${esc(r.company_name)}')">Delete</button>
+    </div></td>
+  </tr>`).join('');
   clientCache=Object.fromEntries(data.map(r=>[r.id,r]));
 }
 
@@ -551,13 +612,13 @@ async function saveClient(){
   btn.disabled=false;btn.textContent='Save Client';
   if(error){errEl.textContent=error.message;return;}
   document.getElementById('crm-modal-overlay').classList.remove('open');
-  tabLoaded['crm']=false;loadCRM();loadOverview();
+  loadCRM();loadOverview();
 }
 async function deleteClient(id,name){
   if(!confirm(`Delete client "${name}"? This cannot be undone.`))return;
   const{error}=await sb.from('crm_clients').delete().eq('id',id);
   if(error){alert('Error: '+error.message);return;}
-  delete clientCache[id];tabLoaded['crm']=false;loadCRM();loadOverview();
+  delete clientCache[id];loadCRM();loadOverview();
 }
 
 function setTrackingSnippet(){
