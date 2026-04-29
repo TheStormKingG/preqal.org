@@ -908,6 +908,21 @@
           </select>
         </div>
       </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Impact Area <span class="text-slate-400 font-normal normal-case">— which part of the business is affected?</span></label>
+        <select id="issue-impact-area" class="field">
+          <option value="">— Select impact area —</option>
+          <option value="People / Health &amp; Safety">🧑‍⚕️ People / Health &amp; Safety</option>
+          <option value="Environment / Climate">🌿 Environment / Climate</option>
+          <option value="Operations / Processes">⚙️ Operations / Processes</option>
+          <option value="Quality / Products &amp; Services">✅ Quality / Products &amp; Services</option>
+          <option value="Financial / Economic">💰 Financial / Economic</option>
+          <option value="Legal / Regulatory Compliance">⚖️ Legal / Regulatory Compliance</option>
+          <option value="Technology / Infrastructure">💻 Technology / Infrastructure</option>
+          <option value="Reputation / Brand">🌟 Reputation / Brand</option>
+          <option value="Human Resources">👥 Human Resources</option>
+          <option value="Supply Chain">🔗 Supply Chain</option>
+        </select>
+      </div>
       <p class="text-xs font-bold uppercase tracking-widest text-amber-700 pb-2 pt-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📊 Impact &amp; Risk Assessment</p>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Potential Impact on QMS / Business</label><textarea id="issue-potential-impact" class="field" rows="2" placeholder="Which QMS objectives, processes, products or services could this affect?"></textarea></div>
       <div class="grid grid-cols-2 gap-4">
@@ -2243,10 +2258,10 @@ async function loadIssues(){
     <td><span class="badge ${r.context_category==='Internal'?'badge-blue':'badge-amber'}">${esc(r.context_category)}</span></td>
     <td class="td-muted text-xs">${FACTOR_ICON[r.factor_type]||'•'} ${esc(r.factor_type||'–')}</td>
     <td>${r.swot_type?`<span class="badge ${ISSUE_SWOT_BADGE[r.swot_type]||'badge-slate'}">${esc(r.swot_type)}</span>`:'<span class="td-muted">–</span>'}</td>
-    <td style="max-width:160px;white-space:normal;font-size:12px" class="td-muted">${esc(r.potential_impact||'–')}</td>
+    <td>${r.impact_area?`<span class="badge ${['People / Health & Safety','Environment / Climate'].includes(r.impact_area)?'badge-red':'badge-blue'}" style="font-size:10px;white-space:normal;line-height:1.3">${esc(r.impact_area)}</span>`:'<span class="td-muted">–</span>'}</td>
     <td class="text-center">${r.impact_level?`<span class="badge badge-slate">${r.impact_level}</span>`:'<span class="td-muted">–</span>'}</td>
     <td class="text-center">${r.likelihood?`<span class="badge badge-slate">${r.likelihood}</span>`:'<span class="td-muted">–</span>'}</td>
-    <td class="text-center">${issueRatingBadge(r.risk_rating)}</td>
+    <td class="text-center">${issueRatingBadge(r.risk_rating)}${r.linked_risk_id?`<br><span class="badge badge-amber" style="font-size:9px;margin-top:3px">${esc(r.linked_risk_id)} ↗</span>`:''}</td>
     <td style="max-width:160px;white-space:normal;font-size:12px" class="td-muted">${esc(r.response_action||'–')}</td>
     <td class="td-muted text-xs">${esc(r.owner||'–')}</td>
     <td><span class="badge ${ISSUE_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
@@ -2262,6 +2277,7 @@ function openIssueModal(id){
   document.getElementById('issue-context-category').value='External';
   document.getElementById('issue-factor-type').value='Political';
   document.getElementById('issue-swot-type').value='';
+  document.getElementById('issue-impact-area').value='';
   document.getElementById('issue-status').value='active';
   document.getElementById('issue-impact-level').value='';
   document.getElementById('issue-likelihood').value='';
@@ -2270,7 +2286,7 @@ function openIssueModal(id){
   calcIssueRating();
   if(id&&issueCache[id]){
     const r=issueCache[id];
-    const map={id:'issue-id',issue_description:'issue-description',context_category:'issue-context-category',factor_type:'issue-factor-type',swot_type:'issue-swot-type',potential_impact:'issue-potential-impact',response_action:'issue-response-action',owner:'issue-owner',status:'issue-status',review_date:'issue-review-date',notes:'issue-notes'};
+    const map={id:'issue-id',issue_description:'issue-description',context_category:'issue-context-category',factor_type:'issue-factor-type',swot_type:'issue-swot-type',impact_area:'issue-impact-area',potential_impact:'issue-potential-impact',response_action:'issue-response-action',owner:'issue-owner',status:'issue-status',review_date:'issue-review-date',notes:'issue-notes'};
     Object.entries(map).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
     if(r.impact_level)document.getElementById('issue-impact-level').value=r.impact_level;
     if(r.likelihood)document.getElementById('issue-likelihood').value=r.likelihood;
@@ -2298,6 +2314,7 @@ async function saveIssue(){
     record_id:recordId,issue_description:desc,
     context_category:document.getElementById('issue-context-category').value,
     factor_type:g('issue-factor-type'),swot_type:g('issue-swot-type')||null,
+    impact_area:g('issue-impact-area')||null,
     potential_impact:g('issue-potential-impact'),
     impact_level:parseInt(document.getElementById('issue-impact-level').value)||null,
     likelihood:parseInt(document.getElementById('issue-likelihood').value)||null,
@@ -2316,26 +2333,36 @@ async function saveIssue(){
 }
 
 // ── AUTO-ROUTING: Context Issue → Risk Register ───────────────────────────
-// Classification logic based on ISO 45001 (HSE) vs ISO 9001 (QR):
-//   → HSE if factor_type is Environmental / Climate Change / Physical / Biological / Chemical / Ergonomic / Fire / Radiation / Noise
-//   → HSE if swot_type is Threat/Weakness AND issue description contains OH&S keywords
-//   → QR for all other medium/high issues
+// Decision logic uses four signals in priority order:
+//   1. CATEGORY GATE — only Internal issues are routed (External issues stay in context register)
+//   2. RATING GATE   — only Medium+ (rating ≥ 5) triggers routing
+//   3. HSE TEST      — impact_area (People/HS or Environment/Climate) → HSE
+//                    — PESTLE factor_type (Environmental, Climate Change) → HSE
+//                    — OH&S keywords in issue_description OR potential_impact → HSE
+//   4. SWOT → QR risk_type: Strength → Opportunity; Weakness/unclassified → Risk
+const HSE_IMPACT_AREAS=['People / Health & Safety','Environment / Climate'];
 const HSE_FACTOR_TYPES=['Environmental','Climate Change'];
-const HSE_KEYWORDS=/\b(injur|health|safety|hazard|fire|chemical|biological|ergon|psycho|ppe|radiation|noise|vibrat|accident|incident|fatality|electr|manual.handl|toxic|exposure|falls?|burn|cut|strain|sprain)\b/i;
+const HSE_KEYWORDS=/\b(injur|health|safety|hazard|fire|chemical|biological|ergon|psycho|ppe|radiation|noise|vibrat|accident|incident|fatality|electr|manual.handl|toxic|exposure|falls?|burn|cut|strain|sprain|wound|harm|wellbeing|mental.health|stress|fatigue|lifting|slip|trip|collis|explosion|asphyxia|drown|heat.stress|musculoskeletal)\b/i;
 function isHSEIssue(payload){
+  // Signal 1 — explicit Impact Area selection
+  if(HSE_IMPACT_AREAS.includes(payload.impact_area))return true;
+  // Signal 2 — PESTLE factor type
   if(HSE_FACTOR_TYPES.includes(payload.factor_type))return true;
-  if(payload.swot_type==='Threat'&&HSE_KEYWORDS.test(payload.issue_description||''))return true;
+  // Signal 3 — keyword scan of description and potential impact text
+  if(HSE_KEYWORDS.test(payload.issue_description||''))return true;
+  if(HSE_KEYWORDS.test(payload.potential_impact||''))return true;
   return false;
 }
 async function autoRouteToRisk(payload,existingIssueId){
+  // GATE 1: Only Internal issues are routed to risk registers
+  if(payload.context_category!=='Internal')return;
+  // GATE 2: Only Medium+ risk rating (5+)
   const rating=payload.impact_level&&payload.likelihood?payload.impact_level*payload.likelihood:0;
-  if(rating<5)return; // Only Medium (5-9) or High (10-16) or Critical (17+)
+  if(rating<5)return;
   const level=riskLevel(rating);
-  // Only route Threats and Weaknesses (negative issues) and Opportunities
   const swot=payload.swot_type;
-  if(!swot&&rating<5)return; // No routing if unclassified and low risk
   const routeToHSE=isHSEIssue(payload);
-  // Check if this context issue already has a linked risk (don't double-create on edit)
+  // GATE 3: Idempotency — don't re-route if already linked
   if(existingIssueId&&issueCache[existingIssueId]?.linked_risk_id)return;
   if(routeToHSE){
     // Create HSE risk entry
@@ -2354,7 +2381,7 @@ async function autoRouteToRisk(payload,existingIssueId){
       existing_controls:payload.response_action||null,
       responsible_person:payload.owner||null,
       review_date:payload.review_date||null,
-      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Potential impact: ${payload.potential_impact||'—'}`,
+      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}. Potential impact: ${payload.potential_impact||'—'}`,
       status:'open',
       date_assessed:new Date().toISOString().split('T')[0],
       updated_at:new Date().toISOString()
@@ -2370,18 +2397,19 @@ async function autoRouteToRisk(payload,existingIssueId){
     // Create Quality Risk entry
     const{count}=await sb.from('qms_quality_risk').select('id',{count:'exact',head:true});
     const riskId=`QR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
-    const isOpp=(swot==='Opportunity'||swot==='Strength');
+    // SWOT → risk_type: Strength (internal positive) = Opportunity to leverage; Weakness = Risk to address
+    const isOpp=(swot==='Strength');
     const qrPayload={
       risk_id:riskId,
       risk_type:isOpp?'Opportunity':'Risk',
       source:'Context Register',
       source_ref:payload.record_id,
       risk_title:payload.issue_description.substring(0,120),
-      risk_category:contextCategoryToQRCategory(payload.factor_type),
+      risk_category:contextCategoryToQRCategory(payload.factor_type,payload.impact_area),
       qms_process:'Context & Strategy',
       date_raised:new Date().toISOString().split('T')[0],
       risk_description:payload.issue_description,
-      potential_cause:`${payload.factor_type||''} factor — ${swot||''}`,
+      potential_cause:`${payload.factor_type||''} factor — SWOT: ${swot||'—'} — Impact area: ${payload.impact_area||'—'}`,
       potential_consequence:payload.potential_impact||null,
       existing_controls:payload.response_action||null,
       likelihood:payload.likelihood,
@@ -2389,7 +2417,7 @@ async function autoRouteToRisk(payload,existingIssueId){
       risk_rating:rating,
       risk_owner:payload.owner||null,
       review_date:payload.review_date||null,
-      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}.`,
+      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}.`,
       status:'open',
       updated_at:new Date().toISOString()
     };
@@ -2402,9 +2430,21 @@ async function autoRouteToRisk(payload,existingIssueId){
     }
   }
 }
-function contextCategoryToQRCategory(factorType){
-  const map={Political:'Compliance / Legal',Economic:'Strategic / Context',Social:'Strategic / Context',Technological:'Infrastructure / Technology',Legal:'Compliance / Legal',Environmental:'Compliance / Legal','Climate Change':'Compliance / Legal',Organisational:'Process',Market:'Strategic / Context'};
-  return map[factorType]||'Strategic / Context';
+function contextCategoryToQRCategory(factorType,impactArea){
+  // Impact area takes precedence for more precise QR categorisation
+  const areaMap={
+    'Operations / Processes':'Process',
+    'Quality / Products & Services':'Product / Service Quality',
+    'Financial / Economic':'Strategic / Context',
+    'Legal / Regulatory Compliance':'Compliance / Legal',
+    'Technology / Infrastructure':'Infrastructure / Technology',
+    'Reputation / Brand':'Strategic / Context',
+    'Human Resources':'People / HR',
+    'Supply Chain':'Supply Chain'
+  };
+  if(impactArea&&areaMap[impactArea])return areaMap[impactArea];
+  const pestle={Political:'Compliance / Legal',Economic:'Strategic / Context',Social:'Strategic / Context',Technological:'Infrastructure / Technology',Legal:'Compliance / Legal',Environmental:'Compliance / Legal','Climate Change':'Compliance / Legal',Organisational:'Process',Market:'Strategic / Context'};
+  return pestle[factorType]||'Strategic / Context';
 }
 
 // ── TOAST NOTIFICATIONS ────────────────────────────────────────────────────
