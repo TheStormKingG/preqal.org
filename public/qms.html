@@ -60,6 +60,26 @@
   .modal-overlay{position:fixed;inset:0;background:rgba(224,229,236,.85);backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
   .modal-overlay.open{opacity:1;visibility:visible}
   .section-anchor{scroll-margin-top:100px}
+
+  /* ── Org Chart ── */
+  .org-tree,.org-tree ul,.org-tree li{list-style:none;margin:0;padding:0;position:relative}
+  .org-tree{text-align:center}
+  .org-tree ul{padding-top:24px;display:flex;justify-content:center;flex-wrap:wrap}
+  .org-tree ul::before{content:'';position:absolute;top:0;left:50%;border-left:1px solid #a3b1c6;width:0;height:24px}
+  .org-tree li{display:inline-block;text-align:center;padding:24px 8px 0;position:relative}
+  .org-tree li::before,.org-tree li::after{content:'';position:absolute;top:0;right:50%;border-top:1px solid #a3b1c6;width:50%;height:24px}
+  .org-tree li::after{right:auto;left:50%;border-left:1px solid #a3b1c6}
+  .org-tree li:only-child::after,.org-tree li:only-child::before{display:none}
+  .org-tree li:only-child{padding-top:0}
+  .org-tree li:first-child::before,.org-tree li:last-child::after{border:0 none}
+  .org-tree li:last-child::before{border-right:1px solid #a3b1c6;border-radius:0 5px 0 0}
+  .org-tree li:first-child::after{border-radius:5px 0 0 0}
+  .org-node{display:inline-flex;flex-direction:column;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.7);box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff;min-width:110px;max-width:150px;cursor:pointer;transition:all .2s}
+  .org-node:hover{transform:translateY(-2px);box-shadow:5px 5px 10px #a3b1c6,-5px -5px 10px #ffffff}
+  .org-avatar{width:34px;height:34px;border-radius:50%;background:rgba(245,158,11,.15);color:#b45309;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:5px;flex-shrink:0}
+  .org-name{font-size:12px;font-weight:700;color:#334155;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .org-title{font-size:11px;color:#64748b;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .org-dept{font-size:10px;color:#94a3b8;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body class="min-h-screen">
@@ -124,60 +144,45 @@
       </div>
 
       <!-- Overview stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-10 fade-in">
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">📁</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Documents</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-docs">–</div>
-          <div class="text-xs text-slate-400 mt-1">active</div>
+      <div class="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-8 fade-in">
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📁</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Documents</div><div class="text-2xl font-bold text-slate-900" id="ov-docs">–</div><div class="text-xs text-slate-400 mt-0.5">active</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🏢</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Organisation</div><div class="text-2xl font-bold text-slate-900" id="ov-org">–</div><div class="text-xs text-slate-400 mt-0.5">entities</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">👥</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Employees</div><div class="text-2xl font-bold text-slate-900" id="ov-emp">–</div><div class="text-xs text-slate-400 mt-0.5">active</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📜</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Legal</div><div class="text-2xl font-bold text-slate-900" id="ov-legal">–</div><div class="text-xs text-slate-400 mt-0.5">obligations</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">📊</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Quality Risks</div><div class="text-2xl font-bold text-slate-900" id="ov-qr">–</div><div class="text-xs text-slate-400 mt-0.5">open</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🦺</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">HSE Risks</div><div class="text-2xl font-bold text-slate-900" id="ov-hse">–</div><div class="text-xs text-slate-400 mt-0.5">open</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">⚠️</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open NCRs</div><div class="text-2xl font-bold text-slate-900" id="ov-ncr">–</div><div class="text-xs text-slate-400 mt-0.5">non-conformances</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🔧</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open CAPAs</div><div class="text-2xl font-bold text-slate-900" id="ov-capa">–</div><div class="text-xs text-slate-400 mt-0.5">outstanding</div></div>
+        <div class="neu-card rounded-2xl p-4"><div class="text-xl mb-1">🔍</div><div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Audits</div><div class="text-2xl font-bold text-slate-900" id="ov-audit">–</div><div class="text-xs text-slate-400 mt-0.5">this year</div></div>
+      </div>
+
+      <!-- ─── ORG CHART ─── -->
+      <div class="neu-card rounded-2xl mb-6 fade-in">
+        <div class="flex items-center justify-between px-5 py-4 cursor-pointer" onclick="toggleOrgChart()" style="border-bottom:1px solid rgba(163,177,198,.2)" id="org-chart-header">
+          <div>
+            <span class="text-sm font-bold text-slate-900">Organisation Chart</span>
+            <span class="text-xs text-slate-400 ml-3">Auto-generated from Employee Register</span>
+          </div>
+          <span id="org-chart-chevron" class="text-slate-400 font-bold text-xs">▲ Hide</span>
         </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">⚠️</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open NCRs</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-ncr">–</div>
-          <div class="text-xs text-slate-400 mt-1">non-conformances</div>
-        </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">🔧</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open CAPAs</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-capa">–</div>
-          <div class="text-xs text-slate-400 mt-1">outstanding</div>
-        </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">🔍</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Audits</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-audit">–</div>
-          <div class="text-xs text-slate-400 mt-1">this year</div>
-        </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">🏢</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Org Register</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-org">–</div>
-          <div class="text-xs text-slate-400 mt-1">entities</div>
-        </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">🦺</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">HSE Risks</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-hse">–</div>
-          <div class="text-xs text-slate-400 mt-1">open risks</div>
-        </div>
-        <div class="neu-card rounded-2xl p-5">
-          <div class="text-2xl mb-1">📊</div>
-          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Quality Risks</div>
-          <div class="text-3xl font-bold text-slate-900" id="ov-qr">–</div>
-          <div class="text-xs text-slate-400 mt-1">open risks</div>
+        <div id="org-chart-body" class="py-6 px-4 overflow-x-auto">
+          <div id="org-chart-tree" class="flex justify-center min-h-[60px]">
+            <p class="text-sm text-slate-400 self-center">Add employees to generate the org chart.</p>
+          </div>
         </div>
       </div>
 
       <!-- Tab Nav -->
       <div class="neu-card rounded-2xl px-4 py-3 mb-6 flex gap-2 flex-wrap fade-in">
-        <button class="tab-btn active" id="tab-docs" onclick="switchTab('docs')">📁 Documents</button>
-        <button class="tab-btn" id="tab-ncr" onclick="switchTab('ncr')">⚠️ Non-Conformances</button>
-        <button class="tab-btn" id="tab-capa" onclick="switchTab('capa')">🔧 CAPA</button>
-        <button class="tab-btn" id="tab-audit" onclick="switchTab('audit')">🔍 Audits</button>
-        <button class="tab-btn" id="tab-org" onclick="switchTab('org')">🏢 Organisation</button>
-        <button class="tab-btn" id="tab-hse" onclick="switchTab('hse')">🦺 HSE Risks</button>
-        <button class="tab-btn" id="tab-qr" onclick="switchTab('qr')">📊 Quality Risks</button>
+        <button class="tab-btn active" id="tab-docs"  onclick="switchTab('docs')">📁 Documents</button>
+        <button class="tab-btn"        id="tab-org"   onclick="switchTab('org')">🏢 Organisation</button>
+        <button class="tab-btn"        id="tab-emp"   onclick="switchTab('emp')">👥 Employees</button>
+        <button class="tab-btn"        id="tab-legal" onclick="switchTab('legal')">📜 Legal</button>
+        <button class="tab-btn"        id="tab-qr"    onclick="switchTab('qr')">📊 Quality Risks</button>
+        <button class="tab-btn"        id="tab-hse"   onclick="switchTab('hse')">🦺 HSE Risks</button>
+        <button class="tab-btn"        id="tab-ncr"   onclick="switchTab('ncr')">⚠️ Non-Conformances</button>
+        <button class="tab-btn"        id="tab-capa"  onclick="switchTab('capa')">🔧 CAPA</button>
+        <button class="tab-btn"        id="tab-audit" onclick="switchTab('audit')">🔍 Audits</button>
       </div>
 
       <!-- ── DOCUMENTS ── -->
@@ -278,6 +283,40 @@
           <table>
             <thead><tr><th>Risk ID</th><th>Hazard</th><th>Category</th><th>Location / Activity</th><th>Persons at Risk</th><th>L</th><th>C</th><th>Rating</th><th>Level</th><th>Responsible</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="hse-tbody"><tr><td colspan="12" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <!-- ── EMPLOYEE REGISTER ── -->
+      <div id="section-emp" class="section-anchor fade-in" style="display:none">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Employee Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">All personnel — full-time, part-time, contractors and casuals. Drives the organisation chart above.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('emp')">+ Add Employee</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Reports To</th><th>Email</th><th>Status</th><th>Start Date</th><th>Actions</th></tr></thead>
+            <tbody id="emp-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <!-- ── LEGAL REGISTER ── -->
+      <div id="section-legal" class="section-anchor fade-in" style="display:none">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Legal &amp; Compliance Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Legislation, regulations, standards, licences and contractual obligations applicable to Preqal's operations.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('legal')">+ Add Obligation</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Jurisdiction</th><th>Ref. No.</th><th>Applicable To</th><th>Responsible</th><th>Compliance</th><th>Review Date</th><th>Actions</th></tr></thead>
+            <tbody id="legal-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -456,6 +495,92 @@
     <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
       <button class="btn btn-ghost" onclick="closeModal('audit')">Cancel</button>
       <button class="btn btn-amber" onclick="saveAudit()" id="audit-save-btn">Save Audit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EMPLOYEE MODAL ══ -->
+<div class="modal-overlay" id="modal-emp" onclick="closeModal('emp',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="emp-modal-title">Add Employee</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('emp')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="emp-id">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Full Name *</label><input id="emp-full-name" class="field" type="text" placeholder="Jane Smith"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Position / Title *</label><input id="emp-position" class="field" type="text" placeholder="Quality Manager"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Department</label><input id="emp-department" class="field" type="text" placeholder="Operations"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Employment Type</label>
+          <select id="emp-employment-type" class="field"><option>Full-Time</option><option>Part-Time</option><option>Contractor</option><option>Casual</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Reports To</label>
+        <select id="emp-manager-id" class="field"><option value="">— No manager (top of hierarchy) —</option></select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email</label><input id="emp-email" class="field" type="email" placeholder="jane@preqal.org"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Phone</label><input id="emp-phone" class="field" type="text" placeholder="+61 400 000 000"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Start Date</label><input id="emp-start-date" class="field" type="date"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="emp-status" class="field"><option value="active">Active</option><option value="on_leave">On Leave</option><option value="inactive">Inactive</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Qualifications / Competencies</label><textarea id="emp-qualifications" class="field" rows="2" placeholder="ISO 9001 Lead Auditor, Cert IV, etc."></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="emp-notes" class="field" rows="2" placeholder="Any additional notes…"></textarea></div>
+      <p id="emp-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('emp')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveEmployee()" id="emp-save-btn">Save Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LEGAL MODAL ══ -->
+<div class="modal-overlay" id="modal-legal" onclick="closeModal('legal',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="legal-modal-title">Add Legal Obligation</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('legal')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="legal-id">
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="legal-title" class="field" type="text" placeholder="Work Health and Safety Act 2011"></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
+          <select id="legal-category" class="field"><option>Legislation</option><option>Regulation</option><option>Standard</option><option>Code of Practice</option><option>Licence/Permit</option><option>Contract</option><option>Other</option></select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Jurisdiction</label>
+          <select id="legal-jurisdiction" class="field"><option>Federal</option><option>State/Territory</option><option>International</option><option>Internal</option></select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Reference Number</label><input id="legal-reference" class="field" type="text" placeholder="Act No. 137 of 2011"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Compliance Status</label>
+          <select id="legal-compliance" class="field"><option value="compliant">Compliant</option><option value="monitoring" selected>Monitoring</option><option value="under_review">Under Review</option><option value="non_compliant">Non-Compliant</option><option value="not_applicable">Not Applicable</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Summary</label><textarea id="legal-summary" class="field" rows="2" placeholder="Brief description of what this legislation/standard covers…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Applicable To</label><input id="legal-applicable" class="field" type="text" placeholder="e.g. All operations, Client delivery, HR, Finance"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Compliance Obligations</label><textarea id="legal-obligations" class="field" rows="3" placeholder="What must Preqal do to comply? Key requirements…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Responsible Person</label><input id="legal-responsible" class="field" type="text" placeholder="Name or role"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="legal-review-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Effective Date</label><input id="legal-effective-date" class="field" type="date"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">File / Document URL</label><input id="legal-file-url" class="field" type="url" placeholder="https://legislation.gov.au/…"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="legal-notes" class="field" rows="2" placeholder="Additional notes…"></textarea></div>
+      <p id="legal-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('legal')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveLegal()" id="legal-save-btn">Save Obligation</button>
     </div>
   </div>
 </div>
@@ -666,7 +791,7 @@ async function signInMagicLink(){
 async function signOut(){await sb.auth.signOut();location.reload();}
 
 // ── TABS ──────────────────────────────────────────────────────────────────
-const TABS=['docs','ncr','capa','audit','org','hse','qr'];
+const TABS=['docs','org','emp','legal','qr','hse','ncr','capa','audit'];
 function switchTab(tab){
   TABS.forEach(t=>{
     document.getElementById('section-'+t).style.display=t===tab?'block':'none';
@@ -676,23 +801,25 @@ function switchTab(tab){
 
 // ── LOAD ALL ──────────────────────────────────────────────────────────────
 async function loadAll(){
-  loadOverview();loadDocs();loadNCR();loadCAPA();loadAudit();loadOrg();loadHSE();loadQR();
+  loadOverview();loadDocs();loadOrg();loadEmployees();loadLegal();loadQR();loadHSE();loadNCR();loadCAPA();loadAudit();
 }
 
 async function loadOverview(){
   const yr=new Date().getFullYear();
-  const[docs,ncr,capa,audit,org,hse,qr]=await Promise.all([
+  const[docs,org,emp,legal,qr,hse,ncr,capa,audit]=await Promise.all([
     sb.from('qms_documents').select('id',{count:'exact',head:true}).eq('status','active'),
+    sb.from('qms_org_register').select('id',{count:'exact',head:true}).eq('status','active'),
+    sb.from('qms_employees').select('id',{count:'exact',head:true}).eq('status','active'),
+    sb.from('qms_legal_register').select('id',{count:'exact',head:true}).neq('compliance_status','not_applicable'),
+    sb.from('qms_quality_risk').select('id',{count:'exact',head:true}).in('status',['open','under_treatment']),
+    sb.from('qms_hse_risk').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
     sb.from('qms_ncr').select('id',{count:'exact',head:true}).in('status',['open','under_investigation','capa_raised']),
     sb.from('qms_capa').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
-    sb.from('qms_audit').select('id',{count:'exact',head:true}).gte('created_at',`${yr}-01-01`),
-    sb.from('qms_org_register').select('id',{count:'exact',head:true}).eq('status','active'),
-    sb.from('qms_hse_risk').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
-    sb.from('qms_quality_risk').select('id',{count:'exact',head:true}).in('status',['open','under_treatment'])
+    sb.from('qms_audit').select('id',{count:'exact',head:true}).gte('created_at',`${yr}-01-01`)
   ]);
-  set('ov-docs',docs.count??0);set('ov-ncr',ncr.count??0);
-  set('ov-capa',capa.count??0);set('ov-audit',audit.count??0);
-  set('ov-org',org.count??0);set('ov-hse',hse.count??0);set('ov-qr',qr.count??0);
+  set('ov-docs',docs.count??0);set('ov-org',org.count??0);set('ov-emp',emp.count??0);
+  set('ov-legal',legal.count??0);set('ov-qr',qr.count??0);set('ov-hse',hse.count??0);
+  set('ov-ncr',ncr.count??0);set('ov-capa',capa.count??0);set('ov-audit',audit.count??0);
 }
 
 // ── DOCUMENTS ─────────────────────────────────────────────────────────────
@@ -721,14 +848,16 @@ async function loadDocs(){
 }
 
 async function editDoc(id){if(!docCache[id]){const{data}=await sb.from('qms_documents').select('*').eq('id',id).single();if(data)docCache[id]=data;}openModal('doc',id);}
-function openModal(type,id){
-  const caches={doc:docCache,ncr:ncrCache,capa:capaCache,audit:auditCache,org:orgCache,hse:hseCache,qr:qrCache};
+async function openModal(type,id){
+  const caches={doc:docCache,ncr:ncrCache,capa:capaCache,audit:auditCache,org:orgCache,emp:empCache,legal:legalCache,hse:hseCache,qr:qrCache};
   const fields={
     doc:['doc-id','doc-doc-id','doc-title','doc-category','doc-version','doc-status','doc-owner','doc-file-url','doc-issue-date','doc-review-date','doc-description'],
     ncr:['ncr-id','ncr-title','ncr-description','ncr-source','ncr-severity','ncr-detected-by','ncr-detected-date','ncr-process-area','ncr-status','ncr-immediate-action','ncr-root-cause'],
     capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
     audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary'],
     org:['org-id','org-entity-name','org-entity-type','org-contact-name','org-contact-email','org-contact-phone','org-status','org-role-responsibility','org-relevance','org-review-date','org-notes'],
+    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-qualifications','emp-notes'],
+    legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
     hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
     qr:['qr-id','qr-title','qr-category','qr-status','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
   };
@@ -738,16 +867,26 @@ function openModal(type,id){
     capa:{'capa-type':'corrective','capa-status':'open'},
     audit:{'audit-type':'Internal','audit-status':'planned','audit-minor':'0','audit-major':'0','audit-obs':'0'},
     org:{'org-entity-type':'Internal','org-status':'active'},
+    emp:{'emp-employment-type':'Full-Time','emp-status':'active'},
+    legal:{'legal-category':'Legislation','legal-jurisdiction':'Federal','legal-compliance':'monitoring'},
     hse:{'hse-category':'Physical','hse-status':'open','hse-likelihood':'3','hse-consequence':'3'},
     qr:{'qr-category':'Process','qr-status':'open','qr-likelihood':'3','qr-impact':'3'}
   };
-  const titles={doc:'Add Document',ncr:'Raise NCR',capa:'Add CAPA',audit:'Log Audit',org:'Add Organisation Entry',hse:'Add HSE Risk',qr:'Add Quality Risk'};
-  document.getElementById(`${type}-modal-title`).textContent=id?`Edit ${type==='org'?'Entry':type==='hse'?'HSE Risk':type==='qr'?'Quality Risk':type.toUpperCase()}`:titles[type];
+  const titles={doc:'Add Document',ncr:'Raise NCR',capa:'Add CAPA',audit:'Log Audit',org:'Add Organisation Entry',emp:'Add Employee',legal:'Add Legal Obligation',hse:'Add HSE Risk',qr:'Add Quality Risk'};
+  const editLabels={doc:'Edit Document',ncr:'Edit NCR',capa:'Edit CAPA',audit:'Edit Audit',org:'Edit Entry',emp:'Edit Employee',legal:'Edit Obligation',hse:'Edit HSE Risk',qr:'Edit Quality Risk'};
+  document.getElementById(`${type}-modal-title`).textContent=id?editLabels[type]:titles[type];
   fields[type].forEach(f=>{const el=document.getElementById(f);if(!el)return;el.value=(defaults[type]&&defaults[type][f]!=null)?defaults[type][f]:'';});
   if(type==='ncr')document.getElementById('ncr-create-capa').checked=false;
   document.getElementById(`${type}-error`).textContent='';
   if(type==='hse'){calcHSERating();calcHSEResidual();}
   if(type==='qr'){calcQRRating();calcQRResidual();}
+  // Populate manager dropdown for employees
+  if(type==='emp'){
+    const sel=document.getElementById('emp-manager-id');
+    const curId=id||null;
+    const{data:allEmps}=await sb.from('qms_employees').select('id,full_name,position').eq('status','active').order('full_name');
+    sel.innerHTML='<option value="">— No manager (top of hierarchy) —</option>'+(allEmps||[]).filter(e=>e.id!==curId).map(e=>`<option value="${e.id}">${esc(e.full_name)}${e.position?` · ${esc(e.position)}`:''}</option>`).join('');
+  }
   if(id&&caches[type]&&caches[type][id]){
     const r=caches[type][id];
     const map={
@@ -756,10 +895,14 @@ function openModal(type,id){
       capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},
       audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'},
       org:{id:'org-id',entity_name:'org-entity-name',entity_type:'org-entity-type',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',role_responsibility:'org-role-responsibility',relevance:'org-relevance',review_date:'org-review-date',notes:'org-notes'},
+      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',qualifications:'emp-qualifications',notes:'emp-notes'},
+      legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
       hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
       qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
     };
     Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
+    // Set manager dropdown value
+    if(type==='emp'&&r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
     if(type==='hse'){calcHSERating();calcHSEResidual();}
     if(type==='qr'){calcQRRating();calcQRResidual();}
   }
@@ -953,9 +1096,141 @@ async function delRecord(table,id,type){
   if(!confirm('Delete this record? This cannot be undone.'))return;
   const{error}=await sb.from(table).delete().eq('id',id);
   if(error){alert('Error: '+error.message);return;}
-  const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,hse:loadHSE,qr:loadQR};
+  const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,emp:()=>{loadEmployees();renderOrgChart(Object.values(empCache).filter(e=>e.status==='active'));},legal:loadLegal,hse:loadHSE,qr:loadQR};
   if(loaders[type])loaders[type]();
   loadOverview();
+}
+
+// ── ORG CHART ─────────────────────────────────────────────────────────────
+let orgChartVisible=true;
+function toggleOrgChart(){
+  orgChartVisible=!orgChartVisible;
+  document.getElementById('org-chart-body').style.display=orgChartVisible?'block':'none';
+  document.getElementById('org-chart-chevron').textContent=orgChartVisible?'▲ Hide':'▼ Show';
+}
+function buildOrgTree(emps,parentId){
+  const children=emps.filter(e=>e.manager_id===parentId);
+  if(!children.length)return'';
+  return`<ul>${children.map(e=>`<li>
+    <div class="org-node" onclick="editEmployee('${e.id}')">
+      <div class="org-avatar">${e.full_name.charAt(0).toUpperCase()}</div>
+      <div class="org-name">${esc(e.full_name)}</div>
+      <div class="org-title">${esc(e.position||'')}</div>
+      ${e.department?`<div class="org-dept">${esc(e.department)}</div>`:''}
+    </div>
+    ${buildOrgTree(emps,e.id)}
+  </li>`).join('')}</ul>`;
+}
+function renderOrgChart(emps){
+  const tree=document.getElementById('org-chart-tree');
+  if(!emps||!emps.length){tree.innerHTML='<p class="text-sm text-slate-400 text-center py-4">Add employees to generate the org chart.</p>';return;}
+  const empIds=new Set(emps.map(e=>e.id));
+  const roots=emps.filter(e=>!e.manager_id||!empIds.has(e.manager_id));
+  tree.innerHTML=`<div class="org-tree"><ul>${roots.map(r=>`<li>
+    <div class="org-node" onclick="editEmployee('${r.id}')">
+      <div class="org-avatar">${r.full_name.charAt(0).toUpperCase()}</div>
+      <div class="org-name">${esc(r.full_name)}</div>
+      <div class="org-title">${esc(r.position||'')}</div>
+      ${r.department?`<div class="org-dept">${esc(r.department)}</div>`:''}
+    </div>
+    ${buildOrgTree(emps,r.id)}
+  </li>`).join('')}</ul></div>`;
+}
+
+// ── EMPLOYEE REGISTER ─────────────────────────────────────────────────────
+const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'badge-amber'};
+let empCache={};
+async function loadEmployees(){
+  const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(10);
+  const{data,error}=await sb.from('qms_employees').select('*').order('full_name');
+  if(error){tb.innerHTML=emptyRow(10,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(10);return;}
+  empCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  // Render org chart from active employees
+  renderOrgChart(data.filter(e=>e.status==='active'));
+  tb.innerHTML=data.map(r=>{
+    const mgr=r.manager_id&&empCache[r.manager_id];
+    return`<tr>
+      <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.record_id)}</td>
+      <td class="font-semibold">${esc(r.full_name)}</td>
+      <td>${esc(r.position)}</td>
+      <td class="td-muted">${esc(r.department||'–')}</td>
+      <td><span class="badge badge-slate">${esc(r.employment_type)}</span></td>
+      <td class="td-muted">${mgr?esc(mgr.full_name):'<span class="td-muted">—</span>'}</td>
+      <td class="td-muted">${esc(r.email||'–')}</td>
+      <td><span class="badge ${EMP_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
+      <td class="td-muted">${r.start_date?fmtDate(r.start_date):'–'}</td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="editEmployee('${r.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="delRecord('qms_employees','${r.id}','emp')">Del</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+async function editEmployee(id){if(!empCache[id]){const{data}=await sb.from('qms_employees').select('*').eq('id',id).single();if(data)empCache[id]=data;}openModal('emp',id);}
+async function saveEmployee(){
+  const id=document.getElementById('emp-id').value;
+  const err=document.getElementById('emp-error'),btn=document.getElementById('emp-save-btn');
+  err.textContent='';
+  const name=document.getElementById('emp-full-name').value.trim(),pos=document.getElementById('emp-position').value.trim();
+  if(!name||!pos){err.textContent='Full name and position are required.';return;}
+  let recordId=id&&empCache[id]?empCache[id].record_id:null;
+  if(!recordId){
+    const{count}=await sb.from('qms_employees').select('id',{count:'exact',head:true});
+    recordId=`EMP-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  }
+  const managerId=document.getElementById('emp-manager-id').value||null;
+  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications:document.getElementById('emp-qualifications').value.trim()||null,notes:document.getElementById('emp-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  btn.disabled=true;btn.textContent='Saving…';
+  const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([payload]);
+  btn.disabled=false;btn.textContent='Save Employee';
+  if(error){err.textContent=error.message;return;}
+  closeModal('emp');loadEmployees();loadOverview();
+}
+
+// ── LEGAL REGISTER ────────────────────────────────────────────────────────
+const LEGAL_COMPLIANCE_BADGE={compliant:'badge-green',non_compliant:'badge-red',monitoring:'badge-amber',under_review:'badge-blue',not_applicable:'badge-slate'};
+let legalCache={};
+async function loadLegal(){
+  const tb=document.getElementById('legal-tbody');tb.innerHTML=rowSpin(10);
+  const{data,error}=await sb.from('qms_legal_register').select('*').order('title');
+  if(error){tb.innerHTML=emptyRow(10,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(10);return;}
+  legalCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.record_id)}</td>
+    <td class="font-semibold" style="max-width:200px;white-space:normal">${esc(r.title)}</td>
+    <td><span class="badge badge-blue">${esc(r.category)}</span></td>
+    <td class="td-muted">${esc(r.jurisdiction)}</td>
+    <td class="td-muted text-xs">${esc(r.reference_number||'–')}</td>
+    <td class="td-muted" style="max-width:140px;white-space:normal;font-size:12px">${esc(r.applicable_to||'–')}</td>
+    <td class="td-muted">${esc(r.responsible_person||'–')}</td>
+    <td><span class="badge ${LEGAL_COMPLIANCE_BADGE[r.compliance_status]||'badge-slate'}">${esc(r.compliance_status?.replace('_',' '))}</span></td>
+    <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
+    <td><div class="flex gap-2">
+      <button class="btn btn-ghost btn-sm" onclick="editLegal('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delRecord('qms_legal_register','${r.id}','legal')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+async function editLegal(id){if(!legalCache[id]){const{data}=await sb.from('qms_legal_register').select('*').eq('id',id).single();if(data)legalCache[id]=data;}openModal('legal',id);}
+async function saveLegal(){
+  const id=document.getElementById('legal-id').value;
+  const err=document.getElementById('legal-error'),btn=document.getElementById('legal-save-btn');
+  err.textContent='';
+  const title=document.getElementById('legal-title').value.trim();
+  if(!title){err.textContent='Title is required.';return;}
+  let recordId=id&&legalCache[id]?legalCache[id].record_id:null;
+  if(!recordId){
+    const{count}=await sb.from('qms_legal_register').select('id',{count:'exact',head:true});
+    recordId=`LEG-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  }
+  const payload={record_id:recordId,title,category:document.getElementById('legal-category').value,jurisdiction:document.getElementById('legal-jurisdiction').value,reference_number:document.getElementById('legal-reference').value.trim()||null,compliance_status:document.getElementById('legal-compliance').value,summary:document.getElementById('legal-summary').value.trim()||null,applicable_to:document.getElementById('legal-applicable').value.trim()||null,obligations:document.getElementById('legal-obligations').value.trim()||null,responsible_person:document.getElementById('legal-responsible').value.trim()||null,review_date:document.getElementById('legal-review-date').value||null,effective_date:document.getElementById('legal-effective-date').value||null,file_url:document.getElementById('legal-file-url').value.trim()||null,notes:document.getElementById('legal-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  btn.disabled=true;btn.textContent='Saving…';
+  const{error}=id?await sb.from('qms_legal_register').update(payload).eq('id',id):await sb.from('qms_legal_register').insert([payload]);
+  btn.disabled=false;btn.textContent='Save Obligation';
+  if(error){err.textContent=error.message;return;}
+  closeModal('legal');loadLegal();loadOverview();
 }
 
 // ── ORGANISATION REGISTER ─────────────────────────────────────────────────
@@ -1144,7 +1419,7 @@ function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div
 function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')['doc','ncr','capa','audit','org','hse','qr'].forEach(t=>closeModal(t));
+  if(e.key==='Escape')['doc','org','emp','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();
