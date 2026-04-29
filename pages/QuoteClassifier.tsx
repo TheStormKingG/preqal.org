@@ -4,7 +4,7 @@ import {
   Building2, Zap, TrendingUp, Award, BarChart3, Loader2, Info, Shield,
 } from 'lucide-react';
 import SEO from '../components/SEO';
-// import { supabase } from '../lib/supabaseClient'; // TODO: uncomment when wiring Supabase
+import { supabase } from '../lib/supabaseClient';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -232,28 +232,21 @@ const QuoteClassifier: React.FC = () => {
     console.log('[Preqal Quote Classifier] Submission:', submission);
 
     try {
-      // ─── TODO: Save to Supabase ───────────────────────────────────────────
-      // 1. Create a `quote_submissions` table in your Supabase project with
-      //    columns matching the submission object above (snake_case).
-      // 2. Uncomment the import at the top of this file.
-      // 3. Uncomment the block below:
-      //
-      // const { error: dbError } = await supabase
-      //   .from('quote_submissions')
-      //   .insert([{
-      //     company_name:              submission.companyName,
-      //     contact_person_name:       submission.contactPersonName,
-      //     email:                     submission.email,
-      //     staff_size:                submission.staffSize,
-      //     number_of_services:        submission.numberOfServices,
-      //     avg_processes_per_service: submission.avgProcessesPerService,
-      //     base_tier:                 submission.baseTier,
-      //     complexity_score:          submission.complexityScore,
-      //     recommended_tier:          submission.recommendedTier,
-      //     recommended_tier_name:     submission.recommendedTierName,
-      //     submitted_at:              submission.timestamp,
-      //   }]);
-      // if (dbError) throw dbError;
+      // ─── Save to Supabase ─────────────────────────────────────────────────
+      const { error: dbError } = await supabase
+        .from('quote_submissions')
+        .insert([{
+          company_name:     submission.companyName,
+          contact_person:   submission.contactPersonName,
+          email:            submission.email,
+          staff_size:       submission.staffSize,
+          num_services:     submission.numberOfServices,
+          avg_processes:    submission.avgProcessesPerService,
+          base_tier:        submission.baseTier,
+          complexity_score: submission.complexityScore,
+          recommended_tier: submission.recommendedTier,
+        }]);
+      if (dbError) console.error('[QuoteClassifier] Supabase insert error:', dbError);
       // ─────────────────────────────────────────────────────────────────────
 
       // ─── TODO: Email notification (EmailJS) ───────────────────────────────
@@ -296,8 +289,6 @@ const QuoteClassifier: React.FC = () => {
       // });
       // ─────────────────────────────────────────────────────────────────────
 
-      // Simulate brief async delay — remove this line once real async calls above are wired
-      await new Promise<void>(resolve => setTimeout(resolve, 650));
 
       setResult(classification);
       setSubmitStatus('success');
