@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preqal · Admin Dashboard</title>
+<link rel="icon" type="image/png" href="/favicon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -144,6 +145,19 @@
           </picture>
         </a>
         <span class="neu-pressed-sm px-3 py-1 rounded-full text-xs font-bold text-amber-700 uppercase tracking-wide flex-shrink-0">Admin</span>
+
+        <div class="hidden sm:flex items-center gap-2 ml-4">
+          <button onclick="openFunnelModal()"
+            class="neu-raised-sm flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-amber-700 transition-colors">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Funnel
+          </button>
+          <a href="/qms.html"
+            class="neu-raised-sm flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-amber-700 transition-colors">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            QMS
+          </a>
+        </div>
 
         <div class="hidden sm:flex items-center gap-2 ml-auto">
           <a href="https://www.linkedin.com/company/preqal" target="_blank" rel="noopener"
@@ -404,6 +418,24 @@
       <button class="btn btn-ghost" onclick="closeClientModal()">Cancel</button>
       <button class="btn btn-amber" onclick="saveClient()" id="crm-save-btn">Save Client</button>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ FUNNEL MODAL ═══ -->
+<div class="modal-overlay" id="funnel-modal-overlay" onclick="closeFunnelModal(event)" style="padding:0;align-items:stretch">
+  <div class="neu-card rounded-2xl flex flex-col" style="width:100%;max-width:1100px;max-height:92vh;margin:24px;overflow:hidden">
+    <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid rgba(163,177,198,.3);flex-shrink:0">
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-bold text-slate-800">Marketing Funnel &amp; Client Onboarding</span>
+        <a href="/funnel.html" target="_blank" rel="noopener"
+           class="neu-raised-sm flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-500 hover:text-amber-700 transition-colors">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open full page
+        </a>
+      </div>
+      <button onclick="closeFunnelModalBtn()" class="btn btn-ghost btn-sm">✕ Close</button>
+    </div>
+    <iframe src="/funnel.html" style="flex:1;border:none;min-height:0" loading="lazy" id="funnel-iframe"></iframe>
   </div>
 </div>
 
@@ -711,8 +743,22 @@ function fmtDate(iso){if(!iso)return'–';return new Date(iso).toLocaleDateStrin
 function row(c){return`<tr><td colspan="${c}" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr>`;}
 function empty(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records found.'}</td></tr>`;}
 
+function openFunnelModal(){
+  document.getElementById('funnel-modal-overlay').classList.add('open');
+}
+function closeFunnelModal(e){
+  if(e&&e.target!==document.getElementById('funnel-modal-overlay'))return;
+  document.getElementById('funnel-modal-overlay').classList.remove('open');
+}
+function closeFunnelModalBtn(){
+  document.getElementById('funnel-modal-overlay').classList.remove('open');
+}
+
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')document.getElementById('crm-modal-overlay').classList.remove('open');
+  if(e.key==='Escape'){
+    document.getElementById('crm-modal-overlay').classList.remove('open');
+    document.getElementById('funnel-modal-overlay').classList.remove('open');
+  }
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();

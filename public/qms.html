@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preqal · QMS</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','-apple-system','sans-serif']},boxShadow:{'neu':'6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff','neu-sm':'3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff','nav':'0 4px 8px #a3b1c6'}}}}
+</script>
+<style>
+  @font-face{font-family:'Inter';font-weight:400;font-display:swap;src:url('/fonts/inter/Inter-400.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:500;font-display:swap;src:url('/fonts/inter/Inter-500.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:600;font-display:swap;src:url('/fonts/inter/Inter-600.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:700;font-display:swap;src:url('/fonts/inter/Inter-700.woff2') format('woff2')}
+  body{font-family:'Inter',system-ui,sans-serif;background:#e0e5ec;color:#334155}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  .neu-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff}
+  .neu-raised-sm{box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .neu-pressed-sm{box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:#e0e5ec}
+  ::-webkit-scrollbar-thumb{background:#a3b1c6;border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:#f59e0b}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeInUp .45s ease-out forwards}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spinner{display:inline-block;width:22px;height:22px;border:2px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:580px}
+  thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#64748b;border-bottom:1px solid rgba(163,177,198,.3);white-space:nowrap;background:rgba(255,255,255,.3)}
+  tbody tr{border-bottom:1px solid rgba(163,177,198,.2);transition:background .12s}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:rgba(245,158,11,.06)}
+  tbody td{padding:10px 14px;font-size:13px;color:#334155;vertical-align:middle}
+  .td-muted{color:#94a3b8}
+  .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
+  .badge-amber{background:rgba(245,158,11,.12);color:#b45309}
+  .badge-green{background:rgba(16,185,129,.12);color:#065f46}
+  .badge-blue{background:rgba(99,102,241,.1);color:#4338ca}
+  .badge-slate{background:rgba(100,116,139,.1);color:#475569}
+  .badge-red{background:rgba(239,68,68,.1);color:#b91c1c}
+  .field{width:100%;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;border:none;border-radius:.75rem;padding:10px 14px;font-size:14px;color:#334155;font-family:inherit;outline:none;transition:box-shadow .2s}
+  .field:focus{box-shadow:inset 2px 2px 6px #a3b1c6,inset -2px -2px 6px #ffffff,0 0 0 3px rgba(245,158,11,.18)}
+  .field::placeholder{color:#94a3b8}
+  select.field option{background:#e0e5ec;color:#334155}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:.75rem;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .18s}
+  .btn-amber{background:#f59e0b;color:#fff;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-amber:hover{background:#d97706}
+  .btn-ghost{background:#e0e5ec;color:#64748b;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-ghost:hover{color:#334155}
+  .btn-danger{background:rgba(239,68,68,.1);color:#b91c1c;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-danger:hover{background:rgba(239,68,68,.2)}
+  .btn-sm{padding:6px 12px;font-size:12px;border-radius:.5rem}
+  .tab-btn{padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .18s;color:#64748b;background:transparent}
+  .tab-btn.active{background:rgba(255,255,255,.7);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;color:#b45309}
+  .tab-btn:not(.active):hover{color:#334155}
+  .modal-overlay{position:fixed;inset:0;background:rgba(224,229,236,.85);backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+  .modal-overlay.open{opacity:1;visibility:visible}
+  .section-anchor{scroll-margin-top:100px}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ══ NAVBAR ══ -->
+<header class="fixed w-full z-50 shadow-nav" style="background:rgba(224,229,236,.9);backdrop-filter:blur(16px)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center h-20 gap-4">
+      <a href="/" class="flex-shrink-0">
+        <picture>
+          <source type="image/avif" srcset="/Preqal%20Logo%20Sep25-9-200.avif 200w,/Preqal%20Logo%20Sep25-9-400.avif 400w" sizes="160px">
+          <source type="image/webp" srcset="/Preqal%20Logo%20Sep25-9-200.webp 200w,/Preqal%20Logo%20Sep25-9-400.webp 400w" sizes="160px">
+          <img src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal" width="200" height="80" style="height:10rem;width:auto;transition:transform .3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" loading="eager" decoding="async">
+        </picture>
+      </a>
+      <span class="neu-pressed-sm px-3 py-1 rounded-full text-xs font-bold text-amber-700 uppercase tracking-wide flex-shrink-0">QMS</span>
+      <div class="hidden sm:flex items-center gap-2 ml-auto">
+        <a href="/admin-dashboard.html" class="neu-raised-sm flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-amber-700 transition-colors">
+          ← Dashboard
+        </a>
+      </div>
+      <div class="flex items-center gap-3 ml-2">
+        <div class="neu-pressed-sm w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-amber-700 flex-shrink-0" id="header-avatar">S</div>
+        <div class="hidden md:block min-w-0">
+          <div class="text-sm font-semibold text-slate-800 truncate" id="header-name">Admin</div>
+          <div class="text-xs text-slate-500 truncate max-w-[160px]" id="header-email"></div>
+        </div>
+        <button onclick="signOut()" class="neu-raised-sm flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-red-600 transition-colors">Sign out</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
+  <div class="neu-card rounded-2xl p-10 w-full max-w-md fade-in">
+    <div class="mb-6 text-center">
+      <span class="text-4xl">📋</span>
+      <h1 class="text-2xl font-bold text-slate-900 mt-3 mb-1">Preqal QMS</h1>
+      <p class="text-sm text-slate-500">Sign in with your admin account to access the Quality Management System.</p>
+    </div>
+    <div class="space-y-4">
+      <input id="login-email" class="field" type="email" placeholder="admin@preqal.org" autocomplete="email">
+      <input id="login-password" class="field" type="password" placeholder="Password" autocomplete="current-password">
+      <p id="login-error" class="text-sm min-h-5 font-medium"></p>
+      <button id="login-btn" onclick="signIn()" class="btn btn-amber w-full"><span id="login-btn-text">Sign In</span></button>
+      <button onclick="signInMagicLink()" class="btn btn-ghost w-full"><span id="magic-btn-text">Send Magic Link</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QMS APP ══ -->
+<div id="qms-app" style="display:none;flex-direction:column;min-height:100vh">
+  <main class="flex-1 pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="mb-8 fade-in">
+        <p class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">Preqal Internal</p>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Quality Management System</h1>
+        <p class="text-slate-500 mt-1 text-sm">Document repository · Live forms · Auto-updating registers</p>
+      </div>
+
+      <!-- Overview stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 fade-in">
+        <div class="neu-card rounded-2xl p-5">
+          <div class="text-2xl mb-1">📁</div>
+          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Documents</div>
+          <div class="text-3xl font-bold text-slate-900" id="ov-docs">–</div>
+          <div class="text-xs text-slate-400 mt-1">active documents</div>
+        </div>
+        <div class="neu-card rounded-2xl p-5">
+          <div class="text-2xl mb-1">⚠️</div>
+          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open NCRs</div>
+          <div class="text-3xl font-bold text-slate-900" id="ov-ncr">–</div>
+          <div class="text-xs text-slate-400 mt-1">non-conformances</div>
+        </div>
+        <div class="neu-card rounded-2xl p-5">
+          <div class="text-2xl mb-1">🔧</div>
+          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Open CAPAs</div>
+          <div class="text-3xl font-bold text-slate-900" id="ov-capa">–</div>
+          <div class="text-xs text-slate-400 mt-1">actions outstanding</div>
+        </div>
+        <div class="neu-card rounded-2xl p-5">
+          <div class="text-2xl mb-1">🔍</div>
+          <div class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Audits</div>
+          <div class="text-3xl font-bold text-slate-900" id="ov-audit">–</div>
+          <div class="text-xs text-slate-400 mt-1">this year</div>
+        </div>
+      </div>
+
+      <!-- Tab Nav -->
+      <div class="neu-card rounded-2xl px-4 py-3 mb-6 flex gap-2 flex-wrap fade-in">
+        <button class="tab-btn active" id="tab-docs" onclick="switchTab('docs')">📁 Documents</button>
+        <button class="tab-btn" id="tab-ncr" onclick="switchTab('ncr')">⚠️ Non-Conformances</button>
+        <button class="tab-btn" id="tab-capa" onclick="switchTab('capa')">🔧 CAPA</button>
+        <button class="tab-btn" id="tab-audit" onclick="switchTab('audit')">🔍 Audits</button>
+      </div>
+
+      <!-- ── DOCUMENTS ── -->
+      <div id="section-docs" class="section-anchor fade-in">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Document Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">All QMS documents — policies, procedures, work instructions, forms and records.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('doc')">+ Add Document</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Doc ID</th><th>Title</th><th>Category</th><th>Version</th><th>Status</th><th>Owner</th><th>Review Date</th><th>File</th><th>Actions</th></tr></thead>
+            <tbody id="docs-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <!-- ── NCR ── -->
+      <div id="section-ncr" class="section-anchor fade-in" style="display:none">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Non-Conformance Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Log and track all non-conformances. Each NCR can generate a CAPA automatically.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('ncr')">+ Raise NCR</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>NCR #</th><th>Date</th><th>Title</th><th>Source</th><th>Process Area</th><th>Severity</th><th>Status</th><th>CAPA?</th><th>Actions</th></tr></thead>
+            <tbody id="ncr-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <!-- ── CAPA ── -->
+      <div id="section-capa" class="section-anchor fade-in" style="display:none">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">CAPA Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Corrective and preventive actions. Created from NCRs or raised independently.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('capa')">+ Add CAPA</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>CAPA #</th><th>Type</th><th>Title</th><th>Source / NCR</th><th>Assigned To</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="capa-tbody"><tr><td colspan="8" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <!-- ── AUDITS ── -->
+      <div id="section-audit" class="section-anchor fade-in" style="display:none">
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Audit Register</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Schedule and track internal and external audits. Findings count drives NCR and CAPA creation.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="openModal('audit')">+ Log Audit</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Audit #</th><th>Type</th><th>Scope</th><th>Auditor</th><th>Scheduled</th><th>Status</th><th>Minor</th><th>Major</th><th>Obs.</th><th>Actions</th></tr></thead>
+            <tbody id="audit-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ══ DOCUMENT MODAL ══ -->
+<div class="modal-overlay" id="modal-doc" onclick="closeModal('doc',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="doc-modal-title">Add Document</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('doc')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="doc-id">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Doc ID *</label><input id="doc-doc-id" class="field" type="text" placeholder="QMS-POL-001"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Version</label><input id="doc-version" class="field" type="text" placeholder="1.0" value="1.0"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="doc-title" class="field" type="text" placeholder="Quality Policy"></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
+          <select id="doc-category" class="field"><option value="Policy">Policy</option><option value="Procedure">Procedure</option><option value="Work Instruction">Work Instruction</option><option value="Form">Form</option><option value="Record">Record</option><option value="External">External</option></select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="doc-status" class="field"><option value="draft">Draft</option><option value="active">Active</option><option value="under_review">Under Review</option><option value="superseded">Superseded</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Owner</label><input id="doc-owner" class="field" type="text" placeholder="Stefan Gravesande"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">File URL <span style="font-weight:400;text-transform:none;letter-spacing:0">(Google Drive, Dropbox, etc.)</span></label><input id="doc-file-url" class="field" type="url" placeholder="https://drive.google.com/..."></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Issue Date</label><input id="doc-issue-date" class="field" type="date"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Review Date</label><input id="doc-review-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Description</label><textarea id="doc-description" class="field" rows="2" placeholder="Brief description of this document's purpose…"></textarea></div>
+      <p id="doc-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('doc')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveDoc()" id="doc-save-btn">Save Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NCR MODAL ══ -->
+<div class="modal-overlay" id="modal-ncr" onclick="closeModal('ncr',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="ncr-modal-title">Raise Non-Conformance Report</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('ncr')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="ncr-id">
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="ncr-title" class="field" type="text" placeholder="Brief title of the non-conformance"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Description *</label><textarea id="ncr-description" class="field" rows="3" placeholder="Describe what went wrong, where, and when…"></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source</label>
+          <select id="ncr-source" class="field"><option value="">Select…</option><option>Internal Audit</option><option>Customer Complaint</option><option>Process Review</option><option>Supplier</option><option>Management Review</option><option>Other</option></select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Severity</label>
+          <select id="ncr-severity" class="field"><option value="minor">Minor</option><option value="major">Major</option><option value="critical">Critical</option></select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Detected By</label><input id="ncr-detected-by" class="field" type="text" placeholder="Name or role"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Date Detected</label><input id="ncr-detected-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Process Area</label><input id="ncr-process-area" class="field" type="text" placeholder="e.g. Onboarding, Delivery, Finance"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+        <select id="ncr-status" class="field"><option value="open">Open</option><option value="under_investigation">Under Investigation</option><option value="capa_raised">CAPA Raised</option><option value="closed">Closed</option><option value="verified">Verified</option></select>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Immediate Action Taken</label><textarea id="ncr-immediate-action" class="field" rows="2" placeholder="What was done right away to contain the issue…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Root Cause (if known)</label><textarea id="ncr-root-cause" class="field" rows="2" placeholder="Why did this occur…"></textarea></div>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" id="ncr-create-capa" class="w-4 h-4 accent-amber-500">
+        <span class="text-sm font-semibold text-slate-700">Automatically create a linked CAPA for this NCR</span>
+      </label>
+      <p id="ncr-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('ncr')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveNCR()" id="ncr-save-btn">Save NCR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CAPA MODAL ══ -->
+<div class="modal-overlay" id="modal-capa" onclick="closeModal('capa',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="capa-modal-title">Add CAPA</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('capa')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="capa-id">
+      <input type="hidden" id="capa-ncr-id">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Type</label>
+          <select id="capa-type" class="field"><option value="corrective">Corrective</option><option value="preventive">Preventive</option></select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="capa-status" class="field"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="completed">Completed</option><option value="verified">Verified</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="capa-title" class="field" type="text" placeholder="Brief title of the corrective/preventive action"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Description *</label><textarea id="capa-description" class="field" rows="3" placeholder="What needs to be done and why…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Source / Linked NCR</label><input id="capa-source" class="field" type="text" placeholder="NCR-2026-001 or describe the source"></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Assigned To</label><input id="capa-assigned-to" class="field" type="text" placeholder="Name"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Due Date</label><input id="capa-due-date" class="field" type="date"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Action Taken</label><textarea id="capa-action-taken" class="field" rows="2" placeholder="What was done to address the root cause…"></textarea></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Effectiveness Review</label><textarea id="capa-effectiveness" class="field" rows="2" placeholder="Did the action resolve the issue? Evidence…"></textarea></div>
+      <p id="capa-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('capa')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveCapa()" id="capa-save-btn">Save CAPA</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AUDIT MODAL ══ -->
+<div class="modal-overlay" id="modal-audit" onclick="closeModal('audit',event)">
+  <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900" id="audit-modal-title">Log Audit</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeModal('audit')">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="audit-id">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Audit Type</label>
+          <select id="audit-type" class="field"><option value="Internal">Internal</option><option value="External">External</option><option value="Supplier">Supplier</option><option value="Customer">Customer</option></select>
+        </div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
+          <select id="audit-status" class="field"><option value="planned">Planned</option><option value="in_progress">In Progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+        </div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Scope *</label><input id="audit-scope" class="field" type="text" placeholder="e.g. Full QMS, Clause 8 – Operations, Supplier X"></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Auditor</label><input id="audit-auditor" class="field" type="text" placeholder="Lead auditor name"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Auditee</label><input id="audit-auditee" class="field" type="text" placeholder="Department or person"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Scheduled Date</label><input id="audit-scheduled-date" class="field" type="date"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Conducted Date</label><input id="audit-conducted-date" class="field" type="date"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Minor Findings</label><input id="audit-minor" class="field" type="number" min="0" value="0"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Major Findings</label><input id="audit-major" class="field" type="number" min="0" value="0"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Observations</label><input id="audit-obs" class="field" type="number" min="0" value="0"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Summary</label><textarea id="audit-summary" class="field" rows="3" placeholder="Key findings, conclusions, follow-up required…"></textarea></div>
+      <p id="audit-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeModal('audit')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveAudit()" id="audit-save-btn">Save Audit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL='https://gndcjmxxgtnoidxgcdnx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDY5NjYsImV4cCI6MjA4MTcyMjk2Nn0.hPhVHtHzp67Upukemoo8ZTwDcOCVHLrKfOwaITnbBLY';
+const ADMIN_EMAILS=['stefan.gravesande@gmail.com','stefan.gravesande@preqal.org'];
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session)handleSession(session);
+  sb.auth.onAuthStateChange((_,s)=>{if(s)handleSession(s);});
+}
+function handleSession(session){
+  const email=session.user.email;
+  if(!ADMIN_EMAILS.includes(email.toLowerCase())){window.location.href='/e-courses/learn';return;}
+  document.getElementById('login-screen').style.display='none';
+  const app=document.getElementById('qms-app');app.style.display='flex';
+  const first=email.split('@')[0],name=first.charAt(0).toUpperCase()+first.slice(1);
+  document.getElementById('header-email').textContent=email;
+  document.getElementById('header-name').textContent=name;
+  document.getElementById('header-avatar').textContent=email[0].toUpperCase();
+  loadAll();
+}
+async function signIn(){
+  const email=document.getElementById('login-email').value.trim(),pass=document.getElementById('login-password').value;
+  const err=document.getElementById('login-error'),btn=document.getElementById('login-btn');
+  err.textContent='';err.style.color='#b91c1c';btn.disabled=true;document.getElementById('login-btn-text').textContent='Signing in…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error)err.textContent=error.message;
+  btn.disabled=false;document.getElementById('login-btn-text').textContent='Sign In';
+}
+async function signInMagicLink(){
+  const email=document.getElementById('login-email').value.trim(),err=document.getElementById('login-error');
+  if(!email){err.textContent='Enter your email first.';err.style.color='#b91c1c';return;}
+  const btn=document.querySelector('[onclick="signInMagicLink()"]');
+  btn.disabled=true;document.getElementById('magic-btn-text').textContent='Sending…';
+  const{error}=await sb.auth.signInWithOtp({email});
+  err.textContent=error?error.message:'✓ Magic link sent — check your inbox.';
+  err.style.color=error?'#b91c1c':'#059669';
+  btn.disabled=false;document.getElementById('magic-btn-text').textContent='Send Magic Link';
+}
+async function signOut(){await sb.auth.signOut();location.reload();}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+const TABS=['docs','ncr','capa','audit'];
+function switchTab(tab){
+  TABS.forEach(t=>{
+    document.getElementById('section-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+// ── LOAD ALL ──────────────────────────────────────────────────────────────
+async function loadAll(){
+  loadOverview();loadDocs();loadNCR();loadCAPA();loadAudit();
+}
+
+async function loadOverview(){
+  const yr=new Date().getFullYear();
+  const[docs,ncr,capa,audit]=await Promise.all([
+    sb.from('qms_documents').select('id',{count:'exact',head:true}).eq('status','active'),
+    sb.from('qms_ncr').select('id',{count:'exact',head:true}).in('status',['open','under_investigation','capa_raised']),
+    sb.from('qms_capa').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
+    sb.from('qms_audit').select('id',{count:'exact',head:true}).gte('created_at',`${yr}-01-01`)
+  ]);
+  set('ov-docs',docs.count??0);set('ov-ncr',ncr.count??0);
+  set('ov-capa',capa.count??0);set('ov-audit',audit.count??0);
+}
+
+// ── DOCUMENTS ─────────────────────────────────────────────────────────────
+const DOC_STATUS_BADGE={draft:'badge-slate',active:'badge-green',under_review:'badge-amber',superseded:'badge-slate'};
+let docCache={};
+async function loadDocs(){
+  const tb=document.getElementById('docs-tbody');tb.innerHTML=rowSpin(9);
+  const{data,error}=await sb.from('qms_documents').select('*').order('doc_id');
+  if(error){tb.innerHTML=emptyRow(9,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(9);return;}
+  docCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-mono font-bold text-amber-700">${esc(r.doc_id)}</td>
+    <td class="font-semibold">${esc(r.title)}</td>
+    <td><span class="badge badge-blue">${esc(r.category)}</span></td>
+    <td class="td-muted text-center">${esc(r.version)}</td>
+    <td><span class="badge ${DOC_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
+    <td class="td-muted">${esc(r.owner||'–')}</td>
+    <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
+    <td>${r.file_url?`<a href="${esc(r.file_url)}" target="_blank" rel="noopener" class="text-xs font-bold text-amber-700 hover:text-amber-900">Open ↗</a>`:'<span class="td-muted">–</span>'}</td>
+    <td><div class="flex gap-2">
+      <button class="btn btn-ghost btn-sm" onclick="editDoc('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delRecord('qms_documents','${r.id}','doc')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function editDoc(id){if(!docCache[id]){const{data}=await sb.from('qms_documents').select('*').eq('id',id).single();if(data)docCache[id]=data;}openModal('doc',id);}
+function openModal(type,id){
+  const caches={doc:docCache,ncr:ncrCache,capa:capaCache,audit:auditCache};
+  const fields={
+    doc:['doc-id','doc-doc-id','doc-title','doc-category','doc-version','doc-status','doc-owner','doc-file-url','doc-issue-date','doc-review-date','doc-description'],
+    ncr:['ncr-id','ncr-title','ncr-description','ncr-source','ncr-severity','ncr-detected-by','ncr-detected-date','ncr-process-area','ncr-status','ncr-immediate-action','ncr-root-cause'],
+    capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
+    audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary']
+  };
+  const defaults={doc:{'doc-version':'1.0','doc-category':'Policy','doc-status':'draft'},'ncr':{'ncr-severity':'minor','ncr-status':'open','ncr-detected-date':new Date().toISOString().split('T')[0]},'capa':{'capa-type':'corrective','capa-status':'open'},'audit':{'audit-type':'Internal','audit-status':'planned','audit-minor':'0','audit-major':'0','audit-obs':'0'}};
+  document.getElementById(`${type}-modal-title`).textContent=id?`Edit ${type.toUpperCase()}`:`${type==='ncr'?'Raise NCR':type==='capa'?'Add CAPA':type==='doc'?'Add Document':'Log Audit'}`;
+  // Reset
+  fields[type].forEach(f=>{const el=document.getElementById(f);if(!el)return;el.value=(defaults[type]&&defaults[type][f]!=null)?defaults[type][f]:'';});
+  if(type==='ncr')document.getElementById('ncr-create-capa').checked=false;
+  document.getElementById(`${type}-error`).textContent='';
+  // Fill if editing
+  if(id&&caches[type][id]){
+    const r=caches[type][id];
+    const map={doc:{id:'doc-id','doc_id':'doc-doc-id',title:'doc-title',category:'doc-category',version:'doc-version',status:'doc-status',owner:'doc-owner',file_url:'doc-file-url',issue_date:'doc-issue-date',review_date:'doc-review-date',description:'doc-description'},ncr:{id:'ncr-id',title:'ncr-title',description:'ncr-description',source:'ncr-source',severity:'ncr-severity',detected_by:'ncr-detected-by',detected_date:'ncr-detected-date',process_area:'ncr-process-area',status:'ncr-status',immediate_action:'ncr-immediate-action',root_cause:'ncr-root-cause'},capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'}};
+    Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
+  }
+  document.getElementById(`modal-${type}`).classList.add('open');
+}
+function closeModal(type,e){
+  if(e&&e.target!==document.getElementById(`modal-${type}`))return;
+  document.getElementById(`modal-${type}`).classList.remove('open');
+}
+
+async function saveDoc(){
+  const id=document.getElementById('doc-id').value;
+  const err=document.getElementById('doc-error'),btn=document.getElementById('doc-save-btn');
+  err.textContent='';
+  const docId=document.getElementById('doc-doc-id').value.trim(),title=document.getElementById('doc-title').value.trim();
+  if(!docId||!title){err.textContent='Doc ID and title are required.';return;}
+  const payload={doc_id:docId,title,category:document.getElementById('doc-category').value,version:document.getElementById('doc-version').value||'1.0',status:document.getElementById('doc-status').value,owner:document.getElementById('doc-owner').value.trim()||null,file_url:document.getElementById('doc-file-url').value.trim()||null,issue_date:document.getElementById('doc-issue-date').value||null,review_date:document.getElementById('doc-review-date').value||null,description:document.getElementById('doc-description').value.trim()||null,updated_at:new Date().toISOString()};
+  btn.disabled=true;btn.textContent='Saving…';
+  const{error}=id?await sb.from('qms_documents').update(payload).eq('id',id):await sb.from('qms_documents').insert([payload]);
+  btn.disabled=false;btn.textContent='Save Document';
+  if(error){err.textContent=error.message;return;}
+  closeModal('doc');loadDocs();loadOverview();
+}
+
+// ── NCR ───────────────────────────────────────────────────────────────────
+const NCR_SEV_BADGE={minor:'badge-amber',major:'badge-red',critical:'badge-red'};
+const NCR_STATUS_BADGE={open:'badge-red',under_investigation:'badge-amber',capa_raised:'badge-blue',closed:'badge-green',verified:'badge-green'};
+let ncrCache={};
+async function loadNCR(){
+  const tb=document.getElementById('ncr-tbody');tb.innerHTML=rowSpin(9);
+  const{data,error}=await sb.from('qms_ncr').select('*').order('created_at',{ascending:false});
+  if(error){tb.innerHTML=emptyRow(9,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(9);return;}
+  ncrCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-mono font-bold text-amber-700">${esc(r.ncr_number)}</td>
+    <td class="td-muted">${fmtDate(r.detected_date)}</td>
+    <td class="font-semibold">${esc(r.title)}</td>
+    <td class="td-muted">${esc(r.source||'–')}</td>
+    <td class="td-muted">${esc(r.process_area||'–')}</td>
+    <td><span class="badge ${NCR_SEV_BADGE[r.severity]||'badge-slate'}">${esc(r.severity)}</span></td>
+    <td><span class="badge ${NCR_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace(/_/g,' '))}</span></td>
+    <td>${r.status==='capa_raised'?'<span class="badge badge-blue">Yes</span>':'<button class="btn btn-ghost btn-sm" onclick="raiseCapa(\''+r.id+'\')">+ CAPA</button>'}</td>
+    <td><div class="flex gap-2">
+      <button class="btn btn-ghost btn-sm" onclick="editNCR('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delRecord('qms_ncr','${r.id}','ncr')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function editNCR(id){if(!ncrCache[id]){const{data}=await sb.from('qms_ncr').select('*').eq('id',id).single();if(data)ncrCache[id]=data;}openModal('ncr',id);}
+
+async function saveNCR(){
+  const id=document.getElementById('ncr-id').value;
+  const err=document.getElementById('ncr-error'),btn=document.getElementById('ncr-save-btn');
+  err.textContent='';
+  const title=document.getElementById('ncr-title').value.trim(),desc=document.getElementById('ncr-description').value.trim();
+  if(!title||!desc){err.textContent='Title and description are required.';return;}
+  btn.disabled=true;btn.textContent='Saving…';
+  // Auto-generate NCR number if new
+  let ncrNumber=id&&ncrCache[id]?ncrCache[id].ncr_number:null;
+  if(!ncrNumber){
+    const{count}=await sb.from('qms_ncr').select('id',{count:'exact',head:true});
+    ncrNumber=`NCR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  }
+  const payload={ncr_number:ncrNumber,title,description:desc,source:document.getElementById('ncr-source').value||null,severity:document.getElementById('ncr-severity').value,detected_by:document.getElementById('ncr-detected-by').value.trim()||null,detected_date:document.getElementById('ncr-detected-date').value||new Date().toISOString().split('T')[0],process_area:document.getElementById('ncr-process-area').value.trim()||null,status:document.getElementById('ncr-status').value,immediate_action:document.getElementById('ncr-immediate-action').value.trim()||null,root_cause:document.getElementById('ncr-root-cause').value.trim()||null,updated_at:new Date().toISOString()};
+  const{data:saved,error}=id?await sb.from('qms_ncr').update(payload).eq('id',id).select().single():await sb.from('qms_ncr').insert([payload]).select().single();
+  btn.disabled=false;btn.textContent='Save NCR';
+  if(error){err.textContent=error.message;return;}
+  // Auto-create CAPA if checked
+  if(!id&&document.getElementById('ncr-create-capa').checked&&saved){
+    await createLinkedCapa(saved.id,ncrNumber,title);
+    await sb.from('qms_ncr').update({status:'capa_raised'}).eq('id',saved.id);
+  }
+  closeModal('ncr');loadNCR();loadCAPA();loadOverview();
+}
+
+async function raiseCapa(ncrId){
+  const r=ncrCache[ncrId];
+  if(!r)return;
+  await createLinkedCapa(ncrId,r.ncr_number,r.title);
+  await sb.from('qms_ncr').update({status:'capa_raised'}).eq('id',ncrId);
+  loadNCR();loadCAPA();loadOverview();
+}
+
+async function createLinkedCapa(ncrId,ncrNumber,ncrTitle){
+  const{count}=await sb.from('qms_capa').select('id',{count:'exact',head:true});
+  const capaNumber=`CAPA-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  await sb.from('qms_capa').insert([{capa_number:capaNumber,type:'corrective',title:`Corrective action for ${ncrNumber}`,description:`Address root cause and prevent recurrence of non-conformance: ${ncrTitle}`,source:ncrNumber,ncr_id:ncrId,status:'open'}]);
+}
+
+// ── CAPA ──────────────────────────────────────────────────────────────────
+const CAPA_STATUS_BADGE={open:'badge-red',in_progress:'badge-amber',completed:'badge-blue',verified:'badge-green',closed:'badge-green'};
+let capaCache={};
+async function loadCAPA(){
+  const tb=document.getElementById('capa-tbody');tb.innerHTML=rowSpin(8);
+  const{data,error}=await sb.from('qms_capa').select('*').order('created_at',{ascending:false});
+  if(error){tb.innerHTML=emptyRow(8,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(8);return;}
+  capaCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  tb.innerHTML=data.map(r=>{
+    const due=r.due_date?fmtDate(r.due_date):'–';
+    const overdue=r.due_date&&new Date(r.due_date)<new Date()&&!['closed','verified'].includes(r.status);
+    return`<tr>
+      <td class="font-mono font-bold text-amber-700">${esc(r.capa_number)}</td>
+      <td><span class="badge badge-slate">${esc(r.type)}</span></td>
+      <td class="font-semibold">${esc(r.title)}</td>
+      <td class="td-muted">${esc(r.source||'–')}</td>
+      <td class="td-muted">${esc(r.assigned_to||'–')}</td>
+      <td class="${overdue?'text-red-600 font-bold':''}">${due}</td>
+      <td><span class="badge ${CAPA_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace(/_/g,' '))}</span></td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="editCapa('${r.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="delRecord('qms_capa','${r.id}','capa')">Del</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function editCapa(id){if(!capaCache[id]){const{data}=await sb.from('qms_capa').select('*').eq('id',id).single();if(data)capaCache[id]=data;}openModal('capa',id);}
+
+async function saveCapa(){
+  const id=document.getElementById('capa-id').value;
+  const err=document.getElementById('capa-error'),btn=document.getElementById('capa-save-btn');
+  err.textContent='';
+  const title=document.getElementById('capa-title').value.trim(),desc=document.getElementById('capa-description').value.trim();
+  if(!title||!desc){err.textContent='Title and description are required.';return;}
+  btn.disabled=true;btn.textContent='Saving…';
+  let capaNumber=id&&capaCache[id]?capaCache[id].capa_number:null;
+  if(!capaNumber){
+    const{count}=await sb.from('qms_capa').select('id',{count:'exact',head:true});
+    capaNumber=`CAPA-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  }
+  const ncrId=document.getElementById('capa-ncr-id').value||null;
+  const payload={capa_number:capaNumber,type:document.getElementById('capa-type').value,title,description:desc,source:document.getElementById('capa-source').value.trim()||null,ncr_id:ncrId||null,assigned_to:document.getElementById('capa-assigned-to').value.trim()||null,due_date:document.getElementById('capa-due-date').value||null,status:document.getElementById('capa-status').value,action_taken:document.getElementById('capa-action-taken').value.trim()||null,effectiveness_review:document.getElementById('capa-effectiveness').value.trim()||null,updated_at:new Date().toISOString()};
+  const{error}=id?await sb.from('qms_capa').update(payload).eq('id',id):await sb.from('qms_capa').insert([payload]);
+  btn.disabled=false;btn.textContent='Save CAPA';
+  if(error){err.textContent=error.message;return;}
+  closeModal('capa');loadCAPA();loadOverview();
+}
+
+// ── AUDIT ─────────────────────────────────────────────────────────────────
+const AUDIT_STATUS_BADGE={planned:'badge-slate',in_progress:'badge-amber',completed:'badge-green',cancelled:'badge-slate'};
+let auditCache={};
+async function loadAudit(){
+  const tb=document.getElementById('audit-tbody');tb.innerHTML=rowSpin(10);
+  const{data,error}=await sb.from('qms_audit').select('*').order('created_at',{ascending:false});
+  if(error){tb.innerHTML=emptyRow(10,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(10);return;}
+  auditCache=Object.fromEntries(data.map(r=>[r.id,r]));
+  tb.innerHTML=data.map(r=>`<tr>
+    <td class="font-mono font-bold text-amber-700">${esc(r.audit_number)}</td>
+    <td><span class="badge badge-blue">${esc(r.audit_type)}</span></td>
+    <td class="font-semibold">${esc(r.audit_scope)}</td>
+    <td class="td-muted">${esc(r.auditor||'–')}</td>
+    <td class="td-muted">${r.scheduled_date?fmtDate(r.scheduled_date):'–'}</td>
+    <td><span class="badge ${AUDIT_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace(/_/g,' '))}</span></td>
+    <td class="text-center">${r.findings_minor??0}</td>
+    <td class="text-center font-bold ${r.findings_major>0?'text-red-600':''}">${r.findings_major??0}</td>
+    <td class="text-center td-muted">${r.findings_observation??0}</td>
+    <td><div class="flex gap-2">
+      <button class="btn btn-ghost btn-sm" onclick="editAudit('${r.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delRecord('qms_audit','${r.id}','audit')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function editAudit(id){if(!auditCache[id]){const{data}=await sb.from('qms_audit').select('*').eq('id',id).single();if(data)auditCache[id]=data;}openModal('audit',id);}
+
+async function saveAudit(){
+  const id=document.getElementById('audit-id').value;
+  const err=document.getElementById('audit-error'),btn=document.getElementById('audit-save-btn');
+  err.textContent='';
+  const scope=document.getElementById('audit-scope').value.trim();
+  if(!scope){err.textContent='Audit scope is required.';return;}
+  btn.disabled=true;btn.textContent='Saving…';
+  let auditNumber=id&&auditCache[id]?auditCache[id].audit_number:null;
+  if(!auditNumber){
+    const{count}=await sb.from('qms_audit').select('id',{count:'exact',head:true});
+    auditNumber=`AUD-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+  }
+  const payload={audit_number:auditNumber,audit_type:document.getElementById('audit-type').value,audit_scope:scope,auditor:document.getElementById('audit-auditor').value.trim()||null,auditee:document.getElementById('audit-auditee').value.trim()||null,scheduled_date:document.getElementById('audit-scheduled-date').value||null,conducted_date:document.getElementById('audit-conducted-date').value||null,findings_minor:parseInt(document.getElementById('audit-minor').value)||0,findings_major:parseInt(document.getElementById('audit-major').value)||0,findings_observation:parseInt(document.getElementById('audit-obs').value)||0,status:document.getElementById('audit-status').value,summary:document.getElementById('audit-summary').value.trim()||null,updated_at:new Date().toISOString()};
+  const{error}=id?await sb.from('qms_audit').update(payload).eq('id',id):await sb.from('qms_audit').insert([payload]);
+  btn.disabled=false;btn.textContent='Save Audit';
+  if(error){err.textContent=error.message;return;}
+  closeModal('audit');loadAudit();loadOverview();
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────
+async function delRecord(table,id,type){
+  if(!confirm('Delete this record? This cannot be undone.'))return;
+  const{error}=await sb.from(table).delete().eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  const loaders={doc:()=>{loadDocs();},ncr:()=>{loadNCR();},capa:()=>{loadCAPA();},audit:()=>{loadAudit();}};
+  if(loaders[type])loaders[type]();
+  loadOverview();
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(iso){if(!iso)return'–';return new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr>`;}
+function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')['doc','ncr','capa','audit'].forEach(t=>closeModal(t));
+  if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
+});
+init();
+</script>
+</body>
+</html>
