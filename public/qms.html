@@ -600,20 +600,105 @@
         <p id="qual-empty" class="text-xs text-slate-400 text-center py-3 neu-pressed-sm rounded-xl">No qualifications added yet. Click + Add above.</p>
       </div>
 
+      <!-- § Compensation -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">💰 Compensation (GYD / month)</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Gross Salary</label>
+            <input id="emp-gross" class="field" type="number" min="0" step="1" placeholder="e.g. 509738" oninput="salaryFromGross('edit')">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Net Salary (take-home)</label>
+            <input id="emp-net" class="field" type="number" min="0" step="1" placeholder="auto-calculated" oninput="salaryFromNet('edit')">
+          </div>
+        </div>
+        <div id="emp-tax-breakdown" class="neu-pressed-sm rounded-xl px-4 py-3 mt-3 text-xs text-slate-500" style="display:none">
+          <span class="font-bold text-amber-700">Guyana PAYE breakdown:</span>
+          &nbsp;NIS <strong id="emp-bd-nis">—</strong> &nbsp;|&nbsp;
+          Income Tax <strong id="emp-bd-tax">—</strong> &nbsp;|&nbsp;
+          Net <strong id="emp-bd-net">—</strong>
+          <span class="text-slate-400 ml-2">(2025 rates: 5.6% NIS · 25%/40% PAYE)</span>
+        </div>
+      </div>
+
       <!-- § Documents -->
       <div>
-        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📎 Documents &amp; Links</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4 pb-2" style="border-bottom:1px solid rgba(245,158,11,.2)">📎 Documents &amp; Files</p>
         <div class="space-y-4">
-          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Profile Picture URL</label><input id="emp-profile-pic" class="field" type="url" placeholder="https://… (direct image link)"></div>
-          <div class="grid grid-cols-2 gap-4">
-            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Offer Letter URL</label><input id="emp-offer-letter-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
-            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description URL</label><input id="emp-jd-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+          <!-- Profile picture: upload + URL fallback -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Profile Picture</label>
+            <label class="field flex items-center gap-3 cursor-pointer mb-2" style="min-height:44px;padding:8px 14px">
+              <span>🖼</span>
+              <span id="emp-profile-pic-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload photo…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept="image/*" onchange="uploadEmpDoc(this,'emp-profile-pic','emp-profile-pic-name','emp-profile-pic-progress','profile')">
+            </label>
+            <div id="emp-profile-pic-progress" class="text-xs text-amber-600 mb-1" style="display:none">⏳ Uploading…</div>
+            <input id="emp-profile-pic" class="field" type="url" placeholder="Or paste image URL (Google, LinkedIn, etc.)" style="font-size:12px">
+            <input type="hidden" id="emp-profile-pic-url-hidden">
           </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Signed Contract URL</label><input id="emp-contract-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
-            <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé URL</label><input id="emp-cv-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+          <!-- Offer Letter -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Offer Letter</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+              <span>📝</span>
+              <span id="emp-offer-letter-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload file…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadEmpDoc(this,'emp-offer-letter-url','emp-offer-letter-name','emp-offer-letter-progress','offer-letter')">
+            </label>
+            <div id="emp-offer-letter-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="emp-offer-letter-url">
           </div>
-          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance URL</label><input id="emp-police-clearance-url" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+          <!-- Job Description -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+              <span>📋</span>
+              <span id="emp-jd-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload file…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadEmpDoc(this,'emp-jd-url','emp-jd-name','emp-jd-progress','jd')">
+            </label>
+            <div id="emp-jd-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="emp-jd-url">
+          </div>
+          <!-- Contract -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Signed Contract</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+              <span>✍️</span>
+              <span id="emp-contract-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload file…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadEmpDoc(this,'emp-contract-url','emp-contract-name','emp-contract-progress','contract')">
+            </label>
+            <div id="emp-contract-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="emp-contract-url">
+          </div>
+          <!-- CV -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+              <span>📄</span>
+              <span id="emp-cv-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload file…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadEmpDoc(this,'emp-cv-url','emp-cv-name','emp-cv-progress','cv')">
+            </label>
+            <div id="emp-cv-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="emp-cv-url">
+          </div>
+          <!-- Police Clearance -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+              <span>🛡</span>
+              <span id="emp-police-clearance-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Upload file…</span>
+              <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadEmpDoc(this,'emp-police-clearance-url','emp-police-clearance-name','emp-police-clearance-progress','police')">
+            </label>
+            <div id="emp-police-clearance-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="emp-police-clearance-url">
+          </div>
         </div>
       </div>
 
@@ -859,7 +944,41 @@
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email</label><input id="emp-add-email" class="field" type="email" placeholder="jane@preqal.org"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Start Date</label><input id="emp-add-start-date" class="field" type="date"></div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description URL</label><input id="emp-add-jd-url" class="field" type="url" placeholder="https://drive.google.com/… (included in onboarding link)"></div>
+      <!-- JD upload -->
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Job Description <span style="font-weight:400;text-transform:none">(sent to employee with onboarding link)</span></label>
+        <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+          <span>📎</span>
+          <span id="emp-add-jd-name" class="text-sm flex-1 truncate" style="color:#94a3b8">Click to upload PDF or Word doc…</span>
+          <span class="badge badge-amber" style="font-size:10px;padding:2px 8px;flex-shrink:0">Upload</span>
+          <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadEmpDoc(this,'emp-add-jd-url','emp-add-jd-name','emp-add-jd-progress','add-jd')">
+        </label>
+        <div id="emp-add-jd-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+        <input type="hidden" id="emp-add-jd-url">
+      </div>
+
+      <!-- Compensation -->
+      <div style="border-top:1px solid rgba(163,177,198,.25);padding-top:16px;margin-top:4px">
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-3">💰 Compensation (GYD / month)</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Gross Salary</label>
+            <input id="emp-add-gross" class="field" type="number" min="0" step="1" placeholder="e.g. 509738" oninput="salaryFromGross('add')">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Net Salary (take-home)</label>
+            <input id="emp-add-net" class="field" type="number" min="0" step="1" placeholder="auto-calculated" oninput="salaryFromNet('add')">
+          </div>
+        </div>
+        <div id="emp-add-tax-breakdown" class="neu-pressed-sm rounded-xl px-4 py-3 mt-3 text-xs text-slate-500" style="display:none">
+          <span class="font-bold text-amber-700">Guyana PAYE breakdown:</span>
+          &nbsp;NIS <strong id="emp-add-bd-nis">—</strong> &nbsp;|&nbsp;
+          Income Tax <strong id="emp-add-bd-tax">—</strong> &nbsp;|&nbsp;
+          Net <strong id="emp-add-bd-net">—</strong>
+          <span class="text-slate-400 ml-2">(2025 rates: 5.6% NIS · 25%/40% PAYE)</span>
+        </div>
+      </div>
+
       <p id="emp-add-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
       <!-- Onboarding Link (shown after save) -->
       <div id="emp-add-link-section" style="display:none">
@@ -1032,7 +1151,7 @@ async function openModal(type,id){
     capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
     audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary'],
     org:['org-id','org-entity-name','org-entity-type','org-contact-name','org-contact-email','org-contact-phone','org-status','org-role-responsibility','org-relevance','org-review-date','org-notes'],
-    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes','emp-profile-pic','emp-dob','emp-nis','emp-tin','emp-id-passport','emp-address','emp-marital-status','emp-dependents','emp-religion','emp-hobby','emp-dietary','emp-allergies','emp-medical','emp-disabilities','emp-bank-name','emp-bank-branch','emp-bank-account','emp-offer-letter-url','emp-jd-url','emp-contract-url','emp-cv-url','emp-police-clearance-url'],
+    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes','emp-profile-pic','emp-dob','emp-nis','emp-tin','emp-id-passport','emp-address','emp-marital-status','emp-dependents','emp-religion','emp-hobby','emp-dietary','emp-allergies','emp-medical','emp-disabilities','emp-bank-name','emp-bank-branch','emp-bank-account','emp-gross','emp-net'],
     legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
     hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
     qr:['qr-id','qr-title','qr-category','qr-status','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
@@ -1075,17 +1194,53 @@ async function openModal(type,id){
       capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},
       audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'},
       org:{id:'org-id',entity_name:'org-entity-name',entity_type:'org-entity-type',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',role_responsibility:'org-role-responsibility',relevance:'org-relevance',review_date:'org-review-date',notes:'org-notes'},
-      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes',profile_picture_url:'emp-profile-pic',date_of_birth:'emp-dob',nis_number:'emp-nis',tin_number:'emp-tin',id_passport_number:'emp-id-passport',address:'emp-address',marital_status:'emp-marital-status',num_dependents:'emp-dependents',religion:'emp-religion',hobby:'emp-hobby',dietary_restriction:'emp-dietary',allergies:'emp-allergies',medical_conditions:'emp-medical',disabilities:'emp-disabilities',bank_name:'emp-bank-name',bank_branch:'emp-bank-branch',bank_account_number:'emp-bank-account',offer_letter_url:'emp-offer-letter-url',job_description_url:'emp-jd-url',signed_contract_url:'emp-contract-url',cv_url:'emp-cv-url',police_clearance_url:'emp-police-clearance-url'},
+      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes',date_of_birth:'emp-dob',nis_number:'emp-nis',tin_number:'emp-tin',id_passport_number:'emp-id-passport',address:'emp-address',marital_status:'emp-marital-status',num_dependents:'emp-dependents',religion:'emp-religion',hobby:'emp-hobby',dietary_restriction:'emp-dietary',allergies:'emp-allergies',medical_conditions:'emp-medical',disabilities:'emp-disabilities',bank_name:'emp-bank-name',bank_branch:'emp-bank-branch',bank_account_number:'emp-bank-account',gross_salary:'emp-gross',net_salary:'emp-net'},
       legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
       hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
       qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
     };
     Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
-    // Set manager dropdown value + populate qualifications
+    // Set manager dropdown value + populate qualifications + doc fields
     if(type==='emp'){
       if(r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
       const quals=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);
       quals.forEach(q=>addQualEntry(q.name||'',q.institute||'',q.date_obtained||''));
+      // Populate hidden doc URL fields + show uploaded state in labels
+      const docFields=[
+        {hidden:'emp-profile-pic',nameEl:'emp-profile-pic-name',icon:'🖼',label:'Profile picture'},
+        {hidden:'emp-offer-letter-url',nameEl:'emp-offer-letter-name',icon:'📝',label:'Offer letter'},
+        {hidden:'emp-jd-url',nameEl:'emp-jd-name',icon:'📋',label:'Job description'},
+        {hidden:'emp-contract-url',nameEl:'emp-contract-name',icon:'✍️',label:'Signed contract'},
+        {hidden:'emp-cv-url',nameEl:'emp-cv-name',icon:'📄',label:'CV / Résumé'},
+        {hidden:'emp-police-clearance-url',nameEl:'emp-police-clearance-name',icon:'🛡',label:'Police clearance'}
+      ];
+      const dbMap={
+        'emp-offer-letter-url':'offer_letter_url','emp-jd-url':'job_description_url',
+        'emp-contract-url':'signed_contract_url','emp-cv-url':'cv_url',
+        'emp-police-clearance-url':'police_clearance_url'
+      };
+      docFields.forEach(f=>{
+        const dbField=dbMap[f.hidden]||(f.hidden==='emp-profile-pic'?'profile_picture_url':null);
+        const val=dbField?r[dbField]:null;
+        const el=document.getElementById(f.hidden);
+        const nameEl=document.getElementById(f.nameEl);
+        if(el)el.value=val||'';
+        if(f.hidden==='emp-profile-pic'){
+          // profile-pic is a visible URL input, already set by field map
+        } else if(nameEl){
+          nameEl.textContent=val?'✓ File uploaded (click to replace)':'Upload file…';
+          nameEl.style.color=val?'#059669':'#94a3b8';
+        }
+      });
+      // Handle profile pic label
+      if(r.profile_picture_url){
+        const pn=document.getElementById('emp-profile-pic-name');
+        if(pn){pn.textContent='✓ Photo uploaded (click to replace)';pn.style.color='#059669';}
+        document.getElementById('emp-profile-pic').value=r.profile_picture_url;
+      }
+      // Salary breakdown
+      if(r.gross_salary){setTimeout(()=>salaryFromGross('edit'),50);}
+      else if(r.net_salary){setTimeout(()=>salaryFromNet('edit'),50);}
     }
     if(type==='hse'){calcHSERating();calcHSEResidual();}
     if(type==='qr'){calcQRRating();calcQRResidual();}
@@ -1368,7 +1523,7 @@ async function saveEmployeeQuick(){
   const{count}=await sb.from('qms_employees').select('id',{count:'exact',head:true});
   const recordId=`EMP-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   const token=crypto.randomUUID();
-  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-add-department').value.trim()||null,employment_type:document.getElementById('emp-add-employment-type').value,manager_id:document.getElementById('emp-add-manager-id').value||null,email:document.getElementById('emp-add-email').value.trim()||null,start_date:document.getElementById('emp-add-start-date').value||null,job_description_url:document.getElementById('emp-add-jd-url').value.trim()||null,status:'active',onboarding_status:'pending',onboarding_token:token,updated_at:new Date().toISOString()};
+  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-add-department').value.trim()||null,employment_type:document.getElementById('emp-add-employment-type').value,manager_id:document.getElementById('emp-add-manager-id').value||null,email:document.getElementById('emp-add-email').value.trim()||null,start_date:document.getElementById('emp-add-start-date').value||null,job_description_url:document.getElementById('emp-add-jd-url').value||null,gross_salary:parseFloat(document.getElementById('emp-add-gross').value)||null,net_salary:parseFloat(document.getElementById('emp-add-net').value)||null,status:'active',onboarding_status:'pending',onboarding_token:token,updated_at:new Date().toISOString()};
   const{error}=await sb.from('qms_employees').insert([payload]);
   btn.disabled=false;btn.textContent='Save & Get Link';
   if(error){err.textContent=error.message;return;}
@@ -1468,6 +1623,71 @@ function printCard(){
   setTimeout(()=>w.print(),200);
 }
 
+// ── GUYANA PAYE CALCULATOR ────────────────────────────────────────────────
+// Rates: 2025/2026 GRA — NIS 5.6% capped at $280k/month, PA = max($130k, gross/3), 25%/40%
+const GUY_TAX={NIS_RATE:0.056,NIS_CEIL:280000,PA_ANNUAL:1560000,LOWER:0.25,UPPER:0.40,BRACKET:210000};
+function guyPAYE(gross){
+  if(!gross||gross<=0)return{nis:0,tax:0,net:0,taxable:0};
+  const nis=Math.round(Math.min(gross,GUY_TAX.NIS_CEIL)*GUY_TAX.NIS_RATE);
+  const pa=Math.max(GUY_TAX.PA_ANNUAL/12,gross/3);
+  const taxable=Math.max(0,gross-nis-pa);
+  const tax=Math.round(taxable>GUY_TAX.BRACKET?GUY_TAX.BRACKET*GUY_TAX.LOWER+(taxable-GUY_TAX.BRACKET)*GUY_TAX.UPPER:taxable*GUY_TAX.LOWER);
+  return{nis,tax,net:gross-nis-tax,taxable:Math.round(taxable)};
+}
+function guyGrossFromNet(target){
+  if(!target||target<=0)return 0;
+  let lo=target,hi=target*4;
+  for(let i=0;i<60;i++){const m=Math.round((lo+hi)/2);const r=guyPAYE(m);if(r.net<target)lo=m;else if(r.net>target)hi=m;else return m;}
+  return Math.round((lo+hi)/2);
+}
+function fmtGYD(n){return'$'+Math.round(n).toLocaleString('en-GY');}
+function salaryFromGross(ctx){
+  const pfx=ctx==='add'?'emp-add':'emp';
+  const gross=parseFloat(document.getElementById(pfx+'-gross').value)||0;
+  const bd=document.getElementById(pfx+'-tax-breakdown');
+  if(!gross){if(bd)bd.style.display='none';document.getElementById(pfx+'-net').value='';return;}
+  const r=guyPAYE(gross);
+  document.getElementById(pfx+'-net').value=r.net;
+  if(bd){
+    document.getElementById(pfx+'-bd-nis').textContent=fmtGYD(r.nis);
+    document.getElementById(pfx+'-bd-tax').textContent=fmtGYD(r.tax);
+    document.getElementById(pfx+'-bd-net').textContent=fmtGYD(r.net);
+    bd.style.display='block';
+  }
+}
+function salaryFromNet(ctx){
+  const pfx=ctx==='add'?'emp-add':'emp';
+  const net=parseFloat(document.getElementById(pfx+'-net').value)||0;
+  const bd=document.getElementById(pfx+'-tax-breakdown');
+  if(!net){if(bd)bd.style.display='none';document.getElementById(pfx+'-gross').value='';return;}
+  const gross=guyGrossFromNet(net);
+  document.getElementById(pfx+'-gross').value=gross;
+  const r=guyPAYE(gross);
+  if(bd){
+    document.getElementById(pfx+'-bd-nis').textContent=fmtGYD(r.nis);
+    document.getElementById(pfx+'-bd-tax').textContent=fmtGYD(r.tax);
+    document.getElementById(pfx+'-bd-net').textContent=fmtGYD(r.net);
+    bd.style.display='block';
+  }
+}
+
+// ── DOCUMENT UPLOADS ──────────────────────────────────────────────────────
+async function uploadEmpDoc(input,hiddenFieldId,nameElId,progressId,docType){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameElId);
+  const prog=document.getElementById(progressId);
+  if(prog)prog.style.display='block';
+  if(nameEl)nameEl.textContent='Uploading…';
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const path=`employees/${docType}/${Date.now()}_${safe}`;
+  const{data,error}=await sb.storage.from('employee-documents').upload(path,file,{upsert:true,cacheControl:'3600'});
+  if(prog)prog.style.display='none';
+  if(error){alert('Upload failed: '+error.message);if(nameEl)nameEl.textContent='Upload failed — try again';return;}
+  const{data:{publicUrl}}=sb.storage.from('employee-documents').getPublicUrl(path);
+  document.getElementById(hiddenFieldId).value=publicUrl;
+  if(nameEl){nameEl.textContent='✓ '+file.name;nameEl.style.color='#059669';}
+}
+
 // ── EMPLOYEE REGISTER ─────────────────────────────────────────────────────
 const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'badge-amber'};
 let empCache={};
@@ -1517,7 +1737,9 @@ async function saveEmployee(){
     institute:row.querySelector('.qual-institute').value.trim(),
     date_obtained:row.querySelector('.qual-date').value||null
   })).filter(q=>q.name);
-  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:document.getElementById('emp-notes').value.trim()||null,profile_picture_url:document.getElementById('emp-profile-pic').value.trim()||null,date_of_birth:document.getElementById('emp-dob').value||null,nis_number:document.getElementById('emp-nis').value.trim()||null,tin_number:document.getElementById('emp-tin').value.trim()||null,id_passport_number:document.getElementById('emp-id-passport').value.trim()||null,address:document.getElementById('emp-address').value.trim()||null,marital_status:document.getElementById('emp-marital-status').value||null,num_dependents:document.getElementById('emp-dependents').value?parseInt(document.getElementById('emp-dependents').value):null,religion:document.getElementById('emp-religion').value.trim()||null,hobby:document.getElementById('emp-hobby').value.trim()||null,dietary_restriction:document.getElementById('emp-dietary').value||null,allergies:document.getElementById('emp-allergies').value.trim()||null,medical_conditions:document.getElementById('emp-medical').value.trim()||null,disabilities:document.getElementById('emp-disabilities').value.trim()||null,bank_name:document.getElementById('emp-bank-name').value.trim()||null,bank_branch:document.getElementById('emp-bank-branch').value.trim()||null,bank_account_number:document.getElementById('emp-bank-account').value.trim()||null,offer_letter_url:document.getElementById('emp-offer-letter-url').value.trim()||null,job_description_url:document.getElementById('emp-jd-url').value.trim()||null,signed_contract_url:document.getElementById('emp-contract-url').value.trim()||null,cv_url:document.getElementById('emp-cv-url').value.trim()||null,police_clearance_url:document.getElementById('emp-police-clearance-url').value.trim()||null,updated_at:new Date().toISOString()};
+  const g=val=>document.getElementById(val)?.value?.trim()||null;
+  const profilePic=g('emp-offer-letter-url')!==null?g('emp-profile-pic'):null;// profile pic is the visible url input
+  const payload={record_id:recordId,full_name:name,position:pos,department:g('emp-department'),employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:g('emp-email'),phone:g('emp-phone'),start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:g('emp-notes'),profile_picture_url:g('emp-profile-pic')||null,date_of_birth:document.getElementById('emp-dob').value||null,nis_number:g('emp-nis'),tin_number:g('emp-tin'),id_passport_number:g('emp-id-passport'),address:g('emp-address'),marital_status:document.getElementById('emp-marital-status').value||null,num_dependents:document.getElementById('emp-dependents').value?parseInt(document.getElementById('emp-dependents').value):null,religion:g('emp-religion'),hobby:g('emp-hobby'),dietary_restriction:document.getElementById('emp-dietary').value||null,allergies:g('emp-allergies'),medical_conditions:g('emp-medical'),disabilities:g('emp-disabilities'),bank_name:g('emp-bank-name'),bank_branch:g('emp-bank-branch'),bank_account_number:g('emp-bank-account'),offer_letter_url:document.getElementById('emp-offer-letter-url').value||null,job_description_url:document.getElementById('emp-jd-url').value||null,signed_contract_url:document.getElementById('emp-contract-url').value||null,cv_url:document.getElementById('emp-cv-url').value||null,police_clearance_url:document.getElementById('emp-police-clearance-url').value||null,gross_salary:parseFloat(document.getElementById('emp-gross').value)||null,net_salary:parseFloat(document.getElementById('emp-net').value)||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([payload]);
   btn.disabled=false;btn.textContent='Save Employee';

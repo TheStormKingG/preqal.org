@@ -120,10 +120,17 @@
           <div id="pic-preview-wrap">
             <div class="avatar-initials" id="pic-initials">?</div>
           </div>
-          <div style="flex:1">
-            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Profile Picture URL</label>
-            <input id="ob-profile-pic" class="field" type="url" placeholder="https://… (Google, LinkedIn, or direct image URL)" oninput="previewPic()">
-            <p class="text-xs text-slate-400 mt-1.5">Paste a direct link to your headshot. Your Google profile picture URL works perfectly.</p>
+          <div style="flex:1;space-y:10px">
+            <!-- Upload option -->
+            <label class="field flex items-center gap-3 cursor-pointer mb-3" style="min-height:44px;padding:8px 14px">
+              <span>📷</span>
+              <span id="ob-pic-file-name" style="flex:1;font-size:13px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Upload a photo…</span>
+              <span style="background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" onchange="uploadObPic(this)">
+            </label>
+            <div id="ob-pic-progress" class="text-xs text-amber-600 mb-2" style="display:none">⏳ Uploading photo…</div>
+            <!-- URL fallback -->
+            <input id="ob-profile-pic" class="field" type="url" placeholder="Or paste a profile photo URL (Google, LinkedIn…)" oninput="previewPic()" style="font-size:13px">
             <p id="pic-auto-note" style="display:none" class="text-xs text-amber-700 mt-1 font-medium">✓ Auto-loaded from your Google account</p>
           </div>
         </div>
@@ -191,10 +198,32 @@
       <div class="neu-card rounded-2xl p-6 fade-in mt-4">
         <div class="section-header">📄 Your Documents</div>
         <div class="divider"></div>
-        <p class="text-xs text-slate-400 mb-4">Upload your documents to Google Drive or Dropbox and paste the shareable link below.</p>
-        <div class="space-y-4">
-          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé *</label><input id="ob-cv" class="field" type="url" placeholder="https://drive.google.com/…" required></div>
-          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance</label><input id="ob-police" class="field" type="url" placeholder="https://drive.google.com/…"></div>
+        <p class="text-xs text-slate-400 mb-4">Upload your documents directly — PDF, Word, or image files accepted (max 50 MB each).</p>
+        <div class="space-y-5">
+          <!-- CV / Résumé -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CV / Résumé *</label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:48px;padding:10px 14px">
+              <span style="font-size:18px">📄</span>
+              <span id="ob-cv-name" style="flex:1;font-size:13px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Click to choose file…</span>
+              <span style="background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;flex-shrink:0">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx" onchange="uploadObDoc(this,'ob-cv','ob-cv-name','ob-cv-progress','cv')">
+            </label>
+            <div id="ob-cv-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="ob-cv">
+          </div>
+          <!-- Police Clearance -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Police Clearance <span style="font-weight:400;text-transform:none;letter-spacing:0">(if required)</span></label>
+            <label class="field flex items-center gap-3 cursor-pointer" style="min-height:48px;padding:10px 14px">
+              <span style="font-size:18px">🛡</span>
+              <span id="ob-police-name" style="flex:1;font-size:13px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Click to choose file…</span>
+              <span style="background:#e0e5ec;color:#64748b;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;flex-shrink:0;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff">Upload</span>
+              <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadObDoc(this,'ob-police','ob-police-name','ob-police-progress','police')">
+            </label>
+            <div id="ob-police-progress" class="text-xs text-amber-600 mt-1" style="display:none">⏳ Uploading…</div>
+            <input type="hidden" id="ob-police">
+          </div>
         </div>
       </div>
 
@@ -273,8 +302,8 @@ async function init(){
   if(data.bank_name)document.getElementById('ob-bank-name').value=data.bank_name;
   if(data.bank_branch)document.getElementById('ob-bank-branch').value=data.bank_branch;
   if(data.bank_account_number)document.getElementById('ob-bank-account').value=data.bank_account_number;
-  if(data.cv_url)document.getElementById('ob-cv').value=data.cv_url;
-  if(data.police_clearance_url)document.getElementById('ob-police').value=data.police_clearance_url;
+  if(data.cv_url){document.getElementById('ob-cv').value=data.cv_url;const n=document.getElementById('ob-cv-name');if(n){n.textContent='✓ Previously uploaded (click to replace)';n.style.color='#059669';}}
+  if(data.police_clearance_url){document.getElementById('ob-police').value=data.police_clearance_url;const n=document.getElementById('ob-police-name');if(n){n.textContent='✓ Previously uploaded (click to replace)';n.style.color='#059669';}}
   // Qualifications
   const quals=Array.isArray(data.qualifications_json)?data.qualifications_json:(data.qualifications_json?JSON.parse(data.qualifications_json):[]);
   quals.forEach(q=>addObQual(q.name||'',q.institute||'',q.date_obtained||''));
@@ -335,7 +364,7 @@ async function submitOnboarding(e){
   const dob=document.getElementById('ob-dob').value;
   const cv=document.getElementById('ob-cv').value.trim();
   if(!dob){err.textContent='Date of birth is required.';return;}
-  if(!cv){err.textContent='CV / Résumé link is required.';return;}
+  if(!cv){err.textContent='Please upload your CV / Résumé before submitting.';return;}
 
   const quals=Array.from(document.querySelectorAll('#ob-qual-list .qual-entry')).map(row=>({
     name:row.querySelector('.qual-name').value.trim(),
@@ -375,6 +404,46 @@ async function submitOnboarding(e){
   if(error){err.textContent=error.message;return;}
   hide('form-screen');
   show('success-screen');
+}
+
+// ── FILE UPLOADS ──────────────────────────────────────────────────────────
+// Uses the onboarding token as folder path so files are grouped per employee
+async function uploadObDoc(input,hiddenId,nameId,progressId,docType){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameId);
+  const prog=document.getElementById(progressId);
+  if(prog)prog.style.display='block';
+  if(nameEl)nameEl.textContent='Uploading…';
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const token=new URLSearchParams(window.location.search).get('token')||'unknown';
+  const path=`onboarding/${token}/${docType}/${Date.now()}_${safe}`;
+  const{data,error}=await sb.storage.from('employee-documents').upload(path,file,{upsert:true,cacheControl:'3600'});
+  if(prog)prog.style.display='none';
+  if(error){
+    if(nameEl){nameEl.textContent='Upload failed — try again';nameEl.style.color='#b91c1c';}
+    document.getElementById('ob-error').textContent='File upload failed: '+error.message;
+    return;
+  }
+  const{data:{publicUrl}}=sb.storage.from('employee-documents').getPublicUrl(path);
+  document.getElementById(hiddenId).value=publicUrl;
+  if(nameEl){nameEl.textContent='✓ '+file.name;nameEl.style.color='#059669';}
+}
+async function uploadObPic(input){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById('ob-pic-file-name');
+  const prog=document.getElementById('ob-pic-progress');
+  if(prog)prog.style.display='block';
+  if(nameEl)nameEl.textContent='Uploading…';
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const token=new URLSearchParams(window.location.search).get('token')||'unknown';
+  const path=`onboarding/${token}/profile/${Date.now()}_${safe}`;
+  const{data,error}=await sb.storage.from('employee-documents').upload(path,file,{upsert:true,cacheControl:'3600'});
+  if(prog)prog.style.display='none';
+  if(error){if(nameEl){nameEl.textContent='Upload failed';nameEl.style.color='#b91c1c';}return;}
+  const{data:{publicUrl}}=sb.storage.from('employee-documents').getPublicUrl(path);
+  document.getElementById('ob-profile-pic').value=publicUrl;
+  if(nameEl){nameEl.textContent='✓ '+file.name;nameEl.style.color='#059669';}
+  previewPic();
 }
 
 init();
