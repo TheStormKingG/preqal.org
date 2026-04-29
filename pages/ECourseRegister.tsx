@@ -43,9 +43,14 @@ const ECourseRegister: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   // ── Redirect if already fully registered ──────────────────────────────────
+  const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
   useEffect(() => {
     if (!loading && user && profile) {
-      navigate('/e-courses/learn', { replace: true });
+      if (ADMIN_EMAILS.includes((user.email ?? '').toLowerCase())) {
+        window.location.href = '/admin-dashboard.html';
+      } else {
+        navigate('/e-courses/learn', { replace: true });
+      }
     }
   }, [loading, user, profile, navigate]);
 
@@ -82,7 +87,11 @@ const ECourseRegister: React.FC = () => {
     setError(null);
     try {
       await upsertProfile(trimmed);
-      navigate('/e-courses/learn', { replace: true });
+      if (ADMIN_EMAILS.includes((user?.email ?? '').toLowerCase())) {
+        window.location.href = '/admin-dashboard.html';
+      } else {
+        navigate('/e-courses/learn', { replace: true });
+      }
     } catch {
       setError('Could not save your profile. Please try again.');
     } finally {
