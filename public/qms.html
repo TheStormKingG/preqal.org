@@ -2375,7 +2375,18 @@ async function autoRouteToRisk(payload,existingIssueId){
         source:'Context Register',
         source_ref:payload.record_id,
         hazard:payload.issue_description,
-        hazard_category:(['Environmental','Climate Change'].includes(payload.factor_type))?'Environmental / Climate':(payload.factor_type||'Physical'),
+        hazard_category:(()=>{
+          if(['Environmental','Climate Change'].includes(payload.factor_type)||payload.impact_area==='Environment / Climate')return'Environmental';
+          if(payload.factor_type==='Social'||payload.impact_area==='People / Health & Safety')return'Physical';
+          const kw=((payload.issue_description||'')+' '+(payload.potential_impact||'')).toLowerCase();
+          if(/\bchem(ical)?\b/.test(kw))return'Chemical';
+          if(/\bbio(logical)?\b|bacteria|virus|pathogen/.test(kw))return'Biological';
+          if(/\bergon|posture|lifting|repetit|vibrat|manual.handl/.test(kw))return'Ergonomic';
+          if(/\bpsycho|stress|fatigue|mental|wellbeing|harass|bully/.test(kw))return'Psychosocial';
+          if(/\bfire|burn|flame|ignit/.test(kw))return'Fire';
+          if(/\belect|shock|current|voltage/.test(kw))return'Electrical';
+          return'Physical';
+        })(),
         persons_at_risk:'To be assessed',
         likelihood:Number(payload.likelihood),
         consequence:Number(payload.impact_level),
