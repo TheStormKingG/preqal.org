@@ -2362,72 +2362,77 @@ async function autoRouteToRisk(payload,existingIssueId){
   const level=riskLevel(rating);
   const swot=payload.swot_type;
   const routeToHSE=isHSEIssue(payload);
-  // GATE 3: Idempotency — don't re-route if already linked
-  if(existingIssueId&&issueCache[existingIssueId]?.linked_risk_id)return;
-  if(routeToHSE){
-    // Create HSE risk entry
-    const{count}=await sb.from('qms_hse_risk').select('id',{count:'exact',head:true});
-    const riskId=`HSE-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
-    const hsePayload={
-      risk_id:riskId,
-      source:'Context Register',
-      source_ref:payload.record_id,
-      hazard:payload.issue_description,
-      hazard_category:payload.factor_type==='Climate Change'?'Environmental / Climate':payload.factor_type,
-      persons_at_risk:'To be assessed',
-      likelihood:payload.likelihood,
-      consequence:payload.impact_level,
-      risk_rating:rating,
-      existing_controls:payload.response_action||null,
-      responsible_person:payload.owner||null,
-      review_date:payload.review_date||null,
-      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}. Potential impact: ${payload.potential_impact||'—'}`,
-      status:'open',
-      date_assessed:new Date().toISOString().split('T')[0],
-      updated_at:new Date().toISOString()
-    };
-    const{error}=await sb.from('qms_hse_risk').insert([hsePayload]);
-    if(!error){
-      // Update context issue with linked risk ID
-      if(payload.id)await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'hse'}).eq('id',payload.id);
+  // GATE 3: Idempotency — don't re-route if already linked (check cache by UUID or scan by record_id)
+  const existing=existingIssueId?issueCache[existingIssueId]:Object.values(issueCache).find(r=>r.record_id===payload.record_id);
+  if(existing?.linked_risk_id)return;
+  try{
+    if(routeToHSE){
+      // ── Route to HSE Risk Register ────────────────────────────────────────
+      const{count}=await sb.from('qms_hse_risk').select('id',{count:'exact',head:true});
+      const riskId=`HSE-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+      const hsePayload={
+        risk_id:riskId,
+        source:'Context Register',
+        source_ref:payload.record_id,
+        hazard:payload.issue_description,
+        hazard_category:(['Environmental','Climate Change'].includes(payload.factor_type))?'Environmental / Climate':(payload.factor_type||'Physical'),
+        persons_at_risk:'To be assessed',
+        likelihood:Number(payload.likelihood),
+        consequence:Number(payload.impact_level),
+        risk_rating:Number(rating),
+        existing_controls:payload.response_action||null,
+        responsible_person:payload.owner||null,
+        review_date:payload.review_date||null,
+        notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}. Potential impact: ${payload.potential_impact||'—'}`,
+        status:'open',
+        date_assessed:new Date().toISOString().split('T')[0],
+        updated_at:new Date().toISOString()
+      };
+      const{error:hseErr}=await sb.from('qms_hse_risk').insert([hsePayload]);
+      if(hseErr)throw new Error(`HSE insert: ${hseErr.message}`);
+      // Write linked risk back to the context issue using record_id (safe for both new + edit)
+      await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'hse'}).eq('record_id',payload.record_id);
       loadHSE();loadIssues();
       showToast('🦺','Routed to HSE Risk Register',`${riskId} created — ${level.label} risk (${rating}/25). Open the HSE Register to complete the HIRA assessment.`);
-    }
-  } else {
-    // Create Quality Risk entry
-    const{count}=await sb.from('qms_quality_risk').select('id',{count:'exact',head:true});
-    const riskId=`QR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
-    // SWOT → risk_type: Strength (internal positive) = Opportunity to leverage; Weakness = Risk to address
-    const isOpp=(swot==='Strength');
-    const qrPayload={
-      risk_id:riskId,
-      risk_type:isOpp?'Opportunity':'Risk',
-      source:'Context Register',
-      source_ref:payload.record_id,
-      risk_title:payload.issue_description.substring(0,120),
-      risk_category:contextCategoryToQRCategory(payload.factor_type,payload.impact_area),
-      qms_process:'Context & Strategy',
-      date_raised:new Date().toISOString().split('T')[0],
-      risk_description:payload.issue_description,
-      potential_cause:`${payload.factor_type||''} factor — SWOT: ${swot||'—'} — Impact area: ${payload.impact_area||'—'}`,
-      potential_consequence:payload.potential_impact||null,
-      existing_controls:payload.response_action||null,
-      likelihood:payload.likelihood,
-      impact:payload.impact_level,
-      risk_rating:rating,
-      risk_owner:payload.owner||null,
-      review_date:payload.review_date||null,
-      notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}.`,
-      status:'open',
-      updated_at:new Date().toISOString()
-    };
-    const{error}=await sb.from('qms_quality_risk').insert([qrPayload]);
-    if(!error){
-      if(payload.id)await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'qr'}).eq('id',payload.id);
+    } else {
+      // ── Route to Quality Risk Register ───────────────────────────────────
+      const{count}=await sb.from('qms_quality_risk').select('id',{count:'exact',head:true});
+      const riskId=`QR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
+      // SWOT → risk_type: Strength (internal positive) = Opportunity to leverage; Weakness/unclassified = Risk
+      const isOpp=(swot==='Strength');
+      const qrPayload={
+        risk_id:riskId,
+        risk_type:isOpp?'Opportunity':'Risk',
+        source:'Context Register',
+        source_ref:payload.record_id,
+        risk_title:payload.issue_description.substring(0,120),
+        risk_category:contextCategoryToQRCategory(payload.factor_type,payload.impact_area),
+        qms_process:'Context & Strategy',
+        date_raised:new Date().toISOString().split('T')[0],
+        risk_description:payload.issue_description,
+        potential_cause:`${payload.factor_type||''} factor — SWOT: ${swot||'—'} — Impact area: ${payload.impact_area||'—'}`,
+        potential_consequence:payload.potential_impact||null,
+        existing_controls:payload.response_action||null,
+        likelihood:Number(payload.likelihood),
+        impact:Number(payload.impact_level),
+        risk_rating:Number(rating),
+        risk_owner:payload.owner||null,
+        review_date:payload.review_date||null,
+        notes:`Auto-created from Context Issue ${payload.record_id}. SWOT: ${swot||'—'}. Impact area: ${payload.impact_area||'—'}.`,
+        status:'open',
+        updated_at:new Date().toISOString()
+      };
+      const{error:qrErr}=await sb.from('qms_quality_risk').insert([qrPayload]);
+      if(qrErr)throw new Error(`QR insert: ${qrErr.message}`);
+      // Write linked risk back to the context issue using record_id
+      await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'qr'}).eq('record_id',payload.record_id);
       loadQR();loadIssues();
       const icon=isOpp?'🚀':'⚠️';
-      showToast(icon,`Routed to Quality Risk Register`,`${riskId} created — ${level.label} ${isOpp?'opportunity':'risk'} (${rating}/25). Open the Quality Risk Register to complete the assessment.`);
+      showToast(icon,'Routed to Quality Risk Register',`${riskId} created — ${level.label} ${isOpp?'opportunity':'risk'} (${rating}/25). Open the Quality Risk Register to complete the assessment.`);
     }
+  }catch(e){
+    console.error('[autoRoute]',e);
+    showToast('❌','Auto-routing failed',e.message,8000);
   }
 }
 function contextCategoryToQRCategory(factorType,impactArea){
