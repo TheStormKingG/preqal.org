@@ -298,8 +298,8 @@
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Reports To</th><th>Email</th><th>Status</th><th>Start Date</th><th>Actions</th></tr></thead>
-            <tbody id="emp-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Reports To</th><th>Email</th><th>Status</th><th>Start Date</th><th>Qualifications</th><th>Actions</th></tr></thead>
+            <tbody id="emp-tbody"><tr><td colspan="11" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -531,7 +531,16 @@
           <select id="emp-status" class="field"><option value="active">Active</option><option value="on_leave">On Leave</option><option value="inactive">Inactive</option></select>
         </div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Qualifications / Competencies</label><textarea id="emp-qualifications" class="field" rows="2" placeholder="ISO 9001 Lead Auditor, Cert IV, etc."></textarea></div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Qualifications &amp; Competencies</label>
+          <button type="button" onclick="addQualEntry()" class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px">+ Add</button>
+        </div>
+        <div id="qual-list" class="space-y-2">
+          <!-- populated dynamically -->
+        </div>
+        <p id="qual-empty" class="text-xs text-slate-400 text-center py-3 neu-pressed-sm rounded-xl">No qualifications added yet. Click + Add above.</p>
+      </div>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Notes</label><textarea id="emp-notes" class="field" rows="2" placeholder="Any additional notes…"></textarea></div>
       <p id="emp-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
@@ -856,7 +865,7 @@ async function openModal(type,id){
     capa:['capa-id','capa-ncr-id','capa-type','capa-title','capa-description','capa-source','capa-assigned-to','capa-due-date','capa-status','capa-action-taken','capa-effectiveness'],
     audit:['audit-id','audit-type','audit-scope','audit-auditor','audit-auditee','audit-scheduled-date','audit-conducted-date','audit-minor','audit-major','audit-obs','audit-status','audit-summary'],
     org:['org-id','org-entity-name','org-entity-type','org-contact-name','org-contact-email','org-contact-phone','org-status','org-role-responsibility','org-relevance','org-review-date','org-notes'],
-    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-qualifications','emp-notes'],
+    emp:['emp-id','emp-full-name','emp-position','emp-department','emp-employment-type','emp-email','emp-phone','emp-start-date','emp-status','emp-notes'],
     legal:['legal-id','legal-title','legal-category','legal-jurisdiction','legal-reference','legal-compliance','legal-summary','legal-applicable','legal-obligations','legal-responsible','legal-review-date','legal-effective-date','legal-file-url','legal-notes'],
     hse:['hse-id','hse-hazard','hse-category','hse-status','hse-location','hse-persons','hse-existing-controls','hse-likelihood','hse-consequence','hse-additional-controls','hse-responsible','hse-target-date','hse-res-likelihood','hse-res-consequence','hse-review-date','hse-notes'],
     qr:['qr-id','qr-title','qr-category','qr-status','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
@@ -880,8 +889,12 @@ async function openModal(type,id){
   document.getElementById(`${type}-error`).textContent='';
   if(type==='hse'){calcHSERating();calcHSEResidual();}
   if(type==='qr'){calcQRRating();calcQRResidual();}
-  // Populate manager dropdown for employees
+  // Employee modal setup
   if(type==='emp'){
+    // Reset qual list
+    document.getElementById('qual-list').innerHTML='';
+    syncQualEmpty();
+    // Populate manager dropdown
     const sel=document.getElementById('emp-manager-id');
     const curId=id||null;
     const{data:allEmps}=await sb.from('qms_employees').select('id,full_name,position').eq('status','active').order('full_name');
@@ -895,14 +908,18 @@ async function openModal(type,id){
       capa:{id:'capa-id',ncr_id:'capa-ncr-id',type:'capa-type',title:'capa-title',description:'capa-description',source:'capa-source',assigned_to:'capa-assigned-to',due_date:'capa-due-date',status:'capa-status',action_taken:'capa-action-taken',effectiveness_review:'capa-effectiveness'},
       audit:{id:'audit-id',audit_type:'audit-type',audit_scope:'audit-scope',auditor:'audit-auditor',auditee:'audit-auditee',scheduled_date:'audit-scheduled-date',conducted_date:'audit-conducted-date',findings_minor:'audit-minor',findings_major:'audit-major',findings_observation:'audit-obs',status:'audit-status',summary:'audit-summary'},
       org:{id:'org-id',entity_name:'org-entity-name',entity_type:'org-entity-type',contact_name:'org-contact-name',contact_email:'org-contact-email',contact_phone:'org-contact-phone',status:'org-status',role_responsibility:'org-role-responsibility',relevance:'org-relevance',review_date:'org-review-date',notes:'org-notes'},
-      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',qualifications:'emp-qualifications',notes:'emp-notes'},
+      emp:{id:'emp-id',full_name:'emp-full-name',position:'emp-position',department:'emp-department',employment_type:'emp-employment-type',email:'emp-email',phone:'emp-phone',start_date:'emp-start-date',status:'emp-status',notes:'emp-notes'},
       legal:{id:'legal-id',title:'legal-title',category:'legal-category',jurisdiction:'legal-jurisdiction',reference_number:'legal-reference',compliance_status:'legal-compliance',summary:'legal-summary',applicable_to:'legal-applicable',obligations:'legal-obligations',responsible_person:'legal-responsible',review_date:'legal-review-date',effective_date:'legal-effective-date',file_url:'legal-file-url',notes:'legal-notes'},
       hse:{id:'hse-id',hazard:'hse-hazard',hazard_category:'hse-category',status:'hse-status',location_activity:'hse-location',persons_at_risk:'hse-persons',existing_controls:'hse-existing-controls',likelihood:'hse-likelihood',consequence:'hse-consequence',additional_controls:'hse-additional-controls',responsible_person:'hse-responsible',target_date:'hse-target-date',residual_likelihood:'hse-res-likelihood',residual_consequence:'hse-res-consequence',review_date:'hse-review-date',notes:'hse-notes'},
       qr:{id:'qr-id',risk_title:'qr-title',risk_category:'qr-category',status:'qr-status',risk_description:'qr-description',potential_cause:'qr-cause',potential_consequence:'qr-consequence',affected_process:'qr-affected-process',existing_controls:'qr-existing-controls',likelihood:'qr-likelihood',impact:'qr-impact',treatment_action:'qr-treatment',risk_owner:'qr-owner',target_date:'qr-target-date',residual_likelihood:'qr-res-likelihood',residual_impact:'qr-res-impact',review_date:'qr-review-date',notes:'qr-notes'}
     };
     Object.entries(map[type]).forEach(([k,v])=>{const el=document.getElementById(v);if(el&&r[k]!=null)el.value=r[k];});
-    // Set manager dropdown value
-    if(type==='emp'&&r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
+    // Set manager dropdown value + populate qualifications
+    if(type==='emp'){
+      if(r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
+      const quals=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);
+      quals.forEach(q=>addQualEntry(q.name||'',q.institute||'',q.date_obtained||''));
+    }
     if(type==='hse'){calcHSERating();calcHSEResidual();}
     if(type==='qr'){calcQRRating();calcQRResidual();}
   }
@@ -1137,14 +1154,39 @@ function renderOrgChart(emps){
   </li>`).join('')}</ul></div>`;
 }
 
+// ── QUALIFICATION HELPERS ─────────────────────────────────────────────────
+function syncQualEmpty(){
+  const list=document.getElementById('qual-list');
+  const empty=document.getElementById('qual-empty');
+  if(!list||!empty)return;
+  empty.style.display=list.children.length?'none':'block';
+}
+function addQualEntry(name='',institute='',date=''){
+  const list=document.getElementById('qual-list');
+  const row=document.createElement('div');
+  row.className='qual-entry';
+  row.style.cssText='display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center';
+  row.innerHTML=`
+    <input class="field qual-name" type="text" placeholder="Qualification name" value="${esc(name)}" style="padding:8px 10px;font-size:13px">
+    <input class="field qual-institute" type="text" placeholder="Institute / Organisation" value="${esc(institute)}" style="padding:8px 10px;font-size:13px">
+    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:130px">
+    <button type="button" onclick="removeQualEntry(this)" class="btn btn-danger btn-sm" style="flex-shrink:0;padding:8px 10px;font-size:13px">×</button>`;
+  list.appendChild(row);
+  syncQualEmpty();
+}
+function removeQualEntry(btn){
+  btn.closest('.qual-entry').remove();
+  syncQualEmpty();
+}
+
 // ── EMPLOYEE REGISTER ─────────────────────────────────────────────────────
 const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'badge-amber'};
 let empCache={};
 async function loadEmployees(){
-  const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(10);
+  const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(11);
   const{data,error}=await sb.from('qms_employees').select('*').order('full_name');
-  if(error){tb.innerHTML=emptyRow(10,error.message);return;}
-  if(!data?.length){tb.innerHTML=emptyRow(10);return;}
+  if(error){tb.innerHTML=emptyRow(11,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(11);return;}
   empCache=Object.fromEntries(data.map(r=>[r.id,r]));
   // Render org chart from active employees
   renderOrgChart(data.filter(e=>e.status==='active'));
@@ -1160,6 +1202,7 @@ async function loadEmployees(){
       <td class="td-muted">${esc(r.email||'–')}</td>
       <td><span class="badge ${EMP_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
       <td class="td-muted">${r.start_date?fmtDate(r.start_date):'–'}</td>
+      <td>${(()=>{const q=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);return q.length?q.map(x=>`<span class="badge badge-blue" style="margin:1px 2px;white-space:nowrap">${esc(x.name)}</span>`).join(''):'<span class="td-muted">–</span>';})()}</td>
       <td><div class="flex gap-2">
         <button class="btn btn-ghost btn-sm" onclick="editEmployee('${r.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="delRecord('qms_employees','${r.id}','emp')">Del</button>
@@ -1180,7 +1223,12 @@ async function saveEmployee(){
     recordId=`EMP-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
   const managerId=document.getElementById('emp-manager-id').value||null;
-  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications:document.getElementById('emp-qualifications').value.trim()||null,notes:document.getElementById('emp-notes').value.trim()||null,updated_at:new Date().toISOString()};
+  const quals=Array.from(document.querySelectorAll('#qual-list .qual-entry')).map(row=>({
+    name:row.querySelector('.qual-name').value.trim(),
+    institute:row.querySelector('.qual-institute').value.trim(),
+    date_obtained:row.querySelector('.qual-date').value||null
+  })).filter(q=>q.name);
+  const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-department').value.trim()||null,employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:document.getElementById('emp-email').value.trim()||null,phone:document.getElementById('emp-phone').value.trim()||null,start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:document.getElementById('emp-notes').value.trim()||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
   const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([payload]);
   btn.disabled=false;btn.textContent='Save Employee';
