@@ -298,8 +298,8 @@
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Reports To</th><th>Email</th><th>Status</th><th>Start Date</th><th>Qualifications</th><th>Actions</th></tr></thead>
-            <tbody id="emp-tbody"><tr><td colspan="11" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Status</th><th>Start Date</th><th>Salary (Gross)</th><th>Actions</th></tr></thead>
+            <tbody id="emp-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -916,6 +916,25 @@
   </div>
 </div>
 
+<!-- ══ DELETE CONFIRMATION MODAL ══ -->
+<div class="modal-overlay" id="modal-delete-confirm">
+  <div class="neu-card rounded-2xl w-full max-w-sm" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid rgba(163,177,198,.3)">
+      <h2 class="font-bold text-slate-800" style="font-size:16px">⚠️ Confirm Deletion</h2>
+      <button onclick="cancelDelete()" class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:18px;line-height:1">×</button>
+    </div>
+    <div class="px-6 py-5">
+      <p class="text-sm text-slate-600 mb-2" id="delete-modal-msg">This action cannot be undone.</p>
+      <p class="text-xs text-slate-400 mb-4" id="delete-modal-hint">Type <strong class="text-red-600 font-mono">remove employee</strong> to confirm.</p>
+      <input id="delete-confirm-input" class="field w-full" type="text" placeholder="Type here to confirm…" style="padding:10px 14px;font-size:13px" oninput="syncDeleteBtn()">
+      <div class="flex gap-3 mt-5">
+        <button onclick="cancelDelete()" class="btn btn-ghost flex-1">Cancel</button>
+        <button id="delete-confirm-btn" onclick="executeDelete()" class="btn btn-danger flex-1" disabled>Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ ADD EMPLOYEE MODAL (Quick-Add by HR) ══ -->
 <div class="modal-overlay" id="modal-emp-add" onclick="closeModal('emp-add',event)">
   <div class="neu-card rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
@@ -1204,7 +1223,7 @@ async function openModal(type,id){
     if(type==='emp'){
       if(r.manager_id)document.getElementById('emp-manager-id').value=r.manager_id;
       const quals=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);
-      quals.forEach(q=>addQualEntry(q.name||'',q.institute||'',q.date_obtained||''));
+      quals.forEach(q=>addQualEntry(q.name||'',q.institute||'',q.date_obtained||'',q.certificate_url||''));
       // Populate hidden doc URL fields + show uploaded state in labels
       const docFields=[
         {hidden:'emp-profile-pic',nameEl:'emp-profile-pic-name',icon:'🖼',label:'Profile picture'},
@@ -1431,8 +1450,35 @@ async function saveAudit(){
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
-async function delRecord(table,id,type){
-  if(!confirm('Delete this record? This cannot be undone.'))return;
+let _deletePayload=null;
+function delRecord(table,id,type){
+  _deletePayload={table,id,type};
+  const isEmp=(table==='qms_employees');
+  document.getElementById('delete-modal-msg').textContent=isEmp
+    ?'This will permanently remove the employee and all their data from the system.'
+    :'This record will be permanently deleted. This action cannot be undone.';
+  const requiredText=isEmp?'remove employee':'delete';
+  document.getElementById('delete-modal-hint').innerHTML=`Type <strong class="text-red-600 font-mono">${requiredText}</strong> to confirm.`;
+  const inp=document.getElementById('delete-confirm-input');
+  inp.value='';inp.dataset.required=requiredText;
+  document.getElementById('delete-confirm-btn').disabled=true;
+  document.getElementById('modal-delete-confirm').classList.add('open');
+  setTimeout(()=>inp.focus(),100);
+}
+function syncDeleteBtn(){
+  const inp=document.getElementById('delete-confirm-input');
+  document.getElementById('delete-confirm-btn').disabled=(inp.value.trim()!==inp.dataset.required);
+}
+function cancelDelete(){
+  _deletePayload=null;
+  document.getElementById('delete-confirm-input').value='';
+  document.getElementById('delete-confirm-btn').disabled=true;
+  document.getElementById('modal-delete-confirm').classList.remove('open');
+}
+async function executeDelete(){
+  if(!_deletePayload)return;
+  const{table,id,type}=_deletePayload;
+  cancelDelete();
   const{error}=await sb.from(table).delete().eq('id',id);
   if(error){alert('Error: '+error.message);return;}
   const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,emp:()=>{loadEmployees();renderOrgChart(Object.values(empCache).filter(e=>e.status==='active'));},legal:loadLegal,hse:loadHSE,qr:loadQR};
@@ -1447,12 +1493,18 @@ function toggleOrgChart(){
   document.getElementById('org-chart-body').style.display=orgChartVisible?'block':'none';
   document.getElementById('org-chart-chevron').textContent=orgChartVisible?'▲ Hide':'▼ Show';
 }
+function orgNodeAvatar(e){
+  if(e.profile_picture_url){
+    return`<img src="${esc(e.profile_picture_url)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;margin-bottom:5px;flex-shrink:0;box-shadow:2px 2px 5px #a3b1c6,-2px -2px 5px #ffffff" onerror="this.outerHTML='<div class=&quot;org-avatar&quot;>${e.full_name.charAt(0).toUpperCase()}</div>'" alt="">`;
+  }
+  return`<div class="org-avatar">${e.full_name.charAt(0).toUpperCase()}</div>`;
+}
 function buildOrgTree(emps,parentId){
   const children=emps.filter(e=>e.manager_id===parentId);
   if(!children.length)return'';
   return`<ul>${children.map(e=>`<li>
     <div class="org-node" onclick="viewEmployee('${e.id}')">
-      <div class="org-avatar">${e.full_name.charAt(0).toUpperCase()}</div>
+      ${orgNodeAvatar(e)}
       <div class="org-name">${esc(e.full_name)}</div>
       <div class="org-title">${esc(e.position||'')}</div>
       ${e.department?`<div class="org-dept">${esc(e.department)}</div>`:''}
@@ -1467,7 +1519,7 @@ function renderOrgChart(emps){
   const roots=emps.filter(e=>!e.manager_id||!empIds.has(e.manager_id));
   tree.innerHTML=`<div class="org-tree"><ul>${roots.map(r=>`<li>
     <div class="org-node" onclick="viewEmployee('${r.id}')">
-      <div class="org-avatar">${r.full_name.charAt(0).toUpperCase()}</div>
+      ${orgNodeAvatar(r)}
       <div class="org-name">${esc(r.full_name)}</div>
       <div class="org-title">${esc(r.position||'')}</div>
       ${r.department?`<div class="org-dept">${esc(r.department)}</div>`:''}
@@ -1483,18 +1535,42 @@ function syncQualEmpty(){
   if(!list||!empty)return;
   empty.style.display=list.children.length?'none':'block';
 }
-function addQualEntry(name='',institute='',date=''){
+function addQualEntry(name='',institute='',date='',certUrl=''){
   const list=document.getElementById('qual-list');
   const row=document.createElement('div');
   row.className='qual-entry';
-  row.style.cssText='display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center';
+  row.style.cssText='display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:6px;align-items:center';
+  const certLabel=certUrl?`<span style="font-size:11px;color:#16a34a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">✔ Uploaded</span>`:`<span class="qual-cert-name" style="font-size:11px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">Certificate…</span>`;
   row.innerHTML=`
     <input class="field qual-name" type="text" placeholder="Qualification name" value="${esc(name)}" style="padding:8px 10px;font-size:13px">
     <input class="field qual-institute" type="text" placeholder="Institute / Organisation" value="${esc(institute)}" style="padding:8px 10px;font-size:13px">
-    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:130px">
+    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:120px">
+    <label class="field flex items-center gap-1 cursor-pointer" style="min-height:38px;padding:6px 10px;min-width:140px;max-width:180px">
+      <span style="font-size:13px;flex-shrink:0">📜</span>
+      ${certLabel}
+      <span style="background:#e0e5ec;color:#64748b;font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;flex-shrink:0;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff">Upload</span>
+      <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadQualCert(this)">
+    </label>
+    <input type="hidden" class="qual-cert-url" value="${esc(certUrl)}">
     <button type="button" onclick="removeQualEntry(this)" class="btn btn-danger btn-sm" style="flex-shrink:0;padding:8px 10px;font-size:13px">×</button>`;
   list.appendChild(row);
   syncQualEmpty();
+}
+async function uploadQualCert(input){
+  const file=input.files[0];if(!file)return;
+  const row=input.closest('.qual-entry');
+  const nameEl=row.querySelector('.qual-cert-name')||row.querySelector('label span:nth-child(2)');
+  const hiddenUrl=row.querySelector('.qual-cert-url');
+  const label=input.closest('label');
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const path=`employees/qualifications/${Date.now()}_${safe}`;
+  // Show uploading state
+  if(nameEl){nameEl.textContent='⏳ Uploading…';nameEl.style.color='#b45309';}
+  const{error}=await sb.storage.from('employee-documents').upload(path,file,{upsert:true});
+  if(error){if(nameEl){nameEl.textContent='✗ Failed';nameEl.style.color='#dc2626';}return;}
+  const{data:{publicUrl}}=sb.storage.from('employee-documents').getPublicUrl(path);
+  hiddenUrl.value=publicUrl;
+  if(nameEl){nameEl.textContent='✔ Uploaded';nameEl.style.color='#16a34a';}
 }
 function removeQualEntry(btn){
   btn.closest('.qual-entry').remove();
@@ -1692,32 +1768,73 @@ async function uploadEmpDoc(input,hiddenFieldId,nameElId,progressId,docType){
 const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'badge-amber'};
 let empCache={};
 async function loadEmployees(){
-  const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(11);
+  const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(9);
   const{data,error}=await sb.from('qms_employees').select('*').order('full_name');
-  if(error){tb.innerHTML=emptyRow(11,error.message);return;}
-  if(!data?.length){tb.innerHTML=emptyRow(11);return;}
+  if(error){tb.innerHTML=emptyRow(9,error.message);return;}
+  if(!data?.length){tb.innerHTML=emptyRow(9);return;}
   empCache=Object.fromEntries(data.map(r=>[r.id,r]));
-  // Render org chart from active employees
   renderOrgChart(data.filter(e=>e.status==='active'));
   tb.innerHTML=data.map(r=>{
     const mgr=r.manager_id&&empCache[r.manager_id];
-    return`<tr>
+    const quals=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);
+    const fmtMoney=v=>v?`GYD ${Number(v).toLocaleString()}`:'–';
+    const mask=v=>v?'••••••'+String(v).slice(-3):'–';
+    const docLink=(url,label)=>url?`<a href="${esc(url)}" target="_blank" rel="noopener" class="text-xs font-semibold text-amber-700 hover:text-amber-900 mr-2">${label} ↗</a>`:`<span class="td-muted text-xs">${label}: –</span> `;
+    const detailId=`emp-detail-${r.id}`;
+    return`<tr style="cursor:default">
       <td class="font-mono font-bold text-amber-700 text-xs">${esc(r.record_id)}</td>
       <td class="font-semibold">${esc(r.full_name)}</td>
-      <td>${esc(r.position)}</td>
+      <td>${esc(r.position||'–')}</td>
       <td class="td-muted">${esc(r.department||'–')}</td>
-      <td><span class="badge badge-slate">${esc(r.employment_type)}</span></td>
-      <td class="td-muted">${mgr?esc(mgr.full_name):'<span class="td-muted">—</span>'}</td>
-      <td class="td-muted">${esc(r.email||'–')}</td>
+      <td><span class="badge badge-slate" style="white-space:nowrap">${esc(r.employment_type||'–')}</span></td>
       <td><span class="badge ${EMP_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
       <td class="td-muted">${r.start_date?fmtDate(r.start_date):'–'}</td>
-      <td>${(()=>{const q=Array.isArray(r.qualifications_json)?r.qualifications_json:(r.qualifications_json?JSON.parse(r.qualifications_json):[]);return q.length?q.map(x=>`<span class="badge badge-blue" style="margin:1px 2px;white-space:nowrap">${esc(x.name)}</span>`).join(''):'<span class="td-muted">–</span>';})()}</td>
-      <td><div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm" onclick="viewEmployee('${r.id}')">Edit</button>
+      <td class="td-muted">${fmtMoney(r.gross_salary)}</td>
+      <td><div class="flex gap-1 flex-wrap">
+        <button class="btn btn-ghost btn-sm" onclick="toggleEmpDetail('${detailId}')">Details</button>
+        <button class="btn btn-ghost btn-sm" onclick="editEmployee('${r.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="delRecord('qms_employees','${r.id}','emp')">Del</button>
       </div></td>
+    </tr>
+    <tr id="${detailId}" style="display:none;background:rgba(245,158,11,.03)">
+      <td colspan="9" style="padding:0">
+        <div style="padding:16px 20px;border-top:1px solid rgba(163,177,198,.2);border-bottom:1px solid rgba(163,177,198,.2)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px 24px;font-size:12px">
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Reports To</span><div class="text-slate-800 mt-0.5">${mgr?esc(mgr.full_name):'—'}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Email</span><div class="text-slate-800 mt-0.5">${esc(r.email||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Phone</span><div class="text-slate-800 mt-0.5">${esc(r.phone||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Date of Birth</span><div class="text-slate-800 mt-0.5">${r.date_of_birth?fmtDate(r.date_of_birth):'–'}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Marital Status</span><div class="text-slate-800 mt-0.5">${esc(r.marital_status||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Dependents</span><div class="text-slate-800 mt-0.5">${r.num_dependents??'–'}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">NIS Number</span><div class="text-slate-800 mt-0.5">${esc(r.nis_number||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">TIN Number</span><div class="text-slate-800 mt-0.5">${esc(r.tin_number||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">ID / Passport</span><div class="text-slate-800 mt-0.5">${esc(r.id_passport_number||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Address</span><div class="text-slate-800 mt-0.5">${esc(r.address||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Religion</span><div class="text-slate-800 mt-0.5">${esc(r.religion||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Dietary Restriction</span><div class="text-slate-800 mt-0.5">${esc(r.dietary_restriction||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Allergies</span><div class="text-slate-800 mt-0.5">${esc(r.allergies||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Medical Conditions</span><div class="text-slate-800 mt-0.5">${esc(r.medical_conditions||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Disabilities</span><div class="text-slate-800 mt-0.5">${esc(r.disabilities||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Gross Salary</span><div class="text-slate-800 mt-0.5 font-semibold">${fmtMoney(r.gross_salary)}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Net Salary</span><div class="text-slate-800 mt-0.5 font-semibold">${fmtMoney(r.net_salary)}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Bank</span><div class="text-slate-800 mt-0.5">${esc(r.bank_name||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Bank Branch</span><div class="text-slate-800 mt-0.5">${esc(r.bank_branch||'–')}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Account Number</span><div class="text-slate-800 mt-0.5 font-mono">${mask(r.bank_account_number)}</div></div>
+            <div><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Onboarding</span><div class="mt-0.5"><span class="badge ${r.onboarding_status==='complete'?'badge-green':'badge-amber'}">${esc(r.onboarding_status||'pending')}</span></div></div>
+          </div>
+          ${quals.length?`<div style="margin-top:12px"><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Qualifications</span><div class="flex flex-wrap gap-2 mt-1">${quals.map(q=>`<span class="badge badge-blue" style="display:inline-flex;align-items:center;gap:4px">${esc(q.name)}${q.certificate_url?` <a href="${esc(q.certificate_url)}" target="_blank" rel="noopener" style="color:#b45309;font-size:10px;text-decoration:underline">cert↗</a>`:''}</span>`).join('')}</div></div>`:''}
+          ${(r.offer_letter_url||r.job_description_url||r.signed_contract_url||r.cv_url||r.police_clearance_url)?`<div style="margin-top:12px"><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Documents</span><div class="mt-1 flex flex-wrap gap-x-3 gap-y-1">${docLink(r.offer_letter_url,'Offer Letter')}${docLink(r.job_description_url,'JD')}${docLink(r.signed_contract_url,'Contract')}${docLink(r.cv_url,'CV')}${docLink(r.police_clearance_url,'Police Clearance')}</div></div>`:''}
+          ${r.notes?`<div style="margin-top:12px"><span class="font-bold text-slate-500 uppercase tracking-wide" style="font-size:10px">Notes</span><div class="text-slate-700 mt-0.5 text-xs">${esc(r.notes)}</div></div>`:''}
+        </div>
+      </td>
     </tr>`;
   }).join('');
+}
+function toggleEmpDetail(id){
+  const row=document.getElementById(id);
+  if(!row)return;
+  const visible=row.style.display!=='none';
+  row.style.display=visible?'none':'table-row';
 }
 async function editEmployee(id){if(!empCache[id]){const{data}=await sb.from('qms_employees').select('*').eq('id',id).single();if(data)empCache[id]=data;}openModal('emp',id);}
 async function saveEmployee(){
@@ -1735,7 +1852,8 @@ async function saveEmployee(){
   const quals=Array.from(document.querySelectorAll('#qual-list .qual-entry')).map(row=>({
     name:row.querySelector('.qual-name').value.trim(),
     institute:row.querySelector('.qual-institute').value.trim(),
-    date_obtained:row.querySelector('.qual-date').value||null
+    date_obtained:row.querySelector('.qual-date').value||null,
+    certificate_url:row.querySelector('.qual-cert-url')?.value||null
   })).filter(q=>q.name);
   const g=val=>document.getElementById(val)?.value?.trim()||null;
   const profilePic=g('emp-offer-letter-url')!==null?g('emp-profile-pic'):null;// profile pic is the visible url input
@@ -1978,7 +2096,7 @@ function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div
 function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')['doc','org','emp','emp-add','emp-card','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));
+  if(e.key==='Escape'){['doc','org','emp','emp-add','emp-card','legal','qr','hse','ncr','capa','audit'].forEach(t=>closeModal(t));cancelDelete();}
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();

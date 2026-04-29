@@ -32,7 +32,7 @@
   .btn-ghost:hover{color:#334155}
   .section-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#b45309;padding:4px 0 8px;margin-top:4px}
   .divider{height:1px;background:rgba(163,177,198,.3);margin:8px 0 16px}
-  .qual-entry{display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center}
+  .qual-entry{display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:6px;align-items:center}
   .avatar-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
   .avatar-initials{width:80px;height:80px;border-radius:50%;background:rgba(245,158,11,.15);color:#b45309;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
   .doc-link{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:.75rem;font-size:13px;font-weight:600;color:#b45309;background:rgba(245,158,11,.08);text-decoration:none;transition:background .15s}
@@ -343,14 +343,22 @@ function syncObQualEmpty(){
   const empty=document.getElementById('ob-qual-empty');
   empty.style.display=list.children.length?'none':'block';
 }
-function addObQual(name='',institute='',date=''){
+function addObQual(name='',institute='',date='',certUrl=''){
   const list=document.getElementById('ob-qual-list');
   const row=document.createElement('div');
   row.className='qual-entry';
+  const certLabel=certUrl?`<span style="font-size:11px;color:#16a34a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">✔ Uploaded</span>`:`<span class="qual-cert-name" style="font-size:11px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">Certificate…</span>`;
   row.innerHTML=`
     <input class="field qual-name" type="text" placeholder="Qualification" value="${esc(name)}" style="padding:8px 10px;font-size:13px">
     <input class="field qual-institute" type="text" placeholder="Institute" value="${esc(institute)}" style="padding:8px 10px;font-size:13px">
-    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:130px">
+    <input class="field qual-date" type="date" value="${esc(date)}" style="padding:8px 10px;font-size:13px;min-width:120px">
+    <label class="field flex items-center gap-1 cursor-pointer" style="min-height:38px;padding:6px 10px;min-width:140px;max-width:180px">
+      <span style="font-size:13px;flex-shrink:0">📜</span>
+      ${certLabel}
+      <span style="background:#e0e5ec;color:#64748b;font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;flex-shrink:0;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff">Upload</span>
+      <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadObQualCert(this)">
+    </label>
+    <input type="hidden" class="qual-cert-url" value="${esc(certUrl)}">
     <button type="button" onclick="this.closest('.qual-entry').remove();syncObQualEmpty()" class="btn btn-ghost" style="padding:8px 10px;font-size:18px;color:#b91c1c">×</button>`;
   list.appendChild(row);
   syncObQualEmpty();
@@ -369,7 +377,8 @@ async function submitOnboarding(e){
   const quals=Array.from(document.querySelectorAll('#ob-qual-list .qual-entry')).map(row=>({
     name:row.querySelector('.qual-name').value.trim(),
     institute:row.querySelector('.qual-institute').value.trim(),
-    date_obtained:row.querySelector('.qual-date').value||null
+    date_obtained:row.querySelector('.qual-date').value||null,
+    certificate_url:row.querySelector('.qual-cert-url')?.value||null
   })).filter(q=>q.name);
 
   const payload={
@@ -444,6 +453,22 @@ async function uploadObPic(input){
   document.getElementById('ob-profile-pic').value=publicUrl;
   if(nameEl){nameEl.textContent='✓ '+file.name;nameEl.style.color='#059669';}
   previewPic();
+}
+
+async function uploadObQualCert(input){
+  const file=input.files[0];if(!file)return;
+  const row=input.closest('.qual-entry');
+  const nameEl=row.querySelector('.qual-cert-name');
+  const hiddenUrl=row.querySelector('.qual-cert-url');
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const token=new URLSearchParams(window.location.search).get('token')||'unknown';
+  const path=`onboarding/${token}/qualifications/${Date.now()}_${safe}`;
+  if(nameEl){nameEl.textContent='⏳ Uploading…';nameEl.style.color='#b45309';}
+  const{error}=await sb.storage.from('employee-documents').upload(path,file,{upsert:true,cacheControl:'3600'});
+  if(error){if(nameEl){nameEl.textContent='✗ Failed';nameEl.style.color='#dc2626';}return;}
+  const{data:{publicUrl}}=sb.storage.from('employee-documents').getPublicUrl(path);
+  hiddenUrl.value=publicUrl;
+  if(nameEl){nameEl.textContent='✔ Uploaded';nameEl.style.color='#16a34a';}
 }
 
 init();
