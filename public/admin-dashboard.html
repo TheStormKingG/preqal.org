@@ -688,11 +688,13 @@ async function openClientModalFromLead(leadId){
 //   Public Key:   your_emailjs_public_key
 //   Service ID:   your_emailjs_service_id
 //   Templates:    invite_lead_template, client_onboarding_template
-const EJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';
-const EJS_SERVICE_ID   = 'YOUR_EMAILJS_SERVICE_ID';
+// ── ⚠️  FILL THESE IN from your EmailJS dashboard → https://dashboard.emailjs.com ──
+const EJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';   // Account → API Keys → Public Key
+const EJS_SERVICE_ID   = 'YOUR_EMAILJS_SERVICE_ID';   // Email Services → Service ID
 const EJS_INVITE_TMPL  = 'invite_lead_template';       // variables: {{to_name}}, {{company}}, {{note}}, {{quote_url}}
 const EJS_ONBOARD_TMPL = 'client_onboarding_template'; // variables: {{to_name}}, {{company_name}}, {{onboarding_link}}, {{contract_url}}
-function initEmailJS(){ if(typeof emailjs!=='undefined')emailjs.init({publicKey:EJS_PUBLIC_KEY}); }
+// ────────────────────────────────────────────────────────────────────────────────
+if(typeof emailjs!=='undefined')emailjs.init({publicKey:EJS_PUBLIC_KEY});
 
 function openInviteLeadModal(){
   ['invite-name','invite-company','invite-email','invite-note'].forEach(f=>document.getElementById(f).value='');
@@ -730,7 +732,8 @@ async function sendLeadInvite(){
     });
   }catch(e){
     // Email failed but lead was saved — show partial success
-    errEl.textContent='Lead saved, but email send failed: '+e.text+'. Share the quote link manually: '+quoteUrl;
+    const eMsg=e?.text||e?.message||JSON.stringify(e)||'EmailJS not configured';
+    errEl.textContent='Lead saved, but email failed: '+eMsg+'. Share this link manually: '+quoteUrl;
     btn.disabled=false;btn.textContent='Send Invitation';
     loadQuotes();return;
   }
@@ -981,7 +984,8 @@ async function saveClient(){
         contract_url:contractUrl||'(no contract attached)'
       });
     }catch(e){
-      errEl.textContent='Client saved, but email failed: '+e.text+'. Share the link below manually.';
+      const eMsg2=e?.text||e?.message||JSON.stringify(e)||'EmailJS not configured';
+      errEl.textContent='Client saved, but email failed: '+eMsg2+'. Share the link below manually.';
     }
     // Show onboarding link
     document.getElementById('crm-onboarding-link-val').value=onboardLink;
