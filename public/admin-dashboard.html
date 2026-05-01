@@ -689,10 +689,10 @@ async function openClientModalFromLead(leadId){
 //   Service ID:   your_emailjs_service_id
 //   Templates:    invite_lead_template, client_onboarding_template
 // ── ⚠️  FILL THESE IN from your EmailJS dashboard → https://dashboard.emailjs.com ──
-const EJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';   // Account → API Keys → Public Key
-const EJS_SERVICE_ID   = 'YOUR_EMAILJS_SERVICE_ID';   // Email Services → Service ID
-const EJS_INVITE_TMPL  = 'invite_lead_template';       // variables: {{to_name}}, {{company}}, {{note}}, {{quote_url}}
-const EJS_ONBOARD_TMPL = 'client_onboarding_template'; // variables: {{to_name}}, {{company_name}}, {{onboarding_link}}, {{contract_url}}
+const EJS_PUBLIC_KEY   = 'mijyAm1ocwE6qYCiq';
+const EJS_SERVICE_ID   = 'service_qziw5dg';
+const EJS_INVITE_TMPL  = 'template_invlead';           // variables: {{to_name}}, {{company}}, {{note}}, {{quote_url}}, {{to_email}}
+const EJS_ONBOARD_TMPL = 'template_clonbrd';           // variables: {{to_name}}, {{company_name}}, {{onboarding_link}}, {{contract_url}}, {{to_email}}
 // ────────────────────────────────────────────────────────────────────────────────
 if(typeof emailjs!=='undefined')emailjs.init({publicKey:EJS_PUBLIC_KEY});
 
@@ -723,23 +723,27 @@ async function sendLeadInvite(){
   }]);
   if(dbErr){errEl.textContent='DB error: '+dbErr.message;btn.disabled=false;btn.textContent='Send Invitation';return;}
   // Send email via EmailJS
-  const quoteUrl=`${window.location.origin}/#quote`;
+  const quoteUrl=`https://preqal.org/business-growth-assessment`;
+  const noteText=note||"We'd love to learn more about your business and how Preqal can support your quality management journey.";
   try{
     await emailjs.send(EJS_SERVICE_ID,EJS_INVITE_TMPL,{
       to_name:name,to_email:email,company:company||name,
-      note:note||"We'd love to learn more about your business and how Preqal can support your quality management journey.",
-      quote_url:quoteUrl
+      note:noteText,quote_url:quoteUrl
     });
+    document.getElementById('invite-success').style.display='block';
+    btn.textContent='Sent ✓';
+    loadQuotes();
   }catch(e){
-    // Email failed but lead was saved — show partial success
-    const eMsg=e?.text||e?.message||JSON.stringify(e)||'EmailJS not configured';
-    errEl.textContent='Lead saved, but email failed: '+eMsg+'. Share this link manually: '+quoteUrl;
+    // Email failed but lead was saved — open Gmail as fallback
+    const subject=encodeURIComponent(`An invitation from Preqal – ${company||name}`);
+    const body=encodeURIComponent(`Hi ${name},\n\n${noteText}\n\nYou can complete your Business Growth Assessment here:\n${quoteUrl}\n\nBest regards,\nPreqal Team`);
+    const gmailUrl=`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(email)}&su=${subject}&body=${body}`;
+    window.open(gmailUrl,'_blank');
+    errEl.style.color='#d97706';
+    errEl.textContent='Lead saved. Email draft opened in Gmail — please review and send.';
     btn.disabled=false;btn.textContent='Send Invitation';
-    loadQuotes();return;
+    loadQuotes();
   }
-  document.getElementById('invite-success').style.display='block';
-  btn.textContent='Sent ✓';
-  loadQuotes();
 }
 
 // ── COURSE ────────────────────────────────────────────────────────────────
@@ -976,7 +980,7 @@ async function saveClient(){
     await sb.from('client_onboarding').insert([{token,company_name:company,status:'pending'}]);
     // Mark lead as added to CRM
     if(leadId)await sb.from('quote_submissions').update({status:'added_to_crm'}).eq('id',leadId);
-    // Send onboarding email via EmailJS
+    // Send onboarding email via EmailJS (with Gmail fallback)
     try{
       await emailjs.send(EJS_SERVICE_ID,EJS_ONBOARD_TMPL,{
         to_name:contact,to_email:email,company_name:company,
@@ -984,8 +988,13 @@ async function saveClient(){
         contract_url:contractUrl||'(no contract attached)'
       });
     }catch(e){
-      const eMsg2=e?.text||e?.message||JSON.stringify(e)||'EmailJS not configured';
-      errEl.textContent='Client saved, but email failed: '+eMsg2+'. Share the link below manually.';
+      // Open Gmail with pre-filled onboarding email
+      const subject2=encodeURIComponent(`Your Preqal Onboarding Link – ${company}`);
+      const body2=encodeURIComponent(`Hi ${contact},\n\nWe're excited to welcome ${company} to Preqal. Please complete your onboarding form here:\n\n${onboardLink}\n\nYour signed contract is also on file. If you have any questions, reply to this email.\n\nBest regards,\nPreqal Team`);
+      const gmailUrl2=`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(email)}&su=${subject2}&body=${body2}`;
+      window.open(gmailUrl2,'_blank');
+      errEl.style.color='#d97706';
+      errEl.textContent='Client saved. Onboarding email draft opened in Gmail — please review and send.';
     }
     // Show onboarding link
     document.getElementById('crm-onboarding-link-val').value=onboardLink;
