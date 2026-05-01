@@ -7,7 +7,7 @@ import {
   Target, Lightbulb, ArrowUpCircle,
 } from 'lucide-react';
 import SEO from '../components/SEO';
-// import { supabase } from '../lib/supabaseClient'; // TODO: uncomment when wiring Supabase
+import { supabase } from '../lib/supabaseClient';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -298,6 +298,22 @@ const BusinessGrowthAssessment: React.FC = () => {
     };
 
     console.log('[Preqal Business Growth Assessment] Submission:', submission);
+
+    // ── Save to Supabase quote_submissions ──────────────────────────────────
+    const { error: dbError } = await supabase.from('quote_submissions').insert([{
+      company_name:         submission.companyName,
+      contact_person:       submission.contactPersonName,
+      email:                submission.email,
+      staff_size:           submission.staffSize,
+      num_services:         submission.numberOfServices,
+      avg_processes:        submission.avgProcessesPerService,
+      base_tier:            submission.baseTier,
+      complexity_score:     submission.complexityScore,
+      recommended_tier:     submission.recommendedTier,
+      business_description: submission.businessDescription,
+      status:               'new',
+    }]);
+    if (dbError) console.error('[BusinessGrowthAssessment] DB error:', dbError.message);
 
     try {
       await emailjs.send(
