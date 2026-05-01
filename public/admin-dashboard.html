@@ -96,8 +96,16 @@
 </head>
 <body class="min-h-screen">
 
+<!-- ═══════════════════════════ LOADING ═══ -->
+<div id="auth-loading-screen" class="min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div style="width:40px;height:40px;border:3px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite;margin:0 auto 16px"></div>
+    <p class="text-sm text-slate-500">Loading…</p>
+  </div>
+</div>
+
 <!-- ═══════════════════════════ LOGIN ═══ -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
+<div id="login-screen" style="display:none" class="min-h-screen flex items-center justify-center p-6">
   <div class="neu-card rounded-2xl p-10 w-full max-w-md fade-in">
     <div class="mb-8">
       <picture>
@@ -106,8 +114,8 @@
         <img src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal" class="h-10 w-auto">
       </picture>
     </div>
-    <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Admin Dashboard</h1>
-    <p class="text-sm text-slate-500 mb-8">Sign in with your Preqal admin account.</p>
+    <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Sign In</h1>
+    <p class="text-sm text-slate-500 mb-8">Use your Preqal account to continue.</p>
     <div class="mb-5">
       <label class="block text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Email address</label>
       <input id="login-email" class="field" type="email" placeholder="stefan@preqal.org" autocomplete="email">
@@ -522,14 +530,33 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
 async function init() {
-  const { data:{ session } } = await sb.auth.getSession();
-  if (session) handleSession(session);
-  sb.auth.onAuthStateChange((_,session) => { if(session) handleSession(session); });
+  // Wait for onAuthStateChange to fire INITIAL_SESSION — this is more reliable
+  // than getSession() alone, which can return null while a refresh is in flight.
+  let resolved = false;
+  sb.auth.onAuthStateChange((event, session) => {
+    if (resolved) { if (session) handleSession(session); return; }
+    resolved = true;
+    document.getElementById('auth-loading-screen').style.display = 'none';
+    if (session) {
+      handleSession(session);
+    } else {
+      document.getElementById('login-screen').style.display = '';
+    }
+  });
+  // Fallback: if INITIAL_SESSION hasn't fired within 3 s, show login form
+  setTimeout(() => {
+    if (!resolved) {
+      resolved = true;
+      document.getElementById('auth-loading-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = '';
+    }
+  }, 3000);
 }
 function handleSession(session) {
   const email = session.user.email;
   if (!ADMIN_EMAILS.includes(email.toLowerCase())) { window.location.href = COURSE_URL; return; }
   document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('auth-loading-screen').style.display = 'none';
   const dash = document.getElementById('dashboard');
   dash.style.display = 'flex';
   const first = email.split('@')[0];
