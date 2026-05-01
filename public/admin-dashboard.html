@@ -725,7 +725,7 @@ async function sendLeadInvite(){
   try{
     await emailjs.send(EJS_SERVICE_ID,EJS_INVITE_TMPL,{
       to_name:name,to_email:email,company:company||name,
-      note:note||'We'd love to learn more about your business and how Preqal can support your quality management journey.',
+      note:note||"We'd love to learn more about your business and how Preqal can support your quality management journey.",
       quote_url:quoteUrl
     });
   }catch(e){
