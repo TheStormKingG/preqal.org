@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -250,18 +251,21 @@
         </div></div>
       </div>
 
-      <!-- ── QUOTE SUBMISSIONS ── -->
+      <!-- ── QUALIFIED LEADS ── -->
       <div id="section-quotes" class="section-anchor fade-in">
         <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
           <div>
-            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Quote Submissions</h3>
-            <p class="text-sm text-slate-500 mt-0.5">Pricing enquiries from the Quote Classifier.</p>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Qualified Leads</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Companies that have filled the Quote Classifier or been directly invited.</p>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="loadQuotes()">↻ Refresh</button>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost btn-sm" onclick="loadQuotes()">↻ Refresh</button>
+            <button class="btn btn-amber btn-sm" onclick="openInviteLeadModal()">+ Invite Qualified Lead</button>
+          </div>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>Email</th><th>Staff Size</th><th>Services</th><th>Avg Processes</th><th>Complexity</th><th>Recommended Tier</th></tr></thead>
+            <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>Email</th><th>Staff</th><th>Services</th><th>Tier</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="quotes-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
@@ -318,7 +322,7 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Client CRM</h3>
             <p class="text-sm text-slate-500 mt-0.5">All onboarded Preqal clients and account details.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openClientModal()">+ Add Client</button>
+          <button class="btn btn-amber btn-sm" onclick="openClientModal()">+ Add Client to CRM</button>
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
@@ -332,18 +336,53 @@
   </main>
 </div>
 
-<!-- CRM MODAL -->
+<!-- ══ INVITE QUALIFIED LEAD MODAL ══ -->
+<div class="modal-overlay" id="invite-lead-overlay" onclick="if(event.target===this)closeInviteLeadModal()">
+  <div class="neu-card rounded-2xl w-full max-w-lg" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
+      <h3 class="text-base font-bold text-slate-900">✉️ Invite Qualified Lead</h3>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeInviteLeadModal()">×</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <p class="text-sm text-slate-500">Send a personalised marketing email inviting a prospect to complete the Preqal Quote Classifier. They'll be added to Qualified Leads as <em>Invited</em>.</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Name *</label><input id="invite-name" class="field" type="text" placeholder="Jane Smith"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Company</label><input id="invite-company" class="field" type="text" placeholder="Acme Corp"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Email Address *</label><input id="invite-email" class="field" type="email" placeholder="jane@acme.com"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Personal Note <span class="text-slate-400 font-normal normal-case">(optional — included in email)</span></label><textarea id="invite-note" class="field" rows="2" placeholder="e.g. Great meeting you at the GIDC event last week…"></textarea></div>
+      <p id="invite-error" class="text-sm text-red-600 min-h-4 font-medium"></p>
+      <div id="invite-success" style="display:none" class="neu-pressed-sm rounded-xl p-4 text-sm text-green-800 font-medium">✓ Invitation sent and lead added to Qualified Leads table.</div>
+    </div>
+    <div class="px-6 py-4 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button class="btn btn-ghost" onclick="closeInviteLeadModal()">Cancel</button>
+      <button class="btn btn-amber" onclick="sendLeadInvite()" id="invite-send-btn">Send Invitation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CRM ADD/EDIT CLIENT MODAL ══ -->
 <div class="modal-overlay" id="crm-modal-overlay" onclick="closeClientModal(event)">
   <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between px-7 py-5 sticky top-0 rounded-t-2xl" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3)">
-      <h3 class="text-lg font-bold text-slate-900" id="crm-modal-title">Add Client</h3>
+      <h3 class="text-lg font-bold text-slate-900" id="crm-modal-title">Add Client to CRM</h3>
       <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 hover:text-amber-700 text-xl flex items-center justify-center transition-colors" onclick="closeClientModal()">×</button>
     </div>
     <div class="p-7 space-y-5">
       <input type="hidden" id="crm-id">
 
+      <!-- Select Qualified Lead (new entries only) -->
+      <div id="crm-lead-select-section">
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-600 mb-3">① Select Qualified Lead</p>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Qualified Lead <span class="text-slate-400 font-normal normal-case">— select to auto-fill details</span></label>
+          <select id="crm-lead-select" class="field" onchange="prefillFromLead()">
+            <option value="">— Select a qualified lead —</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Company Info -->
-      <p class="text-xs font-bold uppercase tracking-widest text-amber-600">Company</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">② Company Details</p>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Company Name *</label><input id="crm-company" class="field" type="text" placeholder="Acme Corporation Ltd."></div>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Address</label><input id="crm-address" class="field" type="text" placeholder="123 Main St, Georgetown, Guyana"></div>
       <div class="grid grid-cols-2 gap-4">
@@ -361,15 +400,28 @@
       </div>
 
       <!-- Contact -->
-      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Contact</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">③ Contact Person</p>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Name *</label><input id="crm-contact-name" class="field" type="text" placeholder="Jane Smith"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Tel</label><input id="crm-contact-tel" class="field" type="tel" placeholder="+592 600-0000"></div>
       </div>
-      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Email</label><input id="crm-contact-email" class="field" type="email" placeholder="jane@acme.com"></div>
+      <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contact Email *</label><input id="crm-contact-email" class="field" type="email" placeholder="jane@acme.com"></div>
+
+      <!-- Contract Upload -->
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">④ Service Contract</p>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Upload Contract for Client to Sign <span class="text-slate-400 font-normal normal-case">(PDF — sent with onboarding email)</span></label>
+        <label class="field flex items-center gap-3 cursor-pointer" style="min-height:44px;padding:8px 14px">
+          <span>📄</span>
+          <span id="crm-contract-label" class="text-slate-400 text-sm flex-1">Choose contract PDF…</span>
+          <input type="file" id="crm-contract-file" accept=".pdf,.doc,.docx" class="hidden" onchange="previewContractFile()">
+          <span class="btn btn-ghost btn-sm" onclick="document.getElementById('crm-contract-file').click();event.preventDefault()">Browse</span>
+        </label>
+        <input type="hidden" id="crm-contract-url">
+      </div>
 
       <!-- Pipeline -->
-      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Pipeline & Onboarding</p>
+      <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">⑤ Pipeline & Account</p>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Pipeline Stage</label>
           <select id="crm-pipeline" class="field">
@@ -395,10 +447,10 @@
         </div>
       </div>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Lead Source</label>
-        <select id="crm-source" class="field"><option value="">Select…</option><option>LinkedIn</option><option>Facebook</option><option>Substack</option><option>Organic / SEO</option><option>Referral</option><option>Outbound</option><option>Other</option></select>
+        <select id="crm-source" class="field"><option value="">Select…</option><option>LinkedIn</option><option>Facebook</option><option>Substack</option><option>Organic / SEO</option><option>Referral</option><option>Outbound</option><option>Quote Classifier</option><option>Other</option></select>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contract Value</label><input id="crm-contract-value" class="field" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Contract Value (GYD)</label><input id="crm-contract-value" class="field" type="number" min="0" step="0.01" placeholder="0.00"></div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Client Since</label><input id="crm-client-since" class="field" type="date"></div>
       </div>
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Renewal Date <span style="font-weight:400;text-transform:none;letter-spacing:0">(retainer clients)</span></label><input id="crm-renewal-date" class="field" type="date"></div>
@@ -410,13 +462,25 @@
 
       <!-- Notes -->
       <p class="text-xs font-bold uppercase tracking-widest text-amber-600" style="padding-top:4px;border-top:1px solid rgba(163,177,198,.25)">Notes</p>
-      <div><textarea id="crm-notes" class="field" rows="4" placeholder="Meeting summaries, key context, important details…"></textarea></div>
+      <div><textarea id="crm-notes" class="field" rows="3" placeholder="Meeting summaries, key context, important details…"></textarea></div>
+
+      <!-- Onboarding link (shown after save for new clients) -->
+      <div id="crm-onboarding-link-section" style="display:none">
+        <div class="neu-pressed-sm rounded-xl p-4">
+          <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-2">✓ Client saved — onboarding email sent</p>
+          <p class="text-xs text-slate-500 mb-3">Share this link directly if the client didn't receive the email:</p>
+          <div class="flex gap-2">
+            <input id="crm-onboarding-link-val" class="field" type="text" readonly style="font-size:11px;font-family:monospace">
+            <button class="btn btn-amber btn-sm" onclick="copyOnboardingLinkCRM()" id="crm-copy-link-btn" style="white-space:nowrap">Copy</button>
+          </div>
+        </div>
+      </div>
 
       <p id="crm-save-error" class="text-sm text-red-600 min-h-5 font-medium"></p>
     </div>
     <div class="px-7 py-5 flex justify-end gap-3" style="border-top:1px solid rgba(163,177,198,.3)">
       <button class="btn btn-ghost" onclick="closeClientModal()">Cancel</button>
-      <button class="btn btn-amber" onclick="saveClient()" id="crm-save-btn">Save Client</button>
+      <button class="btn btn-amber" onclick="saveClient()" id="crm-save-btn">Save &amp; Send Onboarding</button>
     </div>
   </div>
 </div>
@@ -539,23 +603,98 @@ async function loadLeads() {
   </tr>`).join('');
 }
 
-// ── QUOTES ────────────────────────────────────────────────────────────────
+// ── QUALIFIED LEADS ───────────────────────────────────────────────────────
+const LEAD_STATUS_BADGE={submitted:'badge-blue',invited:'badge-amber',qualified:'badge-green',added_to_crm:'badge-slate'};
+const LEAD_STATUS_LABEL={submitted:'Submitted',invited:'Invited',qualified:'Qualified',added_to_crm:'In CRM'};
+let leadsCache=[];
 async function loadQuotes() {
   const tb=document.getElementById('quotes-tbody');tb.innerHTML=row(9);
   const{data,error}=await sb.from('quote_submissions').select('*').order('created_at',{ascending:false});
   if(error||!data?.length){tb.innerHTML=empty(9,error?.message);return;}
+  leadsCache=data;
   set('ov-quotes',data.length);
-  tb.innerHTML=data.map(r=>`<tr>
-    <td class="td-muted">${fmtDate(r.created_at)}</td>
-    <td class="font-medium">${esc(r.company_name||'')}</td>
-    <td>${esc(r.contact_person||'')}</td>
-    <td>${esc(r.email||'')}</td>
-    <td><span class="badge badge-slate">${esc(r.staff_size||'–')}</span></td>
-    <td class="text-center">${r.num_services??'–'}</td>
-    <td class="td-muted">${esc(r.avg_processes||'–')}</td>
-    <td class="text-center">${r.complexity_score!=null?Number(r.complexity_score).toFixed(1):'–'}</td>
-    <td><span class="badge badge-amber">${esc(r.recommended_tier||'–')}</span></td>
-  </tr>`).join('');
+  tb.innerHTML=data.map(r=>{
+    const st=r.status||'submitted';
+    return`<tr>
+      <td class="td-muted">${fmtDate(r.created_at)}</td>
+      <td class="font-semibold">${esc(r.company_name||'—')}</td>
+      <td>${esc(r.contact_person||'—')}</td>
+      <td class="td-muted" style="font-size:12px">${esc(r.email||'—')}</td>
+      <td>${esc(r.staff_size||'–')}</td>
+      <td class="text-center">${r.num_services??'–'}</td>
+      <td><span class="badge badge-amber">${esc(r.recommended_tier||'–')}</span></td>
+      <td><span class="badge ${LEAD_STATUS_BADGE[st]||'badge-slate'}">${LEAD_STATUS_LABEL[st]||esc(st)}</span></td>
+      <td><div class="flex gap-1 flex-wrap">
+        ${(st==='submitted'||st==='invited')?`<button class="btn btn-ghost btn-sm" onclick="markLeadQualified('${r.id}')">✓ Qualify</button>`:''}
+        ${st!=='added_to_crm'?`<button class="btn btn-amber btn-sm" onclick="openClientModalFromLead('${r.id}')">+ CRM</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+async function markLeadQualified(id){
+  await sb.from('quote_submissions').update({status:'qualified'}).eq('id',id);
+  loadQuotes();
+}
+async function openClientModalFromLead(leadId){
+  await openClientModal();
+  const sel=document.getElementById('crm-lead-select');
+  if(sel){sel.value=leadId;prefillFromLead();}
+}
+
+// ── INVITE QUALIFIED LEAD ─────────────────────────────────────────────────
+// ⚙️  EmailJS config — set these in your EmailJS dashboard:
+//   Public Key:   your_emailjs_public_key
+//   Service ID:   your_emailjs_service_id
+//   Templates:    invite_lead_template, client_onboarding_template
+const EJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';
+const EJS_SERVICE_ID   = 'YOUR_EMAILJS_SERVICE_ID';
+const EJS_INVITE_TMPL  = 'invite_lead_template';       // variables: {{to_name}}, {{company}}, {{note}}, {{quote_url}}
+const EJS_ONBOARD_TMPL = 'client_onboarding_template'; // variables: {{to_name}}, {{company_name}}, {{onboarding_link}}, {{contract_url}}
+function initEmailJS(){ if(typeof emailjs!=='undefined')emailjs.init({publicKey:EJS_PUBLIC_KEY}); }
+
+function openInviteLeadModal(){
+  ['invite-name','invite-company','invite-email','invite-note'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('invite-error').textContent='';
+  document.getElementById('invite-success').style.display='none';
+  document.getElementById('invite-send-btn').disabled=false;
+  document.getElementById('invite-send-btn').textContent='Send Invitation';
+  document.getElementById('invite-lead-overlay').classList.add('open');
+}
+function closeInviteLeadModal(){document.getElementById('invite-lead-overlay').classList.remove('open');}
+async function sendLeadInvite(){
+  const name=document.getElementById('invite-name').value.trim();
+  const email=document.getElementById('invite-email').value.trim();
+  const company=document.getElementById('invite-company').value.trim();
+  const note=document.getElementById('invite-note').value.trim();
+  const errEl=document.getElementById('invite-error');
+  if(!name||!email){errEl.textContent='Contact name and email are required.';return;}
+  errEl.textContent='';
+  const btn=document.getElementById('invite-send-btn');
+  btn.disabled=true;btn.textContent='Sending…';
+  // Save to quote_submissions as an invited lead
+  const{error:dbErr}=await sb.from('quote_submissions').insert([{
+    company_name:company||name,contact_person:name,email,
+    staff_size:'—',num_services:0,avg_processes:'—',
+    status:'invited',invited_at:new Date().toISOString(),invited_by:'Preqal Team'
+  }]);
+  if(dbErr){errEl.textContent='DB error: '+dbErr.message;btn.disabled=false;btn.textContent='Send Invitation';return;}
+  // Send email via EmailJS
+  const quoteUrl=`${window.location.origin}/#quote`;
+  try{
+    await emailjs.send(EJS_SERVICE_ID,EJS_INVITE_TMPL,{
+      to_name:name,to_email:email,company:company||name,
+      note:note||'We'd love to learn more about your business and how Preqal can support your quality management journey.',
+      quote_url:quoteUrl
+    });
+  }catch(e){
+    // Email failed but lead was saved — show partial success
+    errEl.textContent='Lead saved, but email send failed: '+e.text+'. Share the quote link manually: '+quoteUrl;
+    btn.disabled=false;btn.textContent='Send Invitation';
+    loadQuotes();return;
+  }
+  document.getElementById('invite-success').style.display='block';
+  btn.textContent='Sent ✓';
+  loadQuotes();
 }
 
 // ── COURSE ────────────────────────────────────────────────────────────────
@@ -650,18 +789,59 @@ async function loadCRM() {
 }
 
 let clientCache={};
+function previewContractFile(){
+  const f=document.getElementById('crm-contract-file').files[0];
+  if(f)document.getElementById('crm-contract-label').textContent=f.name;
+}
+async function populateLeadDropdown(){
+  const sel=document.getElementById('crm-lead-select');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Select a qualified lead —</option>';
+  const{data}=await sb.from('quote_submissions').select('*').not('status','eq','added_to_crm').order('created_at',{ascending:false});
+  if(data?.length){
+    data.forEach(r=>{
+      const opt=document.createElement('option');
+      opt.value=r.id;
+      opt.dataset.company=r.company_name||'';
+      opt.dataset.contact=r.contact_person||'';
+      opt.dataset.email=r.email||'';
+      opt.dataset.employees=r.staff_size||'';
+      opt.dataset.services=r.num_services||'';
+      opt.dataset.tier=r.recommended_tier||'';
+      opt.textContent=`${r.company_name||r.email} — ${r.contact_person||''}`;
+      sel.appendChild(opt);
+    });
+  }
+}
+function prefillFromLead(){
+  const sel=document.getElementById('crm-lead-select');
+  const opt=sel.options[sel.selectedIndex];
+  if(!opt||!opt.value)return;
+  document.getElementById('crm-company').value=opt.dataset.company||'';
+  document.getElementById('crm-contact-name').value=opt.dataset.contact||'';
+  document.getElementById('crm-contact-email').value=opt.dataset.email||'';
+  if(opt.dataset.tier)document.getElementById('crm-tier').value=opt.dataset.tier;
+  if(opt.dataset.services)document.getElementById('crm-services').value=opt.dataset.services;
+  document.getElementById('crm-source').value='Quote Classifier';
+}
 async function openClientModal(id){
-  document.getElementById('crm-modal-title').textContent=id?'Edit Client':'Add Client';
+  const isEdit=!!id;
+  document.getElementById('crm-modal-title').textContent=isEdit?'Edit Client':'Add Client to CRM';
+  document.getElementById('crm-save-btn').textContent=isEdit?'Save Changes':'Save & Send Onboarding';
   document.getElementById('crm-id').value=id||'';
   document.getElementById('crm-save-error').textContent='';
-  // Reset all fields
+  document.getElementById('crm-onboarding-link-section').style.display='none';
+  document.getElementById('crm-lead-select-section').style.display=isEdit?'none':'block';
+  document.getElementById('crm-contract-label').textContent='Choose contract PDF…';
+  document.getElementById('crm-contract-url').value='';
   ['company','address','contact-name','contact-tel','contact-email','next-action','notes'].forEach(f=>document.getElementById('crm-'+f).value='');
   ['industry','tier','source'].forEach(f=>document.getElementById('crm-'+f).value='');
   ['employees','services','processes','contract-value'].forEach(f=>document.getElementById('crm-'+f).value='');
   ['client-since','renewal-date','next-action-date'].forEach(f=>document.getElementById('crm-'+f).value='');
-  document.getElementById('crm-pipeline').value='prospect';
+  document.getElementById('crm-pipeline').value='qualified';
   document.getElementById('crm-onboarding').value='not_started';
-  if(id&&clientCache[id]){
+  if(!isEdit)await populateLeadDropdown();
+  if(isEdit&&clientCache[id]){
     const r=clientCache[id];
     document.getElementById('crm-company').value=r.company_name||'';
     document.getElementById('crm-address').value=r.address||'';
@@ -673,7 +853,7 @@ async function openClientModal(id){
     document.getElementById('crm-employees').value=r.num_employees||'';
     document.getElementById('crm-services').value=r.num_services||'';
     document.getElementById('crm-processes').value=r.num_processes_per_service||'';
-    document.getElementById('crm-pipeline').value=r.pipeline_stage||'prospect';
+    document.getElementById('crm-pipeline').value=r.pipeline_stage||'qualified';
     document.getElementById('crm-onboarding').value=r.onboarding_stage||'not_started';
     document.getElementById('crm-source').value=r.source||'';
     document.getElementById('crm-contract-value').value=r.contract_value!=null?r.contract_value:'';
@@ -697,21 +877,39 @@ async function saveClient(){
   const id=document.getElementById('crm-id').value;
   const errEl=document.getElementById('crm-save-error'),btn=document.getElementById('crm-save-btn');
   errEl.textContent='';
-  const company=document.getElementById('crm-company').value.trim(),contact=document.getElementById('crm-contact-name').value.trim();
+  const company=document.getElementById('crm-company').value.trim();
+  const contact=document.getElementById('crm-contact-name').value.trim();
+  const email=document.getElementById('crm-contact-email').value.trim();
   if(!company||!contact){errEl.textContent='Company name and contact name are required.';return;}
+  if(!id&&!email){errEl.textContent='Contact email is required to send the onboarding link.';return;}
+  btn.disabled=true;btn.textContent='Saving…';
+  // Upload contract if selected
+  let contractUrl=document.getElementById('crm-contract-url').value||null;
+  const contractFile=document.getElementById('crm-contract-file').files[0];
+  if(contractFile){
+    const safeName=contractFile.name.replace(/[^a-z0-9._-]/gi,'_');
+    const path=`contracts/${Date.now()}_${safeName}`;
+    const{data:upData,error:upErr}=await sb.storage.from('client-documents').upload(path,contractFile,{upsert:true});
+    if(upErr){errEl.textContent='Contract upload failed: '+upErr.message;btn.disabled=false;btn.textContent=id?'Save Changes':'Save & Send Onboarding';return;}
+    const{data:{publicUrl}}=sb.storage.from('client-documents').getPublicUrl(path);
+    contractUrl=publicUrl;
+  }
   const cv=document.getElementById('crm-contract-value').value;
+  const token=id?null:crypto.randomUUID();
+  const leadSel=document.getElementById('crm-lead-select');
+  const leadId=leadSel?.value||null;
   const payload={
     company_name:company,
     address:document.getElementById('crm-address').value.trim()||null,
     contact_name:contact,
     contact_tel:document.getElementById('crm-contact-tel').value.trim()||null,
-    contact_email:document.getElementById('crm-contact-email').value.trim()||null,
+    contact_email:email||null,
     industry_category:document.getElementById('crm-industry').value||null,
     tier:document.getElementById('crm-tier').value||null,
     num_employees:parseInt(document.getElementById('crm-employees').value)||null,
     num_services:parseInt(document.getElementById('crm-services').value)||null,
     num_processes_per_service:parseInt(document.getElementById('crm-processes').value)||null,
-    pipeline_stage:document.getElementById('crm-pipeline').value||'prospect',
+    pipeline_stage:document.getElementById('crm-pipeline').value||'qualified',
     onboarding_stage:document.getElementById('crm-onboarding').value||'not_started',
     source:document.getElementById('crm-source').value||null,
     contract_value:cv!==''?parseFloat(cv):null,
@@ -720,14 +918,46 @@ async function saveClient(){
     next_action:document.getElementById('crm-next-action').value.trim()||null,
     next_action_date:document.getElementById('crm-next-action-date').value||null,
     notes:document.getElementById('crm-notes').value.trim()||null,
+    contract_url:contractUrl,
     updated_at:new Date().toISOString()
   };
-  btn.disabled=true;btn.textContent='Saving…';
+  if(!id){payload.onboarding_token=token;payload.onboarding_sent_at=new Date().toISOString();if(leadId)payload.quote_submission_id=leadId;}
   const{error}=id?await sb.from('crm_clients').update(payload).eq('id',id):await sb.from('crm_clients').insert([payload]);
-  btn.disabled=false;btn.textContent='Save Client';
-  if(error){errEl.textContent=error.message;return;}
-  document.getElementById('crm-modal-overlay').classList.remove('open');
+  if(error){errEl.textContent=error.message;btn.disabled=false;btn.textContent=id?'Save Changes':'Save & Send Onboarding';return;}
+  // For new clients: create onboarding record, mark lead as in CRM, send email
+  if(!id){
+    const onboardLink=`${window.location.origin}/client-onboarding.html?token=${token}`;
+    // Create onboarding record
+    await sb.from('client_onboarding').insert([{token,company_name:company,status:'pending'}]);
+    // Mark lead as added to CRM
+    if(leadId)await sb.from('quote_submissions').update({status:'added_to_crm'}).eq('id',leadId);
+    // Send onboarding email via EmailJS
+    try{
+      await emailjs.send(EJS_SERVICE_ID,EJS_ONBOARD_TMPL,{
+        to_name:contact,to_email:email,company_name:company,
+        onboarding_link:onboardLink,
+        contract_url:contractUrl||'(no contract attached)'
+      });
+    }catch(e){
+      errEl.textContent='Client saved, but email failed: '+e.text+'. Share the link below manually.';
+    }
+    // Show onboarding link
+    document.getElementById('crm-onboarding-link-val').value=onboardLink;
+    document.getElementById('crm-onboarding-link-section').style.display='block';
+    document.getElementById('crm-save-btn').style.display='none';
+    loadQuotes();
+  } else {
+    document.getElementById('crm-modal-overlay').classList.remove('open');
+  }
+  btn.disabled=false;btn.textContent=id?'Save Changes':'Save & Send Onboarding';
   loadCRM();loadOverview();
+}
+function copyOnboardingLinkCRM(){
+  const input=document.getElementById('crm-onboarding-link-val');
+  navigator.clipboard.writeText(input.value).then(()=>{
+    const btn=document.getElementById('crm-copy-link-btn');btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='Copy',2000);
+  });
 }
 async function deleteClient(id,name){
   if(!confirm(`Delete client "${name}"? This cannot be undone.`))return;
