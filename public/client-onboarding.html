@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preqal · Client Onboarding</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']},boxShadow:{'neu':'6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff','neu-sm':'3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff'}}}}</script>
+<style>
+  @font-face{font-family:'Inter';font-weight:400;font-display:swap;src:url('/fonts/inter/Inter-400.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:500;font-display:swap;src:url('/fonts/inter/Inter-500.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:600;font-display:swap;src:url('/fonts/inter/Inter-600.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:700;font-display:swap;src:url('/fonts/inter/Inter-700.woff2') format('woff2')}
+  body{font-family:'Inter',system-ui,sans-serif;background:#e0e5ec;color:#334155;min-height:100vh}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  .neu-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #ffffff}
+  .neu-raised{box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .neu-pressed{box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#e0e5ec}::-webkit-scrollbar-thumb{background:#a3b1c6;border-radius:5px}::-webkit-scrollbar-thumb:hover{background:#f59e0b}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeInUp .45s ease-out forwards}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .field{width:100%;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;border:none;border-radius:.75rem;padding:10px 14px;font-size:14px;color:#334155;font-family:inherit;outline:none;transition:box-shadow .2s}
+  .field:focus{box-shadow:inset 2px 2px 6px #a3b1c6,inset -2px -2px 6px #ffffff,0 0 0 3px rgba(245,158,11,.18)}
+  .field::placeholder{color:#94a3b8}
+  textarea.field{resize:vertical;min-height:80px}
+  select.field option{background:#e0e5ec;color:#334155}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:.75rem;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .18s}
+  .btn-amber{background:#f59e0b;color:#fff;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-amber:hover{background:#d97706}
+  .btn-ghost{background:#e0e5ec;color:#64748b;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .btn-ghost:hover{color:#334155}
+  .btn-danger-sm{background:rgba(239,68,68,.08);color:#b91c1c;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff;padding:6px 10px;border-radius:.5rem;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .15s}
+  .btn-danger-sm:hover{background:rgba(239,68,68,.16)}
+  .section-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#b45309;padding:4px 0 8px;margin-top:4px}
+  .divider{height:1px;background:rgba(163,177,198,.3);margin:8px 0 16px}
+  .step-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f59e0b;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+  .upload-label{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:.75rem;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;cursor:pointer;transition:box-shadow .2s;width:100%}
+  .upload-label:hover{box-shadow:inset 2px 2px 6px #a3b1c6,inset -2px -2px 6px #ffffff,0 0 0 3px rgba(245,158,11,.12)}
+  .upload-label input[type=file]{display:none}
+  .upload-tag{background:#e0e5ec;color:#64748b;font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;flex-shrink:0;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff}
+  .upload-name{font-size:13px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .upload-name.done{color:#059669;font-weight:600}
+  .doc-box{background:rgba(255,255,255,.35);border-radius:1rem;padding:16px;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff}
+  .doc-label{font-size:12px;font-weight:700;color:#475569;margin-bottom:8px;display:block}
+  .service-entry{background:rgba(255,255,255,.35);border-radius:.875rem;padding:14px;box-shadow:2px 2px 5px #a3b1c6,-2px -2px 5px #ffffff;display:grid;gap:8px}
+  .address-entry{background:rgba(255,255,255,.35);border-radius:.875rem;padding:14px;box-shadow:2px 2px 5px #a3b1c6,-2px -2px 5px #ffffff;display:grid;gap:8px}
+  .existing-doc-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:rgba(255,255,255,.35);border-radius:.75rem;padding:10px 12px;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff}
+  .other-doc-entry{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;background:rgba(255,255,255,.35);border-radius:.75rem;padding:10px 12px;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff}
+  .iso-entry{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:rgba(255,255,255,.35);border-radius:.75rem;padding:10px 12px;box-shadow:2px 2px 4px #a3b1c6,-2px -2px 4px #ffffff}
+  .spinner-sm{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite}
+  .hint{font-size:11px;color:#94a3b8;margin-top:4px}
+  .progress-bar{height:4px;border-radius:999px;background:rgba(163,177,198,.3);overflow:hidden}
+  .progress-fill{height:100%;background:#f59e0b;border-radius:999px;transition:width .4s ease}
+</style>
+</head>
+<body>
+
+<!-- ── LOADING ─────────────────────────────────────────────────────────── -->
+<div id="loading-screen" class="min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div style="width:40px;height:40px;border:3px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite;margin:0 auto 16px"></div>
+    <p class="text-sm text-slate-500">Loading your onboarding form…</p>
+  </div>
+</div>
+
+<!-- ── ERROR ──────────────────────────────────────────────────────────── -->
+<div id="error-screen" style="display:none" class="min-h-screen flex items-center justify-center p-6">
+  <div class="neu-card rounded-2xl p-10 w-full max-w-md text-center">
+    <div class="text-5xl mb-4">⚠️</div>
+    <h1 class="text-xl font-bold text-slate-900 mb-2">Invalid Link</h1>
+    <p class="text-sm text-slate-500" id="error-msg">This onboarding link is invalid or has already been used.</p>
+    <a href="/" class="btn btn-ghost mt-6">← Back to Preqal</a>
+  </div>
+</div>
+
+<!-- ── SUCCESS ────────────────────────────────────────────────────────── -->
+<div id="success-screen" style="display:none" class="min-h-screen flex items-center justify-center p-6">
+  <div class="neu-card rounded-2xl p-10 w-full max-w-lg text-center fade-in">
+    <div class="text-6xl mb-5">🎉</div>
+    <h1 class="text-2xl font-bold text-slate-900 mb-2">Onboarding Submitted!</h1>
+    <p class="text-sm text-slate-500 mb-2">Thank you, <strong id="success-name"></strong>. Your company information and documents have been received.</p>
+    <p class="text-sm text-slate-400 mb-6">The Preqal team will review your submission and be in touch shortly. Welcome aboard!</p>
+    <a href="https://preqal.org" class="btn btn-amber">Visit Preqal.org →</a>
+  </div>
+</div>
+
+<!-- ── FORM ───────────────────────────────────────────────────────────── -->
+<div id="form-screen" style="display:none">
+
+  <!-- HEADER -->
+  <header style="background:rgba(224,229,236,.92);backdrop-filter:blur(16px);box-shadow:0 4px 8px #a3b1c6;position:sticky;top:0;z-index:50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6" style="display:flex;align-items:center;height:72px;gap:12px">
+      <a href="/"><picture>
+        <source type="image/avif" srcset="/Preqal%20Logo%20Sep25-9-200.avif">
+        <img src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal" style="height:7rem;width:auto">
+      </picture></a>
+      <span class="neu-pressed px-3 py-1 rounded-full text-xs font-bold text-amber-700 uppercase tracking-wide">Client Onboarding</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+
+    <!-- Welcome -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <p class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">Welcome to Preqal</p>
+      <h1 class="text-2xl font-bold text-slate-900 mb-2">Hello, <span id="welcome-name">there</span> 👋</h1>
+      <p class="text-slate-500 text-sm leading-relaxed">Please complete this onboarding form so we can set up your account and begin delivering our services. This should take about 10–15 minutes. You can refer to your contract document below at any time.</p>
+      <div id="contract-doc-wrap" style="display:none" class="mt-4">
+        <a id="contract-doc-link" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-amber-700" style="background:rgba(245,158,11,.08);text-decoration:none;box-shadow:2px 2px 5px #a3b1c6,-2px -2px 5px #ffffff">📄 View Your Contract ↗</a>
+      </div>
+      <!-- Progress -->
+      <div class="mt-5">
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs text-slate-400 font-medium">Form Progress</span>
+          <span class="text-xs font-bold text-amber-700" id="progress-label">Step 1 of 6</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:16.66%"></div></div>
+      </div>
+    </div>
+
+    <form id="onboarding-form" onsubmit="submitOnboarding(event)">
+
+    <!-- ── SECTION 1: Company Details ────────────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span class="step-badge">1</span>
+        <h2 class="text-base font-bold text-slate-800">Company Details</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="space-y-4">
+
+        <div>
+          <label class="doc-label">Company / Organisation Name <span class="text-red-400">*</span></label>
+          <input id="co-name" type="text" class="field" placeholder="e.g. Apex Resources Ltd." required>
+        </div>
+
+        <div>
+          <label class="doc-label">Business Type <span class="text-red-400">*</span></label>
+          <select id="co-type" class="field" required>
+            <option value="">— Select type —</option>
+            <option value="Business Registration">Business Registration</option>
+            <option value="Incorporated Company">Incorporated Company (Inc.)</option>
+            <option value="Limited Liability Company">Limited Liability Company (LLC)</option>
+            <option value="NGO / Non-Profit">NGO / Non-Profit Organisation</option>
+            <option value="Government Agency">Government Agency / State Entity</option>
+            <option value="Partnership">Partnership</option>
+            <option value="Sole Trader">Sole Trader</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="doc-label">Company / Organisation Registration Number</label>
+          <input id="co-reg-number" type="text" class="field" placeholder="e.g. 2019/GY/00123">
+          <p class="hint">Leave blank if not yet registered or not applicable.</p>
+        </div>
+
+        <div>
+          <label class="doc-label">Legal / Registered Address <span class="text-red-400">*</span></label>
+          <textarea id="co-legal-address" class="field" placeholder="Full legal address as it appears on your registration documents" rows="3" required></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: Office Addresses ───────────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="step-badge">2</span>
+          <h2 class="text-base font-bold text-slate-800">Office Addresses</h2>
+        </div>
+        <button type="button" onclick="addAddressEntry()" class="btn btn-ghost" style="padding:6px 14px;font-size:12px">+ Add Office</button>
+      </div>
+      <div class="divider"></div>
+      <p class="text-xs text-slate-400 mb-4">Add all physical office locations where your operations are based. If your legal address above is your only location, you can skip this section.</p>
+      <div id="address-list" class="space-y-4"></div>
+      <div id="address-empty" class="text-center py-6 text-sm text-slate-400">No office addresses added yet. Click <strong>+ Add Office</strong> to begin.</div>
+    </div>
+
+    <!-- ── SECTION 3: Core Services ───────────────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="step-badge">3</span>
+          <h2 class="text-base font-bold text-slate-800">Core Services</h2>
+        </div>
+        <button type="button" onclick="addServiceEntry()" class="btn btn-ghost" style="padding:6px 14px;font-size:12px">+ Add Service</button>
+      </div>
+      <div class="divider"></div>
+      <p class="text-xs text-slate-400 mb-4">List and briefly describe the main services or product lines your organisation offers. This helps us tailor our quality management approach to your operations.</p>
+      <div id="service-list" class="space-y-4"></div>
+      <div id="service-empty" class="text-center py-6 text-sm text-slate-400">No services added yet. Click <strong>+ Add Service</strong> to begin.</div>
+    </div>
+
+    <!-- ── SECTION 4: Compliance Documents ──────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span class="step-badge">4</span>
+        <h2 class="text-base font-bold text-slate-800">Compliance Documents</h2>
+      </div>
+      <div class="divider"></div>
+      <p class="text-xs text-slate-400 mb-5">Upload your key compliance and registration certificates. Upload whichever documents are available — you can always send additional documents later. Accepted formats: PDF, JPG, PNG.</p>
+
+      <div class="space-y-4">
+
+        <!-- Company Registration -->
+        <div class="doc-box">
+          <span class="doc-label">🏢 Company Registration Certificate</span>
+          <label class="upload-label">
+            <span style="font-size:18px;flex-shrink:0">📄</span>
+            <span class="upload-name" id="doc-co-reg-name">Click to upload…</span>
+            <span class="upload-tag">Upload</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'doc_company_reg','doc-co-reg-name')">
+          </label>
+          <input type="hidden" id="doc_company_reg" value="">
+        </div>
+
+        <!-- TIN Certificate -->
+        <div class="doc-box">
+          <span class="doc-label">🔢 TIN Certificate (Taxpayer Identification Number)</span>
+          <label class="upload-label">
+            <span style="font-size:18px;flex-shrink:0">📄</span>
+            <span class="upload-name" id="doc-tin-name">Click to upload…</span>
+            <span class="upload-tag">Upload</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'doc_tin','doc-tin-name')">
+          </label>
+          <input type="hidden" id="doc_tin" value="">
+        </div>
+
+        <!-- GRA Compliance -->
+        <div class="doc-box">
+          <span class="doc-label">🏦 GRA Compliance Certificate (Guyana Revenue Authority)</span>
+          <label class="upload-label">
+            <span style="font-size:18px;flex-shrink:0">📄</span>
+            <span class="upload-name" id="doc-gra-name">Click to upload…</span>
+            <span class="upload-tag">Upload</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'doc_gra','doc-gra-name')">
+          </label>
+          <input type="hidden" id="doc_gra" value="">
+        </div>
+
+        <!-- NIS Compliance -->
+        <div class="doc-box">
+          <span class="doc-label">🛡️ NIS Compliance Certificate (National Insurance Scheme)</span>
+          <label class="upload-label">
+            <span style="font-size:18px;flex-shrink:0">📄</span>
+            <span class="upload-name" id="doc-nis-name">Click to upload…</span>
+            <span class="upload-tag">Upload</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'doc_nis','doc-nis-name')">
+          </label>
+          <input type="hidden" id="doc_nis" value="">
+        </div>
+
+        <!-- Local Content Certificate -->
+        <div class="doc-box">
+          <span class="doc-label">🇬🇾 Local Content Certificate</span>
+          <label class="upload-label">
+            <span style="font-size:18px;flex-shrink:0">📄</span>
+            <span class="upload-name" id="doc-lc-name">Click to upload…</span>
+            <span class="upload-tag">Upload</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'doc_local_content','doc-lc-name')">
+          </label>
+          <input type="hidden" id="doc_local_content" value="">
+        </div>
+
+        <!-- ISO Certificates -->
+        <div class="doc-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span class="doc-label" style="margin-bottom:0">🏅 ISO Certificates</span>
+            <button type="button" onclick="addIsoEntry()" class="btn btn-ghost" style="padding:4px 12px;font-size:11px">+ Add Certificate</button>
+          </div>
+          <p class="hint mb-3">Upload each ISO certificate separately (e.g. ISO 9001, ISO 45001, ISO 14001).</p>
+          <div id="iso-list" class="space-y-3"></div>
+          <div id="iso-empty" class="text-xs text-slate-400 py-2">No ISO certificates added. Click <strong>+ Add Certificate</strong> if you have any.</div>
+        </div>
+
+        <!-- Other Documents -->
+        <div class="doc-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span class="doc-label" style="margin-bottom:0">📎 Other Relevant Documents</span>
+            <button type="button" onclick="addOtherDocEntry()" class="btn btn-ghost" style="padding:4px 12px;font-size:11px">+ Add Document</button>
+          </div>
+          <p class="hint mb-3">Upload any other relevant certification, permit, or compliance document. Enter a name for each file.</p>
+          <div id="other-doc-list" class="space-y-3"></div>
+          <div id="other-doc-empty" class="text-xs text-slate-400 py-2">No other documents added.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: Existing Contracts & RFI Documents ─────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="step-badge">5</span>
+          <h2 class="text-base font-bold text-slate-800">Existing Contracts &amp; RFI Documents</h2>
+        </div>
+        <button type="button" onclick="addExistingDocEntry()" class="btn btn-ghost" style="padding:6px 14px;font-size:12px">+ Add File</button>
+      </div>
+      <div class="divider"></div>
+      <div class="neu-pressed rounded-xl p-4 mb-5 text-sm text-slate-600 leading-relaxed" style="background:rgba(245,158,11,.04)">
+        <p class="font-semibold text-amber-700 mb-1">📋 What to upload here</p>
+        <p>Upload any existing contracts, requests for information (RFIs), service briefs, or correspondence that relates to our engagement with your organisation. This includes:</p>
+        <ul class="mt-2 space-y-1 text-xs text-slate-500 list-disc list-inside">
+          <li>Previous or existing service contracts</li>
+          <li>RFI or RFP documents sent to you</li>
+          <li>Scoped service briefs or proposals</li>
+          <li>Screenshots of email or WhatsApp messages relevant to this engagement</li>
+        </ul>
+        <p class="mt-2 text-xs text-slate-400">You can screenshot WhatsApp or email conversations and upload the images directly.</p>
+      </div>
+      <div id="existing-doc-list" class="space-y-3"></div>
+      <div id="existing-doc-empty" class="text-center py-6 text-sm text-slate-400">No documents added yet. Click <strong>+ Add File</strong> to upload.</div>
+    </div>
+
+    <!-- ── SECTION 6: Signed Contract ────────────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span class="step-badge">6</span>
+        <h2 class="text-base font-bold text-slate-800">Signed Contract</h2>
+      </div>
+      <div class="divider"></div>
+      <p class="text-xs text-slate-400 mb-4">Please upload the signed copy of the service contract provided to you by Preqal. You can sign digitally (PDF) or sign a printed copy and scan/photograph it. Accepted formats: PDF, JPG, PNG.</p>
+
+      <div class="doc-box">
+        <span class="doc-label">✍️ Signed Service Contract <span class="text-red-400">*</span></span>
+        <label class="upload-label">
+          <span style="font-size:18px;flex-shrink:0">📑</span>
+          <span class="upload-name" id="doc-signed-name">Click to upload your signed contract…</span>
+          <span class="upload-tag">Upload</span>
+          <input type="file" id="signed-contract-input" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadDoc(this,'signed_contract_url','doc-signed-name')">
+        </label>
+        <input type="hidden" id="signed_contract_url" value="">
+        <p class="hint mt-2">If you haven't received a contract yet, contact your Preqal account manager before submitting.</p>
+      </div>
+    </div>
+
+    <!-- ── SUBMIT ──────────────────────────────────────────────────────── -->
+    <div class="neu-card rounded-2xl p-7 fade-in">
+      <p id="ob-error" class="text-sm text-red-600 mb-3 min-h-5 font-medium"></p>
+      <button type="submit" class="btn btn-amber w-full text-base" id="ob-submit-btn" style="padding:14px">
+        <span id="ob-submit-text">Submit Onboarding Form</span>
+      </button>
+      <p class="text-xs text-slate-400 text-center mt-3">By submitting you confirm that all information and documents provided are accurate and belong to your organisation.</p>
+    </div>
+
+    </form>
+  </main>
+</div>
+
+<!-- ── SCRIPT ──────────────────────────────────────────────────────────── -->
+<script>
+const SB_URL='https://gndcjmxxgtnoidxgcdnx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDY5NjYsImV4cCI6MjA4MTcyMjk2Nn0.hPhVHtHzp67Upukemoo8ZTwDcOCVHLrKfOwaITnbBLY';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+let onboardingId=null;
+let onboardingToken=null;
+let contactName='';
+let uploadToken='';
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+async function init(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('token');
+  if(!token){showError('No onboarding token found in this link. Please use the link sent to your email.');return;}
+
+  const{data,error}=await sb.from('client_onboarding').select('*').eq('token',token).single();
+  if(error||!data){showError('This onboarding link is invalid or has expired. Please contact your Preqal account manager.');return;}
+  if(data.status==='submitted'){showError('This onboarding form has already been submitted. Contact your Preqal account manager if you need to make any changes.');}
+
+  onboardingId=data.id;
+  onboardingToken=token;
+  uploadToken=token; // folder name for storage
+
+  // Try to get company name from crm_clients if linked
+  let crmData=null;
+  if(data.crm_client_id){
+    const{data:cd}=await sb.from('crm_clients').select('company_name,contact_name,contact_email,contract_url').eq('id',data.crm_client_id).single();
+    if(cd)crmData=cd;
+  }
+
+  const companyDisplay=data.company_name||(crmData?.company_name)||'your company';
+  contactName=crmData?.contact_name||'there';
+
+  document.getElementById('welcome-name').textContent=contactName;
+  document.getElementById('success-name').textContent=contactName;
+
+  // Show contract link if available
+  if(crmData?.contract_url){
+    document.getElementById('contract-doc-link').href=crmData.contract_url;
+    show('contract-doc-wrap');
+  }
+
+  // Pre-fill from partial save
+  if(data.company_name)document.getElementById('co-name').value=data.company_name;
+  if(data.company_type)document.getElementById('co-type').value=data.company_type;
+  if(data.registration_number)document.getElementById('co-reg-number').value=data.registration_number;
+  if(data.legal_address)document.getElementById('co-legal-address').value=data.legal_address;
+
+  const addresses=Array.isArray(data.office_addresses)?data.office_addresses:(data.office_addresses?JSON.parse(data.office_addresses):[]);
+  addresses.forEach(a=>addAddressEntry(a));
+
+  const services=Array.isArray(data.services)?data.services:(data.services?JSON.parse(data.services):[]);
+  services.forEach(s=>addServiceEntry(s));
+
+  if(data.doc_company_reg)setUploadDone('doc_company_reg','doc-co-reg-name',data.doc_company_reg);
+  if(data.doc_tin)setUploadDone('doc_tin','doc-tin-name',data.doc_tin);
+  if(data.doc_gra)setUploadDone('doc_gra','doc-gra-name',data.doc_gra);
+  if(data.doc_nis)setUploadDone('doc_nis','doc-nis-name',data.doc_nis);
+  if(data.doc_local_content)setUploadDone('doc_local_content','doc-lc-name',data.doc_local_content);
+  if(data.signed_contract_url)setUploadDone('signed_contract_url','doc-signed-name',data.signed_contract_url);
+
+  const isoCerts=Array.isArray(data.doc_iso_certs)?data.doc_iso_certs:(data.doc_iso_certs?JSON.parse(data.doc_iso_certs):[]);
+  isoCerts.forEach(c=>addIsoEntry(c));
+
+  const otherDocs=Array.isArray(data.doc_other)?data.doc_other:(data.doc_other?JSON.parse(data.doc_other):[]);
+  otherDocs.forEach(d=>addOtherDocEntry(d));
+
+  const existingDocs=Array.isArray(data.existing_docs)?data.existing_docs:(data.existing_docs?JSON.parse(data.existing_docs):[]);
+  existingDocs.forEach(d=>addExistingDocEntry(d));
+
+  updateProgress();
+  hide('loading-screen');
+  show('form-screen');
+}
+
+function showError(msg){
+  document.getElementById('error-msg').textContent=msg;
+  hide('loading-screen');
+  show('error-screen');
+}
+
+function setUploadDone(hiddenId,nameId,url){
+  document.getElementById(hiddenId).value=url;
+  const n=document.getElementById(nameId);
+  if(n){n.textContent='✔ Previously uploaded — click to replace';n.className='upload-name done';}
+}
+
+// ── PROGRESS ──────────────────────────────────────────────────────────────
+function updateProgress(){
+  const steps=[
+    !!document.getElementById('co-name').value,
+    document.getElementById('address-list').children.length>0||true, // optional
+    document.getElementById('service-list').children.length>0,
+    !!(document.getElementById('doc_company_reg').value||document.getElementById('doc_tin').value),
+    document.getElementById('existing-doc-list').children.length>0||true, // optional
+    !!document.getElementById('signed_contract_url').value
+  ];
+  const done=steps.filter(Boolean).length;
+  const pct=Math.round((done/steps.length)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent=`${done} of ${steps.length} sections`;
+}
+document.addEventListener('input',updateProgress);
+
+// ── ADDRESSES ─────────────────────────────────────────────────────────────
+function syncAddressEmpty(){
+  const list=document.getElementById('address-list');
+  document.getElementById('address-empty').style.display=list.children.length?'none':'block';
+}
+function addAddressEntry(prefill={}){
+  const list=document.getElementById('address-list');
+  const idx=list.children.length;
+  const div=document.createElement('div');
+  div.className='address-entry';
+  div.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <span class="doc-label" style="margin-bottom:0">Office ${idx+1}</span>
+      <button type="button" onclick="this.closest('.address-entry').remove();renumberEntries('address-list','address-empty','Office');syncAddressEmpty()" class="btn-danger-sm">× Remove</button>
+    </div>
+    <input type="text" class="field addr-name" placeholder="Office Name / Label (e.g. Georgetown Head Office)" value="${esc(prefill.name||'')}">
+    <textarea class="field addr-text" placeholder="Full office address" rows="2">${esc(prefill.address||'')}</textarea>`;
+  list.appendChild(div);
+  syncAddressEmpty();
+}
+function syncServiceEmpty(){
+  const list=document.getElementById('service-list');
+  document.getElementById('service-empty').style.display=list.children.length?'none':'block';
+}
+function addServiceEntry(prefill={}){
+  const list=document.getElementById('service-list');
+  const idx=list.children.length;
+  const div=document.createElement('div');
+  div.className='service-entry';
+  div.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <span class="doc-label" style="margin-bottom:0">Service ${idx+1}</span>
+      <button type="button" onclick="this.closest('.service-entry').remove();renumberEntries('service-list','service-empty','Service');syncServiceEmpty()" class="btn-danger-sm">× Remove</button>
+    </div>
+    <input type="text" class="field svc-name" placeholder="Service name (e.g. Drilling Operations, Catering, IT Support)" value="${esc(prefill.name||'')}">
+    <textarea class="field svc-desc" placeholder="Brief description of this service — what it involves, who it serves, key outputs" rows="3">${esc(prefill.description||'')}</textarea>`;
+  list.appendChild(div);
+  syncServiceEmpty();
+}
+
+// ── ISO CERTS ─────────────────────────────────────────────────────────────
+function syncIsoEmpty(){
+  const list=document.getElementById('iso-list');
+  document.getElementById('iso-empty').style.display=list.children.length?'none':'block';
+}
+function addIsoEntry(prefill={}){
+  const list=document.getElementById('iso-list');
+  const row=document.createElement('div');
+  row.className='iso-entry';
+  const fileId=`iso-file-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+  const nameId=`iso-name-${fileId}`;
+  const urlId=`iso-url-${fileId}`;
+  const labelText=prefill.url?'✔ Previously uploaded — click to replace':'Click to upload ISO certificate…';
+  const labelClass=prefill.url?'upload-name done':'upload-name';
+  row.innerHTML=`
+    <label class="upload-label" style="box-shadow:none;padding:8px 12px;background:rgba(255,255,255,.4)">
+      <span style="font-size:16px;flex-shrink:0">🏅</span>
+      <span class="${labelClass}" id="${nameId}">${labelText}</span>
+      <span class="upload-tag">Upload</span>
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadIsoDoc(this,'${urlId}','${nameId}')">
+    </label>
+    <input type="hidden" id="${urlId}" value="${esc(prefill.url||'')}">
+    <button type="button" onclick="this.closest('.iso-entry').remove();syncIsoEmpty()" class="btn-danger-sm" style="flex-shrink:0">× Remove</button>`;
+  list.appendChild(row);
+  syncIsoEmpty();
+}
+async function uploadIsoDoc(input,urlId,nameId){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameId);
+  nameEl.textContent='Uploading…';nameEl.className='upload-name';
+  const path=`${uploadToken}/iso/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const{data,error}=await sb.storage.from('client-documents').upload(path,file,{upsert:true});
+  if(error){nameEl.textContent='Upload failed — try again';return;}
+  const{data:{publicUrl}}=sb.storage.from('client-documents').getPublicUrl(path);
+  document.getElementById(urlId).value=publicUrl;
+  nameEl.textContent='✔ '+file.name;nameEl.className='upload-name done';
+}
+
+// ── OTHER DOCS ────────────────────────────────────────────────────────────
+function syncOtherDocEmpty(){
+  const list=document.getElementById('other-doc-list');
+  document.getElementById('other-doc-empty').style.display=list.children.length?'none':'block';
+}
+function addOtherDocEntry(prefill={}){
+  const list=document.getElementById('other-doc-list');
+  const row=document.createElement('div');
+  row.className='other-doc-entry';
+  const fileId=`other-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+  const nameId=`oname-${fileId}`;
+  const urlId=`ourl-${fileId}`;
+  const inputNameId=`oinput-${fileId}`;
+  const labelText=prefill.url?'✔ Previously uploaded':'Click to upload…';
+  const labelClass=prefill.url?'upload-name done':'upload-name';
+  row.innerHTML=`
+    <input type="text" class="field" id="${inputNameId}" placeholder="Document name (e.g. HSSE Policy)" value="${esc(prefill.name||'')}" style="padding:8px 12px;font-size:13px">
+    <label class="upload-label" style="box-shadow:none;padding:8px 12px;background:rgba(255,255,255,.4)">
+      <span style="font-size:16px;flex-shrink:0">📎</span>
+      <span class="${labelClass}" id="${nameId}">${labelText}</span>
+      <span class="upload-tag">Upload</span>
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadOtherDoc(this,'${urlId}','${nameId}')">
+    </label>
+    <input type="hidden" id="${urlId}" value="${esc(prefill.url||'')}">
+    <button type="button" onclick="this.closest('.other-doc-entry').remove();syncOtherDocEmpty()" class="btn-danger-sm">× Remove</button>`;
+  list.appendChild(row);
+  syncOtherDocEmpty();
+}
+async function uploadOtherDoc(input,urlId,nameId){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameId);
+  nameEl.textContent='Uploading…';nameEl.className='upload-name';
+  const path=`${uploadToken}/other/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const{data,error}=await sb.storage.from('client-documents').upload(path,file,{upsert:true});
+  if(error){nameEl.textContent='Upload failed — try again';return;}
+  const{data:{publicUrl}}=sb.storage.from('client-documents').getPublicUrl(path);
+  document.getElementById(urlId).value=publicUrl;
+  nameEl.textContent='✔ '+file.name;nameEl.className='upload-name done';
+}
+
+// ── EXISTING DOCS ─────────────────────────────────────────────────────────
+function syncExistingDocEmpty(){
+  const list=document.getElementById('existing-doc-list');
+  document.getElementById('existing-doc-empty').style.display=list.children.length?'none':'block';
+}
+function addExistingDocEntry(prefill={}){
+  const list=document.getElementById('existing-doc-list');
+  const row=document.createElement('div');
+  row.className='existing-doc-entry';
+  const fileId=`existing-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+  const nameId=`ename-${fileId}`;
+  const urlId=`eurl-${fileId}`;
+  const labelText=prefill.url?'✔ Previously uploaded — click to replace':'Click to upload document / screenshot…';
+  const labelClass=prefill.url?'upload-name done':'upload-name';
+  row.innerHTML=`
+    <label class="upload-label" style="box-shadow:none;padding:8px 12px;background:rgba(255,255,255,.4)">
+      <span style="font-size:16px;flex-shrink:0">📁</span>
+      <span class="${labelClass}" id="${nameId}">${labelText}</span>
+      <span class="upload-tag">Upload</span>
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" onchange="uploadExistingDoc(this,'${urlId}','${nameId}')">
+    </label>
+    <input type="hidden" id="${urlId}" value="${esc(prefill.url||'')}">
+    <button type="button" onclick="this.closest('.existing-doc-entry').remove();syncExistingDocEmpty()" class="btn-danger-sm">× Remove</button>`;
+  list.appendChild(row);
+  syncExistingDocEmpty();
+}
+async function uploadExistingDoc(input,urlId,nameId){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameId);
+  nameEl.textContent='Uploading…';nameEl.className='upload-name';
+  const path=`${uploadToken}/existing/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const{data,error}=await sb.storage.from('client-documents').upload(path,file,{upsert:true,contentType:file.type});
+  if(error){nameEl.textContent='Upload failed — try again';return;}
+  const{data:{publicUrl}}=sb.storage.from('client-documents').getPublicUrl(path);
+  document.getElementById(urlId).value=publicUrl;
+  nameEl.textContent='✔ '+file.name;nameEl.className='upload-name done';
+}
+
+// ── SINGLE-DOC UPLOAD ─────────────────────────────────────────────────────
+async function uploadDoc(input,hiddenId,nameId){
+  const file=input.files[0];if(!file)return;
+  const nameEl=document.getElementById(nameId);
+  nameEl.textContent='Uploading…';nameEl.className='upload-name';
+  const path=`${uploadToken}/${hiddenId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const{data,error}=await sb.storage.from('client-documents').upload(path,file,{upsert:true});
+  if(error){nameEl.textContent='Upload failed — try again';nameEl.className='upload-name';return;}
+  const{data:{publicUrl}}=sb.storage.from('client-documents').getPublicUrl(path);
+  document.getElementById(hiddenId).value=publicUrl;
+  nameEl.textContent='✔ '+file.name;nameEl.className='upload-name done';
+  updateProgress();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function renumberEntries(listId,emptyId,prefix){
+  const list=document.getElementById(listId);
+  Array.from(list.children).forEach((el,i)=>{
+    const label=el.querySelector('.doc-label');
+    if(label)label.textContent=`${prefix} ${i+1}`;
+  });
+  document.getElementById(emptyId).style.display=list.children.length?'none':'block';
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────
+async function submitOnboarding(e){
+  e.preventDefault();
+  const err=document.getElementById('ob-error');
+  const btn=document.getElementById('ob-submit-btn');
+  err.textContent='';
+
+  const companyName=document.getElementById('co-name').value.trim();
+  const companyType=document.getElementById('co-type').value;
+  const legalAddress=document.getElementById('co-legal-address').value.trim();
+  const signedContract=document.getElementById('signed_contract_url').value;
+
+  if(!companyName){err.textContent='Please enter your company name.';document.getElementById('co-name').focus();return;}
+  if(!companyType){err.textContent='Please select your business type.';return;}
+  if(!legalAddress){err.textContent='Please enter your legal address.';return;}
+  if(!signedContract){err.textContent='Please upload your signed contract before submitting.';document.getElementById('signed-contract-input').focus();return;}
+
+  // Collect office addresses
+  const addresses=Array.from(document.querySelectorAll('#address-list .address-entry')).map(el=>({
+    name:el.querySelector('.addr-name')?.value.trim()||'',
+    address:el.querySelector('.addr-text')?.value.trim()||''
+  })).filter(a=>a.address);
+
+  // Collect services
+  const services=Array.from(document.querySelectorAll('#service-list .service-entry')).map(el=>({
+    name:el.querySelector('.svc-name')?.value.trim()||'',
+    description:el.querySelector('.svc-desc')?.value.trim()||''
+  })).filter(s=>s.name);
+
+  // Collect ISO certs
+  const isoCerts=Array.from(document.querySelectorAll('#iso-list .iso-entry')).map(el=>{
+    const urlEl=el.querySelector('input[type=hidden]');
+    return urlEl?.value?{url:urlEl.value}:null;
+  }).filter(Boolean);
+
+  // Collect other docs
+  const otherDocs=Array.from(document.querySelectorAll('#other-doc-list .other-doc-entry')).map(el=>{
+    const inputs=el.querySelectorAll('input[type=hidden]');
+    const nameInput=el.querySelector('input[type=text]');
+    return{name:nameInput?.value.trim()||'Untitled Document',url:inputs[0]?.value||''};
+  }).filter(d=>d.url);
+
+  // Collect existing docs
+  const existingDocs=Array.from(document.querySelectorAll('#existing-doc-list .existing-doc-entry')).map(el=>{
+    const urlEl=el.querySelector('input[type=hidden]');
+    const nameEl=el.querySelector('.upload-name');
+    return urlEl?.value?{url:urlEl.value,name:nameEl?.textContent?.replace(/^✔\s*/,'')||''}:null;
+  }).filter(Boolean);
+
+  const payload={
+    company_name:companyName,
+    company_type:companyType,
+    registration_number:document.getElementById('co-reg-number').value.trim()||null,
+    legal_address:legalAddress,
+    office_addresses:addresses,
+    services:services,
+    doc_company_reg:document.getElementById('doc_company_reg').value||null,
+    doc_tin:document.getElementById('doc_tin').value||null,
+    doc_gra:document.getElementById('doc_gra').value||null,
+    doc_nis:document.getElementById('doc_nis').value||null,
+    doc_local_content:document.getElementById('doc_local_content').value||null,
+    doc_iso_certs:isoCerts,
+    doc_other:otherDocs,
+    existing_docs:existingDocs,
+    signed_contract_url:signedContract,
+    status:'submitted',
+    submitted_at:new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  };
+
+  btn.disabled=true;
+  document.getElementById('ob-submit-text').innerHTML='<span class="spinner-sm"></span> Submitting…';
+
+  const{error}=await sb.from('client_onboarding').update(payload).eq('id',onboardingId);
+  if(error){
+    btn.disabled=false;
+    document.getElementById('ob-submit-text').textContent='Submit Onboarding Form';
+    err.textContent='Submission failed: '+error.message;
+    return;
+  }
+
+  // Also update crm_clients.onboarding_stage if we have a linked client
+  const{data:rec}=await sb.from('client_onboarding').select('crm_client_id').eq('id',onboardingId).single();
+  if(rec?.crm_client_id){
+    await sb.from('crm_clients').update({onboarding_stage:'complete',updated_at:new Date().toISOString()}).eq('id',rec.crm_client_id);
+  }
+
+  hide('form-screen');
+  show('success-screen');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
