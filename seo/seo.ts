@@ -90,6 +90,21 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
     },
+    eCourseRegister: {
+      title: 'Register for QMS E-Course | Preqal',
+      description: "Register for Preqal's practical QMS e-course — Build Systems That Actually Work. Nine modules, real operations focus, and a certificate on completion.",
+      canonical: `${BASE_URL}/e-courses/register`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website'
+    },
+    verifyCertificate: {
+      title: 'Verify Certificate | Preqal',
+      description: 'Verify the authenticity of a Preqal course certificate. Enter your certificate key to confirm completion of a Preqal QMS e-course.',
+      canonical: `${BASE_URL}/verify`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website',
+      noindex: true
+    },
     preqalNotPrequel: {
       title: 'Preqal (Not Prequel) | Brand Clarification',
       description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is a quality, safety, ESG, and integrated management systems company.',
