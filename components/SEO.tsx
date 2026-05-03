@@ -8,9 +8,10 @@ import { getServicesSchema } from '../seo/servicesSchema';
 interface SEOProps {
   pageKey: string;
   customData?: Partial<SEOData>;
+  extraSchemas?: object[];
 }
 
-const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
+const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
   const seoData = { ...getSeoMeta(pageKey), ...customData };
   const orgSchema = getOrganizationSchema();
   const brandSchema = getBrandSchema();
@@ -70,6 +71,13 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData }) => {
       <script type="application/ld+json">
         {JSON.stringify(servicesSchema)}
       </script>
+
+      {/* Page-specific structured data */}
+      {extraSchemas?.map((schema, i) => (
+        <script key={i} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      ))}
     </Helmet>
   );
 };

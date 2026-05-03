@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 
@@ -77,7 +76,7 @@ const faqSchema = {
 const PreqalNotPrequel: React.FC = () => {
   return (
     <>
-      <SEO pageKey="preqalNotPrequel" />
+      <SEO pageKey="preqalNotPrequel" extraSchemas={[webpageSchema, faqSchema]} />
       <div className="min-h-screen pb-20">
         {/* Header */}
         <div className="py-20 relative">
@@ -169,10 +168,6 @@ const PreqalNotPrequel: React.FC = () => {
         </div>
       </div>
 
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify(webpageSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
     </>
   );
 };
