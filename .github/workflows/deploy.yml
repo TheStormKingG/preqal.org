@@ -50,8 +50,13 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
       
+      - name: Install Chrome for prerender
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
       - name: Build
         env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
