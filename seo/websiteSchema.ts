@@ -10,12 +10,6 @@ export const getWebsiteSchema = () => {
     inLanguage: 'en',
     publisher: {
       '@id': 'https://preqal.org/#organization'
-    },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: 'https://preqal.org/?q={search_term_string}',
-      'query-input': 'required name=search_term_string'
     }
   };
 };
-
