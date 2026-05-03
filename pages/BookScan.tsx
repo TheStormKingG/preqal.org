@@ -106,7 +106,6 @@ const BookScan: React.FC = () => {
   if (status === 'success') {
     return (
       <>
-        <SEO pageKey="book" />
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="neu-card rounded-2xl p-8 max-w-md w-full text-center animate-fade-in-up">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 neu-pressed">
