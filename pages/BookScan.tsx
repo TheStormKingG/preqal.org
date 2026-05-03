@@ -6,6 +6,7 @@ import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 import ReCAPTCHA from 'react-google-recaptcha';
 import SEO from '../components/SEO';
+import { getRiskScanServiceSchema, getBookPageSchema } from '../seo/pageSchemas';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -124,7 +125,10 @@ const BookScan: React.FC = () => {
 
   return (
     <>
-      <SEO pageKey="book" />
+      <SEO
+        pageKey="book"
+        extraSchemas={[getRiskScanServiceSchema(), getBookPageSchema()]}
+      />
       <div className="min-h-screen py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">

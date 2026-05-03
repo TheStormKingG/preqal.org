@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Microscope, Activity, Globe, Heart } from 'lucide-react';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
+import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 
 const SPACE_Y_12 = 48; // 3rem gap between Philosophy and Clinic sections
 
@@ -32,7 +33,10 @@ const About: React.FC = () => {
 
   return (
     <>
-      <SEO pageKey="about" />
+      <SEO
+        pageKey="about"
+        extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]}
+      />
       <div className="min-h-screen pb-20">
         {/* Header */}
         <div className="py-20 relative">
