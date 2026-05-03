@@ -16,21 +16,21 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Preqal | ISO Quality, Safety & ESG Management Systems',
       description: 'Preqal delivers quality, safety & ESG management systems—audits, SOPs, risk tools and training—so teams stay compliant, capable, and always ready now.',
       canonical: `${BASE_URL}/`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/home.webp`,
       ogType: 'website'
     },
     about: {
       title: 'About Preqal | Quality & Compliance Systems',
       description: 'Preqal is a quality, safety, ESG, and integrated management systems company specializing in Quality and Compliance Systems for all sectors, from small shops to large corporations.',
       canonical: `${BASE_URL}/about`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/about.webp`,
       ogType: 'website'
     },
     services: {
       title: 'Services | Preqal Quality & Compliance Solutions',
       description: 'Preqal offers comprehensive quality, safety, and compliance services including Quality Risk Scans, IMS Design, Documentation Systems, Training, and Audit Support.',
       canonical: `${BASE_URL}/services`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/services.webp`,
       ogType: 'website'
     },
     contact: {
@@ -44,21 +44,21 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Case Studies | Preqal Success Stories',
       description: 'Explore real case studies from Preqal clients across poultry, logistics, food-handling, eco-hospitality, oil & gas services, and waste/environmental operations.',
       canonical: `${BASE_URL}/case-studies`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/case-studies.webp`,
       ogType: 'website'
     },
     resources: {
       title: 'Resources | Preqal Quality Templates & Tools',
       description: 'Access Preqal\'s library of quality management templates, tools, and resources to support your compliance journey.',
       canonical: `${BASE_URL}/resources`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/resources.webp`,
       ogType: 'website'
     },
     eCourses: {
       title: 'E-Course | Preqal — Practical QMS Learning',
       description: 'Structured e-course on Quality Management Systems: process thinking, risk, documentation, audits, CAPA, and improvement—practical, clear, and built for real operations.',
       canonical: `${BASE_URL}/e-courses`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/e-courses.webp`,
       ogType: 'website'
     },
     eCourseLearn: {
@@ -72,14 +72,14 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',
       canonical: `${BASE_URL}/book`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/book.webp`,
       ogType: 'website'
     },
     businessGrowthAssessment: {
       title: 'Business Growth Investment Assessment | Preqal',
       description: 'Help Preqal understand your organisation so we can recommend the right level of support. Complete our Business Growth Investment Assessment to request a tailored quote.',
       canonical: `${BASE_URL}/business-growth-assessment`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/bga.webp`,
       ogType: 'website'
     },
     // Legacy key — kept so any existing SEO component references don't break
