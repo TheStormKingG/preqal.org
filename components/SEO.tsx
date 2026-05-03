@@ -46,6 +46,8 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@Preqal" />
+      <meta name="twitter:creator" content="@Preqal" />
       <meta name="twitter:url" content={seoData.canonical} />
       <meta name="twitter:title" content={seoData.title} />
       <meta name="twitter:description" content={seoData.description} />
