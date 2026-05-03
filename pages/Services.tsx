@@ -57,7 +57,7 @@ const ServiceAccordionItem: React.FC<{
         </div>
         <div className="flex-grow min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <h3 className="text-2xl font-bold text-slate-900">{service.title}</h3>
+            <h2 className="text-2xl font-bold text-slate-900">{service.title}</h2>
             <span className="inline-block neu-pressed-sm text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">
               {service.tagline}
             </span>
