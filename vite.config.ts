@@ -1,6 +1,26 @@
 import path from 'path';
+import { createRequire } from 'module';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+
+const require = createRequire(import.meta.url);
+const vitePrerender = require('vite-plugin-prerender');
+const { PuppeteerRenderer } = require('vite-plugin-prerender');
+
+const PRERENDER_ROUTES = [
+  '/',
+  '/services',
+  '/about',
+  '/case-studies',
+  '/resources',
+  '/e-courses',
+  '/book',
+  '/contact',
+  '/business-growth-assessment',
+  '/preqal-not-prequel',
+  '/privacy-policy',
+  '/terms-of-service',
+];
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
@@ -10,7 +30,18 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react()],
+      plugins: [
+        react(),
+        vitePrerender({
+          staticDir: path.join(__dirname, 'dist'),
+          routes: PRERENDER_ROUTES,
+          renderer: new PuppeteerRenderer({
+            headless: true,
+            renderAfterTime: 2000,
+            executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+          }),
+        }),
+      ],
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
