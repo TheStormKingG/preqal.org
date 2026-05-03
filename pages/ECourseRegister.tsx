@@ -112,7 +112,7 @@ const ECourseRegister: React.FC = () => {
   if (user && !profile) {
     return (
       <>
-        <SEO pageKey="eCourseLearn" />
+        <SEO pageKey="eCourseRegister" />
         <div className="min-h-screen flex flex-col items-center justify-center p-4">
           <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-8 shadow-neu space-y-6">
             {/* Avatar */}
@@ -183,7 +183,7 @@ const ECourseRegister: React.FC = () => {
   // ── Step 1: sign-in page (no user yet) ───────────────────────────────────
   return (
     <>
-      <SEO pageKey="eCourseLearn" />
+      <SEO pageKey="eCourseRegister" />
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="neu-card max-w-md w-full rounded-2xl border border-white/60 bg-[#e8ecf2] p-8 shadow-neu space-y-7">
 

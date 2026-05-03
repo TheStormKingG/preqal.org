@@ -99,7 +99,7 @@ const ECourseVerifyCertificate: React.FC = () => {
 
   return (
     <>
-      <SEO pageKey="home" />
+      <SEO pageKey="verifyCertificate" />
       <div className="min-h-screen flex flex-col items-center justify-start pt-32 pb-16 px-4 gap-6">
 
         {/* ── Search card ──────────────────────────────────────────────────── */}
