@@ -17,14 +17,14 @@ const routeMeta = {
   },
   '/services': {
     title: 'Services | Preqal Quality & Compliance Solutions',
-    description: 'Preqal offers comprehensive quality, safety, and compliance services including Quality Risk Scans, IMS Design, Documentation Systems, Training, and Audit Support.',
+    description: 'Quality, safety & ESG compliance services: Quality Risk Scans, IMS Design, Documentation Systems, Training, and Audit Support from Preqal.',
     canonical: `${BASE_URL}/services/`,
     ogImage: `${BASE_URL}/og/services.webp`,
     ogType: 'website',
   },
   '/about': {
     title: 'About Preqal | Quality & Compliance Systems',
-    description: 'Preqal is a quality, safety, ESG, and integrated management systems company specializing in Quality and Compliance Systems for all sectors, from small shops to large corporations.',
+    description: 'Preqal builds quality, safety & ESG management systems for all sectors—from small shops to large corporations. Evidence-driven compliance for every scale.',
     canonical: `${BASE_URL}/about/`,
     ogImage: `${BASE_URL}/og/about.webp`,
     ogType: 'website',
@@ -45,14 +45,14 @@ const routeMeta = {
   },
   '/e-courses': {
     title: 'E-Course | Preqal — Practical QMS Learning',
-    description: 'Structured e-course on Quality Management Systems: process thinking, risk, documentation, audits, CAPA, and improvement—practical, clear, and built for real operations.',
+    description: 'Nine-module QMS e-course covering process thinking, risk, documentation, audits, CAPA, and improvement—practical and built for real operations.',
     canonical: `${BASE_URL}/e-courses/`,
     ogImage: `${BASE_URL}/og/e-courses.webp`,
     ogType: 'website',
   },
   '/book': {
     title: 'Book a Risk Scan | Preqal',
-    description: 'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',
+    description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 7 days—so you know exactly where to focus first.',
     canonical: `${BASE_URL}/book/`,
     ogImage: `${BASE_URL}/og/book.webp`,
     ogType: 'website',
@@ -66,7 +66,7 @@ const routeMeta = {
   },
   '/business-growth-assessment': {
     title: 'Business Growth Investment Assessment | Preqal',
-    description: 'Help Preqal understand your organisation so we can recommend the right level of support. Complete our Business Growth Investment Assessment to request a tailored quote.',
+    description: 'Help Preqal understand your organisation to get the right level of support. Request a tailored quote via our Business Growth Investment Assessment.',
     canonical: `${BASE_URL}/business-growth-assessment/`,
     ogImage: `${BASE_URL}/og/bga.webp`,
     ogType: 'website',
@@ -80,7 +80,7 @@ const routeMeta = {
   },
   '/privacy-policy': {
     title: 'Privacy Policy | Preqal',
-    description: "Preqal's GDPR-compliant Privacy Policy. Learn how we collect, use, and protect your personal data in accordance with international standards and the Guyana Data Protection Act 2023.",
+    description: "Read Preqal's GDPR-compliant Privacy Policy. We collect and protect your personal data under the Guyana Data Protection Act 2023 and international standards.",
     canonical: `${BASE_URL}/privacy-policy/`,
     ogImage: DEFAULT_OG,
     ogType: 'article',
