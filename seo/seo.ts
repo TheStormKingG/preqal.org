@@ -37,7 +37,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Contact Preqal | Get in Touch',
       description: 'Contact Preqal to discuss your quality, safety, and compliance needs. We help businesses move from chaos to compliance with evidence-driven management systems.',
       canonical: `${BASE_URL}/contact/`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/contact.webp`,
       ogType: 'website'
     },
     caseStudies: {
@@ -95,7 +95,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Register for QMS E-Course | Preqal',
       description: "Register for Preqal's practical QMS e-course — Build Systems That Actually Work. Nine modules, real operations focus, and a certificate on completion.",
       canonical: `${BASE_URL}/e-courses/register/`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/e-courses-register.webp`,
       ogType: 'website'
     },
     verifyCertificate: {
@@ -110,7 +110,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Preqal (Not Prequel) | Brand Clarification',
       description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is a quality, safety, ESG, and integrated management systems company.',
       canonical: `${BASE_URL}/preqal-not-prequel/`,
-      ogImage: DEFAULT_OG_IMAGE,
+      ogImage: `${BASE_URL}/og/preqal-not-prequel.webp`,
       ogType: 'article'
     },
     privacyPolicy: {

@@ -114,6 +114,21 @@ const cards = [
     title: 'Business Growth Assessment',
     subtitle: 'Get a tailored quote',
   },
+  {
+    file: 'contact.webp',
+    title: 'Get in Touch',
+    subtitle: 'Let\'s discuss your compliance needs',
+  },
+  {
+    file: 'preqal-not-prequel.webp',
+    title: 'Preqal, Not Prequel',
+    subtitle: 'Quality · Safety · ESG Systems',
+  },
+  {
+    file: 'e-courses-register.webp',
+    title: 'Register for QMS Course',
+    subtitle: 'Build Systems That Actually Work',
+  },
 ];
 
 for (const card of cards) {

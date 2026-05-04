@@ -61,7 +61,7 @@ const routeMeta = {
     title: 'Contact Preqal | Get in Touch',
     description: 'Contact Preqal to discuss your quality, safety, and compliance needs. We help businesses move from chaos to compliance with evidence-driven management systems.',
     canonical: `${BASE_URL}/contact/`,
-    ogImage: DEFAULT_OG,
+    ogImage: `${BASE_URL}/og/contact.webp`,
     ogType: 'website',
   },
   '/business-growth-assessment': {
@@ -75,7 +75,7 @@ const routeMeta = {
     title: 'Preqal (Not Prequel) | Brand Clarification',
     description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is a quality, safety, ESG, and integrated management systems company.',
     canonical: `${BASE_URL}/preqal-not-prequel/`,
-    ogImage: DEFAULT_OG,
+    ogImage: `${BASE_URL}/og/preqal-not-prequel.webp`,
     ogType: 'article',
   },
   '/privacy-policy': {
