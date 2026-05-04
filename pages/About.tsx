@@ -3,6 +3,9 @@ import { Microscope, Activity, Globe, Heart } from 'lucide-react';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
+import TiltCard from '../components/ui/TiltCard';
+import ScrollReveal from '../components/ui/ScrollReveal';
+import ParallaxGlow from '../components/ui/ParallaxGlow';
 
 const SPACE_Y_12 = 48; // 3rem gap between Philosophy and Clinic sections
 
@@ -51,10 +54,12 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 relative">
+          <ParallaxGlow top={0} left={-60} />
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             {/* Founder Side */}
             <div className="md:col-span-4 flex flex-col min-w-0">
+              <TiltCard mode="static" perspective={800} className="w-full">
               <div
                 className="neu-card rounded-2xl p-8 overflow-hidden animate-fade-in-up delay-100"
                 style={cardHeight ? { height: `${cardHeight}px`, transition: 'height 0.5s ease-in-out' } : undefined}
@@ -79,6 +84,7 @@ const About: React.FC = () => {
                   </CollapsibleSection>
                 </div>
               </div>
+              </TiltCard>
 
               {/* Hexagon watermark — fills remaining space below card */}
               <div
@@ -106,14 +112,16 @@ const About: React.FC = () => {
                     { icon: <Activity className="text-amber-600 h-6 w-6" />, title: "Systems Thinking", desc: "Your business isn't a collection of separate problems. It's a living system. Preqal looks at the whole picture — finding the root causes that others miss — so the solutions you get actually hold." },
                     { icon: <Globe className="text-amber-600 h-6 w-6" />, title: "Planetary Value", desc: "The standards you build today protect more than your bottom line. They protect your people, your community, and the world your business operates in. Compliance, done right, is an act of leadership." },
                     { icon: <Heart className="text-amber-600 h-6 w-6" />, title: "Risk-Based", desc: "Your time and resources are valuable. Preqal helps you focus them exactly where they matter most — on the risks that could affect the safety of your product and the future of everything you've built." },
-                  ].map((item) => (
-                    <div key={item.title} className="flex gap-4 p-5 rounded-2xl neu-card hover:neu-raised transition-all duration-300">
-                      <div className="flex-shrink-0 mt-1 p-2 rounded-lg neu-pressed-sm">{item.icon}</div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
-                        <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                  ].map((item, index) => (
+                    <ScrollReveal key={item.title} delay={index * 80}>
+                      <div className="flex gap-4 p-5 rounded-2xl neu-card hover:neu-raised transition-all duration-300">
+                        <div className="flex-shrink-0 mt-1 p-2 rounded-lg neu-pressed-sm">{item.icon}</div>
+                        <div>
+                          <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
+                          <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                        </div>
                       </div>
-                    </div>
+                    </ScrollReveal>
                   ))}
                 </div>
               </div>
