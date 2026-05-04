@@ -9,7 +9,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => (
   <div
     className={className}
     style={{
-      background: 'rgba(255,255,255,0.52)',
+      background: 'rgba(255,255,255,0.68)',
       backdropFilter: 'blur(18px)',
       WebkitBackdropFilter: 'blur(18px)',
       borderRadius: '18px',
