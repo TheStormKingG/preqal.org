@@ -117,8 +117,8 @@ const CaseStudies: React.FC = () => {
             </div>
             <GlassCard>
               <div className="industries-scroll flex gap-8 items-center overflow-x-auto pb-2" style={{ scrollSnapType: 'x mandatory' }}>
-                {industries.map((ind, idx) => (
-                  <div key={idx} className="flex flex-col items-center group cursor-default flex-shrink-0" style={{ scrollSnapAlign: 'start', minWidth: '140px' }}>
+                {industries.map((ind) => (
+                  <div key={ind.name} className="flex flex-col items-center group cursor-default flex-shrink-0" style={{ scrollSnapAlign: 'start', minWidth: '140px' }}>
                     <div className="w-16 h-16 rounded-full flex items-center justify-center mb-3 neu-pressed group-hover:neu-raised-sm transition-all duration-300">
                       {ind.icon}
                     </div>
