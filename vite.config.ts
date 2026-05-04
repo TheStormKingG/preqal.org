@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
           routes: PRERENDER_ROUTES,
           renderer: new PuppeteerRenderer({
             headless: true,
-            renderAfterDocumentEvent: 'prerender-ready',
+            renderAfterTime: 2000,
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
               || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
           }),
