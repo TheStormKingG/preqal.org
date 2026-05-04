@@ -25,3 +25,9 @@ dist-ssr
 
 # Copied at build time from ./QMS Module Videos (see npm run build). Do not commit full MP4s here.
 public/e-courses/modules/*/video.mp4
+
+# Claude Code worktrees and session data
+.claude/
+
+# Internal business documents — never commit
+Preqal Website/
