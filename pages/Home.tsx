@@ -264,7 +264,7 @@ const Home: React.FC = () => {
                 <span className="glow-tag">Quality · Safety · Compliance</span>
               </motion.div>
               <motion.h1
-                className="text-[1.6rem] font-bold leading-[1.22] text-slate-900 mt-2 mb-2"
+                className="text-[2.2rem] font-bold leading-[1.18] text-slate-900 mt-3 mb-3"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.08 }}
@@ -273,7 +273,7 @@ const Home: React.FC = () => {
                 <span className="text-amber-600">actually work.</span>
               </motion.h1>
               <motion.p
-                className="text-[0.82rem] text-slate-500 mb-5 leading-relaxed"
+                className="text-[1rem] text-slate-500 mb-6 leading-relaxed"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.16 }}
@@ -312,7 +312,7 @@ const Home: React.FC = () => {
 
           {/* Right: Saturn Stage */}
           <motion.div
-            style={{ position: 'absolute', right: '56px', top: '50%' }}
+            style={{ position: 'absolute', right: '56px', top: '50%', y: '-50%' }}
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.12 }}
