@@ -1,9 +1,11 @@
 import React from 'react';
 
+type SaturnSize = 'sm' | 'md';
+
 interface SaturnStageProps {
   imageSrc: string;
   imageAlt: string;
-  size?: number;
+  size?: SaturnSize;
 }
 
 const ringStyle = (
@@ -22,64 +24,78 @@ const ringStyle = (
   animation: `orbit ${duration} linear infinite`,
 });
 
+// sm: 96px container, 52px building, 2 rings
+const SM_CONTAINER = 96;
+const SM_BUILDING = 52;
+const SM_RINGS = [
+  { w: 72,  h: 18, border: '1.5px solid rgba(245,158,11,0.6)', shadow: undefined,                              dur: '8s'  },
+  { w: 98,  h: 25, border: '1px solid rgba(245,158,11,0.35)',  shadow: undefined,                              dur: '14s' },
+] as const;
+
+// md: 320px container, 104px building, 3 rings (+30% vs original)
+const MD_CONTAINER = 320;
+const MD_BUILDING = 104;
+const MD_RINGS = [
+  { w: 170, h: 43, border: '3.5px solid rgba(245,158,11,0.7)', shadow: '0 0 12px rgba(245,158,11,0.3)',        dur: '8s'  },
+  { w: 234, h: 59, border: '2px solid rgba(245,158,11,0.4)',   shadow: '0 0 8px rgba(245,158,11,0.12)',        dur: '14s' },
+  { w: 294, h: 74, border: '1.5px solid rgba(245,158,11,0.2)', shadow: undefined,                             dur: '22s' },
+] as const;
+
 const SaturnStage: React.FC<SaturnStageProps> = ({
   imageSrc,
   imageAlt,
-  size = 340,
-}) => (
-  <div
-    className="saturn-stage-float"
-    style={{
-      position: 'relative',
-      width: `${size}px`,
-      height: `${size}px`,
-      animation: 'saturn-float 6s ease-in-out infinite',
-    }}
-  >
-    {/* Back halves — z-index 1, behind image */}
-    <div
-      className="orbit-ring ring-back"
-      style={ringStyle(310, 78, '3.5px solid rgba(245,158,11,0.7)', '0 0 12px rgba(245,158,11,0.3)', '8s')}
-    />
-    <div
-      className="orbit-ring ring-back"
-      style={ringStyle(430, 108, '2px solid rgba(245,158,11,0.4)', '0 0 8px rgba(245,158,11,0.12)', '14s')}
-    />
-    <div
-      className="orbit-ring ring-back"
-      style={ringStyle(540, 136, '1.5px solid rgba(245,158,11,0.2)', undefined, '22s')}
-    />
+  size = 'md',
+}) => {
+  const containerSize = size === 'sm' ? SM_CONTAINER : MD_CONTAINER;
+  const buildingSize  = size === 'sm' ? SM_BUILDING  : MD_BUILDING;
+  const rings         = size === 'sm' ? SM_RINGS      : MD_RINGS;
 
-    {/* Building image — z-index 2 */}
-    <img
-      src={imageSrc}
-      alt={imageAlt}
+  return (
+    <div
+      className="saturn-stage-float"
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-        zIndex: 2,
+        position: 'relative',
+        width: `${containerSize}px`,
+        height: `${containerSize}px`,
+        animation: 'saturn-float 6s ease-in-out infinite',
       }}
-      loading="eager"
-    />
+    >
+      {/* Back halves — z-index 1, behind image */}
+      {rings.map((r, i) => (
+        <div
+          key={`back-${i}`}
+          className="orbit-ring ring-back"
+          style={ringStyle(r.w, r.h, r.border, r.shadow, r.dur)}
+        />
+      ))}
 
-    {/* Front halves — z-index 3, in front of image */}
-    <div
-      className="orbit-ring ring-front"
-      style={ringStyle(310, 78, '3.5px solid rgba(245,158,11,0.7)', '0 0 12px rgba(245,158,11,0.3)', '8s')}
-    />
-    <div
-      className="orbit-ring ring-front"
-      style={ringStyle(430, 108, '2px solid rgba(245,158,11,0.4)', '0 0 8px rgba(245,158,11,0.12)', '14s')}
-    />
-    <div
-      className="orbit-ring ring-front"
-      style={ringStyle(540, 136, '1.5px solid rgba(245,158,11,0.2)', undefined, '22s')}
-    />
-  </div>
-);
+      {/* Building image — z-index 2 */}
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: `${buildingSize}px`,
+          height: `${buildingSize}px`,
+          transform: 'translate(-50%, -50%)',
+          objectFit: 'contain',
+          zIndex: 2,
+        }}
+        loading="eager"
+      />
+
+      {/* Front halves — z-index 3, in front of image */}
+      {rings.map((r, i) => (
+        <div
+          key={`front-${i}`}
+          className="orbit-ring ring-front"
+          style={ringStyle(r.w, r.h, r.border, r.shadow, r.dur)}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default SaturnStage;
