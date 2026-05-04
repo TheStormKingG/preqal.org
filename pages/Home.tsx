@@ -7,6 +7,7 @@ import CollapsibleSection from '../components/CollapsibleSection';
 import { GLOBAL_STANDARDS_DATA, type StandardChipIcon, type StandardChipItem } from '../data/globalStandards';
 import { motion } from 'framer-motion';
 import GlassCard from '../components/ui/GlassCard';
+import ScrollReveal from '../components/ui/ScrollReveal';
 import SaturnStage from '../components/ui/SaturnStage';
 
 const data = [
@@ -335,6 +336,33 @@ const Home: React.FC = () => {
             <div className="animate-pulse" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#f59e0b', opacity: 0.6 }} />
           </div>
           </div>{/* end desktop layout */}
+        </div>
+      </section>
+
+      {/* ── Stats bar ── */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-6 -mt-2">
+        <div className="max-w-7xl mx-auto">
+          <ScrollReveal yFrom={12}>
+            <GlassCard>
+              <div className="flex flex-col sm:flex-row items-center justify-around gap-4 py-2">
+                {[
+                  { value: '12+',  label: 'clients served'  },
+                  { value: '98%',  label: 'audit pass rate' },
+                  { value: '3',    label: 'industries'       },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex flex-col items-center text-center">
+                    <span
+                      className="font-bold text-amber-600"
+                      style={{ fontSize: '1.75rem', lineHeight: 1.1 }}
+                    >
+                      {stat.value}
+                    </span>
+                    <span className="text-slate-500 text-xs mt-0.5 font-medium">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          </ScrollReveal>
         </div>
       </section>
 

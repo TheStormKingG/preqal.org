@@ -44,7 +44,19 @@ const ServiceAccordionItem: React.FC<{
   }, [isOpen]);
 
   return (
-    <div className={`neu-card rounded-2xl transition-all duration-300 animate-fade-in-up ${isOpen ? 'neu-raised' : ''}`}>
+    <div
+      className="rounded-2xl transition-all duration-300 animate-fade-in-up"
+      style={isOpen ? {
+        background: 'rgba(224,229,236,0.82)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(255,255,255,0.55)',
+        boxShadow: '6px 6px 16px rgba(163,177,198,0.5), -4px -4px 12px rgba(255,255,255,0.88), inset 0 1px 0 rgba(255,255,255,0.7)',
+      } : {
+        background: '#e0e5ec',
+        boxShadow: '6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85)',
+      }}
+    >
       <button
         type="button"
         onClick={onToggle}
