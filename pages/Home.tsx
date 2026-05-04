@@ -143,11 +143,89 @@ const Home: React.FC = () => {
         <div
           className="relative max-w-7xl mx-auto rounded-[20px] overflow-hidden"
           style={{
-            height: '420px',
             background: '#e0e5ec',
             boxShadow: '10px 10px 28px rgba(163,177,198,0.65), -10px -10px 28px rgba(255,255,255,0.92)',
           }}
         >
+          {/* ── Mobile layout (< md) — side-by-side compact ── */}
+          <div
+            className="flex flex-row items-center gap-2 md:hidden"
+            style={{ minHeight: '260px', padding: '14px' }}
+          >
+            {/* Compact glass card */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <GlassCard>
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0 }}
+                >
+                  <span
+                    className="glow-tag"
+                    style={{ fontSize: '7px', letterSpacing: '1.5px' }}
+                  >
+                    Quality · Safety · Compliance
+                  </span>
+                </motion.div>
+                <motion.h1
+                  className="font-bold leading-[1.2] text-slate-900 mt-1.5 mb-1.5"
+                  style={{ fontSize: '0.78rem' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.07 }}
+                >
+                  Systems that<br />
+                  <span className="text-amber-600">actually work.</span>
+                </motion.h1>
+                <motion.p
+                  className="text-slate-500 leading-relaxed mb-3"
+                  style={{ fontSize: '0.55rem' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.14 }}
+                >
+                  Compliance frameworks that hold up in the real world.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.21 }}
+                >
+                  <Link
+                    to="/book"
+                    className="inline-block px-3 py-1.5 rounded-[8px] text-white font-semibold"
+                    style={{
+                      fontSize: '0.6rem',
+                      background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                      boxShadow: '3px 3px 8px rgba(217,119,6,0.3)',
+                    }}
+                  >
+                    Book a Scan
+                  </Link>
+                </motion.div>
+              </GlassCard>
+            </div>
+
+            {/* Compact Saturn */}
+            <motion.div
+              style={{ flexShrink: 0, width: '96px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.55, delay: 0.1 }}
+            >
+              <SaturnStage
+                imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
+                imageAlt="Stabroek Market Clock Tower"
+                size="sm"
+              />
+            </motion.div>
+          </div>
+
+          {/* ── Desktop layout (≥ md) ── */}
+          <div
+            className="hidden md:block relative"
+            style={{ minHeight: 'calc(100dvh - 80px)' }}
+          >
           {/* Ambient amber glows */}
           <div
             aria-hidden="true"
@@ -233,7 +311,7 @@ const Home: React.FC = () => {
 
           {/* Right: Saturn Stage */}
           <motion.div
-            style={{ position: 'absolute', right: '20px', top: '50%' }}
+            style={{ position: 'absolute', right: '56px', top: '50%' }}
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.12 }}
@@ -241,6 +319,7 @@ const Home: React.FC = () => {
             <SaturnStage
               imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
               imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
+              size="md"
             />
           </motion.div>
 
@@ -255,6 +334,7 @@ const Home: React.FC = () => {
             <div style={{ width: '1px', height: '22px', background: 'linear-gradient(to bottom, rgba(245,158,11,0.45), transparent)' }} />
             <div className="animate-pulse" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#f59e0b', opacity: 0.6 }} />
           </div>
+          </div>{/* end desktop layout */}
         </div>
       </section>
 
