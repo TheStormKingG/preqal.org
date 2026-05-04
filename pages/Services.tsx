@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AlertTriangle, Settings, FileText, Users, ShieldCheck, CheckSquare, ArrowRight, Award, Lightbulb, Code, ChevronDown } from 'lucide-react';
 import { ServiceItem } from '../types';
 import SEO from '../components/SEO';
+import ScrollReveal from '../components/ui/ScrollReveal';
 
 const services: (ServiceItem & { features: string[] })[] = [
   { id: 'risk-scan', title: 'Quality Risk Scan™', tagline: 'Find your top compliance risks in 7 days', description: 'You can\'t fix what you can\'t see. The Quality Risk Scan™ gives you a clear, honest picture of exactly where your business stands — measuring your systems against ISO, regulatory, and client requirements. Within seven days, you\'ll have a prioritised Red Flag Report and a practical roadmap in your hands, so you know precisely what to fix and exactly where to start.', icon: <AlertTriangle className="h-8 w-8 text-amber-600" />, features: ['Gap Analysis & Risk Identification', 'Prioritized Red Flag Report', 'Compliance Roadmap', '7-Day Rapid Assessment'] },
@@ -51,13 +52,18 @@ const ServiceAccordionItem: React.FC<{
         className="w-full p-8 flex flex-col md:flex-row gap-6 items-start md:items-center cursor-pointer text-left"
       >
         <div className="flex-shrink-0">
-          <div className="h-16 w-16 rounded-xl flex items-center justify-center neu-pressed">
+          <div className={`h-16 w-16 rounded-xl flex items-center justify-center neu-pressed ${isOpen ? 'icon-glow' : ''}`}>
             {service.icon}
           </div>
         </div>
         <div className="flex-grow min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <h2 className="text-2xl font-bold text-slate-900">{service.title}</h2>
+            <div>
+              {service.id === 'risk-scan' && (
+                <div className="flagship-badge">Flagship Service</div>
+              )}
+              <h2 className="text-2xl font-bold text-slate-900">{service.title}</h2>
+            </div>
             <span className="inline-block neu-pressed-sm text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">
               {service.tagline}
             </span>
@@ -77,7 +83,7 @@ const ServiceAccordionItem: React.FC<{
           <p className="text-slate-600 text-lg mb-8 leading-relaxed">{service.description}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
             {service.features.map((feature, idx) => (
-              <div key={idx} className="flex items-center space-x-3 text-sm text-slate-500 neu-pressed-sm px-3 py-2 rounded-lg">
+              <div key={idx} className={`flex items-center space-x-3 text-sm text-slate-500 px-3 py-2 rounded-lg ${isOpen ? 'glass-chip' : 'neu-pressed-sm'}`}>
                 <CheckSquare className="h-4 w-4 text-amber-600 flex-shrink-0" />
                 <span>{feature}</span>
               </div>
@@ -119,13 +125,14 @@ const Services: React.FC = () => {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          {services.map((service) => (
-            <ServiceAccordionItem
-              key={service.id}
-              service={service}
-              isOpen={openId === service.id}
-              onToggle={() => handleToggle(service.id)}
-            />
+          {services.map((service, index) => (
+            <ScrollReveal key={service.id} delay={index * 80} xFrom={-16} yFrom={0}>
+              <ServiceAccordionItem
+                service={service}
+                isOpen={openId === service.id}
+                onToggle={() => handleToggle(service.id)}
+              />
+            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -5,6 +5,9 @@ const MaturityChart = React.lazy(() => import('../components/MaturityChart').the
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 import { GLOBAL_STANDARDS_DATA, type StandardChipIcon, type StandardChipItem } from '../data/globalStandards';
+import { motion } from 'framer-motion';
+import GlassCard from '../components/ui/GlassCard';
+import SaturnStage from '../components/ui/SaturnStage';
 
 const data = [
   { name: 'Month 1', score: 45 },
@@ -135,43 +138,122 @@ const Home: React.FC = () => {
       <SEO pageKey="home" />
       <div className="w-full overflow-x-hidden">
 
-      {/* ── Hero ── */}
-      <section className="relative pt-7 pb-12 lg:pt-10 lg:pb-16 overflow-hidden">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center mb-6">
-                <span className="inline-flex items-center space-x-2 neu-pressed-sm px-4 py-1.5 rounded-full text-xs font-semibold text-amber-700">
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                  <span className="tracking-wide">ISO-Aligned & Risk-Based</span>
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 tracking-tight text-slate-900">
-                Preqal: Evidence-Driven Quality, Safety & ESG Systems <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Integrated.</span>
-              </h1>
-              <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl leading-relaxed">
-                <strong className="text-slate-800">You've already done the hard part.</strong><br /><br />
-                You started something. You built it, protected it, and kept it going — through every challenge, every setback, every uncertain day. That takes courage. And now you're here, looking for the next level. That's exactly the kind of leader who changes things. <Link to="/about" className="text-amber-600 hover:text-amber-500 font-semibold underline">Preqal</Link> exists for you — to give you the systems, the standards, and the expert support that turn everything you've worked for into something that lasts. Ready to take that next step?
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/book" className="inline-flex justify-center items-center px-8 py-4 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-all duration-300 neu-raised-sm">
-                  Get a Risk Scan <ArrowRight className="ml-2 h-5 w-5" />
+      {/* ── Hero v7 ── */}
+      <section className="relative px-4 sm:px-6 lg:px-8 pt-7 pb-12 lg:pt-10 lg:pb-16">
+        <div
+          className="relative max-w-7xl mx-auto rounded-[20px] overflow-hidden"
+          style={{
+            height: '420px',
+            background: '#e0e5ec',
+            boxShadow: '10px 10px 28px rgba(163,177,198,0.65), -10px -10px 28px rgba(255,255,255,0.92)',
+          }}
+        >
+          {/* Ambient amber glows */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', width: '380px', height: '380px',
+              right: 0, top: '50%', marginTop: '-190px',
+              borderRadius: '50%', pointerEvents: 'none',
+              background: 'radial-gradient(circle, rgba(245,158,11,0.13), transparent 68%)',
+            }}
+          />
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', width: '200px', height: '200px',
+              bottom: '-60px', left: '36%',
+              borderRadius: '50%', pointerEvents: 'none',
+              background: 'radial-gradient(circle, rgba(245,158,11,0.13), transparent 68%)',
+            }}
+          />
+
+          {/* Left: Glass content card */}
+          <div
+            style={{
+              position: 'absolute', left: '36px', top: 0, bottom: 0,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center',
+              maxWidth: '355px', zIndex: 4,
+            }}
+          >
+            <GlassCard>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0 }}
+              >
+                <span className="glow-tag">Quality · Safety · Compliance</span>
+              </motion.div>
+              <motion.h1
+                className="text-[1.6rem] font-bold leading-[1.22] text-slate-900 mt-2 mb-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.08 }}
+              >
+                Systems that<br />
+                <span className="text-amber-600">actually work.</span>
+              </motion.h1>
+              <motion.p
+                className="text-[0.82rem] text-slate-500 mb-5 leading-relaxed"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.16 }}
+              >
+                Preqal helps agri-food and eco-hospitality businesses build compliance frameworks that hold up in the real world.
+              </motion.p>
+              <motion.div
+                className="flex gap-2.5"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.24 }}
+              >
+                <Link
+                  to="/book"
+                  className="px-5 py-2.5 rounded-[10px] text-white text-[0.82rem] font-semibold"
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 6px rgba(255,200,80,0.15)',
+                  }}
+                >
+                  Book a Scan
                 </Link>
-                <Link to="/case-studies" className="inline-flex justify-center items-center px-8 py-4 text-slate-700 font-semibold rounded-xl transition-all duration-300 neu-card hover:neu-raised">
-                  View Case Studies
+                <Link
+                  to="/case-studies"
+                  className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-500 font-medium"
+                  style={{
+                    background: '#e0e5ec',
+                    boxShadow: '3px 3px 8px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.8)',
+                  }}
+                >
+                  See Case Studies
                 </Link>
-              </div>
-            </div>
-            <div className="relative hidden lg:block">
-              <div className="neu-raised-lg rounded-3xl overflow-hidden">
-                <picture>
-                  <source type="image/avif" srcSet={`${import.meta.env.BASE_URL}Image1-480.avif 480w, ${import.meta.env.BASE_URL}Image1-768.avif 768w, ${import.meta.env.BASE_URL}Image1-1024.avif 1024w, ${import.meta.env.BASE_URL}Image1-1280.avif 1280w`} sizes="(max-width: 1024px) 768px, 1200px" />
-                  <source type="image/webp" srcSet={`${import.meta.env.BASE_URL}Image1-480.webp 480w, ${import.meta.env.BASE_URL}Image1-768.webp 768w, ${import.meta.env.BASE_URL}Image1-1024.webp 1024w, ${import.meta.env.BASE_URL}Image1-1280.webp 1280w`} sizes="(max-width: 1024px) 768px, 1200px" />
-                  <img src={`${import.meta.env.BASE_URL}Image1-1280.webp`} alt="Stabroek Market Clock Tower in Georgetown, Guyana - representing Preqal's local presence and commitment to quality systems in the Caribbean" width="1200" height="800" className="w-full h-full object-contain" loading="eager" fetchpriority="high" decoding="async" />
-                </picture>
-              </div>
-            </div>
+              </motion.div>
+            </GlassCard>
+          </div>
+
+          {/* Right: Saturn Stage */}
+          <motion.div
+            style={{ position: 'absolute', right: '20px', top: '50%' }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.12 }}
+          >
+            <SaturnStage
+              imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
+              imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
+            />
+          </motion.div>
+
+          {/* Scroll hint */}
+          <div
+            style={{
+              position: 'absolute', bottom: '14px', left: '50%',
+              transform: 'translateX(-50%)', display: 'flex',
+              flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 4,
+            }}
+          >
+            <div style={{ width: '1px', height: '22px', background: 'linear-gradient(to bottom, rgba(245,158,11,0.45), transparent)' }} />
+            <div className="animate-pulse" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#f59e0b', opacity: 0.6 }} />
           </div>
         </div>
       </section>
