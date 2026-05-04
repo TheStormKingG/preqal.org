@@ -115,7 +115,7 @@ const CaseStudies: React.FC = () => {
               <h2 className="text-2xl font-bold text-slate-900 mb-2">Industries We Serve</h2>
               <p className="text-slate-500 text-sm">Deploying quality systems across diverse operational landscapes.</p>
             </div>
-            <div className="neu-raised rounded-2xl p-10">
+            <GlassCard>
               <div className="industries-scroll flex gap-8 items-center overflow-x-auto pb-2" style={{ scrollSnapType: 'x mandatory' }}>
                 {industries.map((ind, idx) => (
                   <div key={idx} className="flex flex-col items-center group cursor-default flex-shrink-0" style={{ scrollSnapAlign: 'start', minWidth: '140px' }}>
@@ -126,7 +126,7 @@ const CaseStudies: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
           </div>
         </div>
       </div>
