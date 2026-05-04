@@ -3,6 +3,9 @@ import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, CheckCircl
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
+import TiltCard from '../components/ui/TiltCard';
+import GlassCard from '../components/ui/GlassCard';
+import ScrollReveal from '../components/ui/ScrollReveal';
 
 const caseStudies = [
   { sector: "Poultry Hatchery", icon: <Feather className="h-6 w-6 text-amber-600" />, challenge: "Limited traceability and repeated audit observations affecting both product quality and animal welfare.", solution: "Implemented structured SOPs, IMS documentation, traceability system, and staff competency programs.", result: "Traceability improved across all production stages, compliance readiness noticeably elevated, and repeat audit findings significantly reduced." },
@@ -48,56 +51,62 @@ const CaseStudies: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-24">
             {caseStudies.map((study, index) => (
-              <div key={index} className="neu-card rounded-2xl p-8 flex flex-col h-full animate-fade-in-up hover:neu-raised transition-all duration-300">
-                <div className="flex items-center space-x-3 mb-6">
-                  {study.logo ? (
-                    <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="p-2 neu-pressed-sm rounded-lg">
-                      <picture>
-                        <source type="image/webp" srcSet={`${import.meta.env.BASE_URL}stashway-logo-200.webp 200w, ${import.meta.env.BASE_URL}stashway-logo-400.webp 400w`} sizes="24px" />
-                        <img src={`${import.meta.env.BASE_URL}stashway-logo-400.webp`} alt="Stashway Logo" className="h-6 w-6" width="24" height="24" loading="lazy" decoding="async" />
-                      </picture>
-                    </a>
-                  ) : (
-                    <div className="p-2 neu-pressed-sm rounded-lg">{study.icon}</div>
-                  )}
-                  {study.externalLink ? (
-                    <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 text-lg hover:text-amber-600 transition-colors">{study.sector}</a>
-                  ) : (
-                    <h2 className="font-bold text-slate-900 text-lg">{study.sector}</h2>
-                  )}
-                </div>
-
-                <CollapsibleSection title="Challenge & Solution" headingLevel="h3">
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">The Challenge</h4>
-                      <p className="text-slate-600 text-sm leading-relaxed">{study.challenge}</p>
+              <ScrollReveal key={index} delay={index * 80}>
+                <TiltCard mode="dynamic" perspective={600} className="h-full">
+                  <div className="neu-card rounded-2xl p-8 flex flex-col h-full hover:neu-raised transition-all duration-300">
+                    <div className="flex items-center space-x-3 mb-6">
+                      {study.logo ? (
+                        <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="p-2 neu-pressed-sm rounded-lg">
+                          <picture>
+                            <source type="image/webp" srcSet={`${import.meta.env.BASE_URL}stashway-logo-200.webp 200w, ${import.meta.env.BASE_URL}stashway-logo-400.webp 400w`} sizes="24px" />
+                            <img src={`${import.meta.env.BASE_URL}stashway-logo-400.webp`} alt="Stashway Logo" className="h-6 w-6" width="24" height="24" loading="lazy" decoding="async" />
+                          </picture>
+                        </a>
+                      ) : (
+                        <div className="p-2 neu-pressed-sm rounded-lg">{study.icon}</div>
+                      )}
+                      {study.externalLink ? (
+                        <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 text-lg hover:text-amber-600 transition-colors">{study.sector}</a>
+                      ) : (
+                        <h2 className="font-bold text-slate-900 text-lg">{study.sector}</h2>
+                      )}
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Our Solution</h4>
-                      <p className="text-slate-600 text-sm leading-relaxed">{study.solution}</p>
+
+                    <CollapsibleSection title="Challenge & Solution" headingLevel="h3">
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">The Challenge</h4>
+                          <p className="text-slate-600 text-sm leading-relaxed">{study.challenge}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Our Solution</h4>
+                          <p className="text-slate-600 text-sm leading-relaxed">{study.solution}</p>
+                        </div>
+                      </div>
+                    </CollapsibleSection>
+
+                    <div className="mt-auto pt-6">
+                      <h4 className="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2">The Result</h4>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
+                        <p className="text-slate-800 font-medium text-sm leading-relaxed">{study.result}</p>
+                      </div>
                     </div>
                   </div>
-                </CollapsibleSection>
-
-                <div className="mt-auto pt-6">
-                  <h4 className="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2">The Result</h4>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <p className="text-slate-800 font-medium text-sm leading-relaxed">{study.result}</p>
-                  </div>
-                </div>
-              </div>
+                </TiltCard>
+              </ScrollReveal>
             ))}
 
             {/* CTA Card */}
-            <div className="neu-raised-lg rounded-2xl p-8 flex flex-col justify-center items-center text-center h-full animate-fade-in-up">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Ready to be our next success story?</h2>
-              <p className="text-slate-500 mb-8">Let's audit your risks and build a roadmap to compliance.</p>
-              <Link to="/book" className="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-colors neu-raised-sm w-full sm:w-auto text-center">
-                Start Your Risk Scan
-              </Link>
-            </div>
+            <ScrollReveal delay={caseStudies.length * 80}>
+              <GlassCard className="flex flex-col justify-center items-center text-center h-full">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">Ready to be our next success story?</h2>
+                <p className="text-slate-500 mb-8">Let's audit your risks and build a roadmap to compliance.</p>
+                <Link to="/book" className="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-colors neu-raised-sm w-full sm:w-auto text-center">
+                  Start Your Risk Scan
+                </Link>
+              </GlassCard>
+            </ScrollReveal>
           </div>
 
           {/* Industries */}
@@ -107,9 +116,9 @@ const CaseStudies: React.FC = () => {
               <p className="text-slate-500 text-sm">Deploying quality systems across diverse operational landscapes.</p>
             </div>
             <div className="neu-raised rounded-2xl p-10">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 justify-items-center items-center">
+              <div className="industries-scroll flex gap-8 items-center overflow-x-auto pb-2" style={{ scrollSnapType: 'x mandatory' }}>
                 {industries.map((ind, idx) => (
-                  <div key={idx} className="flex flex-col items-center group cursor-default">
+                  <div key={idx} className="flex flex-col items-center group cursor-default flex-shrink-0" style={{ scrollSnapAlign: 'start', minWidth: '140px' }}>
                     <div className="w-16 h-16 rounded-full flex items-center justify-center mb-3 neu-pressed group-hover:neu-raised-sm transition-all duration-300">
                       {ind.icon}
                     </div>
