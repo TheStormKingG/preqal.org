@@ -63,7 +63,7 @@ const CaseStudies: React.FC = () => {
                   {study.externalLink ? (
                     <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 text-lg hover:text-amber-600 transition-colors">{study.sector}</a>
                   ) : (
-                    <h3 className="font-bold text-slate-900 text-lg">{study.sector}</h3>
+                    <h2 className="font-bold text-slate-900 text-lg">{study.sector}</h2>
                   )}
                 </div>
 
@@ -92,7 +92,7 @@ const CaseStudies: React.FC = () => {
 
             {/* CTA Card */}
             <div className="neu-raised-lg rounded-2xl p-8 flex flex-col justify-center items-center text-center h-full animate-fade-in-up">
-              <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to be our next success story?</h3>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">Ready to be our next success story?</h2>
               <p className="text-slate-500 mb-8">Let's audit your risks and build a roadmap to compliance.</p>
               <Link to="/book" className="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-colors neu-raised-sm w-full sm:w-auto text-center">
                 Start Your Risk Scan
