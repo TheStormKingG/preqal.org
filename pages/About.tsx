@@ -6,6 +6,7 @@ import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import TiltCard from '../components/ui/TiltCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import ParallaxGlow from '../components/ui/ParallaxGlow';
+import GlassCard from '../components/ui/GlassCard';
 
 const SPACE_Y_12 = 48; // 3rem gap between Philosophy and Clinic sections
 
@@ -105,7 +106,22 @@ const About: React.FC = () => {
             {/* Philosophy + Clinic Content */}
             <div className="md:col-span-8 space-y-12 animate-fade-in-up delay-200">
               <div ref={philosophyRef}>
-                <h2 className="text-3xl font-bold text-slate-900 mb-8 border-l-4 border-amber-500 pl-4">Our Philosophy</h2>
+                <GlassCard className="mb-8">
+                  <div className="flex items-center gap-3">
+                    <div
+                      style={{ width: '4px', alignSelf: 'stretch', background: 'linear-gradient(to bottom, #f59e0b, #d97706)', borderRadius: '2px', flexShrink: 0 }}
+                    />
+                    <div>
+                      <span
+                        className="block font-bold text-amber-600 mb-0.5"
+                        style={{ fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase' }}
+                      >
+                        Our approach
+                      </span>
+                      <h2 className="text-2xl font-bold text-slate-900 leading-tight">Our Philosophy</h2>
+                    </div>
+                  </div>
+                </GlassCard>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { icon: <Microscope className="text-amber-600 h-6 w-6" />, title: "Evidence-Driven", desc: "You'll never be asked to act on guesswork. Every recommendation Preqal makes is grounded in data, risk assessments, and verifiable facts — so every decision you make is one you can stand behind with confidence." },
