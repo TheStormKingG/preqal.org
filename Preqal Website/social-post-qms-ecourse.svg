@@ -1,0 +1,68 @@
+<svg width="1080" height="1080" viewBox="0 0 680 680" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Preqal QMS eCourse – Social Media Post</title>
+<desc>1:1 promotional post for the Preqal Quality Management Systems Foundations eCourse, 9 modules, ISO 9001 aligned, for Guyana and the Caribbean</desc>
+<style>
+  text { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+</style>
+
+<!-- Background -->
+<rect width="680" height="680" fill="#1B3A6B"/>
+
+<!-- Geometric depth layers -->
+<polygon points="370,0 680,0 680,310" fill="#2455A4" opacity="0.55"/>
+<polygon points="680,420 680,680 420,680" fill="#0D2347" opacity="0.7"/>
+
+<!-- Top + Bottom gold bars -->
+<rect x="0" y="0" width="680" height="3" fill="#C9972A"/>
+<rect x="0" y="677" width="680" height="3" fill="#C9972A"/>
+
+<!-- PREQAL wordmark -->
+<text x="48" y="58" font-size="30" font-weight="800" fill="#FFFFFF" letter-spacing="5">PREQAL</text>
+
+<!-- eCourse badge -->
+<rect x="548" y="30" width="92" height="30" rx="15" fill="#C9972A"/>
+<text x="594" y="50" font-size="12" font-weight="700" fill="#1B3A6B" text-anchor="middle" letter-spacing="2">eCOURSE</text>
+
+<!-- Gold underline beneath wordmark -->
+<rect x="48" y="78" width="56" height="2" fill="#C9972A"/>
+
+<!-- Main heading -->
+<text x="48" y="192" font-size="68" font-weight="800" fill="#FFFFFF">Quality</text>
+<text x="48" y="272" font-size="68" font-weight="800" fill="#FFFFFF">Management</text>
+<text x="48" y="352" font-size="68" font-weight="800" fill="#C9972A">Systems</text>
+
+<!-- Subheading -->
+<text x="50" y="392" font-size="17" font-weight="400" fill="#8AABDA" letter-spacing="5">FOUNDATIONS</text>
+
+<!-- Decorative rule -->
+<rect x="48" y="415" width="72" height="2.5" fill="#C9972A"/>
+<rect x="128" y="415" width="24" height="2.5" fill="#2D6EF5" opacity="0.7"/>
+
+<!-- 9 Modules badge -->
+<rect x="48" y="434" width="152" height="44" rx="6" fill="#2D6EF5"/>
+<text x="124" y="461" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">9 MODULES</text>
+
+<!-- ISO 9001 badge -->
+<rect x="212" y="434" width="188" height="44" rx="6" fill="none" stroke="#C9972A" stroke-width="1.5"/>
+<text x="306" y="461" font-size="14" font-weight="600" fill="#C9972A" text-anchor="middle" letter-spacing="1">ISO 9001 ALIGNED</text>
+
+<!-- Feature bullets -->
+<rect x="48" y="506" width="6" height="6" rx="3" fill="#C9972A"/>
+<text x="66" y="514" font-size="15" font-weight="400" fill="#E2EAF6">Evidence-based systems &amp; documentation</text>
+
+<rect x="48" y="534" width="6" height="6" rx="3" fill="#C9972A"/>
+<text x="66" y="542" font-size="15" font-weight="400" fill="#E2EAF6">Built for Guyana &amp; the Caribbean</text>
+
+<rect x="48" y="562" width="6" height="6" rx="3" fill="#C9972A"/>
+<text x="66" y="570" font-size="15" font-weight="400" fill="#E2EAF6">From compliance gaps to audit-ready</text>
+
+<!-- Bottom CTA strip -->
+<rect x="0" y="608" width="680" height="69" fill="#0A1E3C"/>
+
+<text x="48" y="648" font-size="13" font-weight="400" fill="#8AABDA">Enroll now at</text>
+<text x="150" y="648" font-size="14" font-weight="700" fill="#C9972A">preqal.org</text>
+<rect x="48" y="655" width="180" height="1" fill="#2455A4" opacity="0.6"/>
+
+<text x="632" y="640" font-size="12" font-weight="400" fill="#6B8AB8" text-anchor="end">Dr. Stefan Gravesande</text>
+<text x="632" y="657" font-size="11" font-weight="400" fill="#4A6A98" text-anchor="end">Founder &amp; CEO, Preqal</text>
+</svg>

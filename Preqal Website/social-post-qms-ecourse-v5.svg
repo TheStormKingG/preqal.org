@@ -1,0 +1,82 @@
+<svg width="1080" height="1080" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg">
+<title>Preqal QMS Foundations eCourse</title>
+<style>text { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }</style>
+
+<!-- Page background -->
+<rect width="680" height="680" fill="#F2F4F8"/>
+
+<!-- Card shadow -->
+<rect x="35" y="37" width="616" height="616" rx="20" fill="#DDE1EB" opacity="0.6"/>
+
+<!-- White card -->
+<rect x="32" y="32" width="616" height="616" rx="20" fill="#FFFFFF"/>
+
+<!-- Gold top accent bar -->
+<rect x="32" y="32" width="616" height="3" fill="#C9972A"/>
+
+<!-- Star mark — from site codebase -->
+<g transform="translate(68,48) scale(1.58) translate(-12,-12)">
+  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#C9972A"/>
+</g>
+
+<!-- PREQAL wordmark -->
+<text x="116" y="78" font-size="20" font-weight="800" fill="#1B3A6B" letter-spacing="3">PREQAL</text>
+
+<!-- eCourse badge -->
+<rect x="536" y="55" width="76" height="24" rx="12" fill="rgba(201,151,42,0.10)"/>
+<text x="574" y="71" font-size="10" font-weight="700" fill="#C9972A" text-anchor="middle" letter-spacing="2">eCOURSE</text>
+
+<!-- Nav separator -->
+<rect x="68" y="106" width="544" height="0.5" fill="#DDE1EB"/>
+
+<!-- Headlines -->
+<text x="68" y="210" font-size="64" font-weight="800" fill="#0F2547" letter-spacing="-2.5">Quality</text>
+<text x="68" y="288" font-size="64" font-weight="800" fill="#0F2547" letter-spacing="-2.5">Management</text>
+<text x="68" y="366" font-size="64" font-weight="800" fill="#C9972A" letter-spacing="-2.5">Systems</text>
+
+<!-- Eyebrow -->
+<text x="70" y="402" font-size="11" font-weight="500" fill="#6B7280" letter-spacing="7">FOUNDATIONS</text>
+
+<!-- Separator -->
+<rect x="68" y="422" width="544" height="0.5" fill="#DDE1EB"/>
+
+<!-- Card 1: Assess -->
+<rect x="68" y="436" width="166" height="86" rx="12" fill="#F8F9FC" stroke="#EAEEF6" stroke-width="0.75"/>
+<circle cx="108" cy="479" r="20" fill="#EAF2FF"/>
+<g transform="translate(108,479) scale(0.58) translate(-12,-12)">
+  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="#C9972A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="140" y="471" font-size="13" font-weight="700" fill="#1B3A6B">Assess</text>
+<text x="140" y="487" font-size="11" font-weight="400" fill="#6B7280">Risk Scan</text>
+<text x="140" y="501" font-size="10" font-weight="400" fill="#9CA3AF">ISO 9001</text>
+
+<!-- Card 2: Train -->
+<rect x="250" y="436" width="166" height="86" rx="12" fill="#F8F9FC" stroke="#EAEEF6" stroke-width="0.75"/>
+<circle cx="290" cy="479" r="20" fill="#EAF2FF"/>
+<g transform="translate(290,479) scale(0.58) translate(-12,-12)">
+  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" fill="none" stroke="#C9972A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="9" cy="7" r="4" fill="none" stroke="#C9972A" stroke-width="2"/>
+  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke="#C9972A" stroke-width="2" stroke-linecap="round"/>
+</g>
+<text x="322" y="471" font-size="13" font-weight="700" fill="#1B3A6B">Train</text>
+<text x="322" y="487" font-size="11" font-weight="400" fill="#6B7280">Competency</text>
+<text x="322" y="501" font-size="10" font-weight="400" fill="#9CA3AF">9 Modules</text>
+
+<!-- Card 3: Improve -->
+<rect x="432" y="436" width="166" height="86" rx="12" fill="#F8F9FC" stroke="#EAEEF6" stroke-width="0.75"/>
+<circle cx="472" cy="479" r="20" fill="#EAF2FF"/>
+<g transform="translate(472,479) scale(0.58) translate(-12,-12)">
+  <path d="M18 20V10M12 20V4M6 20v-6" fill="none" stroke="#C9972A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="504" y="471" font-size="13" font-weight="700" fill="#1B3A6B">Improve</text>
+<text x="504" y="487" font-size="11" font-weight="400" fill="#6B7280">Optimization</text>
+<text x="504" y="501" font-size="10" font-weight="400" fill="#9CA3AF">Audit Ready</text>
+
+<!-- CTA Button — "Free 1hr Consult" pill style -->
+<rect x="220" y="549" width="240" height="50" rx="25" fill="#C9972A"/>
+<text x="340" y="579" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.2">Enroll Now · preqal.org</text>
+
+<!-- Footer -->
+<rect x="68" y="618" width="544" height="0.5" fill="#DDE1EB"/>
+<text x="340" y="638" font-size="11" font-weight="400" fill="#9CA3AF" text-anchor="middle">Dr. Stefan Gravesande · Founder &amp; CEO, Preqal</text>
+</svg>
