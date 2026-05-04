@@ -32,13 +32,13 @@ const SM_RINGS = [
   { w: 98,  h: 25, border: '1px solid rgba(245,158,11,0.35)',  shadow: undefined,                              dur: '14s' },
 ] as const;
 
-// md: 320px container, 104px building, 3 rings (+30% vs original)
-const MD_CONTAINER = 320;
-const MD_BUILDING = 104;
+// md: 360px container, 280px building, rings orbit beyond container (clipped by hero overflow-hidden)
+const MD_CONTAINER = 360;
+const MD_BUILDING = 280;
 const MD_RINGS = [
-  { w: 170, h: 43, border: '3.5px solid rgba(245,158,11,0.7)', shadow: '0 0 12px rgba(245,158,11,0.3)',        dur: '8s'  },
-  { w: 234, h: 59, border: '2px solid rgba(245,158,11,0.4)',   shadow: '0 0 8px rgba(245,158,11,0.12)',        dur: '14s' },
-  { w: 294, h: 74, border: '1.5px solid rgba(245,158,11,0.2)', shadow: undefined,                             dur: '22s' },
+  { w: 342, h: 86,  border: '3.5px solid rgba(245,158,11,0.7)', shadow: '0 0 14px rgba(245,158,11,0.35)', dur: '8s'  },
+  { w: 474, h: 120, border: '2px solid rgba(245,158,11,0.4)',   shadow: '0 0 8px rgba(245,158,11,0.12)',  dur: '14s' },
+  { w: 596, h: 151, border: '1.5px solid rgba(245,158,11,0.2)', shadow: undefined,                        dur: '22s' },
 ] as const;
 
 const SaturnStage: React.FC<SaturnStageProps> = ({
