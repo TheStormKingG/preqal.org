@@ -4,10 +4,22 @@ import { test, expect } from '@playwright/test';
 // Helpers
 // ─────────────────────────────────────────────
 
+// Third-party scripts that fail to load in CI are not app bugs — filter them out.
+const EXPECTED_EXTERNAL_ERRORS = [
+  // react-google-recaptcha / react-async-script: fires when Google's CDN script
+  // can't load in a sandboxed CI environment. The app gracefully guards renders
+  // with `{RECAPTCHA_SITE_KEY && ...}` — this is not a functional regression.
+  'Script is not loaded.',
+];
+
 /** Fail fast if any uncaught JS error fires on the page */
 function watchForErrors(page: import('@playwright/test').Page) {
   const errors: string[] = [];
-  page.on('pageerror', (err) => errors.push(err.message));
+  page.on('pageerror', (err) => {
+    if (!EXPECTED_EXTERNAL_ERRORS.some((msg) => err.message.includes(msg))) {
+      errors.push(err.message);
+    }
+  });
   return () => {
     if (errors.length > 0) {
       throw new Error(`Uncaught JS error(s) on page:\n${errors.join('\n')}`);

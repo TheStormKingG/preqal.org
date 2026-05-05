@@ -315,12 +315,13 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right 50%: Saturn Stage — flex item, centred by parent + inner justify */}
+          {/* Right 50%: Saturn Stage — flex item, centred by parent + inner flex */}
           <div
             style={{
               flex: '0 0 50%',
               display: 'flex',
               justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <motion.div
