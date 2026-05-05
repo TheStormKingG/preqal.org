@@ -222,12 +222,15 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* ── Desktop layout (≥ md) ── */}
+          {/* ── Desktop layout (≥ md) — flex row, items centred on cross-axis ── */}
+          {/* Flex row with items-center guarantees vertical centring without any
+              percentage-height or bottom:0 tricks that depend on the containing
+              block's height being explicitly resolvable. */}
           <div
-            className="hidden md:block relative"
-            style={{ height: 'calc(100dvh - 200px)' }}
+            className="hidden md:flex md:flex-row md:items-center"
+            style={{ height: 'calc(100dvh - 200px)', position: 'relative' }}
           >
-          {/* Ambient amber glows */}
+          {/* Ambient amber glows — absolutely positioned decorative layers */}
           <div
             aria-hidden="true"
             style={{
@@ -247,14 +250,14 @@ const Home: React.FC = () => {
             }}
           />
 
-          {/* Left 50%: Glass content card */}
+          {/* Left 50%: Glass content card — flex item, naturally centred by parent */}
           <div
             style={{
-              position: 'absolute', left: 0, top: 0, bottom: 0,
-              width: '50%',
-              display: 'flex', alignItems: 'center',
+              flex: '0 0 50%',
+              minWidth: 0,
               padding: '32px 40px 32px 36px',
               zIndex: 4,
+              position: 'relative',
             }}
           >
             <GlassCard>
@@ -312,13 +315,12 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right 50%: Saturn Stage — top:50% + translateY(-50%) centres regardless of parent height definition */}
+          {/* Right 50%: Saturn Stage — flex item, centred by parent + inner justify */}
           <div
             style={{
-              position: 'absolute', right: 0, top: '50%',
-              width: '50%',
-              transform: 'translateY(-50%)',
-              display: 'flex', justifyContent: 'center',
+              flex: '0 0 50%',
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <motion.div
