@@ -226,8 +226,11 @@ const Home: React.FC = () => {
           {/* Flex row with items-center guarantees vertical centring without any
               percentage-height or bottom:0 tricks that depend on the containing
               block's height being explicitly resolvable. */}
+          {/* No items-center on parent — flex default is stretch, so both panels
+              automatically fill the full height. Each panel then independently
+              centres its content with its own display:flex + alignItems:center. */}
           <div
-            className="hidden md:flex md:flex-row md:items-center"
+            className="hidden md:flex md:flex-row"
             style={{ height: 'calc(100dvh - 200px)', position: 'relative' }}
           >
           {/* Ambient amber glows — absolutely positioned decorative layers */}
@@ -250,11 +253,13 @@ const Home: React.FC = () => {
             }}
           />
 
-          {/* Left 50%: Glass content card — flex item, naturally centred by parent */}
+          {/* Left 50%: stretches to full parent height, centres glass card vertically */}
           <div
             style={{
               flex: '0 0 50%',
               minWidth: 0,
+              display: 'flex',
+              alignItems: 'center',
               padding: '32px 40px 32px 36px',
               zIndex: 4,
               position: 'relative',
