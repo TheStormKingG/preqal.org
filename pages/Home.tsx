@@ -320,31 +320,33 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right 50%: Saturn Stage — stretch to full parent height, then centre Saturn inside */}
-          {/* alignSelf:stretch overrides parent's items-center for this panel only,
-              giving it a definite height. display:flex + alignItems:center then truly
-              centres the 480px SaturnStage within that full-height column. */}
-          <div
+          {/* Saturn — absolutely positioned in the right half of the layout div.
+              top:0 + bottom:0 gives a definite height (= layout div height).
+              display:flex + alignItems:center + justifyContent:center then
+              truly centres the 480px SaturnStage with no flex-item height tricks. */}
+          <motion.div
             style={{
-              flex: '0 0 50%',
-              alignSelf: 'stretch',
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: '50%',
               display: 'flex',
-              justifyContent: 'center',
               alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 3,
+              pointerEvents: 'none',
             }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.12 }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.12 }}
-            >
-              <SaturnStage
-                imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
-                imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
-                size="md"
-              />
-            </motion.div>
-          </div>
+            <SaturnStage
+              imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
+              imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
+              size="md"
+            />
+          </motion.div>
 
           {/* Scroll hint */}
           <div
