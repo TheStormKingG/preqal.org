@@ -315,10 +315,14 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right 50%: Saturn Stage — flex item, centred by parent + inner flex */}
+          {/* Right 50%: Saturn Stage — stretch to full parent height, then centre Saturn inside */}
+          {/* alignSelf:stretch overrides parent's items-center for this panel only,
+              giving it a definite height. display:flex + alignItems:center then truly
+              centres the 480px SaturnStage within that full-height column. */}
           <div
             style={{
               flex: '0 0 50%',
+              alignSelf: 'stretch',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
