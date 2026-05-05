@@ -225,7 +225,7 @@ const Home: React.FC = () => {
           {/* ── Desktop layout (≥ md) ── */}
           <div
             className="hidden md:block relative"
-            style={{ minHeight: 'calc(100dvh - 80px)' }}
+            style={{ minHeight: 'calc(100dvh - 200px)' }}
           >
           {/* Ambient amber glows */}
           <div
@@ -247,12 +247,14 @@ const Home: React.FC = () => {
             }}
           />
 
-          {/* Left: Glass content card */}
+          {/* Left 50%: Glass content card */}
           <div
             style={{
-              position: 'absolute', left: '36px', top: 0, bottom: 0,
-              display: 'flex', flexDirection: 'column', justifyContent: 'center',
-              maxWidth: '355px', zIndex: 4,
+              position: 'absolute', left: 0, top: 0, bottom: 0,
+              width: '50%',
+              display: 'flex', alignItems: 'center',
+              padding: '32px 40px 32px 36px',
+              zIndex: 4,
             }}
           >
             <GlassCard>
@@ -310,19 +312,26 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right: Saturn Stage */}
-          <motion.div
-            style={{ position: 'absolute', right: '56px', top: '50%', y: '-50%' }}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.12 }}
+          {/* Right 50%: Saturn Stage — flex-centred in right half */}
+          <div
+            style={{
+              position: 'absolute', right: 0, top: 0, bottom: 0,
+              width: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
           >
-            <SaturnStage
-              imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
-              imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
-              size="md"
-            />
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.12 }}
+            >
+              <SaturnStage
+                imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`}
+                imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world"
+                size="md"
+              />
+            </motion.div>
+          </div>
 
           {/* Scroll hint */}
           <div
