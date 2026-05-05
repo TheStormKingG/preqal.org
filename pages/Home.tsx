@@ -225,7 +225,7 @@ const Home: React.FC = () => {
           {/* ── Desktop layout (≥ md) ── */}
           <div
             className="hidden md:block relative"
-            style={{ minHeight: 'calc(100dvh - 200px)' }}
+            style={{ height: 'calc(100dvh - 200px)' }}
           >
           {/* Ambient amber glows */}
           <div
@@ -312,12 +312,13 @@ const Home: React.FC = () => {
             </GlassCard>
           </div>
 
-          {/* Right 50%: Saturn Stage — flex-centred in right half */}
+          {/* Right 50%: Saturn Stage — top:50% + translateY(-50%) centres regardless of parent height definition */}
           <div
             style={{
-              position: 'absolute', right: 0, top: 0, bottom: 0,
+              position: 'absolute', right: 0, top: '50%',
               width: '50%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transform: 'translateY(-50%)',
+              display: 'flex', justifyContent: 'center',
             }}
           >
             <motion.div
