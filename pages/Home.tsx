@@ -15,18 +15,21 @@ const PAIN_POINTS = [
 
 const QUALITY_CARDS = [
   {
+    img: 'testimonial-dionne.jpg',
     icon: <Shield className="h-7 w-7" />,
     title: 'Lead with complete confidence',
     before: 'Right now: bracing for the next audit, inspection, or client demand.',
     after: 'With Preqal: you walk in ready — every time, for anything.',
   },
   {
+    img: 'business-team.jpg',
     icon: <Heart className="h-7 w-7" />,
     title: 'Your staff will love coming to work',
     before: 'Right now: your team improvises because the system isn\'t clear.',
     after: 'With Preqal: every person knows their role, feels valued, and takes pride in it.',
   },
   {
+    img: 'testimonial-priya.jpg',
     icon: <TrendingUp className="h-7 w-7" />,
     title: 'Your business keeps getting better',
     before: 'Right now: the same problems resurface, year after year.',
@@ -54,26 +57,6 @@ const STEPS = [
 
 const STANDARDS = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'FSSC 22000', 'GMP+', 'HACCP'];
 
-const TESTIMONIALS = [
-  {
-    img: 'testimonial-rajesh.jpg',
-    name: 'Rajesh Persaud',
-    business: 'Street Food & Catering · Georgetown',
-    quote: 'For the first time, my team follows the same process every single day. My customers notice the difference.',
-  },
-  {
-    img: 'testimonial-dionne.jpg',
-    name: 'Dionne Wishart',
-    business: 'Eco-Tourism & Hospitality · Essequibo',
-    quote: 'We passed our first international quality audit on the very first attempt. Preqal made it inevitable.',
-  },
-  {
-    img: 'testimonial-priya.jpg',
-    name: 'Priya Ramsingh',
-    business: 'Food Manufacturing · New Amsterdam',
-    quote: 'I used to dread compliance reviews. Now I schedule them — because I know we are always ready.',
-  },
-];
 
 const Home: React.FC = () => {
   return (
@@ -199,46 +182,68 @@ const Home: React.FC = () => {
 
         {/* ── Section 2: The Problem ── */}
         <section className="px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <ScrollReveal yFrom={16}>
               <div
-                className="rounded-3xl p-8 md:p-12"
+                className="rounded-3xl overflow-hidden"
                 style={{
                   background: '#d8dde6',
                   boxShadow: '8px 8px 22px rgba(150,165,190,0.6), -6px -6px 18px rgba(255,255,255,0.7)',
                 }}
               >
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">The honest picture</p>
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
-                  Most businesses are running on<br className="hidden md:block" />
-                  <span className="text-slate-500"> invisible risk right now.</span>
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8 items-stretch">
-                  {PAIN_POINTS.map((point, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{
-                        y: -4,
-                        boxShadow: '4px 4px 12px rgba(150,165,190,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
-                        background: '#e8ecf2',
+                <div className="flex flex-col md:flex-row">
+                  {/* Left: text content */}
+                  <div className="flex-1 p-8 md:p-12">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">The honest picture</p>
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
+                      Most businesses are running on<br className="hidden md:block" />
+                      <span className="text-slate-500"> invisible risk right now.</span>
+                    </h2>
+                    <div className="grid grid-cols-1 gap-3 mb-8">
+                      {PAIN_POINTS.map((point, i) => (
+                        <motion.div
+                          key={i}
+                          whileHover={{
+                            y: -3,
+                            boxShadow: '4px 4px 12px rgba(150,165,190,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                            background: '#e8ecf2',
+                          }}
+                          transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+                          className="flex items-start gap-3 px-4 py-4 rounded-xl text-sm text-slate-600 leading-relaxed cursor-default"
+                          style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(150,165,190,0.5), inset -2px -2px 6px rgba(255,255,255,0.8)' }}
+                        >
+                          <span className="text-amber-500 font-bold text-base mt-0.5 flex-shrink-0">{i + 1}.</span>
+                          <span>{point}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                      <p className="text-xl font-semibold text-slate-800 leading-relaxed">
+                        You've built something real —<br />
+                        <span className="text-amber-600">you deserve to know it's protected.</span>
+                      </p>
+                      <div className="flex-shrink-0 text-center">
+                        <div className="text-5xl font-bold text-amber-600">98%</div>
+                        <div className="text-xs text-slate-500 font-medium mt-1">audit pass rate<br />across Preqal clients</div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Right: contextual image — real business, real stakes */}
+                  <div className="hidden md:block md:w-64 lg:w-80 flex-shrink-0 relative overflow-hidden">
+                    <img
+                      src={`${import.meta.env.BASE_URL}images/testimonial-rajesh.jpg`}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    {/* fade into the dark background on the left edge */}
+                    <div
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute', inset: 0, left: 0,
+                        background: 'linear-gradient(to right, #d8dde6 0%, rgba(216,221,230,0.6) 35%, transparent 70%)',
                       }}
-                      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-                      className="flex items-start gap-3 px-4 py-4 rounded-xl text-sm text-slate-600 leading-relaxed cursor-default"
-                      style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(150,165,190,0.5), inset -2px -2px 6px rgba(255,255,255,0.8)' }}
-                    >
-                      <span className="text-amber-500 font-bold text-base mt-0.5 flex-shrink-0">{i + 1}.</span>
-                      <span>{point}</span>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <p className="text-xl font-semibold text-slate-800 leading-relaxed max-w-xl">
-                    You've built something real —<br className="hidden md:block" />
-                    <span className="text-amber-600"> you deserve to know it's protected.</span>
-                  </p>
-                  <div className="flex-shrink-0 text-center">
-                    <div className="text-5xl font-bold text-amber-600">98%</div>
-                    <div className="text-xs text-slate-500 font-medium mt-1">audit pass rate<br />across Preqal clients</div>
+                    />
                   </div>
                 </div>
               </div>
@@ -270,7 +275,7 @@ const Home: React.FC = () => {
                         boxShadow: '14px 16px 32px rgba(163,177,198,0.52), -6px -6px 20px rgba(255,255,255,0.98), inset 0 1px 0 rgba(255,255,255,0.95)',
                       }}
                       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-                      className="h-full flex flex-col p-7 cursor-default"
+                      className="h-full flex flex-col overflow-hidden cursor-default"
                       style={{
                         background: 'rgba(255,255,255,0.68)',
                         backdropFilter: 'blur(18px)',
@@ -281,82 +286,39 @@ const Home: React.FC = () => {
                         transformStyle: 'preserve-3d',
                       }}
                     >
-                      <div
-                        className="h-14 w-14 rounded-xl flex items-center justify-center mb-5 text-amber-600 flex-shrink-0"
-                        style={{
-                          background: '#e0e5ec',
-                          boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
-                        }}
-                      >
-                        {card.icon}
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900 mb-5 leading-snug">{card.title}</h3>
-                      <div className="flex-1 flex flex-col gap-4">
-                        <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
-                        <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
-                      </div>
-                    </motion.div>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Section 3.5: Testimonials ── */}
-        <section className="px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="max-w-5xl mx-auto">
-            <ScrollReveal yFrom={12}>
-              <div className="text-center mb-12">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Real businesses. Real results.</p>
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
-                  Leaders across Guyana<br />
-                  <span className="text-amber-600">already sleeping soundly.</span>
-                </h2>
-              </div>
-            </ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-              {TESTIMONIALS.map((t, i) => (
-                <ScrollReveal key={i} delay={i * 100} yFrom={16}>
-                  <div style={{ perspective: '900px', height: '100%' }}>
-                    <motion.div
-                      whileHover={{
-                        rotateX: -3,
-                        rotateY: i === 0 ? 4 : i === 2 ? -4 : 0,
-                        scale: 1.02,
-                        boxShadow: '12px 14px 28px rgba(163,177,198,0.52), -6px -6px 18px rgba(255,255,255,0.98)',
-                      }}
-                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-                      className="h-full flex flex-col items-center text-center p-7 cursor-default"
-                      style={{
-                        background: 'rgba(255,255,255,0.62)',
-                        backdropFilter: 'blur(18px)',
-                        WebkitBackdropFilter: 'blur(18px)',
-                        borderRadius: '18px',
-                        boxShadow: '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
-                        border: '1px solid rgba(255,255,255,0.82)',
-                        transformStyle: 'preserve-3d',
-                      }}
-                    >
-                      <div
-                        className="h-20 w-20 rounded-full overflow-hidden mb-5 flex-shrink-0"
-                        style={{
-                          boxShadow: '4px 4px 10px rgba(163,177,198,0.5), -3px -3px 8px rgba(255,255,255,0.85), 0 0 0 3px rgba(245,158,11,0.28)',
-                        }}
-                      >
+                      {/* Card header image */}
+                      <div className="h-44 flex-shrink-0 overflow-hidden relative">
                         <img
-                          src={`${import.meta.env.BASE_URL}images/${t.img}`}
-                          alt={t.name}
+                          src={`${import.meta.env.BASE_URL}images/${card.img}`}
+                          alt=""
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
+                        {/* fade into card background at bottom */}
+                        <div
+                          aria-hidden="true"
+                          style={{
+                            position: 'absolute', bottom: 0, left: 0, right: 0, height: '64px',
+                            background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.85))',
+                          }}
+                        />
                       </div>
-                      <p className="text-sm text-slate-600 leading-relaxed italic mb-5 flex-1">
-                        "{t.quote}"
-                      </p>
-                      <div>
-                        <p className="text-sm font-bold text-slate-800">{t.name}</p>
-                        <p className="text-xs text-amber-600 font-medium mt-1">{t.business}</p>
+                      {/* Card body */}
+                      <div className="flex flex-col flex-1 p-6">
+                        <div
+                          className="h-12 w-12 rounded-xl flex items-center justify-center mb-4 text-amber-600 flex-shrink-0"
+                          style={{
+                            background: '#e0e5ec',
+                            boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
+                          }}
+                        >
+                          {card.icon}
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 leading-snug">{card.title}</h3>
+                        <div className="flex-1 flex flex-col gap-4">
+                          <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
+                          <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
+                        </div>
                       </div>
                     </motion.div>
                   </div>
