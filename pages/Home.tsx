@@ -54,6 +54,27 @@ const STEPS = [
 
 const STANDARDS = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'FSSC 22000', 'GMP+', 'HACCP'];
 
+const TESTIMONIALS = [
+  {
+    img: 'testimonial-rajesh.jpg',
+    name: 'Rajesh Persaud',
+    business: 'Street Food & Catering · Georgetown',
+    quote: 'For the first time, my team follows the same process every single day. My customers notice the difference.',
+  },
+  {
+    img: 'testimonial-dionne.jpg',
+    name: 'Dionne Wishart',
+    business: 'Eco-Tourism & Hospitality · Essequibo',
+    quote: 'We passed our first international quality audit on the very first attempt. Preqal made it inevitable.',
+  },
+  {
+    img: 'testimonial-priya.jpg',
+    name: 'Priya Ramsingh',
+    business: 'Food Manufacturing · New Amsterdam',
+    quote: 'I used to dread compliance reviews. Now I schedule them — because I know we are always ready.',
+  },
+];
+
 const Home: React.FC = () => {
   return (
     <>
@@ -273,6 +294,69 @@ const Home: React.FC = () => {
                       <div className="flex-1 flex flex-col gap-4">
                         <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
                         <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
+                      </div>
+                    </motion.div>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Section 3.5: Testimonials ── */}
+        <section className="px-4 sm:px-6 lg:px-8 pb-16">
+          <div className="max-w-5xl mx-auto">
+            <ScrollReveal yFrom={12}>
+              <div className="text-center mb-12">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Real businesses. Real results.</p>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
+                  Leaders across Guyana<br />
+                  <span className="text-amber-600">already sleeping soundly.</span>
+                </h2>
+              </div>
+            </ScrollReveal>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+              {TESTIMONIALS.map((t, i) => (
+                <ScrollReveal key={i} delay={i * 100} yFrom={16}>
+                  <div style={{ perspective: '900px', height: '100%' }}>
+                    <motion.div
+                      whileHover={{
+                        rotateX: -3,
+                        rotateY: i === 0 ? 4 : i === 2 ? -4 : 0,
+                        scale: 1.02,
+                        boxShadow: '12px 14px 28px rgba(163,177,198,0.52), -6px -6px 18px rgba(255,255,255,0.98)',
+                      }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                      className="h-full flex flex-col items-center text-center p-7 cursor-default"
+                      style={{
+                        background: 'rgba(255,255,255,0.62)',
+                        backdropFilter: 'blur(18px)',
+                        WebkitBackdropFilter: 'blur(18px)',
+                        borderRadius: '18px',
+                        boxShadow: '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
+                        border: '1px solid rgba(255,255,255,0.82)',
+                        transformStyle: 'preserve-3d',
+                      }}
+                    >
+                      <div
+                        className="h-20 w-20 rounded-full overflow-hidden mb-5 flex-shrink-0"
+                        style={{
+                          boxShadow: '4px 4px 10px rgba(163,177,198,0.5), -3px -3px 8px rgba(255,255,255,0.85), 0 0 0 3px rgba(245,158,11,0.28)',
+                        }}
+                      >
+                        <img
+                          src={`${import.meta.env.BASE_URL}images/${t.img}`}
+                          alt={t.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <p className="text-sm text-slate-600 leading-relaxed italic mb-5 flex-1">
+                        "{t.quote}"
+                      </p>
+                      <div>
+                        <p className="text-sm font-bold text-slate-800">{t.name}</p>
+                        <p className="text-xs text-amber-600 font-medium mt-1">{t.business}</p>
                       </div>
                     </motion.div>
                   </div>
