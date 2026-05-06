@@ -166,7 +166,7 @@ const Home: React.FC = () => {
                   </motion.div>
 
                   {/* Bottom half — 50% transparent, 30% more white for text legibility */}
-                  <div style={{ background: 'rgba(255,255,255,0.50)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '24px 28px 28px' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '24px 28px 28px' }}>
                     <motion.p
                       className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
                       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
@@ -432,26 +432,56 @@ const Home: React.FC = () => {
         {/* ── Section 5: CTA ── */}
         <section className="px-4 sm:px-6 lg:px-8 py-16 pb-24">
           <div className="max-w-4xl mx-auto">
-            <ScrollReveal yFrom={12}>
-              <div
-                className="rounded-3xl overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%)',
-                  boxShadow: '10px 10px 28px rgba(180,83,9,0.3), -6px -6px 20px rgba(255,200,80,0.18)',
-                }}
-              >
-                <div className="p-8 md:p-14 text-center">
-                  <p className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-4">Your next chapter starts here</p>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
-                    This is where your<br />story changes.
-                  </h2>
-                  <p className="text-amber-100 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-                    In seven days you'll know exactly where you stand — every gap, every risk, every opportunity. No jargon. No pressure. Just the clarity you've been looking for.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-3xl overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%)',
+                boxShadow: '10px 10px 28px rgba(180,83,9,0.3), -6px -6px 20px rgba(255,200,80,0.18)',
+              }}
+            >
+              <div className="p-8 md:p-14 text-center">
+                <motion.p
+                  className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.15 }}
+                >
+                  Your next chapter starts here
+                </motion.p>
+                <motion.h2
+                  className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.25 }}
+                >
+                  This is where your<br />story changes.
+                </motion.h2>
+                <motion.p
+                  className="text-amber-100 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.35 }}
+                >
+                  In seven days you'll know exactly where you stand — every gap, every risk, every opportunity. No jargon. No pressure. Just the clarity you've been looking for.
+                </motion.p>
+                <motion.div
+                  className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.45 }}
+                >
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
                     <Link
                       to="/book"
-                      className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-amber-700 transition-all duration-200 text-base w-full sm:w-auto"
+                      className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
                       style={{
                         background: 'rgba(255,255,255,0.95)',
                         boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)',
@@ -459,9 +489,11 @@ const Home: React.FC = () => {
                     >
                       Book Your Risk Scan <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
                     <Link
                       to="/resources"
-                      className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto transition-all duration-200"
+                      className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
                       style={{
                         background: 'rgba(255,255,255,0.12)',
                         border: '1px solid rgba(255,255,255,0.3)',
@@ -470,13 +502,19 @@ const Home: React.FC = () => {
                       <Download className="mr-2 h-5 w-5" />
                       Download Free Templates
                     </Link>
-                  </div>
-                  <p className="text-amber-200 text-sm mt-6 opacity-75">
-                    5 ready-to-use compliance templates — no commitment required
-                  </p>
-                </div>
+                  </motion.div>
+                </motion.div>
+                <motion.p
+                  className="text-amber-200 text-sm mt-6 opacity-75"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.75 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.55 }}
+                >
+                  5 ready-to-use compliance templates — no commitment required
+                </motion.p>
               </div>
-            </ScrollReveal>
+            </motion.div>
           </div>
         </section>
 
