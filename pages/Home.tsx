@@ -76,7 +76,7 @@ const Home: React.FC = () => {
               className="text-3xl md:text-5xl lg:text-[3.4rem] font-bold text-slate-900 leading-tight"
               initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             >
-              The leaders who sleep soundly —
+              The leaders who sleep soundly...
             </motion.h1>
           </div>
 
@@ -91,7 +91,7 @@ const Home: React.FC = () => {
               src={`${import.meta.env.BASE_URL}images/hero-bg.jpg`}
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-right-top md:object-center"
             />
 
             {/* Mobile layout */}
