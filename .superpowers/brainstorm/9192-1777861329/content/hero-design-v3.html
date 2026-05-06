@@ -1,0 +1,194 @@
+<h2>Homepage Hero — v3 (Stabroek Building + Site Palette)</h2>
+<p class="subtitle">Real building image, neumorphic base, amber accents, parallax rings + glass content card.</p>
+
+<style>
+  .hero-v3 {
+    position: relative;
+    height: 380px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 24px 0;
+    background: #e0e5ec;
+    box-shadow:
+      10px 10px 24px rgba(163,177,198,0.65),
+      -10px -10px 24px rgba(255,255,255,0.9);
+  }
+
+  /* Amber particle glows */
+  .amb { position: absolute; border-radius: 50%; pointer-events: none; }
+
+  /* Parallax rings */
+  .ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(245,158,11,0.15);
+    pointer-events: none;
+  }
+
+  /* Building image — right side, floating */
+  .building-img-wrap {
+    position: absolute;
+    right: 32px; bottom: 0; top: 20px;
+    width: 260px;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .building-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    filter:
+      drop-shadow(0 8px 32px rgba(163,177,198,0.5))
+      drop-shadow(0 2px 8px rgba(245,158,11,0.12));
+    animation: float-img 6s ease-in-out infinite;
+  }
+  @keyframes float-img {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Amber glow behind building */
+  .building-glow {
+    position: absolute;
+    right: 40px; top: 40px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Glass content card */
+  .glass-card {
+    position: absolute;
+    left: 40px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    max-width: 370px;
+  }
+  .glass-inner {
+    background: rgba(224,229,236,0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 18px;
+    padding: 30px 28px;
+    box-shadow:
+      6px 6px 18px rgba(163,177,198,0.55),
+      -4px -4px 14px rgba(255,255,255,0.9),
+      inset 0 1px 0 rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.55);
+  }
+  .tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: #d97706; margin-bottom: 10px;
+    background: rgba(245,158,11,0.1);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .headline {
+    font-size: 1.7rem; font-weight: 700; line-height: 1.2;
+    color: #1a2234; margin: 0 0 10px;
+  }
+  .headline span { color: #d97706; }
+  .sub {
+    font-size: 0.83rem; color: #64748b;
+    margin: 0 0 22px; line-height: 1.65;
+  }
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-p {
+    padding: 10px 22px; border-radius: 10px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff; font-size: 0.82rem; font-weight: 600;
+    box-shadow: 4px 4px 12px rgba(217,119,6,0.35), -2px -2px 6px rgba(255,200,80,0.2);
+    transition: transform 0.15s;
+  }
+  .btn-g {
+    padding: 10px 22px; border-radius: 10px; border: none; cursor: pointer;
+    background: #e0e5ec; font-size: 0.82rem; color: #475569; font-weight: 500;
+    box-shadow: 3px 3px 8px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.8);
+    transition: transform 0.15s;
+  }
+
+  /* Scroll pulse */
+  .scroll-hint {
+    position: absolute; bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .scroll-line { width: 1px; height: 22px; background: linear-gradient(to bottom, rgba(245,158,11,0.45), transparent); }
+  .scroll-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; opacity: 0.55;
+    animation: pulse-d 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-d { 0%,100%{transform:translateY(0);opacity:0.55} 50%{transform:translateY(4px);opacity:1} }
+
+  /* Framer badge */
+  .badge {
+    position: absolute; bottom: 14px; right: 16px;
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;
+    background: rgba(224,229,236,0.85);
+    padding: 3px 8px; border-radius: 6px;
+    box-shadow: 2px 2px 5px rgba(163,177,198,0.35), -1px -1px 4px rgba(255,255,255,0.7);
+  }
+</style>
+
+<div class="hero-v3">
+  <!-- Amber particle glows -->
+  <div class="amb" style="width:320px;height:320px;top:-80px;right:-60px;background:radial-gradient(circle,rgba(245,158,11,0.1),transparent 70%)"></div>
+  <div class="amb" style="width:140px;height:140px;bottom:-30px;left:35%;background:radial-gradient(circle,rgba(245,158,11,0.08),transparent 70%)"></div>
+
+  <!-- Parallax rings -->
+  <div class="ring" style="width:320px;height:320px;top:-100px;right:-80px"></div>
+  <div class="ring" style="width:200px;height:200px;top:-30px;right:10px;border-color:rgba(245,158,11,0.1)"></div>
+
+  <!-- Amber glow behind building -->
+  <div class="building-glow"></div>
+
+  <!-- Stabroek building image -->
+  <div class="building-img-wrap">
+    <img class="building-img" src="Image1-768.webp" alt="Stabroek Market Clock Tower" />
+  </div>
+
+  <!-- Glass content card -->
+  <div class="glass-card">
+    <div class="glass-inner">
+      <div class="tag">Quality · Safety · Compliance</div>
+      <div class="headline">Systems that<br><span>actually work.</span></div>
+      <div class="sub">Preqal helps agri-food and eco-hospitality businesses build compliance frameworks that hold up in the real world.</div>
+      <div class="cta">
+        <button class="btn-p">Book a Scan</button>
+        <button class="btn-g">See Case Studies</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <div class="scroll-dot"></div>
+  </div>
+
+  <!-- Notes badge -->
+  <div class="badge">Framer Motion entrance on load</div>
+</div>
+
+<div class="section">
+  <h3>What's happening in this hero</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+    <div style="padding:12px;background:rgba(255,255,255,0.4);border-radius:10px;box-shadow:3px 3px 8px rgba(163,177,198,0.35),-2px -2px 6px rgba(255,255,255,0.7)">
+      <div class="label" style="color:#d97706">Building treatment</div>
+      <p style="margin:6px 0 0;font-size:0.8rem;color:#64748b;line-height:1.5">Existing <code>Image1-*.webp</code> srcset, floated right with drop-shadow and gentle bob animation. No new assets needed.</p>
+    </div>
+    <div style="padding:12px;background:rgba(255,255,255,0.4);border-radius:10px;box-shadow:3px 3px 8px rgba(163,177,198,0.35),-2px -2px 6px rgba(255,255,255,0.7)">
+      <div class="label" style="color:#d97706">Parallax on scroll</div>
+      <p style="margin:6px 0 0;font-size:0.8rem;color:#64748b;line-height:1.5">Building moves at 0.6× scroll speed, rings at 0.3×, amber glows at 0.15×. Pure CSS transform via scroll listener.</p>
+    </div>
+    <div style="padding:12px;background:rgba(255,255,255,0.4);border-radius:10px;box-shadow:3px 3px 8px rgba(163,177,198,0.35),-2px -2px 6px rgba(255,255,255,0.7)">
+      <div class="label" style="color:#d97706">Three.js (optional layer)</div>
+      <p style="margin:6px 0 0;font-size:0.8rem;color:#64748b;line-height:1.5">Subtle amber particle canvas behind the image — lazy-loaded after LCP. Skipped on mobile / reduced-motion.</p>
+    </div>
+    <div style="padding:12px;background:rgba(255,255,255,0.4);border-radius:10px;box-shadow:3px 3px 8px rgba(163,177,198,0.35),-2px -2px 6px rgba(255,255,255,0.7)">
+      <div class="label" style="color:#d97706">Framer Motion</div>
+      <p style="margin:6px 0 0;font-size:0.8rem;color:#64748b;line-height:1.5">Tag → headline → subtitle → CTAs stagger in at 100ms intervals. Already available — zero new deps.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Does this look right? Say yes to move to the full design (About, Services, Case Studies + component spec).</p>

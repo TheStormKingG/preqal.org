@@ -1,0 +1,189 @@
+<h2>Glass spread — which elements get the frosted treatment?</h2>
+<p class="subtitle">GlassCard currently lives only on the Home hero left panel and CaseStudies CTA. Pick how far to spread it.</p>
+
+<style>
+  .neu { background: #e0e5ec; }
+  .section-mock {
+    border-radius: 10px;
+    background: #e0e5ec;
+    box-shadow: 4px 4px 10px rgba(163,177,198,0.5), -4px -4px 10px rgba(255,255,255,0.8);
+    padding: 12px;
+    margin-bottom: 8px;
+    font-family: system-ui, sans-serif;
+  }
+  .section-label { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #94a3b8; margin-bottom: 8px; }
+  .page-label { font-size: 8px; font-weight: 700; color: #d97706; margin-bottom: 6px; background: rgba(245,158,11,0.1); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+
+  /* Glass element */
+  .glass-el {
+    background: rgba(224,229,236,0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 8px;
+    padding: 7px 10px;
+    box-shadow: 3px 3px 8px rgba(163,177,198,0.4), -2px -2px 6px rgba(255,255,255,0.8);
+    font-size: 0.6rem;
+    color: #475569;
+    line-height: 1.4;
+  }
+  .glass-el .el-title { font-size: 0.65rem; font-weight: 700; color: #1a2234; margin-bottom: 2px; }
+  .glass-el .el-tag { font-size: 6.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #d97706; margin-bottom: 4px; }
+
+  /* Neu element (non-glass) */
+  .neu-el {
+    background: #e0e5ec;
+    border-radius: 8px;
+    padding: 7px 10px;
+    box-shadow: 3px 3px 7px rgba(163,177,198,0.45), -2px -2px 6px rgba(255,255,255,0.8);
+    font-size: 0.6rem;
+    color: #475569;
+    line-height: 1.4;
+  }
+  .neu-el .el-title { font-size: 0.65rem; font-weight: 700; color: #1a2234; margin-bottom: 2px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .already { outline: 2px solid rgba(245,158,11,0.5); outline-offset: 2px; }
+  .new-glass { outline: 2px solid rgba(99,102,241,0.5); outline-offset: 2px; }
+  .legend { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 0.65rem; color: #64748b; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Targeted — only high-impact spots -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.4);outline:2px solid rgba(245,158,11,0.5);outline-offset:1px;"></div> Already glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(99,102,241,0.15);outline:2px solid rgba(99,102,241,0.5);outline-offset:1px;"></div> New glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e0e5ec;box-shadow:2px 2px 4px rgba(163,177,198,0.4),-1px -1px 3px rgba(255,255,255,0.8);"></div> Stays neumorphic</div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Home</div>
+        <div class="grid2">
+          <div class="glass-el already"><div class="el-tag">Already</div><div class="el-title">Hero left panel</div>Tag, heading, CTAs</div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Stats bar</div>"12+ clients, 98% pass rate…"</div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Services</div>
+        <div class="neu-el"><div class="el-title">Accordion cards</div>Stays neumorphic raised/pressed</div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Case Studies</div>
+        <div class="grid2">
+          <div class="neu-el"><div class="el-title">Case cards</div>Stays neumorphic</div>
+          <div class="glass-el already"><div class="el-tag">Already</div><div class="el-title">CTA card</div>"Ready to build…"</div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">About</div>
+        <div class="neu-el"><div class="el-title">Profile + philosophy</div>Stays neumorphic</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Targeted (2 new glass elements)</h3>
+      <p>Only the Home stats bar gets glass. Everything else keeps its neumorphic feel. Clean separation: glass = hero/CTA moments only.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Balanced — glass on overlaid/accent elements -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.4);outline:2px solid rgba(245,158,11,0.5);outline-offset:1px;"></div> Already glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(99,102,241,0.15);outline:2px solid rgba(99,102,241,0.5);outline-offset:1px;"></div> New glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e0e5ec;box-shadow:2px 2px 4px rgba(163,177,198,0.4),-1px -1px 3px rgba(255,255,255,0.8);"></div> Stays neumorphic</div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Home</div>
+        <div class="grid2">
+          <div class="glass-el already"><div class="el-tag">Already</div><div class="el-title">Hero left panel</div></div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Stats bar</div></div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Services</div>
+        <div class="grid2">
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Open accordion header</div>Active state gets glass</div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Feature chips</div>Inside open accordion</div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Case Studies</div>
+        <div class="grid2">
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Industry tag pills</div>Scrolling row</div>
+          <div class="glass-el already"><div class="el-tag">Already</div><div class="el-title">CTA card</div></div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">About</div>
+        <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Philosophy section header</div>"Our approach" intro block</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Balanced (~6 new glass elements) ✦ Recommended</h3>
+      <p>Glass appears on active/accent moments: open service, stats, industry tags, about intro. Neumorphic stays dominant on cards. Feels intentional, not overdone.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Generous — glass on most elevated surfaces -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.4);outline:2px solid rgba(245,158,11,0.5);outline-offset:1px;"></div> Already glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(99,102,241,0.15);outline:2px solid rgba(99,102,241,0.5);outline-offset:1px;"></div> New glass</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e0e5ec;box-shadow:2px 2px 4px rgba(163,177,198,0.4),-1px -1px 3px rgba(255,255,255,0.8);"></div> Stays neumorphic</div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Home</div>
+        <div class="grid3">
+          <div class="glass-el already" style="font-size:0.55rem;"><div class="el-tag">Already</div>Hero panel</div>
+          <div class="glass-el new-glass" style="font-size:0.55rem;"><div class="el-tag">New</div>Stats bar</div>
+          <div class="glass-el new-glass" style="font-size:0.55rem;"><div class="el-tag">New</div>Service preview cards</div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Services</div>
+        <div class="grid2">
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">All service cards</div>Not just open state</div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Feature chips + tags</div></div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">Case Studies</div>
+        <div class="grid2">
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Case cards</div>All 3 cards → glass</div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Industry tags + CTA</div></div>
+        </div>
+      </div>
+
+      <div class="section-mock">
+        <div class="page-label">About</div>
+        <div class="grid2">
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Profile card</div></div>
+          <div class="glass-el new-glass"><div class="el-tag">New</div><div class="el-title">Philosophy items</div>All 3</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Generous (~12 new glass elements)</h3>
+      <p>Glass becomes the dominant surface material sitewide. Bold and cohesive, but risks losing the contrast between "hero moments" and everyday content cards.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:16px">Click your preferred spread, then tell me in the terminal.</p>

@@ -1,0 +1,197 @@
+<h2>Desktop hero height — how tall should it be?</h2>
+<p class="subtitle">Currently fixed at 420px. You want it to fill the initially available vertical space on desktop.</p>
+
+<style>
+  .neu { background: #e0e5ec; }
+  .mock {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e0e5ec;
+    box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85);
+    margin-bottom: 10px;
+    position: relative;
+    font-family: system-ui, sans-serif;
+  }
+  .navbar-mock {
+    height: 20px;
+    background: #e0e5ec;
+    box-shadow: 0 2px 8px rgba(163,177,198,0.4);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .nav-dot { width: 24px; height: 6px; border-radius: 3px; background: #cbd5e1; }
+  .nav-dot.brand { width: 36px; background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .hero-mock {
+    background: linear-gradient(135deg, rgba(224,229,236,0.9), rgba(203,213,225,0.6));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    position: relative;
+  }
+  .glass-pill {
+    background: rgba(224,229,236,0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 4px 4px 10px rgba(163,177,198,0.45), -3px -3px 8px rgba(255,255,255,0.85);
+    flex: 0 0 48%;
+  }
+  .pill-tag { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #d97706; }
+  .pill-h { font-size: 0.7rem; font-weight: 700; color: #1a2234; margin: 3px 0 2px; line-height: 1.2; }
+  .pill-h span { color: #d97706; }
+  .pill-sub { font-size: 0.55rem; color: #64748b; line-height: 1.4; }
+  .pill-btn { margin-top: 6px; display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.55rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .saturn-mini { flex: 0 0 40%; display: flex; align-items: center; justify-content: center; }
+  .s-building { width: 44px; height: 44px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 3px; position: relative; z-index: 2; }
+  .ring-m { position: absolute; border-radius: 50%; pointer-events: none; }
+  .below-hero { height: 16px; background: #e0e5ec; display: flex; align-items: center; justify-content: center; }
+  .scroll-hint { width: 16px; height: 16px; border-radius: 50%; background: rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: center; }
+  .arrow { width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #d97706; }
+  .label { font-size: 8px; font-weight: 600; color: #64748b; padding: 3px 8px; background: rgba(245,158,11,0.08); border-radius: 4px; margin-bottom: 4px; display: inline-block; }
+
+  /* Height dimension labels */
+  .dim-line {
+    position: absolute;
+    right: -32px;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .dim-bar { width: 1px; flex: 1; background: rgba(245,158,11,0.5); }
+  .dim-label { font-size: 7px; font-weight: 700; color: #d97706; white-space: nowrap; padding: 1px 0; }
+  .dim-tick { width: 6px; height: 1px; background: rgba(245,158,11,0.5); }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Full viewport minus navbar -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock" style="position:relative; margin-right: 40px;">
+        <div class="navbar-mock">
+          <div class="nav-dot brand"></div>
+          <div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div>
+        </div>
+        <div class="hero-mock" style="height: 120px;">
+          <div class="glass-pill">
+            <div class="pill-tag">Quality · Safety</div>
+            <div class="pill-h">Systems that<br><span>actually work.</span></div>
+            <div class="pill-sub">Compliance frameworks that hold up.</div>
+            <div class="pill-btn">Book a Scan</div>
+          </div>
+          <div class="saturn-mini" style="position:relative; width:60px; height:60px;">
+            <div class="ring-m" style="width:56px;height:14px;border:1.5px solid rgba(245,158,11,0.6);top:50%;left:50%;margin:-7px 0 0 -28px;"></div>
+            <div class="ring-m" style="width:76px;height:19px;border:1px solid rgba(245,158,11,0.35);top:50%;left:50%;margin:-9.5px 0 0 -38px;"></div>
+            <div class="s-building" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          </div>
+        </div>
+        <div class="below-hero"><div class="scroll-hint"><div class="arrow"></div></div></div>
+        <!-- dimension label -->
+        <div class="dim-line">
+          <div class="dim-tick"></div>
+          <div class="dim-bar"></div>
+          <div class="dim-label">100dvh<br>−nav</div>
+          <div class="dim-bar"></div>
+          <div class="dim-tick"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Full viewport (100dvh − navbar)</h3>
+      <p>Hero fills exactly the visible screen below the navbar. Stabroek and content centred vertically. Scroll hint nudges user down. Bold first impression — user sees nothing below the fold until they scroll.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Large but not full — ~70–80vh -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock" style="position:relative; margin-right: 40px;">
+        <div class="navbar-mock">
+          <div class="nav-dot brand"></div>
+          <div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div>
+        </div>
+        <div class="hero-mock" style="height: 90px;">
+          <div class="glass-pill">
+            <div class="pill-tag">Quality · Safety</div>
+            <div class="pill-h">Systems that<br><span>actually work.</span></div>
+            <div class="pill-sub">Compliance frameworks that hold up.</div>
+            <div class="pill-btn">Book a Scan</div>
+          </div>
+          <div class="saturn-mini" style="position:relative; width:60px; height:60px;">
+            <div class="ring-m" style="width:56px;height:14px;border:1.5px solid rgba(245,158,11,0.6);top:50%;left:50%;margin:-7px 0 0 -28px;"></div>
+            <div class="ring-m" style="width:76px;height:19px;border:1px solid rgba(245,158,11,0.35);top:50%;left:50%;margin:-9.5px 0 0 -38px;"></div>
+            <div class="s-building" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          </div>
+        </div>
+        <!-- Peek of next section -->
+        <div style="height:20px; background: linear-gradient(to bottom, #e0e5ec, #d8dde5); display:flex;align-items:center;padding:0 14px;">
+          <div style="width:60px;height:5px;border-radius:3px;background:rgba(163,177,198,0.4);"></div>
+        </div>
+        <!-- dimension label -->
+        <div class="dim-line">
+          <div class="dim-tick"></div>
+          <div class="dim-bar"></div>
+          <div class="dim-label">~75vh</div>
+          <div class="dim-bar"></div>
+          <div class="dim-tick"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Generous but not full (~75vh)</h3>
+      <p>Hero is tall and dominant, but the next section peeks just below the fold — a natural invitation to scroll. No explicit scroll hint needed. Works well if the section immediately below has visual interest.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Responsive — min 560px desktop, max full -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock" style="position:relative; margin-right: 40px;">
+        <div class="navbar-mock">
+          <div class="nav-dot brand"></div>
+          <div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div>
+        </div>
+        <div class="hero-mock" style="height: 75px; align-items: center;">
+          <div class="glass-pill" style="padding: 8px 10px;">
+            <div class="pill-tag">Quality · Safety</div>
+            <div class="pill-h">Systems that<br><span>actually work.</span></div>
+            <div class="pill-sub">Compliance frameworks that hold up.</div>
+            <div class="pill-btn">Book a Scan</div>
+          </div>
+          <div class="saturn-mini" style="position:relative; width:60px; height:60px;">
+            <div class="ring-m" style="width:56px;height:14px;border:1.5px solid rgba(245,158,11,0.6);top:50%;left:50%;margin:-7px 0 0 -28px;"></div>
+            <div class="ring-m" style="width:76px;height:19px;border:1px solid rgba(245,158,11,0.35);top:50%;left:50%;margin:-9.5px 0 0 -38px;"></div>
+            <div class="s-building" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          </div>
+        </div>
+        <!-- Next section visible -->
+        <div style="height:26px; background: #e0e5ec; display:flex;align-items:center;padding:0 14px;gap:8px;">
+          <div style="width:40px;height:5px;border-radius:3px;background:rgba(163,177,198,0.4);"></div>
+          <div style="width:60px;height:5px;border-radius:3px;background:rgba(163,177,198,0.3);"></div>
+        </div>
+        <!-- dimension label -->
+        <div class="dim-line" style="top:20px;">
+          <div class="dim-tick"></div>
+          <div class="dim-bar"></div>
+          <div class="dim-label" style="font-size:6px;">min<br>560px<br>→<br>clamp<br>→<br>100dvh</div>
+          <div class="dim-bar"></div>
+          <div class="dim-tick"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Fluid clamp (min 560px → 100dvh)</h3>
+      <p>Uses <code>min-height: clamp(560px, 100dvh - 64px, 900px)</code>. Feels full on typical laptops (768–900px viewport height), doesn't over-extend on 4K screens. Content below is always visible on very tall monitors.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:16px">Click your preferred desktop height, then tell me in the terminal.</p>

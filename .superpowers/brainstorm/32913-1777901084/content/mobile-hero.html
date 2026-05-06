@@ -1,0 +1,153 @@
+<h2>Mobile hero — how should Stabroek appear on small screens?</h2>
+<p class="subtitle">The Saturn stage (340px) currently overlaps the text card on mobile. Pick an approach.</p>
+
+<style>
+  /* Shared neumorphic palette */
+  .neu { background: #e0e5ec; }
+  .mock-hero {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #e0e5ec;
+    box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85);
+    margin-bottom: 10px;
+    position: relative;
+    font-family: system-ui, sans-serif;
+  }
+  /* Glass card */
+  .glass {
+    background: rgba(224,229,236,0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 4px 4px 10px rgba(163,177,198,0.45), -3px -3px 8px rgba(255,255,255,0.85);
+  }
+  .tag { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #d97706; background: rgba(245,158,11,0.12); padding: 3px 8px; border-radius: 20px; display: inline-block; margin-bottom: 6px; }
+  .hl { font-size: 1rem; font-weight: 700; color: #1a2234; line-height: 1.2; margin: 0 0 5px; }
+  .hl span { color: #d97706; }
+  .sub { font-size: 0.65rem; color: #64748b; margin: 0 0 10px; line-height: 1.5; }
+  .btns { display: flex; gap: 6px; }
+  .btn-a { padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 2px 2px 6px rgba(217,119,6,0.3); }
+  .btn-b { padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 500; color: #64748b; background: #e0e5ec; box-shadow: 2px 2px 5px rgba(163,177,198,0.4), -1px -1px 4px rgba(255,255,255,0.8); }
+
+  /* Saturn ring mock */
+  .saturn-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+  .s-img { width: 80px; height: 80px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 4px; position: relative; z-index: 2; }
+  .ring { position: absolute; border-radius: 50%; pointer-events: none; }
+  .r1 { width: 110px; height: 28px; border: 2px solid rgba(245,158,11,0.6); }
+  .r2 { width: 150px; height: 38px; border: 1.5px solid rgba(245,158,11,0.35); }
+  .r3 { width: 190px; height: 48px; border: 1px solid rgba(245,158,11,0.18); }
+
+  /* Layouts */
+  .option-a-hero { height: 220px; }
+  .option-b-hero { height: 260px; }
+  .option-c-hero { height: 200px; }
+
+  /* Option A — hidden on mobile (text only) */
+  .opt-a-inner { padding: 20px; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+
+  /* Option B — stacked (image above text) */
+  .opt-b-inner { display: flex; flex-direction: column; height: 100%; }
+  .opt-b-top { display: flex; justify-content: center; align-items: center; padding: 16px 0 8px; background: rgba(224,229,236,0.3); flex-shrink: 0; }
+  .opt-b-bottom { flex: 1; padding: 12px 16px; display: flex; align-items: center; }
+
+  /* Option C — scaled side-by-side (small stage) */
+  .opt-c-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px; height: 100%; gap: 8px; }
+  .opt-c-glass { flex: 1; min-width: 0; }
+  .opt-c-saturn { flex-shrink: 0; width: 96px; display: flex; align-items: center; justify-content: center; }
+  .s-img-sm { width: 52px; height: 52px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 3px; position: relative; z-index: 2; }
+  .r1-sm { width: 72px; height: 18px; border: 1.5px solid rgba(245,158,11,0.6); }
+  .r2-sm { width: 98px; height: 25px; border: 1px solid rgba(245,158,11,0.35); }
+  .r3-sm { width: 124px; height: 31px; border: 0.8px solid rgba(245,158,11,0.18); }
+
+  .label-badge { display: inline-block; font-size: 9px; font-weight: 600; color: #64748b; background: rgba(245,158,11,0.08); border-radius: 6px; padding: 2px 7px; margin-bottom: 4px; }
+  .tag-sm { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #d97706; background: rgba(245,158,11,0.12); padding: 2px 6px; border-radius: 20px; display: inline-block; margin-bottom: 4px; }
+  .hl-sm { font-size: 0.78rem; font-weight: 700; color: #1a2234; line-height: 1.2; margin: 0 0 3px; }
+  .hl-sm span { color: #d97706; }
+  .sub-sm { font-size: 0.55rem; color: #64748b; margin: 0 0 6px; line-height: 1.45; }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Hidden on mobile -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero option-a-hero">
+        <div class="opt-a-inner">
+          <div class="glass" style="max-width:280px">
+            <div class="tag">Quality · Safety · Compliance</div>
+            <div class="hl">Systems that<br><span>actually work.</span></div>
+            <div class="sub">Preqal helps agri-food and eco-hospitality businesses build compliance frameworks that hold up in the real world.</div>
+            <div class="btns"><div class="btn-a">Book a Scan</div><div class="btn-b">See Case Studies</div></div>
+          </div>
+        </div>
+        <!-- No Saturn stage -->
+        <div style="position:absolute;bottom:10px;right:12px;font-size:9px;color:#94a3b8;background:rgba(224,229,236,0.8);padding:2px 6px;border-radius:4px">Saturn hidden on mobile</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Text-only on mobile</h3>
+      <p>Stabroek hidden below <code>md:</code> breakpoint. Clean, full-width glass card. Saturn shows on tablet+ only.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Stacked -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero option-b-hero">
+        <div class="opt-b-inner">
+          <div class="opt-b-top">
+            <div class="saturn-wrap" style="width:100px;height:60px">
+              <div class="ring r1" style="width:88px;height:22px"></div>
+              <div class="ring r2" style="width:118px;height:30px"></div>
+              <div class="s-img" style="width:50px;height:50px"></div>
+            </div>
+          </div>
+          <div class="opt-b-bottom">
+            <div class="glass" style="width:100%">
+              <div class="tag">Quality · Safety · Compliance</div>
+              <div class="hl">Systems that <span>actually work.</span></div>
+              <div class="sub">Compliance frameworks that hold up in the real world.</div>
+              <div class="btns"><div class="btn-a">Book a Scan</div><div class="btn-b">Case Studies</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Stacked (image above text)</h3>
+      <p>Saturn stage compact at top, glass card spans full width below. Both visible on mobile.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Scaled side-by-side -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero option-c-hero">
+        <div class="opt-c-inner">
+          <div class="opt-c-glass">
+            <div class="glass">
+              <div class="tag-sm">Quality · Safety · Compliance</div>
+              <div class="hl-sm">Systems that<br><span>actually work.</span></div>
+              <div class="sub-sm">Compliance frameworks that hold up.</div>
+              <div class="btns"><div class="btn-a" style="font-size:0.6rem;padding:5px 8px">Book a Scan</div></div>
+            </div>
+          </div>
+          <div class="opt-c-saturn">
+            <div class="saturn-wrap" style="width:90px;height:90px">
+              <div class="ring r1-sm" style="width:66px;height:17px;border:1.5px solid rgba(245,158,11,0.6)"></div>
+              <div class="ring r2-sm" style="width:90px;height:23px;border:1px solid rgba(245,158,11,0.35)"></div>
+              <div class="s-img-sm"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Scaled side-by-side</h3>
+      <p>Both elements shrink to fit. Glass card gets narrower; Saturn stage scales to ~120px with 2 rings. Compact hero stays horizontal.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:16px">Click your preferred mobile approach, then tell me in the terminal.</p>

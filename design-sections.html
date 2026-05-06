@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Section Designs — About / Services / Case Studies</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #c8cdd6; font-family: Inter, system-ui, sans-serif; padding: 24px; color: #1a2234; }
+
+  h2.section-label {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #94a3b8;
+    margin: 40px 0 12px; font-weight: 600;
+  }
+  h2.section-label:first-child { margin-top: 0; }
+
+  .panel {
+    background: #e0e5ec;
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 900px;
+    margin: 0 auto 16px;
+    box-shadow: 8px 8px 20px rgba(163,177,198,0.6), -8px -8px 20px rgba(255,255,255,0.9);
+  }
+
+  /* ─── Shared utilities ─── */
+  .tag {
+    display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: #d97706; background: rgba(245,158,11,0.1);
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .neu-card {
+    background: #e0e5ec;
+    border-radius: 16px;
+    box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -4px -4px 12px rgba(255,255,255,0.9);
+  }
+  .neu-pressed {
+    box-shadow: inset 3px 3px 7px rgba(163,177,198,0.55), inset -2px -2px 6px rgba(255,255,255,0.85);
+  }
+  .amber { color: #d97706; }
+
+  /* ─── ABOUT: Profile card with CSS 3D tilt ─── */
+  .about-grid { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: start; }
+
+  .profile-scene { perspective: 800px; }
+  .profile-card {
+    padding: 24px 20px; border-radius: 18px; text-align: center;
+    transition: transform 0.15s ease;
+    transform: rotateY(-8deg) rotateX(3deg);
+    background: #e0e5ec;
+    box-shadow: 10px 10px 24px rgba(163,177,198,0.6), -6px -6px 18px rgba(255,255,255,0.92);
+  }
+  .profile-card:hover { transform: rotateY(0deg) rotateX(0deg); }
+  .avatar {
+    width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: white; font-weight: 700;
+    box-shadow: 4px 4px 10px rgba(217,119,6,0.3), -2px -2px 6px rgba(255,200,80,0.15);
+  }
+  .profile-name { font-size: 1rem; font-weight: 700; color: #1a2234; margin-bottom: 4px; }
+  .profile-title { font-size: 0.75rem; color: #64748b; margin-bottom: 16px; line-height: 1.5; }
+  .profile-badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .badge {
+    font-size: 8.5px; font-weight: 600; letter-spacing: 0.5px; padding: 3px 8px;
+    border-radius: 8px; background: #e0e5ec; color: #475569;
+    box-shadow: 2px 2px 5px rgba(163,177,198,0.45), -1px -1px 4px rgba(255,255,255,0.8);
+  }
+  .tilt-note {
+    font-size: 9px; color: #94a3b8; margin-top: 10px; letter-spacing: 0.5px;
+    font-style: italic;
+  }
+
+  .philosophy-items { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .phil-item {
+    display: flex; gap: 12px; padding: 14px; border-radius: 14px;
+    background: #e0e5ec;
+    box-shadow: 4px 4px 10px rgba(163,177,198,0.5), -3px -3px 8px rgba(255,255,255,0.85);
+    transition: box-shadow 0.2s;
+  }
+  .phil-item:hover {
+    box-shadow: 6px 6px 16px rgba(163,177,198,0.6), -4px -4px 12px rgba(255,255,255,0.95);
+  }
+  .phil-icon {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+    box-shadow: inset 2px 2px 5px rgba(163,177,198,0.5), inset -1px -1px 4px rgba(255,255,255,0.85);
+  }
+  .phil-title { font-size: 0.78rem; font-weight: 600; color: #1a2234; margin-bottom: 2px; }
+  .phil-desc { font-size: 0.72rem; color: #64748b; line-height: 1.5; }
+
+  /* ─── SERVICES: glass accordion card ─── */
+  .service-item {
+    border-radius: 16px; margin-bottom: 10px; overflow: hidden;
+    background: #e0e5ec;
+    box-shadow: 5px 5px 12px rgba(163,177,198,0.5), -3px -3px 9px rgba(255,255,255,0.85);
+    transition: box-shadow 0.2s;
+  }
+  .service-header { display: flex; align-items: center; gap: 16px; padding: 18px 20px; cursor: pointer; }
+  .service-icon {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    box-shadow: inset 3px 3px 7px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.85);
+  }
+  .service-name { font-size: 1rem; font-weight: 700; color: #1a2234; }
+  .service-sub  { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+  .chevron { margin-left: auto; color: #d97706; font-size: 14px; transition: transform 0.3s; }
+
+  /* Expanded state */
+  .service-item.open {
+    box-shadow: 8px 8px 20px rgba(163,177,198,0.6), -5px -5px 14px rgba(255,255,255,0.92);
+  }
+  .service-item.open .chevron { transform: rotate(180deg); }
+  .service-body {
+    padding: 0 20px 20px 84px;
+    display: none;
+  }
+  .service-item.open .service-body { display: block; }
+  .service-features {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+  }
+  .feat {
+    font-size: 0.76rem; color: #475569; padding: 8px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.4);
+    box-shadow: 2px 2px 5px rgba(163,177,198,0.35), -1px -1px 4px rgba(255,255,255,0.75);
+  }
+  .feat::before { content: '✓ '; color: #d97706; font-weight: 700; }
+  .service-cta {
+    display: inline-block; padding: 8px 18px; border-radius: 9px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+    font-size: 0.78rem; font-weight: 600;
+    box-shadow: 3px 3px 8px rgba(217,119,6,0.3);
+  }
+  .glow-tag {
+    font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #d97706; background: rgba(245,158,11,0.08); padding: 3px 9px;
+    border-radius: 8px; margin-bottom: 10px; display: inline-block;
+  }
+
+  /* ─── CASE STUDIES: 3D tilt cards ─── */
+  .cs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .cs-scene { perspective: 600px; }
+  .cs-card {
+    padding: 22px 18px; border-radius: 18px; height: 100%;
+    background: #e0e5ec;
+    box-shadow: 6px 6px 16px rgba(163,177,198,0.55), -4px -4px 12px rgba(255,255,255,0.9);
+    transform: rotateX(2deg) rotateY(-4deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+  }
+  .cs-card:hover {
+    transform: rotateX(0deg) rotateY(0deg) translateY(-4px);
+    box-shadow: 10px 14px 28px rgba(163,177,198,0.65), -6px -6px 18px rgba(255,255,255,0.95);
+  }
+  .cs-sector {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .cs-icon { font-size: 22px; }
+  .cs-sector-name { font-size: 0.82rem; font-weight: 700; color: #1a2234; }
+  .cs-title { font-size: 0.78rem; font-weight: 600; color: #d97706; margin-bottom: 8px; }
+  .cs-desc { font-size: 0.72rem; color: #64748b; line-height: 1.55; margin-bottom: 12px; }
+  .cs-result {
+    font-size: 0.71rem; color: #475569; padding: 8px 10px; border-radius: 10px;
+    background: rgba(245,158,11,0.06); border-left: 2px solid #f59e0b;
+    font-style: italic; line-height: 1.5;
+  }
+
+  /* CTA card in grid */
+  .cs-cta-card {
+    padding: 22px 18px; border-radius: 18px;
+    background: linear-gradient(145deg, #e8ecf3, #dde2ea);
+    box-shadow: 8px 8px 20px rgba(163,177,198,0.6), -5px -5px 14px rgba(255,255,255,0.92);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+  }
+  .cs-cta-card h3 { font-size: 0.95rem; font-weight: 700; color: #1a2234; margin-bottom: 10px; }
+  .cs-cta-card p { font-size: 0.72rem; color: #64748b; margin-bottom: 16px; line-height: 1.6; }
+  .cs-cta-btn {
+    padding: 9px 20px; border-radius: 10px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+    font-size: 0.78rem; font-weight: 600;
+    box-shadow: 3px 3px 8px rgba(217,119,6,0.3);
+  }
+
+  /* Notes */
+  .note {
+    font-size: 10px; color: #94a3b8; margin-top: 14px; line-height: 1.7;
+  }
+  .note b { color: #d97706; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ ABOUT ══════════════════ -->
+<h2 class="section-label" style="max-width:900px;margin-left:auto;margin-right:auto">About page — enhancement</h2>
+<div class="panel">
+  <div class="about-grid">
+
+    <div>
+      <div class="profile-scene">
+        <div class="profile-card" id="pc">
+          <div class="avatar">SG</div>
+          <div class="profile-name">Dr. Gravesande</div>
+          <div class="profile-title">Founder & Lead Consultant<br>Preqal — Clinic on Quality™</div>
+          <div class="profile-badges">
+            <span class="badge">HACCP</span>
+            <span class="badge">ISO 22000</span>
+            <span class="badge">SQF</span>
+            <span class="badge">BRC</span>
+          </div>
+        </div>
+      </div>
+      <div class="tilt-note">↑ CSS 3D tilt — hovers flat on mouse-over</div>
+    </div>
+
+    <div>
+      <div class="tag">Our Philosophy</div>
+      <div class="philosophy-items">
+        <div class="phil-item">
+          <div class="phil-icon">🎯</div>
+          <div><div class="phil-title">Systems-First</div><div class="phil-desc">Compliance built into operations, not bolted on</div></div>
+        </div>
+        <div class="phil-item">
+          <div class="phil-icon">🌱</div>
+          <div><div class="phil-title">Sector-Rooted</div><div class="phil-desc">Agri-food and eco-hospitality specific</div></div>
+        </div>
+        <div class="phil-item">
+          <div class="phil-icon">⚙️</div>
+          <div><div class="phil-title">Practical</div><div class="phil-desc">Frameworks your team can actually maintain</div></div>
+        </div>
+        <div class="phil-item">
+          <div class="phil-icon">📊</div>
+          <div><div class="phil-title">Measurable</div><div class="phil-desc">Audit scores that prove it's working</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="note"><b>Enhancements:</b> CSS 3D tilt on profile card (settles flat on hover) · Framer Motion stagger-in on philosophy items (scroll-triggered) · amber parallax glow behind left column</div>
+</div>
+
+<!-- ══════════════════ SERVICES ══════════════════ -->
+<h2 class="section-label" style="max-width:900px;margin-left:auto;margin-right:auto">Services page — enhancement</h2>
+<div class="panel">
+
+  <div class="service-item open">
+    <div class="service-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="service-icon">🔍</div>
+      <div>
+        <div class="glow-tag">Flagship</div>
+        <div class="service-name">Compliance Scan</div>
+        <div class="service-sub">Full-facility audit — gap analysis → action plan</div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="service-body">
+      <div class="service-features">
+        <div class="feat">HACCP hazard identification</div>
+        <div class="feat">SOP documentation review</div>
+        <div class="feat">Staff training readiness</div>
+        <div class="feat">Corrective action roadmap</div>
+      </div>
+      <button class="service-cta">Book a Scan</button>
+    </div>
+  </div>
+
+  <div class="service-item">
+    <div class="service-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="service-icon">📋</div>
+      <div>
+        <div class="service-name">QMS Build</div>
+        <div class="service-sub">Quality Management System from scratch</div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="service-body">
+      <div class="service-features">
+        <div class="feat">Policy & procedure writing</div>
+        <div class="feat">Document control system</div>
+        <div class="feat">Internal audit programme</div>
+        <div class="feat">Certification preparation</div>
+      </div>
+      <button class="service-cta">Learn More</button>
+    </div>
+  </div>
+
+  <div class="service-item">
+    <div class="service-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="service-icon">🌿</div>
+      <div>
+        <div class="service-name">Eco-Hospitality Package</div>
+        <div class="service-sub">Sustainability + food safety for eco-lodges & resorts</div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="service-body">
+      <div class="service-features">
+        <div class="feat">Farm-to-table traceability</div>
+        <div class="feat">Eco-certification alignment</div>
+        <div class="feat">Guest safety protocols</div>
+        <div class="feat">Staff training modules</div>
+      </div>
+      <button class="service-cta">Learn More</button>
+    </div>
+  </div>
+
+  <div class="note"><b>Enhancements:</b> Expanded card gets elevated raised shadow (existing neu-raised) · amber glow-tag badge on flagship · Framer Motion slide-in on scroll · feature grid uses glass pill chips · icon wrappers get subtle amber glow on expand</div>
+</div>
+
+<!-- ══════════════════ CASE STUDIES ══════════════════ -->
+<h2 class="section-label" style="max-width:900px;margin-left:auto;margin-right:auto">Case Studies page — enhancement</h2>
+<div class="panel">
+  <div class="cs-grid">
+
+    <div class="cs-scene">
+      <div class="cs-card">
+        <div class="cs-sector"><span class="cs-icon">🍗</span><span class="cs-sector-name">Poultry Processing</span></div>
+        <div class="cs-title">HACCP overhaul — facility back on schedule for BRC audit</div>
+        <div class="cs-desc">Identified 14 critical control point gaps in 48h. Rebuilt documentation, retrained line supervisors.</div>
+        <div class="cs-result">"Passed our BRC audit with zero major non-conformances."</div>
+      </div>
+    </div>
+
+    <div class="cs-scene">
+      <div class="cs-card">
+        <div class="cs-sector"><span class="cs-icon">🌿</span><span class="cs-sector-name">Eco-Lodge</span></div>
+        <div class="cs-title">Farm-to-table traceability system — guest safety & brand trust</div>
+        <div class="cs-desc">Designed full supply chain traceability from on-site garden to dining room service.</div>
+        <div class="cs-result">"Guests now ask about our food safety story — it's a selling point."</div>
+      </div>
+    </div>
+
+    <div class="cs-cta-card">
+      <h3>Ready to be our next success story?</h3>
+      <p>Book a Compliance Scan and get your gap analysis within 5 business days.</p>
+      <button class="cs-cta-btn">Book a Scan</button>
+    </div>
+
+  </div>
+  <div class="note"><b>Enhancements:</b> CSS 3D perspective tilt on hover (mouse-tracking via JS) · cards lift with deeper shadow · CTA card gets glass morphism treatment · Industries row becomes smooth horizontal scroll carousel · Framer Motion stagger-in on scroll entry</div>
+</div>
+
+</body>
+</html>

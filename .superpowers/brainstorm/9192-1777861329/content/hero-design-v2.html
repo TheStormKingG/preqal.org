@@ -1,0 +1,277 @@
+<h2>Homepage Hero — v2 (Site Palette + Building)</h2>
+<p class="subtitle">Light neumorphic base (#e0e5ec), amber accents, 3D office building accent object.</p>
+
+<style>
+  /* ── Neumorphic base ── */
+  .hero-v2 {
+    position: relative;
+    height: 360px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 24px 0;
+    background: #e0e5ec;
+    box-shadow:
+      8px 8px 20px rgba(163,177,198,0.6),
+      -8px -8px 20px rgba(255,255,255,0.9);
+  }
+
+  /* ── WebGL layer — amber particles on light bg ── */
+  .layer-webgl-light {
+    position: absolute; inset: 0;
+  }
+  .amb-particle {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,158,11,0.18), transparent 70%);
+  }
+
+  /* ── Parallax rings ── */
+  .ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(245,158,11,0.15);
+  }
+
+  /* ── 3D Building (CSS art) ── */
+  .building-wrap {
+    position: absolute;
+    right: 56px; top: 28px;
+    width: 160px; height: 260px;
+    perspective: 600px;
+    animation: bob 5s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  .building-3d {
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(8deg) rotateY(-18deg);
+  }
+  /* Front face */
+  .b-front {
+    position: absolute;
+    width: 100px; height: 200px;
+    left: 20px; top: 50px;
+    background: linear-gradient(180deg, #d4dae4 0%, #c8cfd9 100%);
+    box-shadow:
+      4px 4px 12px rgba(163,177,198,0.6),
+      -2px -2px 8px rgba(255,255,255,0.8);
+    border-radius: 3px 3px 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 4px; padding: 8px;
+  }
+  /* Side face */
+  .b-side {
+    position: absolute;
+    width: 48px; height: 200px;
+    left: 118px; top: 50px;
+    background: linear-gradient(180deg, #bcc4d0 0%, #b0b9c6 100%);
+    transform: skewY(-30deg);
+    transform-origin: top left;
+    border-radius: 0 3px 3px 0;
+  }
+  /* Roof */
+  .b-roof {
+    position: absolute;
+    width: 100px; height: 30px;
+    left: 20px; top: 22px;
+    background: linear-gradient(135deg, #d0d6e0, #c4ccd8);
+    transform: skewX(-40deg);
+    border-radius: 2px 2px 0 0;
+    box-shadow: -2px -2px 6px rgba(255,255,255,0.7);
+  }
+  .b-roof-side {
+    position: absolute;
+    width: 48px; height: 30px;
+    left: 118px; top: 22px;
+    background: linear-gradient(135deg, #b8c0cc, #acb5c2);
+    transform: skewY(-30deg) skewX(-40deg);
+    transform-origin: top left;
+  }
+  /* Windows */
+  .win {
+    background: linear-gradient(135deg, rgba(245,158,11,0.5), rgba(251,191,36,0.3));
+    border-radius: 1px;
+    box-shadow: inset 0 0 4px rgba(245,158,11,0.3);
+  }
+  .win.lit { background: linear-gradient(135deg, rgba(245,158,11,0.85), rgba(253,230,138,0.7)); box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+  /* Ground shadow */
+  .b-shadow {
+    position: absolute;
+    bottom: 10px; left: 30px;
+    width: 130px; height: 16px;
+    background: radial-gradient(ellipse, rgba(163,177,198,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  /* Amber glow behind building */
+  .b-glow {
+    position: absolute;
+    right: 20px; top: 20px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* ── Glass content card ── */
+  .layer-content-light {
+    position: absolute;
+    left: 40px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    max-width: 380px;
+  }
+  .neu-glass-card {
+    background: rgba(224, 229, 236, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 28px 28px;
+    box-shadow:
+      6px 6px 16px rgba(163,177,198,0.5),
+      -4px -4px 12px rgba(255,255,255,0.85),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  .neu-headline {
+    font-size: 1.6rem; font-weight: 700; line-height: 1.25;
+    color: #2d3748; margin: 0 0 10px;
+  }
+  .neu-headline span { color: #d97706; }
+  .neu-sub {
+    font-size: 0.82rem; color: #718096; margin: 0 0 20px; line-height: 1.6;
+  }
+  .neu-cta { display: flex; gap: 10px; }
+  .neu-btn-primary {
+    padding: 9px 20px; border-radius: 10px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff; font-size: 0.82rem; font-weight: 600;
+    box-shadow: 4px 4px 10px rgba(217,119,6,0.3), -2px -2px 6px rgba(255,255,255,0.5);
+  }
+  .neu-btn-ghost {
+    padding: 9px 20px; border-radius: 10px; cursor: pointer;
+    background: #e0e5ec; font-size: 0.82rem; color: #4a5568; font-weight: 500;
+    box-shadow: 3px 3px 8px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.8);
+    border: none;
+  }
+
+  /* ── Scroll hint ── */
+  .scroll-hint-light {
+    position: absolute; bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .scroll-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #f59e0b; opacity: 0.5;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(4px); opacity: 1; }
+  }
+  .scroll-line-light {
+    width: 1px; height: 24px;
+    background: linear-gradient(to bottom, rgba(245,158,11,0.5), transparent);
+  }
+
+  /* ── Layer labels ── */
+  .llabel {
+    position: absolute;
+    background: rgba(224,229,236,0.9);
+    color: #4a5568;
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(163,177,198,0.4), -1px -1px 4px rgba(255,255,255,0.8);
+  }
+
+  /* ── Legend ── */
+  .legend-neu {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin-top: 16px;
+  }
+  .ln-item {
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px; padding: 10px 12px;
+    box-shadow: 3px 3px 8px rgba(163,177,198,0.4), -2px -2px 6px rgba(255,255,255,0.8);
+  }
+  .ln-item .label { color: #d97706; margin-bottom: 4px; }
+  .ln-item p { margin: 0; font-size: 0.78rem; color: #718096; line-height: 1.5; }
+</style>
+
+<div class="hero-v2">
+  <!-- Amber particle glow layer -->
+  <div class="layer-webgl-light">
+    <div class="amb-particle" style="width:300px;height:300px;top:-100px;right:0;opacity:0.8"></div>
+    <div class="amb-particle" style="width:160px;height:160px;bottom:-40px;left:30%;opacity:0.6"></div>
+    <div class="amb-particle" style="width:80px;height:80px;top:30%;left:15%;opacity:0.5"></div>
+  </div>
+
+  <!-- Parallax rings -->
+  <div class="ring" style="width:280px;height:280px;top:-80px;right:-60px"></div>
+  <div class="ring" style="width:180px;height:180px;top:-20px;right:20px;border-color:rgba(245,158,11,0.1)"></div>
+
+  <!-- 3D Building -->
+  <div class="b-glow"></div>
+  <div class="building-wrap">
+    <div class="building-3d">
+      <div class="b-roof"></div>
+      <div class="b-roof-side"></div>
+      <div class="b-front">
+        <div class="win lit"></div><div class="win"></div><div class="win lit"></div><div class="win"></div>
+        <div class="win"></div><div class="win lit"></div><div class="win"></div><div class="win lit"></div>
+        <div class="win lit"></div><div class="win"></div><div class="win"></div><div class="win lit"></div>
+        <div class="win"></div><div class="win lit"></div><div class="win lit"></div><div class="win"></div>
+        <div class="win lit"></div><div class="win"></div><div class="win lit"></div><div class="win"></div>
+        <div class="win"></div><div class="win"></div><div class="win lit"></div><div class="win lit"></div>
+        <div class="win lit"></div><div class="win lit"></div><div class="win"></div><div class="win lit"></div>
+      </div>
+      <div class="b-side"></div>
+    </div>
+    <div class="b-shadow"></div>
+  </div>
+
+  <!-- Glass content card -->
+  <div class="layer-content-light">
+    <div class="neu-glass-card">
+      <div class="neu-headline">Quality systems<br>that <span>actually work.</span></div>
+      <div class="neu-sub">Preqal helps agri-food and eco-hospitality businesses build compliance that holds up in the real world.</div>
+      <div class="neu-cta">
+        <button class="neu-btn-primary">Book a Scan</button>
+        <button class="neu-btn-ghost">See Case Studies</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint-light">
+    <div class="scroll-line-light"></div>
+    <div class="scroll-dot"></div>
+  </div>
+
+  <!-- Layer labels -->
+  <div class="llabel" style="top:10px;left:10px">① WebGL amber particles</div>
+  <div class="llabel" style="top:32px;left:10px">② Parallax rings</div>
+  <div class="llabel" style="top:54px;left:10px">③ Spline 3D office building</div>
+  <div class="llabel" style="top:76px;left:10px">④ Neumorphic glass card — Framer entrance</div>
+</div>
+
+<div class="legend-neu">
+  <div class="ln-item">
+    <div class="label">① Three.js on #e0e5ec</div>
+    <p>Amber-tinted floating orbs + subtle noise grain. Mouse parallax. CSS gradient fallback on mobile/low-power.</p>
+  </div>
+  <div class="ln-item">
+    <div class="label">② Parallax depth rings</div>
+    <p>Concentric amber rings scroll at 0.3× and 0.6× speed — adds depth without changing the light palette.</p>
+  </div>
+  <div class="ln-item">
+    <div class="label">③ Spline building</div>
+    <p>3D office building in Spline — neumorphic material, slow rotation, amber-lit windows. Lazy-loaded ~400KB.</p>
+  </div>
+  <div class="ln-item">
+    <div class="label">④ Neumorphic glass card</div>
+    <p>Content sits in a frosted neumorphic card. Headline, subtitle, and CTAs stagger in via Framer Motion on load.</p>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Does this palette + composition work? Any adjustments before we move to the full design?</p>

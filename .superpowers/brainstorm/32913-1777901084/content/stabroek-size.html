@@ -1,0 +1,204 @@
+<h2>Stabroek size & position — how much bigger and further right?</h2>
+<p class="subtitle">Currently: image ~340px stage, right edge at 20px from container. Pick the version that looks right.</p>
+
+<style>
+  .mock-hero {
+    border-radius: 14px;
+    overflow: visible;
+    background: #e0e5ec;
+    box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85);
+    margin-bottom: 10px;
+    position: relative;
+    font-family: system-ui, sans-serif;
+    height: 200px;
+  }
+  .hero-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+  .glass {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 220px;
+    background: rgba(224,229,236,0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 4px 4px 10px rgba(163,177,198,0.45), -3px -3px 8px rgba(255,255,255,0.85);
+    z-index: 4;
+  }
+  .tag { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #d97706; margin-bottom: 4px; }
+  .hl { font-size: 0.75rem; font-weight: 700; color: #1a2234; line-height: 1.2; margin: 0 0 4px; }
+  .hl span { color: #d97706; }
+  .sub { font-size: 0.6rem; color: #64748b; line-height: 1.45; margin: 0 0 8px; }
+  .btn { display: inline-block; padding: 5px 12px; border-radius: 8px; font-size: 0.6rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+  /* Saturn mock */
+  .saturn-wrap {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .building { background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 4px; position: relative; z-index: 2; }
+  .ring { position: absolute; border-radius: 50%; }
+
+  /* ruler overlay */
+  .ruler {
+    position: absolute;
+    bottom: 6px;
+    right: 0;
+    height: 3px;
+    background: rgba(245,158,11,0.4);
+    display: flex;
+    align-items: center;
+  }
+  .ruler-label {
+    position: absolute;
+    bottom: 12px;
+    right: 0;
+    font-size: 7px;
+    font-weight: 700;
+    color: #d97706;
+    white-space: nowrap;
+  }
+  .margin-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(245,158,11,0.35);
+    border-left: 1px dashed rgba(245,158,11,0.4);
+  }
+  .badge { display: inline-block; font-size: 7px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; background: #d97706; padding: 2px 7px; border-radius: 4px; margin-bottom: 6px; }
+</style>
+
+<div class="cards">
+
+  <!-- Current (baseline) -->
+  <div class="card" data-choice="current" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero">
+        <div class="hero-inner">
+          <div class="glass">
+            <div class="tag">Quality · Safety · Compliance</div>
+            <div class="hl">Systems that<br><span>actually work.</span></div>
+            <div class="sub">Compliance frameworks that hold up in the real world.</div>
+            <div class="btn">Book a Scan</div>
+          </div>
+          <!-- Current: right:20px, stage ~340px wide implied by building ~80px + rings to ~190px -->
+          <div class="saturn-wrap" style="right: 20px;">
+            <div class="ring" style="width:130px;height:33px;border:2px solid rgba(245,158,11,0.55);"></div>
+            <div class="ring" style="width:180px;height:45px;border:1.5px solid rgba(245,158,11,0.35);"></div>
+            <div class="ring" style="width:226px;height:56px;border:1px solid rgba(245,158,11,0.18);"></div>
+            <div class="building" style="width:80px;height:80px;"></div>
+          </div>
+          <!-- Margin indicator -->
+          <div class="margin-line" style="right:20px;"></div>
+          <div class="ruler-label" style="right:22px;">← 20px margin</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Current baseline</h3>
+      <p>Building 80px, outer ring ~226px. Right edge at 20px margin. Reference point — don't pick this.</p>
+    </div>
+  </div>
+
+  <!-- Option A: slightly bigger + more margin -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero">
+        <div class="hero-inner">
+          <div class="glass">
+            <div class="tag">Quality · Safety · Compliance</div>
+            <div class="hl">Systems that<br><span>actually work.</span></div>
+            <div class="sub">Compliance frameworks that hold up in the real world.</div>
+            <div class="btn">Book a Scan</div>
+          </div>
+          <!-- +15% bigger, right:44px -->
+          <div class="saturn-wrap" style="right: 44px;">
+            <div class="ring" style="width:150px;height:38px;border:2px solid rgba(245,158,11,0.55);"></div>
+            <div class="ring" style="width:207px;height:52px;border:1.5px solid rgba(245,158,11,0.35);"></div>
+            <div class="ring" style="width:260px;height:65px;border:1px solid rgba(245,158,11,0.18);"></div>
+            <div class="building" style="width:92px;height:92px;"></div>
+          </div>
+          <div class="margin-line" style="right:44px;"></div>
+          <div class="ruler-label" style="right:46px;">← 44px margin</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Subtle upgrade (+15%)</h3>
+      <p>Building 92px, outer ring ~260px. Right edge at 44px — noticeably more breathing room. Conservative step up.</p>
+    </div>
+  </div>
+
+  <!-- Option B: meaningfully bigger + comfortable margin -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero">
+        <div class="hero-inner">
+          <div class="glass">
+            <div class="tag">Quality · Safety · Compliance</div>
+            <div class="hl">Systems that<br><span>actually work.</span></div>
+            <div class="sub">Compliance frameworks that hold up in the real world.</div>
+            <div class="btn">Book a Scan</div>
+          </div>
+          <!-- +30% bigger, right:56px -->
+          <div class="saturn-wrap" style="right: 56px;">
+            <div class="ring" style="width:170px;height:43px;border:2px solid rgba(245,158,11,0.55);"></div>
+            <div class="ring" style="width:234px;height:59px;border:1.5px solid rgba(245,158,11,0.35);"></div>
+            <div class="ring" style="width:294px;height:74px;border:1px solid rgba(245,158,11,0.18);"></div>
+            <div class="building" style="width:104px;height:104px;"></div>
+          </div>
+          <div class="margin-line" style="right:56px;"></div>
+          <div class="ruler-label" style="right:58px;">← 56px margin</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Noticeable step up (+30%) ✦ Recommended</h3>
+      <p>Building 104px, outer ring ~294px. Right edge at 56px. More presence, good breathing room. Recommended balance.</p>
+    </div>
+  </div>
+
+  <!-- Option C: bold / large -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-hero">
+        <div class="hero-inner">
+          <div class="glass">
+            <div class="tag">Quality · Safety · Compliance</div>
+            <div class="hl">Systems that<br><span>actually work.</span></div>
+            <div class="sub">Compliance frameworks that hold up in the real world.</div>
+            <div class="btn">Book a Scan</div>
+          </div>
+          <!-- +50% bigger, right:68px, bleeds slightly -->
+          <div class="saturn-wrap" style="right: 68px;">
+            <div class="ring" style="width:196px;height:49px;border:2px solid rgba(245,158,11,0.55);"></div>
+            <div class="ring" style="width:270px;height:68px;border:1.5px solid rgba(245,158,11,0.35);"></div>
+            <div class="ring" style="width:340px;height:85px;border:1px solid rgba(245,158,11,0.18);"></div>
+            <div class="building" style="width:120px;height:120px;"></div>
+          </div>
+          <div class="margin-line" style="right:68px;"></div>
+          <div class="ruler-label" style="right:70px;">← 68px margin</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Bold & large (+50%)</h3>
+      <p>Building 120px, outer ring ~340px. Right edge at 68px. Outer ring may bleed off edge slightly — dramatic effect, makes Stabroek a real centrepiece.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:16px">Click your preferred size, then tell me in the terminal.</p>

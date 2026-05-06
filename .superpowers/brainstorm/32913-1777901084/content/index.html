@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neumorphic x Glass — Merged System</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #e0e5ec; font-family: system-ui, sans-serif; padding: 24px; color: #1a2234; }
+h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+.subtitle { font-size: 0.8rem; color: #64748b; margin-bottom: 20px; line-height: 1.5; }
+.rule-box { background: #e0e5ec; border-radius: 16px; box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85); padding: 16px 20px; margin-bottom: 24px; }
+.rule-box h2 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.rule-row { display: flex; gap: 10px; align-items: stretch; }
+.rule-item { flex: 1; border-radius: 10px; padding: 10px 12px; font-size: 0.7rem; line-height: 1.5; }
+.rule-neu { background: #e0e5ec; box-shadow: 4px 4px 8px rgba(163,177,198,0.5), -3px -3px 7px rgba(255,255,255,0.8); }
+.rule-glass { background: rgba(224,229,236,0.78); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.6); box-shadow: 3px 3px 8px rgba(163,177,198,0.4), -2px -2px 6px rgba(255,255,255,0.8); }
+.rule-label { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
+.rule-label.neu { color: #64748b; }
+.rule-label.glass { color: #d97706; }
+.arrow { display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d97706; flex: 0 0 20px; }
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.demo-panel { background: #e0e5ec; border-radius: 14px; box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85); overflow: hidden; }
+.demo-panel-label { font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #d97706; background: rgba(245,158,11,0.08); padding: 5px 12px; border-bottom: 1px solid rgba(163,177,198,0.2); }
+.demo-body { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.g { background: rgba(224,229,236,0.82); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.58); border-radius: 8px; padding: 7px 9px; box-shadow: 3px 3px 7px rgba(163,177,198,0.38), -2px -2px 5px rgba(255,255,255,0.82); }
+.n { background: #e0e5ec; border-radius: 8px; padding: 7px 9px; box-shadow: 3px 3px 7px rgba(163,177,198,0.45), -2px -2px 6px rgba(255,255,255,0.82); }
+.el-label { font-size: 6.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8; margin-bottom: 2px; }
+.el-label.amber { color: #d97706; }
+.el-title { font-size: 0.65rem; font-weight: 700; color: #1a2234; }
+.el-sub { font-size: 0.58rem; color: #64748b; line-height: 1.4; }
+.chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.chip-g { font-size: 0.55rem; padding: 2px 7px; border-radius: 20px; background: rgba(224,229,236,0.82); border: 1px solid rgba(255,255,255,0.55); box-shadow: 1px 1px 3px rgba(163,177,198,0.3); color: #475569; }
+.tag { font-size: 6.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #d97706; background: rgba(245,158,11,0.1); padding: 2px 6px; border-radius: 20px; display: inline-block; margin-bottom: 3px; }
+.btn-a { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.58rem; font-weight: 600; color: #fff; background: linear-gradient(135deg,#f59e0b,#d97706); margin-top: 4px; }
+.row { display: flex; gap: 6px; }
+.stats-row { display: flex; gap: 4px; }
+.stat { flex: 1; text-align: center; }
+.stat-n { font-size: 0.75rem; font-weight: 700; color: #d97706; }
+.stat-l { font-size: 0.5rem; color: #94a3b8; }
+.summary { background: #e0e5ec; border-radius: 14px; box-shadow: 6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85); overflow: hidden; }
+.summary table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+.summary th { font-size: 7px; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8; font-weight: 600; padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(163,177,198,0.2); }
+.summary td { padding: 7px 12px; border-bottom: 1px solid rgba(163,177,198,0.12); color: #475569; vertical-align: top; }
+.summary tr:last-child td { border-bottom: none; }
+.pill { display: inline-block; font-size: 6.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border-radius: 20px; }
+.pill.glass { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.25); }
+.pill.neu { background: rgba(100,116,139,0.1); color: #64748b; }
+.page-name { font-weight: 700; color: #1a2234; font-size: 0.7rem; }
+.ok-btn { display: block; margin: 20px auto 0; padding: 10px 28px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; color: #fff; background: linear-gradient(135deg,#f59e0b,#d97706); border: none; cursor: pointer; box-shadow: 3px 3px 8px rgba(217,119,6,0.3); }
+</style>
+</head>
+<body>
+
+<h1>Neumorphic x Glass — a unified system</h1>
+<p class="subtitle">One rule makes them coexist: <strong>neumorphic = base material</strong> (extruded from the surface) · <strong>glass = elevated layer</strong> (floating above it). The contrast signals active vs resting, accent vs body content.</p>
+
+<div class="rule-box">
+  <h2>The principle</h2>
+  <div class="rule-row">
+    <div class="rule-item rule-neu">
+      <div class="rule-label neu">Neumorphic = Base / Resting</div>
+      Cards at rest, closed accordions, body content, profile panels. Feels <em>part of the surface</em>.
+    </div>
+    <div class="arrow">→</div>
+    <div class="rule-item rule-glass">
+      <div class="rule-label glass">Glass = Elevated / Active / Accent</div>
+      Hero overlays, open accordion state, stat callouts, CTA moments, tag pills. Feels <em>lifted off the surface</em>.
+    </div>
+  </div>
+</div>
+
+<div class="demo-grid">
+  <div class="demo-panel">
+    <div class="demo-panel-label">Home — Hero</div>
+    <div class="demo-body">
+      <div class="g">
+        <div class="tag">Quality · Safety</div>
+        <div class="el-title">Systems that actually work.</div>
+        <div class="el-sub">Compliance frameworks for agri-food and eco-hospitality.</div>
+        <div class="btn-a">Book a Scan</div>
+      </div>
+      <div class="g">
+        <div class="el-label amber">At a glance</div>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-n">12+</div><div class="stat-l">clients</div></div>
+          <div class="stat"><div class="stat-n">98%</div><div class="stat-l">pass rate</div></div>
+          <div class="stat"><div class="stat-n">3</div><div class="stat-l">industries</div></div>
+        </div>
+      </div>
+      <div class="n" style="opacity:0.6;"><div class="el-label">Below fold — stays neumorphic</div><div class="el-sub">Trust panels, service previews</div></div>
+    </div>
+  </div>
+
+  <div class="demo-panel">
+    <div class="demo-panel-label">Services — Accordion</div>
+    <div class="demo-body">
+      <div class="g">
+        <div class="el-label amber">Open → glass (active = elevated)</div>
+        <div class="el-title">Risk Scan</div>
+        <div class="el-sub">Identify compliance gaps before they cost you.</div>
+        <div class="chips"><span class="chip-g">HACCP</span><span class="chip-g">Gap Analysis</span><span class="chip-g">Report</span></div>
+      </div>
+      <div class="n"><div class="el-label">Closed → neumorphic (resting)</div><div class="el-title">QMS Build</div></div>
+      <div class="n" style="opacity:0.7;"><div class="el-title">Staff Training</div></div>
+    </div>
+  </div>
+
+  <div class="demo-panel">
+    <div class="demo-panel-label">Case Studies</div>
+    <div class="demo-body">
+      <div class="n"><div class="el-label">Case card → neumorphic (content)</div><div class="el-title">Poultry processor, 3 sites</div><div class="el-sub">GFSI certification in 4 months.</div></div>
+      <div class="row"><span class="chip-g">Poultry</span><span class="chip-g">Eco-lodge</span><span class="chip-g">Agri-export</span></div>
+      <div class="g"><div class="el-label amber">CTA → glass (hero moment)</div><div class="el-title">Ready to build your system?</div><div class="btn-a">Book a Scan</div></div>
+    </div>
+  </div>
+
+  <div class="demo-panel">
+    <div class="demo-panel-label">About</div>
+    <div class="demo-body">
+      <div class="n"><div class="el-label">Profile → neumorphic (grounded)</div><div class="el-title">Stefan Gravesande</div><div class="el-sub">Quality &amp; Safety Consultant</div></div>
+      <div class="g"><div class="el-label amber">Section intro → glass (accent)</div><div class="el-title">Our approach</div><div class="el-sub">Systems built to last, not just to pass.</div></div>
+      <div class="n" style="opacity:0.8;"><div class="el-label">Philosophy items → neumorphic</div><div class="el-sub">Practical · Rigorous · People-first</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="summary">
+  <table>
+    <thead><tr><th>Page</th><th>Element</th><th>Material</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td class="page-name">Home</td><td>Hero left panel</td><td><span class="pill glass">Glass</span></td><td>Floating overlay on Saturn stage</td></tr>
+      <tr><td></td><td>Stats bar</td><td><span class="pill glass">Glass</span></td><td>Accent callout, not body content</td></tr>
+      <tr><td></td><td>Panels below fold</td><td><span class="pill neu">Neumorphic</span></td><td>Body content, grounded</td></tr>
+      <tr><td class="page-name">Services</td><td>Open accordion header + body</td><td><span class="pill glass">Glass</span></td><td>Active = elevated</td></tr>
+      <tr><td></td><td>Feature chips inside open panel</td><td><span class="pill glass">Glass</span></td><td>Inside elevated state</td></tr>
+      <tr><td></td><td>Closed accordion cards</td><td><span class="pill neu">Neumorphic</span></td><td>Resting state</td></tr>
+      <tr><td class="page-name">Case Studies</td><td>Case cards</td><td><span class="pill neu">Neumorphic</span></td><td>Content, not accent</td></tr>
+      <tr><td></td><td>Industry tag pills</td><td><span class="pill glass">Glass</span></td><td>Accent labels, slight elevation</td></tr>
+      <tr><td></td><td>CTA block</td><td><span class="pill glass">Glass</span></td><td>Hero moment</td></tr>
+      <tr><td class="page-name">About</td><td>Profile card</td><td><span class="pill neu">Neumorphic</span></td><td>Grounded, authoritative</td></tr>
+      <tr><td></td><td>"Our approach" intro</td><td><span class="pill glass">Glass</span></td><td>Section accent callout</td></tr>
+      <tr><td></td><td>Philosophy items</td><td><span class="pill neu">Neumorphic</span></td><td>Body content</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<button class="ok-btn" onclick="fetch('/select',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({choice:'approved',question:'glass-system'})})">Looks good — use this system</button>
+
+</body>
+</html>
