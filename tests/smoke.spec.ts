@@ -35,9 +35,8 @@ test('homepage loads', async ({ page }) => {
   const check = watchForErrors(page);
   await page.goto('/');
   await expect(page).toHaveTitle(/Preqal/i);
-  // Hero section should be visible — use nth(1) because the mobile h1 (md:hidden)
-  // is first in DOM and hidden at the default 1280px test viewport.
-  await expect(page.locator('h1').nth(1)).toBeVisible();
+  // Single h1 sits above the hero container, visible at all viewports.
+  await expect(page.locator('h1').first()).toBeVisible();
   check();
 });
 

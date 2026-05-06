@@ -96,40 +96,58 @@ const Home: React.FC = () => {
 
             {/* Mobile layout */}
             <div
-              className="flex flex-col items-start gap-3 md:hidden relative"
-              style={{ minHeight: '360px', padding: '20px', zIndex: 2 }}
+              className="flex flex-col items-stretch md:hidden relative"
+              style={{ padding: '16px', zIndex: 2 }}
             >
-              <GlassCard style={{ background: 'rgba(255,255,255,0.20)', width: '100%' }}>
+              {/* Same split-card as desktop, adapted for mobile */}
+              <div style={{
+                borderRadius: '16px',
+                overflow: 'hidden',
+                border: '2px solid rgba(255,255,255,0.96)',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 6px 6px 20px rgba(0,0,0,0.22)',
+              }}>
+                {/* Top half — Saturn, 95% transparent */}
                 <motion.div
-                  style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '20px 16px 14px',
+                    background: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(4px)',
+                    WebkitBackdropFilter: 'blur(4px)',
+                    borderBottom: '2px solid rgba(255,255,255,0.90)',
+                  }}
                   initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }}
                 >
                   <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="sm" />
                 </motion.div>
-                <motion.p
-                  className="font-bold text-amber-500 leading-tight mb-2"
-                  style={{ fontSize: '1.15rem' }}
-                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
-                >
-                  built it right.
-                </motion.p>
-                <motion.p
-                  className="text-slate-800 leading-relaxed mb-3"
-                  style={{ fontSize: '0.62rem' }}
-                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.14 }}
-                >
-                  Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built.
-                </motion.p>
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.21 }}>
-                  <Link
-                    to="/book"
-                    className="inline-block px-3 py-1.5 rounded-[8px] text-white font-semibold"
-                    style={{ fontSize: '0.6rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 8px rgba(217,119,6,0.3)' }}
+                {/* Bottom half — text, 82% white */}
+                <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '16px 20px 20px' }}>
+                  <motion.p
+                    className="font-bold text-amber-500 leading-tight mb-2"
+                    style={{ fontSize: '1.15rem' }}
+                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
                   >
-                    Book a Risk Scan
-                  </Link>
-                </motion.div>
-              </GlassCard>
+                    built it right.
+                  </motion.p>
+                  <motion.p
+                    className="text-slate-900 leading-relaxed mb-3 text-sm"
+                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.14 }}
+                  >
+                    Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built.
+                  </motion.p>
+                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.21 }}>
+                    <Link
+                      to="/book"
+                      className="inline-block px-4 py-2 rounded-[8px] text-white font-semibold text-sm"
+                      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 8px rgba(217,119,6,0.3)' }}
+                    >
+                      Book a Risk Scan
+                    </Link>
+                  </motion.div>
+                </div>
+              </div>
             </div>
 
             {/* Desktop layout */}
