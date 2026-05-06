@@ -16,6 +16,7 @@ const PAIN_POINTS = [
 const QUALITY_CARDS = [
   {
     img: 'testimonial-dionne.jpg',
+    imgPos: '50% 8%',
     icon: <Shield className="h-7 w-7" />,
     title: 'Lead with complete confidence',
     before: 'Right now: bracing for the next audit, inspection, or client demand.',
@@ -23,6 +24,7 @@ const QUALITY_CARDS = [
   },
   {
     img: 'business-team.jpg',
+    imgPos: '50% 22%',
     icon: <Heart className="h-7 w-7" />,
     title: 'Your staff will love coming to work',
     before: 'Right now: your team improvises because the system isn\'t clear.',
@@ -30,6 +32,7 @@ const QUALITY_CARDS = [
   },
   {
     img: 'testimonial-priya.jpg',
+    imgPos: '50% 5%',
     icon: <TrendingUp className="h-7 w-7" />,
     title: 'Your business keeps getting better',
     before: 'Right now: the same problems resurface, year after year.',
@@ -291,7 +294,8 @@ const Home: React.FC = () => {
                         <img
                           src={`${import.meta.env.BASE_URL}images/${card.img}`}
                           alt=""
-                          className="w-full h-full object-cover object-top"
+                          className="w-full h-full object-cover"
+                          style={{ objectPosition: card.imgPos }}
                           loading="lazy"
                         />
                         {/* fade into card background at bottom */}
