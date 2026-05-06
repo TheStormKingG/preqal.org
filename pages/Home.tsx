@@ -138,45 +138,66 @@ const Home: React.FC = () => {
               style={{ height: 'calc(100dvh - 200px)', position: 'relative', zIndex: 2 }}
             >
               <div style={{ flex: '0 0 50%', minWidth: 0, display: 'flex', alignItems: 'center', padding: '32px 40px 32px 36px', zIndex: 4, position: 'relative' }}>
-                <GlassCard style={{ background: 'rgba(255,255,255,0.20)' }}>
+                {/* Split card: top = Saturn (90% transparent), bottom = text (70% transparent) */}
+                <div style={{
+                  width: '100%',
+                  borderRadius: '18px',
+                  overflow: 'hidden',
+                  border: '1.5px solid rgba(255,255,255,0.72)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
+                  boxShadow: '6px 6px 24px rgba(0,0,0,0.18), -3px -3px 12px rgba(255,255,255,0.25)',
+                }}>
+                  {/* Top half — Saturn, 90% transparent */}
                   <motion.div
-                    style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: '28px 24px 20px',
+                      background: 'rgba(255,255,255,0.10)',
+                      borderBottom: '1px solid rgba(255,255,255,0.55)',
+                    }}
                     initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.05 }}
                   >
                     <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
                   </motion.div>
-                  <motion.p
-                    className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-                  >
-                    built it right.
-                  </motion.p>
-                  <motion.p
-                    className="text-[1rem] text-slate-800 mb-6 leading-relaxed"
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.16 }}
-                  >
-                    Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
-                  </motion.p>
-                  <motion.div
-                    className="flex gap-2.5"
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.24 }}
-                  >
-                    <Link
-                      to="/book"
-                      className="px-5 py-2.5 rounded-[10px] text-white text-[0.82rem] font-semibold"
-                      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 6px rgba(255,200,80,0.15)' }}
+
+                  {/* Bottom half — text, 70% transparent with more white */}
+                  <div style={{ background: 'rgba(255,255,255,0.30)', padding: '24px 28px 28px' }}>
+                    <motion.p
+                      className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
                     >
-                      Book a Risk Scan
-                    </Link>
-                    <Link
-                      to="/case-studies"
-                      className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-800 font-medium"
-                      style={{ background: 'rgba(224,229,236,0.45)', boxShadow: '3px 3px 8px rgba(163,177,198,0.4), -2px -2px 6px rgba(255,255,255,0.6)' }}
+                      built it right.
+                    </motion.p>
+                    <motion.p
+                      className="text-[1rem] text-slate-900 mb-6 leading-relaxed"
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.16 }}
                     >
-                      See What's Possible
-                    </Link>
-                  </motion.div>
-                </GlassCard>
+                      Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
+                    </motion.p>
+                    <motion.div
+                      className="flex gap-2.5"
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.24 }}
+                    >
+                      <Link
+                        to="/book"
+                        className="px-5 py-2.5 rounded-[10px] text-white text-[0.82rem] font-semibold"
+                        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35)' }}
+                      >
+                        Book a Risk Scan
+                      </Link>
+                      <Link
+                        to="/case-studies"
+                        className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-800 font-semibold"
+                        style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '2px 2px 8px rgba(0,0,0,0.08)' }}
+                      >
+                        See What's Possible
+                      </Link>
+                    </motion.div>
+                  </div>
+                </div>
               </div>
 
               {/* Right side — background image fills freely */}
