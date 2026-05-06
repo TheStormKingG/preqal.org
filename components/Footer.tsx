@@ -156,6 +156,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-6 md:contents">
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">SERVICES</h3>
             <ul className="space-y-2 text-sm">
@@ -183,6 +184,7 @@ const Footer: React.FC = () => {
               <li><Link to="/preqal-not-prequel" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>
           </div>
+          </div>{/* end mobile 2-col wrapper */}
 
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPLIANCE</h3>
