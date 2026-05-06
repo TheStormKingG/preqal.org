@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ChevronDown, CheckSquare, ArrowRight } from 'lucide-react';
 import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
+
+const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
 
 /* ─── Types ─── */
 interface ServiceData {
@@ -550,21 +553,25 @@ const ServiceAccordionItem: React.FC<{
 
           {/* CTA row */}
           <div className="flex items-center gap-5 flex-wrap">
-            <Link
-              to={`/book?service=${encodeURIComponent(service.bookService)}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-400 transition-colors"
-              style={{
-                boxShadow: '4px 4px 10px rgba(217,119,6,0.3), -2px -2px 6px rgba(255,255,255,0.7)',
-              }}
-            >
-              {service.ctaLabel} <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/case-studies"
-              className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-px"
-            >
-              See success stories
-            </Link>
+            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+              <Link
+                to={`/book?service=${encodeURIComponent(service.bookService)}`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-600 transition-colors"
+                style={{
+                  boxShadow: '4px 4px 10px rgba(217,119,6,0.3), -2px -2px 6px rgba(255,255,255,0.7)',
+                }}
+              >
+                {service.ctaLabel} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+              <Link
+                to="/case-studies"
+                className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-px"
+              >
+                See success stories
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -639,50 +646,61 @@ const Services: React.FC = () => {
             }}
           />
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <ScrollReveal yFrom={16} xFrom={0} delay={0}>
-              <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7">
-                <span style={{ fontSize: '8px' }}>◆</span> Services &amp; The Journey
-              </div>
-              <h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.08] mb-7 max-w-[680px]"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-              >
-                You worked too hard
-                <br />
-                to leave your business
-                <br />
-                <em style={{ color: '#d97706' }}>unprotected.</em>
-              </h1>
-              <p className="text-lg text-slate-500 max-w-[580px] leading-relaxed mb-10">
-                Right now, somewhere in your business, there's a gap. A missed procedure. An
-                undocumented process. A risk hiding in plain sight.{' '}
-                <strong className="text-slate-700 font-semibold">
-                  You know it. You feel it.
-                </strong>{' '}
-                And you've been meaning to deal with it — but the day never comes.{' '}
-                <strong className="text-slate-700 font-semibold">Until now.</strong>
-              </p>
-              <div className="flex items-center gap-5 flex-wrap">
-                <a
+            <motion.div
+              className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+            >
+              <span style={{ fontSize: '8px' }}>◆</span> Services &amp; The Journey
+            </motion.div>
+            <motion.h1
+              className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.08] mb-7 max-w-[680px]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            >
+              You worked too hard
+              <br />
+              to leave your business
+              <br />
+              <em style={{ color: '#d97706' }}>unprotected.</em>
+            </motion.h1>
+            <motion.p
+              className="text-lg text-slate-500 max-w-[580px] leading-relaxed mb-10"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
+            >
+              Right now, somewhere in your business, there's a gap. A missed procedure. An
+              undocumented process. A risk hiding in plain sight.{' '}
+              <strong className="text-slate-700 font-semibold">
+                You know it. You feel it.
+              </strong>{' '}
+              And you've been meaning to deal with it — but the day never comes.{' '}
+              <strong className="text-slate-700 font-semibold">Until now.</strong>
+            </motion.p>
+            <motion.div
+              className="flex items-center gap-5 flex-wrap"
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.42 }}
+            >
+                <motion.a
                   href="#step-1"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-bold text-white rounded-xl transition-all"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-bold text-white rounded-xl"
                   style={{
                     background: '#d97706',
                     boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.8)',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#b45309')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#d97706')}
+                  whileHover={{ scale: 1.04, y: -2, background: '#b45309' }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={springBtn}
                 >
                   See the path forward →
-                </a>
-                <Link
-                  to="/contact"
-                  className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
-                >
-                  Talk to Stefan first
-                </Link>
-              </div>
-            </ScrollReveal>
+                </motion.a>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+                  <Link
+                    to="/contact"
+                    className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
+                  >
+                    Talk to Dr. Gravesande first
+                  </Link>
+                </motion.div>
+            </motion.div>
           </div>
         </section>
 
@@ -921,37 +939,27 @@ const Services: React.FC = () => {
                 You're still reading. That tells you everything you need to know.
               </p>
               <div className="flex items-center gap-6 flex-wrap">
-                <Link
-                  to="/book?service=Compliance+Baseline+Scan"
-                  className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-extrabold text-white rounded-2xl transition-all"
-                  style={{
-                    background: '#d97706',
-                    boxShadow: '0 6px 24px rgba(217,119,6,0.4)',
-                    letterSpacing: '0.01em',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#b45309')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#d97706')}
-                >
-                  Start with the Compliance Scan <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-[15px] font-semibold pb-0.5 transition-all"
-                  style={{
-                    color: 'rgba(255,255,255,0.55)',
-                    borderBottom: '1px solid rgba(255,255,255,0.2)',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.color = 'white';
-                    e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.55)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.55)';
-                    e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.2)';
-                  }}
-                >
-                  Talk to Stefan first
-                </Link>
+                <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+                  <Link
+                    to="/book?service=Compliance+Baseline+Scan"
+                    className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-extrabold text-white rounded-2xl hover:bg-amber-700 transition-colors"
+                    style={{
+                      background: '#d97706',
+                      boxShadow: '0 6px 24px rgba(217,119,6,0.4)',
+                      letterSpacing: '0.01em',
+                    }}
+                  >
+                    Start with the Compliance Scan <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+                  <Link
+                    to="/contact"
+                    className="text-[15px] font-semibold pb-0.5 transition-all text-white/55 hover:text-white border-b border-white/20 hover:border-white/55"
+                  >
+                    Talk to Dr. Gravesande first
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
