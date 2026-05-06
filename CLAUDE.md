@@ -168,9 +168,87 @@ When editing these, remember they embed Supabase JS via CDN and EmailJS via CDN 
 
 ---
 
+## Preqal Brand Design System
+
+> Canonical reference for all UI work. Every page should match these patterns.
+
+### Typeface
+- **Rubik only** — no font mixing, ever.
+- Weight hierarchy: 400 body · 500 labels/UI · 600 semibold · 700 headings · 800–900 display/hero
+- Loaded via Google Fonts (`Rubik:wght@400;500;600;700;800`), applied via Tailwind `font-sans`
+
+### Colours
+| Role | Value |
+|---|---|
+| Page background | `#e0e5ec` |
+| Primary amber | `amber-500` `#f59e0b` |
+| Amber CTA / dark | `amber-600` `#d97706` |
+| Amber glow / stats | `amber-400` `#fbbf24` |
+| Dark navy band | `#0f172a` |
+| Heading text | `slate-900` |
+| Strong body | `slate-700` |
+| Body / subtext | `slate-500` |
+| Muted labels | `slate-400` |
+| Shadow dark | `#a3b1c6` |
+| Shadow light | `#ffffff` |
+
+### Shadows (Neumorphic)
+```
+neu-raised:    6px 6px 12px #a3b1c6,  -6px -6px 12px #ffffff
+neu-raised-sm: 3px 3px 6px #a3b1c6,   -3px -3px 6px #ffffff
+neu-raised-lg: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff
+neu-pressed:   inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff
+neu-pressed-sm:inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff
+photo/glass:   12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)
+```
+
+### Glass Cards
+- `background: rgba(255,255,255,0.68–0.82)` · `backdropFilter: blur(14–18px)`
+- `border: 1–2px solid rgba(255,255,255,0.96)` · `border-radius: 18px (rounded-2xl)`
+
+### Dark Navy Bands (`#0f172a`)
+- Used for proof/stats moments and final CTAs
+- Always include diagonal texture: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)`
+- Optional amber radial glow: `radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%)`
+- Text: white headings · `white/55` body · `amber-400` section labels
+
+### Typography Rhythm
+- **Section label:** `text-[11px] font-bold uppercase tracking-widest text-slate-400` (amber-400 on dark)
+- **Display heading:** `text-3xl sm:text-4xl md:text-5xl font-bold` (or `font-black` for hero)
+- **Italic amber emphasis:** `<em style={{ color: '#d97706' }}>word</em>` — never use a class for this
+- **Body:** `text-lg text-slate-500 leading-relaxed`
+- **Card title:** `text-lg–xl font-bold text-slate-900`
+
+### Animations (Framer Motion)
+- **Scroll reveals:** `<ScrollReveal delay={i * 80–120} yFrom={20}>` for all cards/sections
+- **Hero entrance:** `initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }}` staggered delays 0.05→0.15→0.28→0.42
+- **Card hover:** `whileHover={{ scale:1.025, y:-3, boxShadow:'..elevated...' }}` + spring `stiffness:260, damping:22`
+- **Button hover:** `whileHover={{ scale:1.04, y:-2 }}` `whileTap={{ scale:0.97 }}` + `springBtn = { type:'spring', stiffness:340, damping:22 }`
+- Never use CSS transitions for interactive elements — always Framer Motion
+
+### CTA Buttons
+- **Primary:** `background: linear-gradient(135deg, #f59e0b, #d97706)`, white `font-bold`, `rounded-xl`, neu shadow
+- **Hover:** spring to darker amber (`#b45309`), scale up
+- **Secondary:** `text-amber-600 font-semibold border-b-2 border-amber-300/50 hover:border-amber-500`
+
+### Image Treatment
+- **Phase/section banners:** `height:260px object-cover`, dark left-gradient overlay, amber label bottom-left
+- **Hero split image:** `4:5` aspect, `rounded-3xl`, amber+dark gradient wash
+- **Photo cards:** image top (fixed height, object-cover), glass panel below
+- Always set explicit `width`/`height` attrs and `loading="lazy"` (except LCP image)
+
+### Page Structure Pattern
+Every page should follow:
+1. **Hero** — label + display heading + subtext + CTAs (split layout with image on desktop where relevant)
+2. **Content sections** — ScrollReveal cards with neumorphic or glass treatment
+3. **Dark navy band** — proof/stats or emotional storytelling moment
+4. **Final CTA band** — dark navy, large heading, primary + secondary CTAs
+
+---
+
 ## Key conventions
 
-- **Design:** Neumorphic. Background `#e0e5ec`. Soft inset/raised shadows. Amber accent (`amber-500`). Font: Inter (self-hosted).
+- **Design:** Neumorphic + glass hybrid. Background `#e0e5ec`. Rubik typeface. Amber accent. See "Preqal Brand Design System" section above.
 - **No server-side rendering** — pure SPA + static HTML files + Supabase backend.
 - **GitHub Pages SPA hack:** `public/404.html` redirects unknown paths to `index.html` via query string; `App.tsx` `GitHubPagesRedirect` component unwraps it.
 - **Canonical domain enforcement** in `App.tsx` — redirects IP addresses and non-canonical subdomains to `https://preqal.org`.
