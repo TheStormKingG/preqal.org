@@ -143,10 +143,10 @@ const Home: React.FC = () => {
                   width: '100%',
                   borderRadius: '18px',
                   overflow: 'hidden',
-                  border: '1.5px solid rgba(255,255,255,0.72)',
+                  border: '2px solid rgba(255,255,255,0.96)',
                   backdropFilter: 'blur(18px)',
                   WebkitBackdropFilter: 'blur(18px)',
-                  boxShadow: '6px 6px 24px rgba(0,0,0,0.18), -3px -3px 12px rgba(255,255,255,0.25)',
+                  boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 8px 8px 28px rgba(0,0,0,0.28), -2px -2px 8px rgba(255,255,255,0.2)',
                 }}>
                   {/* Top half — Saturn, 90% transparent */}
                   <motion.div
@@ -156,11 +156,13 @@ const Home: React.FC = () => {
                       alignItems: 'center',
                       padding: '28px 24px 20px',
                       background: 'rgba(255,255,255,0.10)',
-                      borderBottom: '1px solid rgba(255,255,255,0.55)',
+                      borderBottom: '2px solid rgba(255,255,255,0.90)',
                     }}
                     initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.05 }}
                   >
-                    <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
+                    <div style={{ transform: 'scale(0.84)', transformOrigin: 'center center' }}>
+                      <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
+                    </div>
                   </motion.div>
 
                   {/* Bottom half — text, 70% transparent with more white */}
