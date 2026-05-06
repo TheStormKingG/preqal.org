@@ -132,7 +132,7 @@ const Home: React.FC = () => {
                     style={{ fontSize: '1.15rem' }}
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
                   >
-                    built it right.
+                    ...build things right.
                   </motion.p>
                   <motion.p
                     className="text-slate-900 leading-relaxed mb-3 text-sm"
@@ -192,7 +192,7 @@ const Home: React.FC = () => {
                       className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
                       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
                     >
-                      built it right.
+                      ...build things right.
                     </motion.p>
                     <motion.p
                       className="text-[1rem] text-slate-900 mb-6 leading-relaxed"
