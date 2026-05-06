@@ -35,7 +35,7 @@ const caseStudies = [
     tagColor: 'teal',
     challenge: 'A growing eco-resort was operating without documented food safety controls, inconsistent housekeeping and maintenance procedures, and no structured emergency response or guest safety protocols — creating real exposure ahead of international tour operator partnerships.',
     solution: 'Designed an integrated QMS covering food safety (HACCP-aligned), departmental SOPs for front-of-house, kitchen, housekeeping, and maintenance, a guest safety and emergency response plan, and a competency-based staff training programme. Conducted a mock inspection against international hospitality standards.',
-    result: 'The resort passed its first formal third-party inspection with no major non-conformances, secured two new international tour operator agreements citing compliance confidence, and reported a measurable improvement in staff consistency and guest satisfaction scores.',
+    result: 'Received formal recognition from the Guyana Tourism Authority for documented quality and safety standards. Two international tour operator partnerships followed, with partners citing compliance confidence as a decisive factor. Staff consistency and guest satisfaction scores both improved measurably.',
   },
   {
     sector: 'Oil & Gas Services Contractor',
@@ -81,11 +81,11 @@ const CaseCard: React.FC<{ study: typeof caseStudies[0]; index: number }> = ({ s
   const tag = tagStyles[study.tagColor] ?? tagStyles.slate;
 
   return (
-    <ScrollReveal delay={index * 90} yFrom={22}>
+    <ScrollReveal delay={index * 90} yFrom={22} className="h-full">
       <motion.div
         whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
         transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-        className="rounded-2xl overflow-hidden"
+        className="rounded-2xl overflow-hidden h-full flex flex-col"
         style={{
           background: 'rgba(255,255,255,0.72)',
           backdropFilter: 'blur(16px)',
@@ -94,8 +94,8 @@ const CaseCard: React.FC<{ study: typeof caseStudies[0]; index: number }> = ({ s
           border: '1.5px solid rgba(255,255,255,0.92)',
         }}
       >
-        {/* Card header */}
-        <div className="p-6 pb-5">
+        {/* Card header — grows to fill available space, result pinned to bottom */}
+        <div className="p-6 pb-5 flex-1 flex flex-col">
           <div className="flex items-start justify-between gap-4 mb-4">
             <div className="flex items-center gap-3">
               {study.logo ? (
@@ -131,9 +131,9 @@ const CaseCard: React.FC<{ study: typeof caseStudies[0]; index: number }> = ({ s
             </div>
           </div>
 
-          {/* Result — always visible */}
+          {/* Result — pinned to the bottom of the flex-1 area */}
           <div
-            className="flex items-start gap-2.5 rounded-xl px-4 py-3"
+            className="mt-auto flex items-start gap-2.5 rounded-xl px-4 py-3"
             style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
           >
             <CheckCircle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -299,7 +299,7 @@ const CaseStudies: React.FC = () => {
               ))}
 
               {/* CTA card */}
-              <ScrollReveal delay={caseStudies.length * 90} yFrom={22}>
+              <ScrollReveal delay={caseStudies.length * 90} yFrom={22} className="h-full">
                 <motion.div
                   whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
                   transition={{ type: 'spring', stiffness: 260, damping: 22 }}
@@ -310,7 +310,6 @@ const CaseStudies: React.FC = () => {
                     WebkitBackdropFilter: 'blur(16px)',
                     boxShadow: '7px 8px 20px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.9)',
                     border: '1.5px solid rgba(255,255,255,0.92)',
-                    minHeight: '240px',
                   }}
                 >
                   <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500 mb-4">Your turn</p>
