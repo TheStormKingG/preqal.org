@@ -15,45 +15,60 @@ const caseStudies = [
     icon: <Feather className="h-5 w-5 text-amber-600" />,
     tag: 'Agri-Food',
     tagColor: 'amber',
+    img: 'images/case-studies/poultry.jpg',
+    imgAlt: 'Farm worker tending to chickens in a modern hatchery facility',
+    imgPos: 'center 40%',
     challenge: 'Limited traceability and repeated audit observations affecting both product quality and animal welfare.',
     solution: 'Implemented structured SOPs, IMS documentation, traceability system, and staff competency programs.',
-    result: 'Traceability improved across all production stages, compliance readiness noticeably elevated, and repeat audit findings significantly reduced.',
+    result: 'Traceability improved across all production stages and repeat audit findings were significantly reduced. The team now enters every inspection confident and fully prepared.',
   },
   {
     sector: 'Logistics Distribution',
     icon: <Truck className="h-5 w-5 text-blue-500" />,
     tag: 'Transport',
     tagColor: 'blue',
+    img: 'images/case-studies/logistics.jpg',
+    imgAlt: 'Warehouse worker managing inventory in a logistics distribution centre',
+    imgPos: 'center 35%',
     challenge: 'Inadequate documentation, safety gaps, and inconsistent use of temperature and delivery records.',
     solution: 'Designed tailored documentation system, risk register, inspection checklists, and training module on operational controls.',
-    result: 'Better process consistency, improved worker safety compliance, and a marked reduction in customer escalations and delivery errors.',
+    result: 'Process consistency and worker safety compliance both improved measurably across all routes. Customer escalations and delivery errors dropped significantly within the first quarter.',
   },
   {
     sector: 'Eco-Tourism & Hospitality Resort',
     icon: <Map className="h-5 w-5 text-teal-500" />,
     tag: 'Hospitality',
     tagColor: 'teal',
-    challenge: 'A growing eco-resort was operating without documented food safety controls, inconsistent housekeeping and maintenance procedures, and no structured emergency response or guest safety protocols — creating real exposure ahead of international tour operator partnerships.',
-    solution: 'Designed an integrated QMS covering food safety (HACCP-aligned), departmental SOPs for front-of-house, kitchen, housekeeping, and maintenance, a guest safety and emergency response plan, and a competency-based staff training programme. Conducted a mock inspection against international hospitality standards.',
-    result: 'Received formal recognition from the Guyana Tourism Authority for documented quality and safety standards. Two international tour operator partnerships followed, with partners citing compliance confidence as a decisive factor. Staff consistency and guest satisfaction scores both improved measurably.',
+    img: 'images/case-studies/hospitality.jpg',
+    imgAlt: 'Hospitality staff delivering excellent service to guests at a Caribbean eco-resort',
+    imgPos: 'center 30%',
+    challenge: 'A growing eco-resort lacked documented food safety controls, consistent procedures, and formal guest safety protocols — creating exposure ahead of international tour operator partnerships.',
+    solution: 'Designed an integrated QMS covering food safety (HACCP-aligned), departmental SOPs, a guest safety and emergency response plan, and a competency-based staff training programme.',
+    result: 'Received formal recognition from the Guyana Tourism Authority for documented quality and safety standards. Two international tour operator agreements followed, with compliance confidence cited as the deciding factor.',
   },
   {
     sector: 'Oil & Gas Services Contractor',
     icon: <Droplet className="h-5 w-5 text-slate-600" />,
     tag: 'Energy',
     tagColor: 'slate',
+    img: 'images/case-studies/oil-gas.jpg',
+    imgAlt: 'Safety officer conducting a risk inspection at an oil and gas services facility',
+    imgPos: 'center 40%',
     challenge: 'Informal risk controls, weak safety culture, and absent PPE enforcement and corrective action tracking.',
     solution: 'Developed QHSE mini-IMS, set up risk registers, PPE tracking system, safety induction checklist, and observation reporting.',
-    result: 'Stronger safety awareness, more consistent PPE usage, and a meaningful improvement in HSE audit readiness.',
+    result: 'Safety awareness strengthened and PPE usage became consistently enforced across all active worksites. HSE audit readiness improved measurably, with the risk register now actively maintained.',
   },
   {
     sector: 'Large-Scale HR & Recruitment Firm',
     icon: <Users className="h-5 w-5 text-violet-500" />,
     tag: 'HR & Recruitment',
     tagColor: 'violet',
-    challenge: 'A regional HR and recruitment firm processing hundreds of candidate placements monthly had no standardised quality controls over its recruitment lifecycle — from intake to placement. Inconsistent candidate vetting, undocumented client engagement procedures, and the absence of a corrective action process were generating client complaints and staff confusion, with reputational and legal risk rising as the firm scaled.',
-    solution: 'Developed a Quality Management System tailored to the recruitment service lifecycle — including documented candidate screening and vetting procedures, client onboarding SOPs, a formal complaints and CAPA process, data handling and confidentiality controls, and a staff competency framework. Delivered targeted training across recruitment and account management teams and established internal audit cycles to sustain compliance.',
-    result: 'Client complaint rate dropped significantly within the first quarter post-implementation. Staff reported clearer expectations and faster onboarding of new hires. The firm successfully passed a client-conducted quality audit for a major corporate account — directly attributing the win to demonstrated process maturity.',
+    img: 'images/case-studies/hr-recruitment.jpg',
+    imgAlt: 'HR professional conducting a structured candidate interview in a modern office',
+    imgPos: 'center 25%',
+    challenge: 'No standardised quality controls over the recruitment lifecycle — inconsistent vetting, undocumented procedures, and no CAPA process were generating complaints and reputational risk.',
+    solution: 'Built a recruitment-lifecycle QMS with candidate screening SOPs, client onboarding procedures, a complaints and CAPA process, data handling controls, and a staff competency framework.',
+    result: 'Client complaint rate dropped significantly in the first quarter and new-hire onboarding became faster and more consistent. The firm passed a major corporate client quality audit — attributing the win to demonstrated process maturity.',
   },
 ];
 
@@ -62,8 +77,9 @@ const industries = [
   { name: 'Oil & Gas Services', icon: <Droplet className="h-7 w-7" />, color: 'text-slate-600' },
   { name: 'Waste & Environmental', icon: <Recycle className="h-7 w-7" />, color: 'text-green-600' },
   { name: 'Agri-Food Sector', icon: <Factory className="h-7 w-7" />, color: 'text-amber-600' },
-  { name: 'Regional Poultry Group', icon: <Feather className="h-7 w-7" />, color: 'text-amber-500' },
+  { name: 'Poultry & Hatchery', icon: <Feather className="h-7 w-7" />, color: 'text-amber-500' },
   { name: 'Hospitality & Eco-Tourism', icon: <Map className="h-7 w-7" />, color: 'text-teal-500' },
+  { name: 'HR & Recruitment', icon: <Users className="h-7 w-7" />, color: 'text-violet-500' },
 ];
 
 const tagStyles: Record<string, string> = {
@@ -94,50 +110,51 @@ const CaseCard: React.FC<{ study: typeof caseStudies[0]; index: number }> = ({ s
           border: '1.5px solid rgba(255,255,255,0.92)',
         }}
       >
-        {/* Card header — grows to fill available space, result pinned to bottom */}
-        <div className="p-6 pb-5 flex-1 flex flex-col">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              {study.logo ? (
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ boxShadow: 'inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff', background: '#e0e5ec' }}
-                >
-                  <picture>
-                    <source type="image/webp" srcSet={`${import.meta.env.BASE_URL}${study.logoSrcSet}`} sizes="24px" />
-                    <img src={`${import.meta.env.BASE_URL}${study.logo}`} alt="Stashway Logo" className="h-5 w-5" width="20" height="20" loading="lazy" decoding="async" />
-                  </picture>
-                </div>
-              ) : (
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ boxShadow: 'inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff', background: '#e0e5ec' }}
-                >
-                  {study.icon}
-                </div>
-              )}
-              <div>
-                {study.externalLink ? (
-                  <a href={study.externalLink} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 text-base leading-snug hover:text-amber-600 transition-colors">
-                    {study.sector}
-                  </a>
-                ) : (
-                  <h2 className="font-bold text-slate-900 text-base leading-snug">{study.sector}</h2>
-                )}
-                <span className={`inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${tag}`}>
-                  {study.tag}
-                </span>
-              </div>
+        {/* ── Image banner ── */}
+        <div className="relative overflow-hidden flex-shrink-0" style={{ height: '172px' }}>
+          <img
+            src={`${import.meta.env.BASE_URL}${study.img}`}
+            alt={study.imgAlt}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: study.imgPos || 'center center' }}
+            width="600"
+            height="172"
+            loading="lazy"
+          />
+          {/* Fade to card background at bottom */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(to bottom, transparent 45%, rgba(255,255,255,0.55) 100%)' }}
+          />
+          {/* Sector tag overlaid bottom-left */}
+          <span
+            className={`absolute bottom-3 left-4 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${tag}`}
+            style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+          >
+            {study.tag}
+          </span>
+        </div>
+
+        {/* Card body — grows, result pinned to bottom */}
+        <div className="p-5 pt-4 flex-1 flex flex-col">
+          {/* Icon + title */}
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ boxShadow: 'inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff', background: '#e0e5ec' }}
+            >
+              {study.icon}
             </div>
+            <h2 className="font-bold text-slate-900 text-base leading-snug">{study.sector}</h2>
           </div>
 
-          {/* Result — pinned to the bottom of the flex-1 area */}
+          {/* Result — pinned to bottom with mt-auto; line-clamp keeps visual height uniform */}
           <div
             className="mt-auto flex items-start gap-2.5 rounded-xl px-4 py-3"
             style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
           >
             <CheckCircle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-slate-700 font-medium leading-relaxed">{study.result}</p>
+            <p className="text-sm text-slate-700 font-medium leading-relaxed line-clamp-3">{study.result}</p>
           </div>
         </div>
 
@@ -347,7 +364,7 @@ const CaseStudies: React.FC = () => {
               </div>
             </ScrollReveal>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
               {industries.map((ind, i) => (
                 <ScrollReveal key={ind.name} delay={i * 60} yFrom={16}>
                   <motion.div
