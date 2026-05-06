@@ -16,7 +16,7 @@ const PAIN_POINTS = [
 const QUALITY_CARDS = [
   {
     img: 'testimonial-dionne.jpg',
-    imgPos: '50% 8%',
+    imgPos: '50% 12%',
     icon: <Shield className="h-7 w-7" />,
     title: 'Lead with complete confidence',
     before: 'Right now: bracing for the next audit, inspection, or client demand.',
@@ -24,7 +24,7 @@ const QUALITY_CARDS = [
   },
   {
     img: 'business-team.jpg',
-    imgPos: '50% 22%',
+    imgPos: '50% 18%',
     icon: <Heart className="h-7 w-7" />,
     title: 'Your staff will love coming to work',
     before: 'Right now: your team improvises because the system isn\'t clear.',
@@ -32,7 +32,7 @@ const QUALITY_CARDS = [
   },
   {
     img: 'testimonial-priya.jpg',
-    imgPos: '50% 5%',
+    imgPos: '50% 35%',
     icon: <TrendingUp className="h-7 w-7" />,
     title: 'Your business keeps getting better',
     before: 'Right now: the same problems resurface, year after year.',
