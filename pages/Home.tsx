@@ -144,29 +144,29 @@ const Home: React.FC = () => {
                   borderRadius: '18px',
                   overflow: 'hidden',
                   border: '2px solid rgba(255,255,255,0.96)',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
                   boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 8px 8px 28px rgba(0,0,0,0.28), -2px -2px 8px rgba(255,255,255,0.2)',
                 }}>
-                  {/* Top half — Saturn, 90% transparent */}
+                  {/* Top half — Saturn, 95% transparent, minimal blur */}
                   <motion.div
                     style={{
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
                       padding: '28px 24px 20px',
-                      background: 'rgba(255,255,255,0.10)',
+                      background: 'rgba(255,255,255,0.05)',
+                      backdropFilter: 'blur(4px)',
+                      WebkitBackdropFilter: 'blur(4px)',
                       borderBottom: '2px solid rgba(255,255,255,0.90)',
                     }}
                     initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.05 }}
                   >
-                    <div style={{ transform: 'scale(0.84)', transformOrigin: 'center center' }}>
+                    <div style={{ transform: 'scale(0.74)', transformOrigin: 'center center' }}>
                       <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
                     </div>
                   </motion.div>
 
-                  {/* Bottom half — text, 70% transparent with more white */}
-                  <div style={{ background: 'rgba(255,255,255,0.30)', padding: '24px 28px 28px' }}>
+                  {/* Bottom half — 50% transparent, 30% more white for text legibility */}
+                  <div style={{ background: 'rgba(255,255,255,0.50)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '24px 28px 28px' }}>
                     <motion.p
                       className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
                       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
