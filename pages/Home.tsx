@@ -290,7 +290,7 @@ const Home: React.FC = () => {
                       }}
                     >
                       {/* Card header image */}
-                      <div className="h-44 flex-shrink-0 overflow-hidden relative">
+                      <div className="h-[352px] flex-shrink-0 overflow-hidden relative">
                         <img
                           src={`${import.meta.env.BASE_URL}images/${card.img}`}
                           alt=""
