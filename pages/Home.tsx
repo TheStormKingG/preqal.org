@@ -291,7 +291,7 @@ const Home: React.FC = () => {
                         <img
                           src={`${import.meta.env.BASE_URL}images/${card.img}`}
                           alt=""
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover object-top"
                           loading="lazy"
                         />
                         {/* fade into card background at bottom */}
