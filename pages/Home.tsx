@@ -286,7 +286,7 @@ const Home: React.FC = () => {
                   {/* Right: contextual image — real business, real stakes */}
                   <div className="hidden md:block md:w-64 lg:w-80 flex-shrink-0 relative overflow-hidden">
                     <img
-                      src={`${import.meta.env.BASE_URL}images/testimonial-rajesh.jpg`}
+                      src={`${import.meta.env.BASE_URL}images/invisible-risk.jpg`}
                       alt=""
                       className="absolute inset-0 w-full h-full object-cover"
                       loading="lazy"
