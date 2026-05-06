@@ -192,16 +192,22 @@ const Home: React.FC = () => {
                   Most businesses are running on<br className="hidden md:block" />
                   <span className="text-slate-500"> invisible risk right now.</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8 items-stretch">
                   {PAIN_POINTS.map((point, i) => (
-                    <div
+                    <motion.div
                       key={i}
-                      className="flex items-start gap-3 px-4 py-3 rounded-xl text-sm text-slate-600 leading-relaxed"
+                      whileHover={{
+                        y: -4,
+                        boxShadow: '4px 4px 12px rgba(150,165,190,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                        background: '#e8ecf2',
+                      }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+                      className="flex items-start gap-3 px-4 py-4 rounded-xl text-sm text-slate-600 leading-relaxed cursor-default"
                       style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(150,165,190,0.5), inset -2px -2px 6px rgba(255,255,255,0.8)' }}
                     >
                       <span className="text-amber-500 font-bold text-base mt-0.5 flex-shrink-0">{i + 1}.</span>
                       <span>{point}</span>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -231,34 +237,44 @@ const Home: React.FC = () => {
                 </h2>
               </div>
             </ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
               {QUALITY_CARDS.map((card, i) => (
                 <ScrollReveal key={i} delay={i * 120} yFrom={20}>
-                  <div
-                    className="h-full flex flex-col p-8"
-                    style={{
-                      background: 'rgba(255,255,255,0.68)',
-                      backdropFilter: 'blur(18px)',
-                      WebkitBackdropFilter: 'blur(18px)',
-                      borderRadius: '18px',
-                      boxShadow: '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
-                      border: '1px solid rgba(255,255,255,0.82)',
-                    }}
-                  >
-                    <div
-                      className="h-14 w-14 rounded-xl flex items-center justify-center mb-5 text-amber-600 flex-shrink-0"
+                  <div style={{ perspective: '900px', height: '100%' }}>
+                    <motion.div
+                      whileHover={{
+                        rotateX: -4,
+                        rotateY: i === 0 ? 5 : i === 2 ? -5 : 0,
+                        scale: 1.025,
+                        boxShadow: '14px 16px 32px rgba(163,177,198,0.52), -6px -6px 20px rgba(255,255,255,0.98), inset 0 1px 0 rgba(255,255,255,0.95)',
+                      }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                      className="h-full flex flex-col p-7 cursor-default"
                       style={{
-                        background: '#e0e5ec',
-                        boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.12)',
+                        background: 'rgba(255,255,255,0.68)',
+                        backdropFilter: 'blur(18px)',
+                        WebkitBackdropFilter: 'blur(18px)',
+                        borderRadius: '18px',
+                        boxShadow: '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
+                        border: '1px solid rgba(255,255,255,0.82)',
+                        transformStyle: 'preserve-3d',
                       }}
                     >
-                      {card.icon}
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-4">{card.title}</h3>
-                    <div className="flex-1 space-y-3">
-                      <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
-                      <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
-                    </div>
+                      <div
+                        className="h-14 w-14 rounded-xl flex items-center justify-center mb-5 text-amber-600 flex-shrink-0"
+                        style={{
+                          background: '#e0e5ec',
+                          boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
+                        }}
+                      >
+                        {card.icon}
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-900 mb-5 leading-snug">{card.title}</h3>
+                      <div className="flex-1 flex flex-col gap-4">
+                        <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
+                        <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
+                      </div>
+                    </motion.div>
                   </div>
                 </ScrollReveal>
               ))}
@@ -288,8 +304,14 @@ const Home: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {STEPS.map((step, i) => (
                     <div key={i} className="flex flex-col items-center text-center">
-                      <div
-                        className="relative z-10 h-[72px] w-[72px] rounded-full flex flex-col items-center justify-center mb-6 flex-shrink-0"
+                      <motion.div
+                        whileHover={{
+                          scale: 1.12,
+                          y: -8,
+                          boxShadow: '10px 12px 24px rgba(163,177,198,0.6), -8px -8px 20px rgba(255,255,255,0.9), 0 0 22px rgba(245,158,11,0.18)',
+                        }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                        className="relative z-10 h-[72px] w-[72px] rounded-full flex flex-col items-center justify-center mb-6 flex-shrink-0 cursor-default"
                         style={{
                           background: '#e0e5ec',
                           boxShadow: '6px 6px 16px rgba(163,177,198,0.55), -6px -6px 16px rgba(255,255,255,0.85)',
@@ -297,7 +319,7 @@ const Home: React.FC = () => {
                       >
                         <span className="text-[10px] font-bold text-amber-500 tracking-widest leading-none">{step.number}</span>
                         <span className="text-lg font-bold text-slate-800 leading-tight">{step.title}</span>
-                      </div>
+                      </motion.div>
                       <p className="text-slate-600 leading-relaxed text-sm max-w-[220px]">{step.desc}</p>
                     </div>
                   ))}
