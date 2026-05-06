@@ -121,7 +121,7 @@ const Home: React.FC = () => {
                   }}
                   initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }}
                 >
-                  <div style={{ transform: 'scale(1.0)', transformOrigin: 'center center' }}>
+                  <div style={{ transform: 'scale(0.87)', transformOrigin: 'center center' }}>
                     <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="md" />
                   </div>
                 </motion.div>
