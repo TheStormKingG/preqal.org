@@ -128,7 +128,7 @@ const Home: React.FC = () => {
                 {/* Bottom 1/3 — text, 82% white */}
                 <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '16px 20px 20px' }}>
                   <motion.p
-                    className="font-bold text-amber-500 leading-tight mb-2"
+                    className="font-bold text-amber-600 leading-tight mb-2"
                     style={{ fontSize: '1.15rem' }}
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
                   >
@@ -189,7 +189,7 @@ const Home: React.FC = () => {
                   {/* Bottom half — 50% transparent, 30% more white for text legibility */}
                   <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '24px 28px 28px' }}>
                     <motion.p
-                      className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
+                      className="text-[2.5rem] font-bold text-amber-600 leading-tight mb-3"
                       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
                     >
                       ...build things right.
@@ -361,16 +361,18 @@ const Home: React.FC = () => {
                       </div>
                       {/* Card body */}
                       <div className="flex flex-col flex-1 p-6">
-                        <div
-                          className="h-12 w-12 rounded-xl flex items-center justify-center mb-4 text-amber-600 flex-shrink-0"
-                          style={{
-                            background: '#e0e5ec',
-                            boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
-                          }}
-                        >
-                          {card.icon}
+                        <div className="flex items-center gap-3 mb-4">
+                          <div
+                            className="h-12 w-12 rounded-xl flex items-center justify-center text-amber-600 flex-shrink-0"
+                            style={{
+                              background: '#e0e5ec',
+                              boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
+                            }}
+                          >
+                            {card.icon}
+                          </div>
+                          <h3 className="text-lg font-bold text-slate-900 leading-snug">{card.title}</h3>
                         </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-4 leading-snug">{card.title}</h3>
                         <div className="flex-1 flex flex-col gap-4">
                           <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
                           <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
