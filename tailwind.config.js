@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Rubik', 'sans-serif'],
+      },
       boxShadow: {
         'neu': '6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff',
         'neu-sm': '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff',

@@ -499,7 +499,6 @@ const ServiceAccordionItem: React.FC<{
           </p>
           <p
             className="text-xl font-bold text-slate-900 leading-snug"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
           >
             {service.title}
           </p>
@@ -611,7 +610,6 @@ const PullQuote: React.FC<{ text: React.ReactNode; sub: string }> = ({ text, sub
   >
     <p
       className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug mb-3"
-      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
     >
       {text}
     </p>
@@ -654,7 +652,6 @@ const Services: React.FC = () => {
             </motion.div>
             <motion.h1
               className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.08] mb-7 max-w-[680px]"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             >
               You worked too hard
@@ -721,7 +718,6 @@ const Services: React.FC = () => {
             </p>
             <h2
               className="text-3xl sm:text-4xl font-bold text-white leading-snug max-w-[580px] mb-4"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
               From where you are now, to where you deserve to be.
             </h2>
@@ -899,7 +895,6 @@ const Services: React.FC = () => {
               </p>
               <h2
                 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-7 max-w-[620px]"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               >
                 The only thing standing
                 <br />between where you are
