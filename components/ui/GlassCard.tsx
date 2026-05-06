@@ -3,9 +3,10 @@ import React from 'react';
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => (
+const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', style }) => (
   <div
     className={className}
     style={{
@@ -17,6 +18,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => (
       boxShadow:
         '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
       border: '1px solid rgba(255,255,255,0.82)',
+      ...style,
     }}
   >
     {children}

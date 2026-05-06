@@ -69,93 +69,90 @@ const Home: React.FC = () => {
 
         {/* ── Section 1: Hero ── */}
         <section className="relative px-4 sm:px-6 lg:px-8 pt-7 pb-12 lg:pt-10 lg:pb-16">
+
+          {/* Headline above the container */}
+          <div className="max-w-7xl mx-auto mb-4 px-1">
+            <motion.h1
+              className="text-3xl md:text-5xl lg:text-[3.4rem] font-bold text-slate-900 leading-tight"
+              initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+            >
+              The leaders who sleep soundly —
+            </motion.h1>
+          </div>
+
           <div
             className="relative max-w-7xl mx-auto rounded-[20px] overflow-hidden"
             style={{
-              background: '#e0e5ec',
               boxShadow: '10px 10px 28px rgba(163,177,198,0.65), -10px -10px 28px rgba(255,255,255,0.92)',
             }}
           >
-            {/* Background image — exhausted business owner = "before" state */}
+            {/* Background image — 100% visible, no overlay */}
             <img
               src={`${import.meta.env.BASE_URL}images/hero-bg.jpg`}
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover object-center"
-              style={{ opacity: 0.18 }}
             />
-            {/* Overlay to keep neumorphic contrast intact */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0"
-              style={{ background: 'linear-gradient(135deg, rgba(224,229,236,0.72) 0%, rgba(224,229,236,0.55) 50%, rgba(224,229,236,0.72) 100%)' }}
-            />
+
             {/* Mobile layout */}
             <div
-              className="flex flex-row items-center gap-2 md:hidden"
-              style={{ minHeight: '260px', padding: '14px' }}
+              className="flex flex-col items-start gap-3 md:hidden relative"
+              style={{ minHeight: '360px', padding: '20px', zIndex: 2 }}
             >
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <GlassCard>
-                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0 }}>
-                    <span className="glow-tag" style={{ fontSize: '7px', letterSpacing: '1.5px' }}>Quality · Safety · Compliance</span>
-                  </motion.div>
-                  <motion.h1
-                    className="font-bold leading-[1.2] text-slate-900 mt-1.5 mb-1.5"
-                    style={{ fontSize: '0.78rem' }}
-                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
+              <GlassCard style={{ background: 'rgba(255,255,255,0.20)', width: '100%' }}>
+                <motion.div
+                  style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}
+                  initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }}
+                >
+                  <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="sm" />
+                </motion.div>
+                <motion.p
+                  className="font-bold text-amber-500 leading-tight mb-2"
+                  style={{ fontSize: '1.15rem' }}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
+                >
+                  built it right.
+                </motion.p>
+                <motion.p
+                  className="text-slate-800 leading-relaxed mb-3"
+                  style={{ fontSize: '0.62rem' }}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.14 }}
+                >
+                  Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built.
+                </motion.p>
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.21 }}>
+                  <Link
+                    to="/book"
+                    className="inline-block px-3 py-1.5 rounded-[8px] text-white font-semibold"
+                    style={{ fontSize: '0.6rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 8px rgba(217,119,6,0.3)' }}
                   >
-                    The leaders who sleep soundly —<br />
-                    <span className="text-amber-600">built it right.</span>
-                  </motion.h1>
-                  <motion.p
-                    className="text-slate-500 leading-relaxed mb-3"
-                    style={{ fontSize: '0.55rem' }}
-                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.14 }}
-                  >
-                    Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built.
-                  </motion.p>
-                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.21 }}>
-                    <Link
-                      to="/book"
-                      className="inline-block px-3 py-1.5 rounded-[8px] text-white font-semibold"
-                      style={{ fontSize: '0.6rem', background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 8px rgba(217,119,6,0.3)' }}
-                    >
-                      Book a Risk Scan
-                    </Link>
-                  </motion.div>
-                </GlassCard>
-              </div>
-              <motion.div
-                style={{ flexShrink: 0, width: '96px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55, delay: 0.1 }}
-              >
-                <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="sm" />
-              </motion.div>
+                    Book a Risk Scan
+                  </Link>
+                </motion.div>
+              </GlassCard>
             </div>
 
             {/* Desktop layout */}
             <div
               className="hidden md:flex md:flex-row"
-              style={{ height: 'calc(100dvh - 200px)', position: 'relative' }}
+              style={{ height: 'calc(100dvh - 200px)', position: 'relative', zIndex: 2 }}
             >
-              <div aria-hidden="true" style={{ position: 'absolute', width: '380px', height: '380px', right: 0, top: '50%', marginTop: '-190px', borderRadius: '50%', pointerEvents: 'none', background: 'radial-gradient(circle, rgba(245,158,11,0.13), transparent 68%)' }} />
-              <div aria-hidden="true" style={{ position: 'absolute', width: '200px', height: '200px', bottom: '-60px', left: '36%', borderRadius: '50%', pointerEvents: 'none', background: 'radial-gradient(circle, rgba(245,158,11,0.13), transparent 68%)' }} />
-
               <div style={{ flex: '0 0 50%', minWidth: 0, display: 'flex', alignItems: 'center', padding: '32px 40px 32px 36px', zIndex: 4, position: 'relative' }}>
-                <GlassCard>
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}>
-                    <span className="glow-tag">Quality · Safety · Compliance</span>
-                  </motion.div>
-                  <motion.h1
-                    className="text-[2.2rem] font-bold leading-[1.18] text-slate-900 mt-3 mb-3"
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.08 }}
+                <GlassCard style={{ background: 'rgba(255,255,255,0.20)' }}>
+                  <motion.div
+                    style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}
+                    initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.05 }}
                   >
-                    The leaders who sleep soundly —<br />
-                    <span className="text-amber-600">built it right.</span>
-                  </motion.h1>
+                    <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
+                  </motion.div>
                   <motion.p
-                    className="text-[1rem] text-slate-500 mb-6 leading-relaxed"
+                    className="text-[2.5rem] font-bold text-amber-500 leading-tight mb-3"
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+                  >
+                    built it right.
+                  </motion.p>
+                  <motion.p
+                    className="text-[1rem] text-slate-800 mb-6 leading-relaxed"
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.16 }}
                   >
                     Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
@@ -173,8 +170,8 @@ const Home: React.FC = () => {
                     </Link>
                     <Link
                       to="/case-studies"
-                      className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-500 font-medium"
-                      style={{ background: '#e0e5ec', boxShadow: '3px 3px 8px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.8)' }}
+                      className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-800 font-medium"
+                      style={{ background: 'rgba(224,229,236,0.45)', boxShadow: '3px 3px 8px rgba(163,177,198,0.4), -2px -2px 6px rgba(255,255,255,0.6)' }}
                     >
                       See What's Possible
                     </Link>
@@ -182,13 +179,10 @@ const Home: React.FC = () => {
                 </GlassCard>
               </div>
 
-              <motion.div
-                style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3, pointerEvents: 'none' }}
-                initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.12 }}
-              >
-                <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
-              </motion.div>
+              {/* Right side — background image fills freely */}
+              <div style={{ flex: '0 0 50%' }} />
 
+              {/* Scroll indicator */}
               <div style={{ position: 'absolute', bottom: '14px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 4 }}>
                 <div style={{ width: '1px', height: '22px', background: 'linear-gradient(to bottom, rgba(245,158,11,0.45), transparent)' }} />
                 <div className="animate-pulse" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#f59e0b', opacity: 0.6 }} />
