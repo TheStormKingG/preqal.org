@@ -74,6 +74,7 @@ const Home: React.FC = () => {
           <div className="max-w-7xl mx-auto mb-4 px-1">
             <motion.h1
               className="text-3xl md:text-5xl lg:text-[3.4rem] font-bold text-slate-900 leading-tight"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             >
               The leaders who sleep soundly...
@@ -250,7 +251,7 @@ const Home: React.FC = () => {
                   {/* Left: text content */}
                   <div className="flex-1 p-8 md:p-12">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">The honest picture</p>
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                       Most businesses are running on<br className="hidden md:block" />
                       <span className="text-slate-500"> invisible risk right now.</span>
                     </h2>
@@ -312,7 +313,7 @@ const Home: React.FC = () => {
             <ScrollReveal yFrom={12}>
               <div className="text-center mb-12">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Why it matters</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Quality isn't paperwork.<br />
                   <span className="text-amber-600">It's the system that sets your people free.</span>
                 </h2>
@@ -386,13 +387,53 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* ── Dark band: proof bridge ── */}
+        <div className="relative overflow-hidden py-16 sm:py-20" style={{ background: '#0f172a' }}>
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
+          }} />
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%), radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.05) 0%, transparent 50%)',
+          }} />
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <ScrollReveal yFrom={16}>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">The Preqal result</p>
+              <div className="flex flex-col md:flex-row md:items-end gap-10 md:gap-20">
+                <div className="flex-1">
+                  <h2
+                    className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
+                    The businesses that sleep soundly<br />
+                    <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
+                  </h2>
+                  <p className="text-white/55 text-base leading-relaxed max-w-[480px]">
+                    They stopped guessing and started leading — with a system built for their
+                    business, trained into their team, and tested against the standards that matter.
+                  </p>
+                </div>
+                <div className="flex gap-12 flex-shrink-0">
+                  <div className="text-center">
+                    <div className="text-5xl font-bold text-amber-400" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>98%</div>
+                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">audit pass rate<br />across Preqal clients</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-5xl font-bold text-amber-400" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>9mo</div>
+                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">average time to<br />full certification</div>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+
         {/* ── Section 4: How Preqal Works ── */}
         <section className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-5xl mx-auto">
             <ScrollReveal yFrom={12}>
               <div className="text-center mb-16">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">The process</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Three steps to a business<br />
                   <span className="text-amber-600">that runs right.</span>
                 </h2>
@@ -478,6 +519,7 @@ const Home: React.FC = () => {
                 </motion.p>
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
                   initial={{ opacity: 0, y: 14 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
