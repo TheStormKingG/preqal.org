@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Map, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, CheckCircle, ChevronDown, ArrowRight } from 'lucide-react';
+import { Map, Users, Recycle, Truck, Factory, Droplet, Feather, ShieldAlert, CheckCircle, ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
@@ -29,16 +29,13 @@ const caseStudies = [
     result: 'Better process consistency, improved worker safety compliance, and a marked reduction in customer escalations and delivery errors.',
   },
   {
-    sector: 'Development of Stashway™',
-    icon: null,
-    logo: 'stashway-logo-400.webp',
-    logoSrcSet: 'stashway-logo-200.webp 200w, stashway-logo-400.webp 400w',
-    externalLink: 'https://stashway.app/about',
-    tag: 'FinTech',
-    tagColor: 'violet',
-    challenge: 'Managing personal finances in Guyana required tracking bank accounts, cash, receipts, and spending patterns without GYD-specific tools.',
-    solution: 'Developed Stashway™ with cash tracking, AI receipt scanning, analytics dashboards, exports, and conversational insights.',
-    result: 'Clear financial visibility, automated data capture, improved spending awareness, better decisions, and locally relevant personal finance control.',
+    sector: 'Eco-Tourism & Hospitality Resort',
+    icon: <Map className="h-5 w-5 text-teal-500" />,
+    tag: 'Hospitality',
+    tagColor: 'teal',
+    challenge: 'A growing eco-resort was operating without documented food safety controls, inconsistent housekeeping and maintenance procedures, and no structured emergency response or guest safety protocols — creating real exposure ahead of international tour operator partnerships.',
+    solution: 'Designed an integrated QMS covering food safety (HACCP-aligned), departmental SOPs for front-of-house, kitchen, housekeeping, and maintenance, a guest safety and emergency response plan, and a competency-based staff training programme. Conducted a mock inspection against international hospitality standards.',
+    result: 'The resort passed its first formal third-party inspection with no major non-conformances, secured two new international tour operator agreements citing compliance confidence, and reported a measurable improvement in staff consistency and guest satisfaction scores.',
   },
   {
     sector: 'Oil & Gas Services Contractor',
@@ -50,13 +47,13 @@ const caseStudies = [
     result: 'Stronger safety awareness, more consistent PPE usage, and a meaningful improvement in HSE audit readiness.',
   },
   {
-    sector: 'Waste / Environmental Processing',
-    icon: <Recycle className="h-5 w-5 text-green-600" />,
-    tag: 'Environmental',
-    tagColor: 'green',
-    challenge: 'No structured compliance documentation, unclear waste segregation practices, and minimal monitoring.',
-    solution: 'Built ISO 14001-style waste management controls, legal compliance register, and internal audit process.',
-    result: 'Waste handling practices improved in consistency, regulatory compliance strengthened, and legal exposure noticeably reduced.',
+    sector: 'Large-Scale HR & Recruitment Firm',
+    icon: <Users className="h-5 w-5 text-violet-500" />,
+    tag: 'HR & Recruitment',
+    tagColor: 'violet',
+    challenge: 'A regional HR and recruitment firm processing hundreds of candidate placements monthly had no standardised quality controls over its recruitment lifecycle — from intake to placement. Inconsistent candidate vetting, undocumented client engagement procedures, and the absence of a corrective action process were generating client complaints and staff confusion, with reputational and legal risk rising as the firm scaled.',
+    solution: 'Developed a Quality Management System tailored to the recruitment service lifecycle — including documented candidate screening and vetting procedures, client onboarding SOPs, a formal complaints and CAPA process, data handling and confidentiality controls, and a staff competency framework. Delivered targeted training across recruitment and account management teams and established internal audit cycles to sustain compliance.',
+    result: 'Client complaint rate dropped significantly within the first quarter post-implementation. Staff reported clearer expectations and faster onboarding of new hires. The firm successfully passed a client-conducted quality audit for a major corporate account — directly attributing the win to demonstrated process maturity.',
   },
 ];
 
@@ -75,6 +72,7 @@ const tagStyles: Record<string, string> = {
   violet: 'bg-violet-50 border-violet-200/60 text-violet-700',
   slate:  'bg-slate-100 border-slate-200/60  text-slate-600',
   green:  'bg-green-50  border-green-200/60  text-green-700',
+  teal:   'bg-teal-50   border-teal-200/60   text-teal-700',
 };
 
 /* ─── Accordion card ─────────────────────────────────── */
