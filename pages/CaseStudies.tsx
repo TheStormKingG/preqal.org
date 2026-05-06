@@ -209,46 +209,80 @@ const CaseStudies: React.FC = () => {
 
         {/* ── HERO ── */}
         <section className="pt-20 pb-16 relative overflow-hidden">
-          <div
-            className="absolute top-0 right-0 w-[560px] h-[560px] pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)',
-              transform: 'translate(25%, -30%)',
-            }}
-          />
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <motion.div
-              className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7"
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
-            >
-              <ShieldAlert className="h-3.5 w-3.5" /> Client Confidentiality Intact
-            </motion.div>
-            <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] mb-6 max-w-[680px]"
-              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Real businesses.<br />
-              Real gaps closed.<br />
-              <em style={{ color: '#d97706' }}>Real results.</em>
-            </motion.h1>
-            <motion.p
-              className="text-lg text-slate-500 max-w-[580px] leading-relaxed mb-6"
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
-            >
-              Business owners across poultry, logistics, food-handling, eco-hospitality, oil&nbsp;&amp;&nbsp;gas,
-              and waste management in Guyana and the Caribbean have already taken the step you're
-              considering — and their businesses are stronger for it.
-            </motion.p>
-            <motion.div
-              className="inline-flex items-start gap-3 px-5 py-3.5 rounded-xl max-w-lg"
-              style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 7px rgba(163,177,198,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)', borderLeft: '3px solid #f59e0b' }}
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }}
-            >
-              <ShieldAlert className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-slate-500 italic leading-relaxed">
-                To protect confidentiality, we share sector-based examples showing real challenges and measurable improvements.
-              </p>
-            </motion.div>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
+
+              {/* Left: text */}
+              <div className="flex-1 lg:max-w-[580px]">
+                <motion.div
+                  className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7"
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+                >
+                  <ShieldAlert className="h-3.5 w-3.5" /> Client Confidentiality Intact
+                </motion.div>
+                <motion.h1
+                  className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] mb-6"
+                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  Real businesses.<br />
+                  Real gaps closed.<br />
+                  <em style={{ color: '#d97706' }}>Real results.</em>
+                </motion.h1>
+                <motion.p
+                  className="text-lg text-slate-500 leading-relaxed mb-6"
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
+                >
+                  Business owners across poultry, logistics, food-handling, eco-hospitality, oil&nbsp;&amp;&nbsp;gas,
+                  and waste management in Guyana and the Caribbean have already taken the step you're
+                  considering — and their businesses are stronger for it.
+                </motion.p>
+                <motion.div
+                  className="inline-flex items-start gap-3 px-5 py-3.5 rounded-xl max-w-lg"
+                  style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 7px rgba(163,177,198,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)', borderLeft: '3px solid #f59e0b' }}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }}
+                >
+                  <ShieldAlert className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-slate-500 italic leading-relaxed">
+                    To protect confidentiality, we share sector-based examples showing real challenges and measurable improvements.
+                  </p>
+                </motion.div>
+              </div>
+
+              {/* Right: Stabroek Market image — desktop only */}
+              <motion.div
+                className="hidden lg:block flex-shrink-0 w-[380px]"
+                initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div
+                  className="overflow-hidden rounded-3xl relative"
+                  style={{
+                    aspectRatio: '4 / 5',
+                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+                  }}
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/case-studies/hero.jpg`}
+                    alt="Stabroek Market Clock Tower, Georgetown, Guyana"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center 20%' }}
+                    width="380"
+                    height="475"
+                  />
+                  {/* Amber + dark gradient wash */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.18) 0%, transparent 45%, rgba(15,23,42,0.32) 100%)' }}
+                  />
+                  {/* Location label */}
+                  <div className="absolute bottom-5 left-5">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-amber-300 mb-0.5">Based in</p>
+                    <p className="text-sm font-bold text-white leading-tight">Georgetown, Guyana</p>
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
           </div>
         </section>
 
