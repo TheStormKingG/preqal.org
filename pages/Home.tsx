@@ -106,13 +106,14 @@ const Home: React.FC = () => {
                 border: '2px solid rgba(255,255,255,0.96)',
                 boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 6px 6px 20px rgba(0,0,0,0.22)',
               }}>
-                {/* Top half — Saturn, 95% transparent */}
+                {/* Top 2/3 — Saturn, 95% transparent */}
                 <motion.div
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: '20px 16px 14px',
+                    padding: '24px 16px 20px',
+                    minHeight: '260px',
                     background: 'rgba(255,255,255,0.05)',
                     backdropFilter: 'blur(4px)',
                     WebkitBackdropFilter: 'blur(4px)',
@@ -120,9 +121,11 @@ const Home: React.FC = () => {
                   }}
                   initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }}
                 >
-                  <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="sm" />
+                  <div style={{ transform: 'scale(1.5)', transformOrigin: 'center center' }}>
+                    <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="md" />
+                  </div>
                 </motion.div>
-                {/* Bottom half — text, 82% white */}
+                {/* Bottom 1/3 — text, 82% white */}
                 <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '16px 20px 20px' }}>
                   <motion.p
                     className="font-bold text-amber-500 leading-tight mb-2"
