@@ -76,6 +76,20 @@ const Home: React.FC = () => {
               boxShadow: '10px 10px 28px rgba(163,177,198,0.65), -10px -10px 28px rgba(255,255,255,0.92)',
             }}
           >
+            {/* Background image — exhausted business owner = "before" state */}
+            <img
+              src={`${import.meta.env.BASE_URL}images/hero-bg.jpg`}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+              style={{ opacity: 0.18 }}
+            />
+            {/* Overlay to keep neumorphic contrast intact */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(135deg, rgba(224,229,236,0.72) 0%, rgba(224,229,236,0.55) 50%, rgba(224,229,236,0.72) 100%)' }}
+            />
             {/* Mobile layout */}
             <div
               className="flex flex-row items-center gap-2 md:hidden"
