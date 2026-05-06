@@ -635,7 +635,7 @@ const Services: React.FC = () => {
       <div className="min-h-screen pb-20">
 
         {/* ── HERO ── */}
-        <section className="py-24 relative overflow-hidden">
+        <section className="pt-20 pb-16 relative overflow-hidden">
           <div
             className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none opacity-60"
             style={{
@@ -643,61 +643,98 @@ const Services: React.FC = () => {
               transform: 'translate(30%, -30%)',
             }}
           />
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <motion.div
-              className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7"
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
-            >
-              <span style={{ fontSize: '8px' }}>◆</span> Services &amp; The Journey
-            </motion.div>
-            <motion.h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.08] mb-7 max-w-[680px]"
-              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            >
-              You worked too hard
-              <br />
-              to leave your business
-              <br />
-              <em style={{ color: '#d97706' }}>unprotected.</em>
-            </motion.h1>
-            <motion.p
-              className="text-lg text-slate-500 max-w-[580px] leading-relaxed mb-10"
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
-            >
-              Right now, somewhere in your business, there's a gap. A missed procedure. An
-              undocumented process. A risk hiding in plain sight.{' '}
-              <strong className="text-slate-700 font-semibold">
-                You know it. You feel it.
-              </strong>{' '}
-              And you've been meaning to deal with it — but the day never comes.{' '}
-              <strong className="text-slate-700 font-semibold">Until now.</strong>
-            </motion.p>
-            <motion.div
-              className="flex items-center gap-5 flex-wrap"
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.42 }}
-            >
-                <motion.a
-                  href="#step-1"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-bold text-white rounded-xl"
-                  style={{
-                    background: '#d97706',
-                    boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.8)',
-                  }}
-                  whileHover={{ scale: 1.04, y: -2, background: '#b45309' }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={springBtn}
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
+
+              {/* ── Left: text ── */}
+              <div className="flex-1 lg:max-w-[600px]">
+                <motion.div
+                  className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-7"
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 >
-                  See the path forward →
-                </motion.a>
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
-                  <Link
-                    to="/contact"
-                    className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
-                  >
-                    Talk to Dr. Gravesande first
-                  </Link>
+                  <span style={{ fontSize: '8px' }}>◆</span> Services &amp; The Journey
                 </motion.div>
-            </motion.div>
+                <motion.h1
+                  className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.08] mb-7"
+                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  You worked too hard
+                  <br />
+                  to leave your business
+                  <br />
+                  <em style={{ color: '#d97706' }}>unprotected.</em>
+                </motion.h1>
+                <motion.p
+                  className="text-lg text-slate-500 max-w-[540px] leading-relaxed mb-10"
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
+                >
+                  Right now, somewhere in your business, there's a gap. A missed procedure. An
+                  undocumented process. A risk hiding in plain sight.{' '}
+                  <strong className="text-slate-700 font-semibold">
+                    You know it. You feel it.
+                  </strong>{' '}
+                  And you've been meaning to deal with it — but the day never comes.{' '}
+                  <strong className="text-slate-700 font-semibold">Until now.</strong>
+                </motion.p>
+                <motion.div
+                  className="flex items-center gap-5 flex-wrap"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.42 }}
+                >
+                  <motion.a
+                    href="#step-1"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-bold text-white rounded-xl"
+                    style={{
+                      background: '#d97706',
+                      boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.8)',
+                    }}
+                    whileHover={{ scale: 1.04, y: -2, background: '#b45309' }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={springBtn}
+                  >
+                    See the path forward →
+                  </motion.a>
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+                    <Link
+                      to="/contact"
+                      className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
+                    >
+                      Talk to Dr. Gravesande first
+                    </Link>
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* ── Right: hero image (desktop only) ── */}
+              <motion.div
+                className="hidden lg:block flex-shrink-0 w-[420px]"
+                initial={{ opacity: 0, x: 28 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div
+                  className="overflow-hidden rounded-3xl relative"
+                  style={{
+                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+                    aspectRatio: '4 / 5',
+                  }}
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/services/hero.jpg`}
+                    alt="A professional team working together on quality management systems"
+                    className="w-full h-full object-cover object-center"
+                    width="420"
+                    height="525"
+                    fetchPriority="high"
+                  />
+                  {/* amber tint overlay — brand colour wash */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.08) 0%, transparent 55%, rgba(15,23,42,0.18) 100%)' }}
+                  />
+                </div>
+              </motion.div>
+
+            </div>
           </div>
         </section>
 
@@ -766,6 +803,27 @@ const Services: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Phase 1 */}
+          <ScrollReveal delay={0} yFrom={20}>
+            <div
+              className="mt-10 mb-2 overflow-hidden rounded-2xl relative"
+              style={{ boxShadow: '8px 8px 20px rgba(163,177,198,0.48), -4px -4px 12px rgba(255,255,255,0.88)' }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/services/phase1-diagnose.jpg`}
+                alt="Business consultant reviewing quality gaps with a client team"
+                className="w-full object-cover"
+                style={{ height: '260px', objectPosition: 'center 30%' }}
+                width="896"
+                height="260"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,23,42,0.38) 0%, transparent 55%)' }} />
+              <div className="absolute bottom-5 left-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">Phase 1 · Months 1–3</p>
+                <p className="text-lg font-bold text-white leading-tight">Diagnose &amp; Design</p>
+              </div>
+            </div>
+          </ScrollReveal>
           <ScrollReveal delay={0} xFrom={-16} yFrom={0}>
             <PhaseHeader phase={1} />
           </ScrollReveal>
@@ -786,6 +844,27 @@ const Services: React.FC = () => {
           </ScrollReveal>
 
           {/* Phase 2 */}
+          <ScrollReveal delay={0} yFrom={20}>
+            <div
+              className="mt-10 mb-2 overflow-hidden rounded-2xl relative"
+              style={{ boxShadow: '8px 8px 20px rgba(163,177,198,0.48), -4px -4px 12px rgba(255,255,255,0.88)' }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/services/phase2-train.jpg`}
+                alt="Team engaged in a quality management training workshop"
+                className="w-full object-cover"
+                style={{ height: '260px', objectPosition: 'center 40%' }}
+                width="896"
+                height="260"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,23,42,0.38) 0%, transparent 55%)' }} />
+              <div className="absolute bottom-5 left-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">Phase 2 · Months 4–6</p>
+                <p className="text-lg font-bold text-white leading-tight">Document &amp; Train</p>
+              </div>
+            </div>
+          </ScrollReveal>
           <ScrollReveal delay={0} xFrom={-16} yFrom={0}>
             <PhaseHeader phase={2} />
           </ScrollReveal>
@@ -806,6 +885,27 @@ const Services: React.FC = () => {
           </ScrollReveal>
 
           {/* Phase 3 */}
+          <ScrollReveal delay={0} yFrom={20}>
+            <div
+              className="mt-10 mb-2 overflow-hidden rounded-2xl relative"
+              style={{ boxShadow: '8px 8px 20px rgba(163,177,198,0.48), -4px -4px 12px rgba(255,255,255,0.88)' }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/services/phase3-audit.jpg`}
+                alt="Quality supervisor conducting an operational audit on the facility floor"
+                className="w-full object-cover"
+                style={{ height: '260px', objectPosition: 'center 35%' }}
+                width="896"
+                height="260"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,23,42,0.38) 0%, transparent 55%)' }} />
+              <div className="absolute bottom-5 left-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">Phase 3 · Months 7–9</p>
+                <p className="text-lg font-bold text-white leading-tight">Operate &amp; Audit</p>
+              </div>
+            </div>
+          </ScrollReveal>
           <ScrollReveal delay={0} xFrom={-16} yFrom={0}>
             <PhaseHeader phase={3} />
           </ScrollReveal>
