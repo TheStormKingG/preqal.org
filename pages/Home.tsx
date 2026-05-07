@@ -4,7 +4,6 @@ import { ArrowRight, Download, Shield, Heart, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import GlassCard from '../components/ui/GlassCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
-import SaturnStage from '../components/ui/SaturnStage';
 import SEO from '../components/SEO';
 
 const PAIN_POINTS = [
@@ -68,169 +67,99 @@ const Home: React.FC = () => {
       <div className="w-full overflow-x-hidden">
 
         {/* ── Section 1: Hero ── */}
-        <section className="relative px-4 sm:px-6 lg:px-8 pt-7 pb-12 lg:pt-10 lg:pb-16">
+        <section className="px-4 sm:px-6 lg:px-8 pt-10 pb-14 lg:pt-16 lg:pb-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
-          {/* Headline above the container */}
-          <div className="max-w-7xl mx-auto mb-4 px-1">
-            <motion.h1
-              className="text-3xl md:text-5xl lg:text-[3.4rem] font-bold text-slate-900 leading-tight"
-              initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            >
-              The leaders who sleep soundly...
-            </motion.h1>
-          </div>
-
-          <div
-            className="relative max-w-7xl mx-auto rounded-[20px] overflow-hidden"
-            style={{
-              boxShadow: '10px 10px 28px rgba(163,177,198,0.65), -10px -10px 28px rgba(255,255,255,0.92)',
-            }}
-          >
-            {/* Background image — 100% visible, no overlay */}
-            <img
-              src={`${import.meta.env.BASE_URL}images/hero-bg.jpg`}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-right-top md:object-center"
-            />
-
-            {/* Mobile layout */}
-            <div
-              className="flex flex-col items-stretch md:hidden relative"
-              style={{ padding: '16px', zIndex: 2 }}
-            >
-              {/* Same split-card as desktop, adapted for mobile */}
-              <div style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                border: '2px solid rgba(255,255,255,0.96)',
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 6px 6px 20px rgba(0,0,0,0.22)',
-              }}>
-                {/* Top 2/3 — Saturn, 95% transparent */}
+              {/* ── Left: text ── */}
+              <div className="flex-1 lg:max-w-[580px] mb-10 lg:mb-0">
+                {/* Breadcrumb badge */}
                 <motion.div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '24px 16px 20px',
-                    minHeight: '260px',
-                    background: 'rgba(255,255,255,0.05)',
-                    backdropFilter: 'blur(4px)',
-                    WebkitBackdropFilter: 'blur(4px)',
-                    borderBottom: '2px solid rgba(255,255,255,0.90)',
-                  }}
-                  initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }}
+                  className="inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-8"
+                  style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 >
-                  <div style={{ transform: 'scale(0.87)', transformOrigin: 'center center' }}>
-                    <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower" size="md" />
-                  </div>
+                  <span className="text-amber-500">◆</span>
+                  <span>Home · Systems That Protect</span>
                 </motion.div>
-                {/* Bottom 1/3 — text, 82% white */}
-                <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '16px 20px 20px' }}>
-                  <motion.p
-                    className="font-bold text-amber-600 leading-tight mb-2"
-                    style={{ fontSize: '1.15rem' }}
-                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.07 }}
-                  >
-                    ...build things right.
-                  </motion.p>
-                  <motion.p
-                    className="text-slate-900 leading-relaxed mb-3 text-sm"
-                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.14 }}
-                  >
-                    Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built.
-                  </motion.p>
-                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.21 }}>
+
+                {/* H1 */}
+                <motion.h1
+                  className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-slate-900 leading-[1.05] mb-3"
+                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  The leaders who<br />sleep soundly...
+                </motion.h1>
+                <motion.p
+                  className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black leading-[1.05] mb-7"
+                  style={{ fontStyle: 'italic', color: '#f59e0b' }}
+                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  ...build things right.
+                </motion.p>
+
+                {/* Body */}
+                <motion.p
+                  className="text-base text-slate-600 leading-relaxed mb-9 max-w-[480px]"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.3 }}
+                >
+                  Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
+                </motion.p>
+
+                {/* CTAs */}
+                <motion.div
+                  className="flex flex-wrap gap-3"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.4 }}
+                >
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
                     <Link
                       to="/book"
-                      className="inline-block px-4 py-2 rounded-[8px] text-white font-semibold text-sm"
-                      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 8px rgba(217,119,6,0.3)' }}
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
+                      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
                     >
-                      Book a Risk Scan
+                      Free 1hr Consult
                     </Link>
                   </motion.div>
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop layout */}
-            <div
-              className="hidden md:flex md:flex-row"
-              style={{ height: 'calc(100dvh - 200px)', position: 'relative', zIndex: 2 }}
-            >
-              <div style={{ flex: '0 0 50%', minWidth: 0, display: 'flex', alignItems: 'center', padding: '32px 40px 32px 36px', zIndex: 4, position: 'relative' }}>
-                {/* Split card: top = Saturn (90% transparent), bottom = text (70% transparent) */}
-                <div style={{
-                  width: '100%',
-                  borderRadius: '18px',
-                  overflow: 'hidden',
-                  border: '2px solid rgba(255,255,255,0.96)',
-                  boxShadow: '0 0 0 1px rgba(255,255,255,0.3), 8px 8px 28px rgba(0,0,0,0.28), -2px -2px 8px rgba(255,255,255,0.2)',
-                }}>
-                  {/* Top half — Saturn, 95% transparent, minimal blur */}
-                  <motion.div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      padding: '28px 24px 20px',
-                      background: 'rgba(255,255,255,0.05)',
-                      backdropFilter: 'blur(4px)',
-                      WebkitBackdropFilter: 'blur(4px)',
-                      borderBottom: '2px solid rgba(255,255,255,0.90)',
-                    }}
-                    initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.05 }}
-                  >
-                    <div style={{ transform: 'scale(0.74)', transformOrigin: 'center center' }}>
-                      <SaturnStage imageSrc={`${import.meta.env.BASE_URL}stabroek3d.png`} imageAlt="Stabroek Market Clock Tower — Preqal's compliance systems built for the real world" size="md" />
-                    </div>
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
+                    <Link
+                      to="/book"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-amber-600 font-bold text-sm"
+                      style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
+                    >
+                      Get a Quote
+                    </Link>
                   </motion.div>
+                </motion.div>
+              </div>
 
-                  {/* Bottom half — 50% transparent, 30% more white for text legibility */}
-                  <div style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '24px 28px 28px' }}>
-                    <motion.p
-                      className="text-[2.5rem] font-bold text-amber-600 leading-tight mb-3"
-                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-                    >
-                      ...build things right.
-                    </motion.p>
-                    <motion.p
-                      className="text-[1rem] text-slate-900 mb-6 leading-relaxed"
-                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.16 }}
-                    >
-                      Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
-                    </motion.p>
-                    <motion.div
-                      className="flex gap-2.5"
-                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.24 }}
-                    >
-                      <Link
-                        to="/book"
-                        className="px-5 py-2.5 rounded-[10px] text-white text-[0.82rem] font-semibold"
-                        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35)' }}
-                      >
-                        Book a Risk Scan
-                      </Link>
-                      <Link
-                        to="/case-studies"
-                        className="px-5 py-2.5 rounded-[10px] text-[0.82rem] text-slate-800 font-semibold"
-                        style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '2px 2px 8px rgba(0,0,0,0.08)' }}
-                      >
-                        See What's Possible
-                      </Link>
-                    </motion.div>
-                  </div>
+              {/* ── Right: hero image ── */}
+              <motion.div
+                className="flex-shrink-0 w-full lg:w-[520px]"
+                initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div
+                  className="relative overflow-hidden rounded-3xl"
+                  style={{
+                    aspectRatio: '4 / 3.2',
+                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+                  }}
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
+                    alt="Business leader relaxed and confident at their desk"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center top' }}
+                    width="520"
+                    height="416"
+                  />
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Right side — background image fills freely */}
-              <div style={{ flex: '0 0 50%' }} />
-
-              {/* Scroll indicator */}
-              <div style={{ position: 'absolute', bottom: '14px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 4 }}>
-                <div style={{ width: '1px', height: '22px', background: 'linear-gradient(to bottom, rgba(245,158,11,0.45), transparent)' }} />
-                <div className="animate-pulse" style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#f59e0b', opacity: 0.6 }} />
-              </div>
             </div>
           </div>
         </section>
@@ -402,7 +331,7 @@ const Home: React.FC = () => {
                   <h2
                     className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5"
                   >
-                    The businesses that sleep soundly<br />
+                    The businesses that succeed<br />
                     <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
                   </h2>
                   <p className="text-white/55 text-base leading-relaxed max-w-[480px]">
