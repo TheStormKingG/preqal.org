@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preqal — Client Journey Process Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: #e0e5ec;
+    min-height: 100vh;
+    padding: 48px 40px 56px;
+    color: #0f172a;
+  }
+  .header { text-align: center; margin-bottom: 48px; }
+  .header-label { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #94a3b8; margin-bottom: 8px; }
+  .header-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.1; }
+  .header-title em { font-style: italic; color: #d97706; }
+  .header-sub { font-size: 13px; color: #64748b; margin-top: 8px; font-weight: 400; }
+  .header-line { width: 56px; height: 3px; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 99px; margin: 14px auto 0; }
+  .flow { display: flex; flex-direction: column; gap: 0; max-width: 960px; margin: 0 auto; }
+  .row { display: flex; align-items: stretch; gap: 12px; }
+  .connector-row { display: flex; justify-content: center; padding: 0; height: 36px; position: relative; }
+  .connector-line { width: 3px; background: linear-gradient(to bottom, #d97706, #f59e0b); border-radius: 2px; }
+  .connector-arrow { position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid #d97706; }
+  .stage { flex: 1; border-radius: 18px; padding: 20px 24px; background: rgba(255,255,255,0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 7px 8px 20px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.9); border: 1.5px solid rgba(255,255,255,0.92); display: flex; align-items: flex-start; gap: 16px; position: relative; overflow: hidden; }
+  .stage::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: linear-gradient(to bottom, #f59e0b, #d97706); border-radius: 2px 0 0 2px; }
+  .stage-icon { width: 44px; height: 44px; border-radius: 12px; background: #e0e5ec; box-shadow: inset 3px 3px 7px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .stage-body { flex: 1; }
+  .stage-number { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #d97706; margin-bottom: 3px; }
+  .stage-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 5px; }
+  .stage-desc { font-size: 12px; color: #64748b; line-height: 1.55; }
+  .stage-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #e0e5ec; color: #475569; box-shadow: 2px 2px 4px rgba(163,177,198,0.4), -1px -1px 3px rgba(255,255,255,0.8); }
+  .tag.amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; box-shadow: 2px 2px 6px rgba(217,119,6,0.25); }
+  .tag.form { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; box-shadow: 2px 2px 6px rgba(59,130,246,0.2); }
+  .tag.dark { background: #0f172a; color: #f59e0b; }
+  .stage.navy { background: #0f172a; border-color: rgba(245,158,11,0.25); box-shadow: 8px 10px 24px rgba(15,23,42,0.35), -4px -4px 14px rgba(255,255,255,0.7); }
+  .stage.navy .stage-number { color: #f59e0b; }
+  .stage.navy .stage-title { color: #fff; }
+  .stage.navy .stage-desc { color: rgba(255,255,255,0.55); }
+  .stage.navy::before { background: linear-gradient(to bottom, #f59e0b, #d97706); }
+  .decision-vline { width: 3px; height: 100%; background: linear-gradient(to bottom, #d97706, #f59e0b); position: absolute; left: 50%; transform: translateX(-50%); z-index: -1; }
+  .row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .footer { text-align: center; margin-top: 48px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .footer-text { font-size: 11px; color: #94a3b8; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .footer-divider { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, rgba(163,177,198,0.4), transparent); }
+  .doc-ref { position: absolute; top: 14px; right: 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; background: rgba(255,255,255,0.6); padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(163,177,198,0.3); }
+  .stage.navy .doc-ref { color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.1); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="header-label">DIA-01 · Version 1.0 · 2026-05-07</p>
+  <h1 class="header-title">Preqal Client Journey —<br><em>from first contact to renewal.</em></h1>
+  <p class="header-sub">Integrated Management System · Marketing → Billing Pipeline</p>
+  <div class="header-line"></div>
+</div>
+
+<div class="flow">
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-01</span>
+      <div class="stage-icon">🌐</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 01</p>
+        <h2 class="stage-title">Marketing &amp; Lead Discovery</h2>
+        <p class="stage-desc">Attract qualified prospects through the Preqal website, blog content, SEO, and referral networks. All inbound channels funnel to a single entry point: Form 1.</p>
+        <div class="stage-tags">
+          <span class="tag">Website</span>
+          <span class="tag">SEO</span>
+          <span class="tag">Referrals</span>
+          <span class="tag">Blog / Resources</span>
+          <span class="tag amber">Human-led</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-02 · FORM-01</span>
+      <div class="stage-icon">📋</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 02</p>
+        <h2 class="stage-title">Lead Capture &amp; Classification</h2>
+        <p class="stage-desc">Prospect submits <strong>Form 1 — Business Growth Assessment</strong>. Captures contact details, industry, company size, pressing quality problem, and service need. Automated tier classification (Starter / Growth / Enterprise) routes the lead in the admin dashboard.</p>
+        <div class="stage-tags">
+          <span class="tag form">FORM-01 (Digital)</span>
+          <span class="tag amber">Supabase: template_leads + quote_submissions</span>
+          <span class="tag">Admin notified instantly</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-03 · TPL-01 · TPL-02</span>
+      <div class="stage-icon">💬</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 03</p>
+        <h2 class="stage-title">Quote Generation &amp; Proposal</h2>
+        <p class="stage-desc">Admin reviews classification, selects applicable services, and generates a tailored quote using <strong>TPL-01 (Quote Template)</strong>. A formal proposal (<strong>TPL-02</strong>) is assembled and sent to the prospect within 48 hours of lead submission.</p>
+        <div class="stage-tags">
+          <span class="tag amber">48-hour SLA</span>
+          <span class="tag">TPL-01 Quote</span>
+          <span class="tag">TPL-02 Proposal</span>
+          <span class="tag">Admin Dashboard</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-04 · TPL-03</span>
+      <div class="stage-icon">✍️</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 04</p>
+        <h2 class="stage-title">Contract Execution &amp; Sign-off</h2>
+        <p class="stage-desc">Prospect accepts the proposal. A <strong>Service Agreement (TPL-03)</strong> is issued, signed by both parties, and filed. CRM pipeline stage is updated to <em>Contracted</em>. Deposit invoice issued if applicable.</p>
+        <div class="stage-tags">
+          <span class="tag form">TPL-03 Contract</span>
+          <span class="tag">CRM: pipeline_stage → Contracted</span>
+          <span class="tag amber">Deposit invoice triggered</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-05 · FORM-02</span>
+      <div class="stage-icon">🎯</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 05</p>
+        <h2 class="stage-title">Client Onboarding</h2>
+        <p class="stage-desc">Admin sends the token-gated <strong>Form 2 — Client Onboarding &amp; Context Capture</strong> link. Client provides business context, existing documentation, key contacts, and uploads relevant files. Admin is notified on completion. CRM updated to <em>Onboarding Complete</em>.</p>
+        <div class="stage-tags">
+          <span class="tag form">FORM-02 (Token-gated)</span>
+          <span class="tag">Supabase: client_onboarding</span>
+          <span class="tag amber">Admin notification on submit</span>
+          <span class="tag">CRM: onboarding_stage → complete</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage navy">
+      <span class="doc-ref">SOP-06 · TPL-09</span>
+      <div class="stage-icon" style="background:rgba(255,255,255,0.08);box-shadow:none;">🚀</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 06</p>
+        <h2 class="stage-title">Project Scoping &amp; Delivery</h2>
+        <p class="stage-desc">Kickoff meeting held using <strong>TPL-09 (Kickoff Agenda)</strong>. Gap analysis conducted. Integrated Management System (IMS) or other deliverables developed and implemented. Weekly status reports issued. CRM pipeline stages: Scoping → Active → Review → Complete.</p>
+        <div class="stage-tags">
+          <span class="tag dark">TPL-09 Kickoff</span>
+          <span class="tag dark">TPL-10 Status Reports</span>
+          <span class="tag dark">REG-04 Project Register</span>
+          <span class="tag amber">Core value delivery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row">
+    <div class="stage">
+      <span class="doc-ref">SOP-07 · TPL-11</span>
+      <div class="stage-icon">📦</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 07</p>
+        <h2 class="stage-title">Project Closure &amp; Handover</h2>
+        <p class="stage-desc">Final deliverables submitted and client sign-off obtained. <strong>TPL-11 (Closure Report)</strong> issued. Lessons learned captured. CRM updated to <em>Closed</em>. Triggers final invoice and renewal follow-up scheduling.</p>
+        <div class="stage-tags">
+          <span class="tag">TPL-11 Closure Report</span>
+          <span class="tag amber">Final invoice triggered</span>
+          <span class="tag">CRM: Closed</span>
+          <span class="tag">Renewal T-30 scheduled</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-row"><div class="decision-vline"></div><div class="connector-arrow" style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #d97706;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);"></div></div>
+
+  <div class="row-split">
+    <div class="stage">
+      <span class="doc-ref">SOP-08 · TPL-04</span>
+      <div class="stage-icon">🧾</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 08</p>
+        <h2 class="stage-title">Billing &amp; Accounts Receivable</h2>
+        <p class="stage-desc">Invoices generated from <strong>TPL-04</strong>, tracked in <strong>REG-05</strong>. Payment reminders at T+7, T+14, T+30 (overdue). All amounts, due dates, and payment status visible in admin dashboard Billing tab.</p>
+        <div class="stage-tags">
+          <span class="tag">TPL-04 Invoice</span>
+          <span class="tag">REG-05 Payment Register</span>
+          <span class="tag amber">Auto-reminders</span>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+      <span class="doc-ref">SOP-09</span>
+      <div class="stage-icon">🔄</div>
+      <div class="stage-body">
+        <p class="stage-number">Stage 09</p>
+        <h2 class="stage-title">Renewal, Upsell &amp; Retention</h2>
+        <p class="stage-desc">T-30 before contract end: renewal outreach via <strong>TPL-14</strong>. Upsell opportunities identified from project learnings. Satisfied clients directed to testimonial/case study process. NPS captured.</p>
+        <div class="stage-tags">
+          <span class="tag">TPL-14 Renewal Email</span>
+          <span class="tag amber">T-30 trigger</span>
+          <span class="tag">Case study capture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-divider"></div>
+  <span class="footer-text">Preqal · Clinic on Quality™ · DIA-01 v1.0 · Confidential</span>
+  <div class="footer-divider"></div>
+</div>
+
+</body>
+</html>
