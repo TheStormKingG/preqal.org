@@ -113,31 +113,63 @@ const ContactUs: React.FC = () => {
 
         {/* ── HERO ── */}
         <section className="pt-20 pb-14 relative overflow-hidden">
-          <div
-            className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)', transform: 'translate(25%, -30%)' }}
-          />
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <motion.p
-              className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
-            >
-              Get in touch
-            </motion.p>
-            <motion.h1
-              className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
-              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Let's write the next<br />
-              <em style={{ color: '#d97706' }}>chapter together.</em>
-            </motion.h1>
-            <motion.p
-              className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto"
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
-            >
-              Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here.
-            </motion.p>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
+
+              {/* Left: text */}
+              <div className="flex-1 lg:max-w-[560px] mb-10 lg:mb-0">
+                <motion.p
+                  className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+                >
+                  Get in touch
+                </motion.p>
+                <motion.h1
+                  className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
+                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  Let's write the next<br />
+                  <em style={{ color: '#d97706' }}>chapter together.</em>
+                </motion.h1>
+                <motion.p
+                  className="text-lg text-slate-500 leading-relaxed"
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
+                >
+                  Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here.
+                </motion.p>
+              </div>
+
+              {/* Right: hero image — desktop only */}
+              <motion.div
+                className="hidden lg:block flex-shrink-0 w-[400px]"
+                initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div
+                  className="overflow-hidden rounded-3xl relative"
+                  style={{
+                    aspectRatio: '4 / 5',
+                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+                  }}
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/contact-hero.png`}
+                    alt="Preqal — ready to help your business"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center top' }}
+                    width="400"
+                    height="500"
+                  />
+                  {/* Amber + dark gradient wash */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.15) 0%, transparent 45%, rgba(15,23,42,0.28) 100%)' }}
+                  />
+                </div>
+              </motion.div>
+
+            </div>
           </div>
         </section>
 
