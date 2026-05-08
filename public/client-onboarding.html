@@ -129,7 +129,7 @@
                 <div>
                   <label for="f-rep-id" class="block text-sm font-medium text-slate-600 mb-1">ID / Passport Number <span class="text-amber-500">*</span></label>
                   <input id="f-rep-id" name="rep_id_passport" type="text" class="field" placeholder="ID or passport number" required>
-                  <p id="f-rep-id-err" class="text-xs text-red-600 mt-1 hidden"></p>
+                  <p id="f-rep-id-passport-err" class="text-xs text-red-600 mt-1 hidden"></p>
                 </div>
               </div>
 
@@ -321,8 +321,10 @@
   }
 
   // ── Form submit ──────────────────────────────────────────────────────────────
+  let isSubmitting = false;
   document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     const fd = new FormData(this);
 
     const errs = validateForm(fd);
@@ -331,6 +333,7 @@
       return;
     }
 
+    isSubmitting = true;
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
     btn.innerHTML = '<div class="w-5 h-5 rounded-full border-2 border-white border-t-transparent spin"></div> Saving…';
@@ -402,6 +405,7 @@
       console.error('[client-onboarding] Submit error:', err);
       submitErr.textContent = err.message || 'Something went wrong. Please try again or contact Stefan.';
       submitErr.classList.remove('hidden');
+      isSubmitting = false;
       btn.disabled = false;
       btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Complete Onboarding';
     }
