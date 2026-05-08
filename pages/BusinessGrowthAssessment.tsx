@@ -299,8 +299,8 @@ const BusinessGrowthAssessment: React.FC = () => {
 
     console.log('[Preqal Business Growth Assessment] Submission:', submission);
 
-    // ── Save to Supabase quote_submissions ──────────────────────────────────
-    const { error: dbError } = await supabase.from('quote_submissions').insert([{
+    // ── Save to Supabase qualified_leads ──────────────────────────────────
+    const { error: dbError } = await supabase.from('qualified_leads').insert([{
       company_name:         submission.companyName,
       contact_person:       submission.contactPersonName,
       email:                submission.email,
@@ -311,6 +311,7 @@ const BusinessGrowthAssessment: React.FC = () => {
       complexity_score:     submission.complexityScore,
       recommended_tier:     submission.recommendedTier,
       business_description: submission.businessDescription,
+      selected_steps:       null,   // populated by step selector — added in Plan 4
       status:               'new',
     }]);
     if (dbError) console.error('[BusinessGrowthAssessment] DB error:', dbError.message);
