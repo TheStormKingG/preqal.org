@@ -120,6 +120,29 @@ const TIERS: TierData[] = [
   },
 ];
 
+// ─── Service Step Selector constants ────────────────────────────────────────
+
+const STEP_NAMES: string[] = [
+  'Compliance Baseline Scan',
+  'IMS Architecture & Implementation Planning',
+  'Document Development',
+  'Training Programme Delivery',
+  'Implementation & Observation Support',
+  'Internal Audit Execution',
+  'Management Review Facilitation',
+  'Pre-Certification Readiness Audit',
+];
+
+// Monthly fee (GYD) for the 9-month programme, indexed by tier number 1–6
+const STEP_RATES: Record<number, number> = {
+  1: 50000,
+  2: 70000,
+  3: 90000,
+  4: 120000,
+  5: 180000,
+  6: 233333,
+};
+
 // ─── Internal Classification Engine (not exposed in UI) ───────────────────────
 
 function getBaseTier(staffSize: string): number {
@@ -194,6 +217,7 @@ const BusinessGrowthAssessment: React.FC = () => {
   const [errors, setErrors]             = useState<FormErrors>({});
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [submitError, setSubmitError]   = useState('');
+  const [selectedSteps, setSelectedSteps] = useState<number | null>(null);
 
   const modalRef    = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -210,6 +234,7 @@ const BusinessGrowthAssessment: React.FC = () => {
       staffSize: '', numberOfServices: '', avgProcessesPerService: '',
       businessDescription: '',
     });
+    setSelectedSteps(null);
   }, []);
 
   const closeModal = useCallback(() => setIsModalOpen(false), []);
@@ -256,6 +281,7 @@ const BusinessGrowthAssessment: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'staffSize') setSelectedSteps(null);
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -311,7 +337,7 @@ const BusinessGrowthAssessment: React.FC = () => {
       complexity_score:     submission.complexityScore,
       recommended_tier:     submission.recommendedTier,
       business_description: submission.businessDescription,
-      selected_steps:       null,   // populated by step selector — added in Plan 4
+      selected_steps:       selectedSteps,
       status:               'new',
     }]);
     if (dbError) console.error('[BusinessGrowthAssessment] DB error:', dbError.message);
@@ -348,6 +374,7 @@ const BusinessGrowthAssessment: React.FC = () => {
             `Base Tier:             ${submission.baseTier}`,
             `Complexity Score:      ${submission.complexityScore}`,
             `Recommended Tier:      Tier ${submission.recommendedTier} — ${submission.recommendedTierName}`,
+            `Selected Steps:        ${selectedSteps ? `Steps 1–${selectedSteps} (${STEP_NAMES[selectedSteps - 1]})` : 'Not selected'}`,
             '',
             `Submitted:             ${new Date(submission.timestamp).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}`,
           ].join('\n'),
@@ -834,6 +861,60 @@ const BusinessGrowthAssessment: React.FC = () => {
                         <p id="bga-staff-err" role="alert" className="text-xs text-red-600 mt-1">
                           {errors.staffSize}
                         </p>
+                      )}
+                    </div>
+
+                    {/* Service Step Selector */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-600 mb-1">
+                        Which service steps interest you?{' '}
+                        <span className="text-slate-400 font-normal">(optional)</span>
+                      </label>
+                      <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                        Each step builds on the previous. Selecting a step includes all prior steps.
+                        {!formData.staffSize && ' Select your team size above to see pricing.'}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Service step selector">
+                        {STEP_NAMES.map((stepName, idx) => {
+                          const stepNum = idx + 1;
+                          const isActive = selectedSteps !== null && stepNum <= selectedSteps;
+                          const isDisabled = !formData.staffSize;
+                          return (
+                            <button
+                              key={stepNum}
+                              type="button"
+                              disabled={isDisabled}
+                              aria-pressed={isActive}
+                              aria-label={`Step ${stepNum}: ${stepName}`}
+                              title={stepName}
+                              onClick={() => setSelectedSteps(prev => prev === stepNum ? null : stepNum)}
+                              className={[
+                                'w-9 h-9 rounded-lg font-bold text-sm transition-all',
+                                isDisabled
+                                  ? 'neu-raised-sm text-slate-300 cursor-not-allowed'
+                                  : isActive
+                                  ? 'text-white shadow-inner cursor-pointer'
+                                  : 'neu-raised-sm text-slate-500 hover:text-amber-600 cursor-pointer',
+                              ].join(' ')}
+                              style={isActive ? {
+                                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                                boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.15)',
+                              } : undefined}
+                            >
+                              {stepNum}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {selectedSteps && formData.staffSize && (
+                        <div className="mt-3 px-4 py-2.5 rounded-xl bg-amber-50/60 neu-pressed-sm text-xs text-slate-600 leading-relaxed">
+                          <span className="font-semibold text-amber-700">Steps 1–{selectedSteps}</span>
+                          {' '}· {STEP_NAMES[selectedSteps - 1]}
+                          {' '}· <span className="font-bold text-amber-600">
+                            GYD {STEP_RATES[getBaseTier(formData.staffSize)].toLocaleString()}/month
+                          </span>
+                          <span className="text-slate-400"> (9-month programme)</span>
+                        </div>
                       )}
                     </div>
 
