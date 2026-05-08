@@ -8,6 +8,7 @@ ALTER TABLE IF EXISTS quote_submissions RENAME TO qualified_leads;
 -- ── 2. Add pipeline columns ──────────────────────────────────────────────────
 ALTER TABLE qualified_leads
   ADD COLUMN IF NOT EXISTS selected_steps    int2,
+  ADD COLUMN IF NOT EXISTS recommended_tier  text,
   ADD COLUMN IF NOT EXISTS tier              text,
   ADD COLUMN IF NOT EXISTS quote_sent_at     timestamptz,
   ADD COLUMN IF NOT EXISTS quote_accepted_at timestamptz,
@@ -17,6 +18,9 @@ ALTER TABLE qualified_leads
 
 -- Ensure status column exists with correct default
 ALTER TABLE qualified_leads
+  ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'new';
+-- If column already exists, ensure default is set
+ALTER TABLE qualified_leads
   ALTER COLUMN status SET DEFAULT 'new';
 
 -- ── 3. Unique index on onboarding_token ──────────────────────────────────────
@@ -24,7 +28,35 @@ CREATE UNIQUE INDEX IF NOT EXISTS qualified_leads_onboarding_token_idx
   ON qualified_leads (onboarding_token)
   WHERE onboarding_token IS NOT NULL;
 
--- ── 4. Helper function for client-facing token lookup ────────────────────────
+CREATE INDEX IF NOT EXISTS qualified_leads_status_idx
+  ON qualified_leads (status);
+
+CREATE INDEX IF NOT EXISTS qualified_leads_created_at_idx
+  ON qualified_leads (created_at DESC);
+
+-- ── 4. Enable RLS on qualified_leads ─────────────────────────────────────────
+ALTER TABLE qualified_leads ENABLE ROW LEVEL SECURITY;
+
+-- Authenticated users (admin) get full access
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename  = 'qualified_leads'
+      AND policyname = 'qualified_leads admin access'
+  ) THEN
+    EXECUTE $p$
+      CREATE POLICY "qualified_leads admin access"
+        ON qualified_leads FOR ALL TO authenticated
+        USING (true)
+        WITH CHECK (true)
+    $p$;
+  END IF;
+END;
+$$;
+
+-- ── 5. Helper function for client-facing token lookup ────────────────────────
 -- Returns only the fields the client-onboarding form needs.
 -- SECURITY DEFINER so anonymous callers can query without touching other rows.
 CREATE OR REPLACE FUNCTION get_lead_by_token(p_token uuid)
@@ -66,7 +98,7 @@ $$;
 -- Grant execute to anon so the client-facing form can call it without auth
 GRANT EXECUTE ON FUNCTION get_lead_by_token(uuid) TO anon;
 
--- ── 5. pdf-temp storage bucket ───────────────────────────────────────────────
+-- ── 6. pdf-temp storage bucket ───────────────────────────────────────────────
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
   'pdf-temp',
@@ -78,16 +110,29 @@ VALUES (
 ON CONFLICT (id) DO NOTHING;
 
 -- RLS: only authenticated users (admin) can read/write pdf-temp
-CREATE POLICY IF NOT EXISTS "pdf-temp admin access"
-  ON storage.objects FOR ALL TO authenticated
-  USING (bucket_id = 'pdf-temp')
-  WITH CHECK (bucket_id = 'pdf-temp');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'storage'
+      AND tablename  = 'objects'
+      AND policyname = 'pdf-temp admin access'
+  ) THEN
+    EXECUTE $p$
+      CREATE POLICY "pdf-temp admin access"
+        ON storage.objects FOR ALL TO authenticated
+        USING (bucket_id = 'pdf-temp')
+        WITH CHECK (bucket_id = 'pdf-temp')
+    $p$;
+  END IF;
+END;
+$$;
 
--- ── 6. Add lead_id foreign key to crm_clients ─────────────────────────────────
+-- ── 7. Add lead_id foreign key to crm_clients ─────────────────────────────────
 ALTER TABLE crm_clients
   ADD COLUMN IF NOT EXISTS lead_id uuid REFERENCES qualified_leads(id) ON DELETE SET NULL;
 
--- ── 7. Insert REG-02 into qms_documents ──────────────────────────────────────
+-- ── 8. Insert REG-02 into qms_documents ──────────────────────────────────────
 INSERT INTO qms_documents (doc_id, title, category, description, file_url, version, status)
 VALUES (
   'REG-02',
