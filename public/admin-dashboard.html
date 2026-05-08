@@ -614,7 +614,7 @@ async function loadAll() {
 async function loadOverview() {
   const[leads,quotes,profiles,certs,crm,views]=await Promise.all([
     sb.from('template_leads').select('id',{count:'exact',head:true}),
-    sb.from('quote_submissions').select('id',{count:'exact',head:true}),
+    sb.from('qualified_leads').select('id',{count:'exact',head:true}),
     sb.from('ecourse_profiles').select('id',{count:'exact',head:true}),
     sb.from('ecourse_certificates').select('id',{count:'exact',head:true}),
     sb.from('crm_clients').select('id',{count:'exact',head:true}),
@@ -651,7 +651,7 @@ const LEAD_STATUS_LABEL={submitted:'Submitted',invited:'Invited',qualified:'Qual
 let leadsCache=[];
 async function loadQuotes() {
   const tb=document.getElementById('quotes-tbody');tb.innerHTML=row(9);
-  const{data,error}=await sb.from('quote_submissions').select('*').order('created_at',{ascending:false});
+  const{data,error}=await sb.from('qualified_leads').select('*').order('created_at',{ascending:false});
   if(error||!data?.length){tb.innerHTML=empty(9,error?.message);return;}
   leadsCache=data;
   set('ov-quotes',data.length);
@@ -674,7 +674,7 @@ async function loadQuotes() {
   }).join('');
 }
 async function markLeadQualified(id){
-  await sb.from('quote_submissions').update({status:'qualified'}).eq('id',id);
+  await sb.from('qualified_leads').update({status:'qualified'}).eq('id',id);
   loadQuotes();
 }
 async function openClientModalFromLead(leadId){
@@ -715,8 +715,8 @@ async function sendLeadInvite(){
   errEl.textContent='';
   const btn=document.getElementById('invite-send-btn');
   btn.disabled=true;btn.textContent='Sending…';
-  // Save to quote_submissions as an invited lead
-  const{error:dbErr}=await sb.from('quote_submissions').insert([{
+  // Save to qualified_leads as an invited lead
+  const{error:dbErr}=await sb.from('qualified_leads').insert([{
     company_name:company||name,contact_person:name,email,
     staff_size:'—',num_services:0,avg_processes:'—',
     status:'invited',invited_at:new Date().toISOString(),invited_by:'Preqal Team'
@@ -836,7 +836,7 @@ async function populateLeadDropdown(){
   const sel=document.getElementById('crm-lead-select');
   if(!sel)return;
   sel.innerHTML='<option value="">— Select a qualified lead —</option>';
-  const{data}=await sb.from('quote_submissions').select('*').not('status','eq','added_to_crm').order('created_at',{ascending:false});
+  const{data}=await sb.from('qualified_leads').select('*').not('status','eq','added_to_crm').order('created_at',{ascending:false});
   if(data?.length){
     data.forEach(r=>{
       const opt=document.createElement('option');
@@ -969,7 +969,7 @@ async function saveClient(){
     // Create onboarding record
     await sb.from('client_onboarding').insert([{token,company_name:company,status:'pending'}]);
     // Mark lead as added to CRM
-    if(leadId)await sb.from('quote_submissions').update({status:'added_to_crm'}).eq('id',leadId);
+    if(leadId)await sb.from('qualified_leads').update({status:'added_to_crm'}).eq('id',leadId);
     // Open Gmail compose with pre-filled onboarding email
     const subject2=encodeURIComponent(`Your Preqal Onboarding Link – ${company}`);
     const body2=encodeURIComponent(`Hi ${contact},\n\nWe're excited to welcome ${company} to Preqal. Please complete your onboarding form here:\n\n${onboardLink}\n\nYour signed contract is also on file. If you have any questions, reply to this email.\n\nBest regards,\nPreqal Team`);
