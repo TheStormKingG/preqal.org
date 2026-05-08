@@ -225,6 +225,11 @@
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         QMS
       </a>
+      <div style="border-top:1px solid rgba(255,255,255,.08);margin:12px 0 8px"></div>
+      <div style="padding:0 12px 6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.28);text-transform:uppercase">Client QMS</div>
+      <div id="client-qms-nav">
+        <div style="padding:6px 12px;font-size:12px;color:rgba(255,255,255,.25);font-style:italic">No active client QMS</div>
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -719,6 +724,7 @@ function handleSession(session) {
   document.getElementById('header-avatar').textContent = email[0].toUpperCase();
   document.getElementById('greeting-name').textContent = name;
   loadAll();
+  loadClientQMS();
 }
 async function signIn() {
   const email=document.getElementById('login-email').value.trim(),pass=document.getElementById('login-password').value;
@@ -761,8 +767,26 @@ function switchSection(section){
   });
   const tt=document.getElementById('topbar-title');
   if(tt)tt.textContent=SECTION_TITLES[section]||'Admin Dashboard';
+  document.querySelectorAll('[id^="section-client-"]').forEach(el=>el.style.display='none');
   const mw=document.getElementById('main-wrapper');
   if(mw)mw.scrollTop=0;
+}
+
+function switchClientSection(id, name) {
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('[id^="section-client-"]').forEach(el => el.style.display = 'none');
+  const target = document.getElementById('section-client-' + id);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('#sidebar button.nav-item').forEach(n => n.classList.remove('active'));
+  const btn = document.querySelector(`button[data-client-id="${id}"]`);
+  if (btn) btn.classList.add('active');
+  const tt = document.getElementById('topbar-title');
+  if (tt) tt.textContent = (name || 'Client') + "'s QMS";
+  const mw = document.getElementById('main-wrapper');
+  if (mw) mw.scrollTop = 0;
 }
 
 // ── LOAD ALL ──────────────────────────────────────────────────────────────
@@ -773,6 +797,103 @@ async function loadAll() {
   loadCourse();
   loadTraffic('day');
   loadCRM();
+}
+
+// ── CLIENT QMS ────────────────────────────────────────────────────────────
+async function loadClientQMS() {
+  const nav = document.getElementById('client-qms-nav');
+  if (!nav) return;
+  const { data, error } = await sb
+    .from('crm_clients')
+    .select('id, company_name')
+    .eq('qms_active', true)
+    .order('company_name', { ascending: true });
+  if (error || !data || !data.length) return;
+  nav.innerHTML = data.map(c =>
+    `<button class="nav-item" data-client-id="${c.id}" onclick="switchClientSection('${c.id}',${JSON.stringify(c.company_name)})">
+      <svg class="nav-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      ${esc(c.company_name)}'s QMS
+    </button>`
+  ).join('');
+  const main = document.querySelector('#main-wrapper main > div.max-w-6xl');
+  if (!main) return;
+  main.querySelectorAll('[id^="section-client-"]').forEach(el => el.remove());
+  data.forEach(c => {
+    const sec = document.createElement('div');
+    sec.id = 'section-client-' + c.id;
+    sec.className = 'section-anchor fade-in';
+    sec.style.display = 'none';
+    sec.innerHTML = `
+      <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">Client QMS</div>
+          <h3 class="text-xl font-bold text-slate-900 tracking-tight">${esc(c.company_name)}'s Document Register</h3>
+          <p class="text-sm text-slate-500 mt-0.5">QMS documents for ${esc(c.company_name)} — policies, procedures, work instructions, forms and records.</p>
+        </div>
+        <button class="btn btn-amber btn-sm" onclick="openClientDocModal('${c.id}')">+ Add Document</button>
+      </div>
+      <div class="neu-card rounded-2xl overflow-hidden">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Doc ID</th><th>Title</th><th>Category</th><th>Version</th><th>Status</th><th>Owner</th><th>Review Date</th><th>File</th><th>Actions</th></tr></thead>
+            <tbody id="client-docs-${c.id}"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>`;
+    main.appendChild(sec);
+    loadClientDocs(c.id);
+  });
+}
+
+async function loadClientDocs(clientId) {
+  const tb = document.getElementById('client-docs-' + clientId);
+  if (!tb) return;
+  const { data, error } = await sb
+    .from('qms_documents')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('doc_id', { ascending: true });
+  if (error) { tb.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-red-500">${esc(error.message)}</td></tr>`; return; }
+  if (!data || !data.length) {
+    tb.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">No documents yet.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map(r => {
+    const fileLink = r.file_url ? `<a href="${esc(r.file_url)}" target="_blank" class="text-amber-600 font-medium hover:underline text-xs">Open ↗</a>` : '–';
+    const rd = r.review_date ? fmtDate(r.review_date) : '–';
+    return `<tr>
+      <td class="font-semibold text-amber-700">${esc(r.doc_id)}</td>
+      <td class="font-medium">${esc(r.title)}</td>
+      <td class="td-muted">${esc(r.category||'–')}</td>
+      <td class="td-muted">${esc(r.version||'–')}</td>
+      <td><span class="badge ${r.status==='active'?'badge-green':'badge-slate'}">${esc(r.status||'–')}</span></td>
+      <td class="td-muted">${esc(r.owner||'–')}</td>
+      <td class="td-muted">${rd}</td>
+      <td>${fileLink}</td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="editClientDoc('${r.id}','${clientId}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClientDoc('${r.id}','${clientId}')">Del</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function openClientDocModal(clientId) {
+  window._activeClientDocId = null;
+  window._activeClientQmsId = clientId;
+  openModal('doc');
+}
+async function editClientDoc(docId, clientId) {
+  window._activeClientDocId = docId;
+  window._activeClientQmsId = clientId;
+  const { data } = await sb.from('qms_documents').select('*').eq('id', docId).single();
+  if (!data) return;
+  openModal('doc', data);
+}
+async function deleteClientDoc(docId, clientId) {
+  if (!confirm('Delete this document?')) return;
+  await sb.from('qms_documents').delete().eq('id', docId);
+  loadClientDocs(clientId);
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────
