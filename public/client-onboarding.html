@@ -366,6 +366,16 @@
 
       if (crmErr) throw new Error('CRM save failed: ' + crmErr.message);
 
+      // 1b. Activate client QMS (seeds doc register from Preqal templates)
+      const { data: clientRow } = await sb
+        .from('crm_clients')
+        .select('id')
+        .eq('lead_id', leadData.id)
+        .single();
+      if (clientRow?.id) {
+        await sb.rpc('activate_client_qms', { p_client_id: clientRow.id });
+      }
+
       // 2. Update qualified_leads status to 'onboarded'
       const { error: leadErr } = await sb
         .from('qualified_leads')
