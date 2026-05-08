@@ -89,16 +89,17 @@ async function generateREG01() {
 
   const categories = {
     'SOPs': [
-      ['SOP-01','Marketing & Lead Generation','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-02','Lead Capture & Classification','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-03','Quote & Proposal','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-04','Contract Execution & Onboarding Setup','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-05','Client Onboarding','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-06','Project Delivery','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-07','Project Closure & Handover','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-08','Billing & Accounts Receivable','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-09','Renewal, Upsell & Client Retention','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
-      ['SOP-10','Admin Dashboard Operations','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-01','Document Control Procedure','1.0','Active','Dr. Stefan Gravesande','2026-05-08','2027-05-08'],
+      ['SOP-02','Marketing & Lead Generation','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-03','Lead Capture & Classification','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-04','Quote & Proposal','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-05','Contract Execution & Onboarding Setup','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-06','Client Onboarding','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-07','Project Delivery','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-08','Project Closure & Handover','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-09','Billing & Accounts Receivable','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-10','Renewal, Upsell & Client Retention','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
+      ['SOP-11','Admin Dashboard Operations','1.0','Active','Dr. Stefan Gravesande','2026-05-07','2027-05-07'],
     ],
     'Registers': [
       ['REG-01','Document Master Register','1.0','Active','Dr. Stefan Gravesande','2026-05-08','2027-05-08'],
