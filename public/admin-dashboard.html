@@ -394,6 +394,135 @@
   </div>
 </div>
 
+<!-- ══ QUOTE WIZARD MODAL ══ -->
+<div class="modal-overlay" id="quote-wizard-overlay" onclick="if(event.target===this)closeQuoteWizard()">
+  <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-4 flex-shrink-0" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3);border-radius:16px 16px 0 0">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Quote Creation Wizard</h3>
+        <div class="flex gap-2 mt-2">
+          <span id="qw-step-1-pill" class="text-xs font-bold px-3 py-0.5 rounded-full" style="background:#f59e0b;color:#fff">1 · Review</span>
+          <span id="qw-step-2-pill" class="text-xs font-bold px-3 py-0.5 rounded-full" style="background:rgba(163,177,198,.3);color:#64748b">2 · Tier</span>
+          <span id="qw-step-3-pill" class="text-xs font-bold px-3 py-0.5 rounded-full" style="background:rgba(163,177,198,.3);color:#64748b">3 · Send</span>
+        </div>
+      </div>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeQuoteWizard()">x</button>
+    </div>
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-4" id="qw-body">
+      <!-- Step 1 content -->
+      <div id="qw-step-1">
+        <p class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4">Step 1 - Review Lead Info</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Company Name</label><input id="qw-company" class="field" type="text"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Contact Person</label><input id="qw-contact" class="field" type="text"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Email</label><input id="qw-email" class="field" type="email"></div>
+          <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Staff Size</label><input id="qw-staff" class="field" type="text" readonly></div>
+          <div class="col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Services Selected</label><div id="qw-steps-display" class="field text-sm" style="pointer-events:none;opacity:.8"></div></div>
+          <div class="col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Internal Notes <span class="font-normal text-slate-400">(not on quote)</span></label><textarea id="qw-notes" class="field" rows="2" placeholder="Optional admin notes..."></textarea></div>
+        </div>
+      </div>
+      <!-- Step 2 content -->
+      <div id="qw-step-2" style="display:none">
+        <p class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4">Step 2 - Tier &amp; Pricing</p>
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Select Tier</label>
+          <div class="flex gap-2 flex-wrap" id="qw-tier-selector">
+            <button onclick="selectQuoteTier('T1',this)" class="qw-tier-btn btn btn-ghost btn-sm">T1</button>
+            <button onclick="selectQuoteTier('T2',this)" class="qw-tier-btn btn btn-ghost btn-sm">T2</button>
+            <button onclick="selectQuoteTier('T3',this)" class="qw-tier-btn btn btn-ghost btn-sm">T3</button>
+            <button onclick="selectQuoteTier('T4',this)" class="qw-tier-btn btn btn-ghost btn-sm">T4</button>
+            <button onclick="selectQuoteTier('T5',this)" class="qw-tier-btn btn btn-ghost btn-sm">T5</button>
+            <button onclick="selectQuoteTier('T6',this)" class="qw-tier-btn btn btn-ghost btn-sm">T6</button>
+          </div>
+        </div>
+        <div id="qw-pricing-display" class="neu-pressed-sm rounded-xl p-4 space-y-2 text-sm">
+          <p class="text-slate-400 text-sm">Select a tier to see pricing.</p>
+        </div>
+      </div>
+      <!-- Step 3 content -->
+      <div id="qw-step-3" style="display:none">
+        <p class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4">Step 3 - Review &amp; Send</p>
+        <div class="mb-4">
+          <button id="qw-gen-pdf-btn" class="btn btn-ghost" onclick="generateQuoteWizardPDF()">Generate Quote PDF</button>
+          <span id="qw-pdf-status" class="text-xs text-slate-500 ml-3"></span>
+        </div>
+        <div id="qw-pdf-preview" style="display:none;margin-bottom:16px">
+          <iframe id="qw-pdf-iframe" style="width:100%;height:400px;border-radius:12px;border:1px solid rgba(163,177,198,.3)" src=""></iframe>
+        </div>
+        <div id="qw-pdf-link-row" style="display:none" class="neu-pressed-sm rounded-xl p-3 text-sm flex items-center gap-3">
+          <span class="text-slate-500">PDF ready:</span>
+          <a id="qw-pdf-link" href="#" target="_blank" class="text-amber-700 font-semibold underline">Open PDF</a>
+        </div>
+        <p id="qw-send-error" class="text-sm text-red-600 mt-2 min-h-4"></p>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="px-6 py-4 flex justify-between items-center flex-shrink-0" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button id="qw-back-btn" class="btn btn-ghost" onclick="qwBack()" style="display:none">Back</button>
+      <div class="flex gap-3 ml-auto">
+        <button class="btn btn-ghost" onclick="closeQuoteWizard()">Cancel</button>
+        <button id="qw-next-btn" class="btn btn-amber" onclick="qwNext()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ONBOARDING WIZARD MODAL ══ -->
+<div class="modal-overlay" id="onboard-wizard-overlay" onclick="if(event.target===this)closeOnboardWizard()">
+  <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 flex-shrink-0" style="background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(163,177,198,.3);border-radius:16px 16px 0 0">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Onboarding Wizard</h3>
+        <div class="flex gap-2 mt-2">
+          <span id="ow-step-1-pill" class="text-xs font-bold px-3 py-0.5 rounded-full" style="background:#6366f1;color:#fff">1 · Agreement</span>
+          <span id="ow-step-2-pill" class="text-xs font-bold px-3 py-0.5 rounded-full" style="background:rgba(163,177,198,.3);color:#64748b">2 · Send</span>
+        </div>
+      </div>
+      <button class="neu-raised-sm w-8 h-8 rounded-lg text-slate-500 text-xl flex items-center justify-center" onclick="closeOnboardWizard()">x</button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Step 1 -->
+      <div id="ow-step-1">
+        <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">Step 1 - Service Agreement</p>
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Contract Start Date</label>
+          <input id="ow-contract-start" class="field" type="date" onchange="owPdfUrl=null;document.getElementById('ow-pdf-preview').style.display='none';document.getElementById('ow-pdf-link-row').style.display='none'">
+        </div>
+        <div class="mb-4">
+          <button id="ow-gen-pdf-btn" class="btn btn-ghost" onclick="generateAgreementWizardPDF()">Generate Service Agreement PDF</button>
+          <span id="ow-pdf-status" class="text-xs text-slate-500 ml-3"></span>
+        </div>
+        <div id="ow-pdf-preview" style="display:none;margin-bottom:12px">
+          <iframe id="ow-pdf-iframe" style="width:100%;height:400px;border-radius:12px;border:1px solid rgba(163,177,198,.3)" src=""></iframe>
+        </div>
+        <div id="ow-pdf-link-row" style="display:none" class="neu-pressed-sm rounded-xl p-3 text-sm flex items-center gap-3">
+          <span class="text-slate-500">Agreement ready:</span>
+          <a id="ow-pdf-link" href="#" target="_blank" class="text-indigo-700 font-semibold underline">Open PDF</a>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div id="ow-step-2" style="display:none">
+        <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">Step 2 - Approve &amp; Send</p>
+        <div class="neu-pressed-sm rounded-xl p-4 space-y-2 text-sm">
+          <div class="flex gap-2"><span class="text-slate-400">Sending to:</span><span id="ow-send-summary" class="font-semibold text-slate-900"></span></div>
+          <div class="flex gap-2"><span class="text-slate-400">Agreement PDF:</span><a id="ow-send-link" href="#" target="_blank" class="text-indigo-700 font-semibold underline text-xs">View PDF</a></div>
+          <div class="flex gap-2"><span class="text-slate-400">Onboarding form link:</span><code id="ow-token-preview" class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-600">will be generated on send</code></div>
+        </div>
+        <p id="ow-send-error" class="text-sm text-red-600 mt-3 min-h-4"></p>
+      </div>
+    </div>
+    <div class="px-6 py-4 flex justify-between items-center flex-shrink-0" style="border-top:1px solid rgba(163,177,198,.3)">
+      <button id="ow-back-btn" class="btn btn-ghost" onclick="owBack()" style="display:none">Back</button>
+      <div class="flex gap-3 ml-auto">
+        <button class="btn btn-ghost" onclick="closeOnboardWizard()">Cancel</button>
+        <button id="ow-next-btn" class="btn btn-sm" style="background:#6366f1;color:#fff;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #fff" onclick="owNext()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ CRM ADD/EDIT CLIENT MODAL ══ -->
 <div class="modal-overlay" id="crm-modal-overlay" onclick="closeClientModal(event)">
   <div class="neu-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
@@ -781,6 +910,349 @@ async function markQuoteAccepted(id) {
     .eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   loadQuotes();
+}
+
+// ── QUOTE WIZARD ──────────────────────────────────────────────────────────────
+let qwLeadId = null;
+let qwStep = 1;
+let qwTier = null;
+let qwPdfUrl = null;
+
+const QW_STEPS = ['qw-step-1','qw-step-2','qw-step-3'];
+const QW_PILLS = ['qw-step-1-pill','qw-step-2-pill','qw-step-3-pill'];
+
+function openQuoteWizard(leadId) {
+  const lead = leadsCache.find(r => r.id === leadId);
+  if (!lead) return;
+  qwLeadId = leadId;
+  qwStep = 1;
+  qwTier = null;
+  qwPdfUrl = null;
+
+  document.getElementById('qw-company').value = lead.company_name || '';
+  document.getElementById('qw-contact').value = lead.contact_person || '';
+  document.getElementById('qw-email').value   = lead.email || '';
+  document.getElementById('qw-staff').value   = lead.staff_size || '';
+  document.getElementById('qw-notes').value   = lead.notes || '';
+  const steps = lead.selected_steps;
+  const SERVICE_STEPS_LABELS = ['Compliance Baseline Scan','IMS Architecture & Implementation Planning',
+    'Document Development','Training Programme Delivery','Implementation & Observation Support',
+    'Internal Audit Execution','Management Review Facilitation','Pre-Certification Readiness Audit'];
+  document.getElementById('qw-steps-display').textContent = steps
+    ? `Step ${steps}: ${SERVICE_STEPS_LABELS.slice(0,steps).join(' - ')}`
+    : 'Not specified';
+
+  const rec = lead.recommended_tier ? `T${lead.recommended_tier}` : 'T1';
+  qwTier = rec;
+
+  document.getElementById('qw-pdf-preview').style.display = 'none';
+  document.getElementById('qw-pdf-link-row').style.display = 'none';
+  document.getElementById('qw-send-error').textContent = '';
+  document.getElementById('qw-pdf-status').textContent = '';
+  document.getElementById('qw-next-btn').textContent = 'Next';
+  document.getElementById('qw-next-btn').disabled = false;
+
+  qwRenderStep();
+  document.getElementById('quote-wizard-overlay').classList.add('open');
+}
+
+function closeQuoteWizard() {
+  document.getElementById('quote-wizard-overlay').classList.remove('open');
+}
+
+function qwRenderStep() {
+  QW_STEPS.forEach((id,i) => {
+    document.getElementById(id).style.display = (i === qwStep-1) ? '' : 'none';
+  });
+  QW_PILLS.forEach((id,i) => {
+    const el = document.getElementById(id);
+    if (i < qwStep-1) {
+      el.style.background = 'rgba(16,185,129,.15)'; el.style.color = '#065f46';
+    } else if (i === qwStep-1) {
+      el.style.background = '#f59e0b'; el.style.color = '#fff';
+    } else {
+      el.style.background = 'rgba(163,177,198,.3)'; el.style.color = '#64748b';
+    }
+  });
+  document.getElementById('qw-back-btn').style.display = qwStep > 1 ? '' : 'none';
+  if (qwStep === 2) { qwRenderPricing(); selectQuoteTierHighlight(qwTier); }
+  if (qwStep === 3) { document.getElementById('qw-next-btn').textContent = 'Approve & Send'; }
+  else { document.getElementById('qw-next-btn').textContent = 'Next'; }
+}
+
+function qwBack() { if (qwStep > 1) { qwStep--; qwRenderStep(); } }
+
+async function qwNext() {
+  if (qwStep === 1) {
+    qwStep = 2; qwRenderStep();
+  } else if (qwStep === 2) {
+    if (!qwTier) { alert('Please select a tier.'); return; }
+    qwStep = 3; qwRenderStep();
+  } else if (qwStep === 3) {
+    await sendQuote();
+  }
+}
+
+function selectQuoteTier(tier, btn) {
+  qwTier = tier;
+  selectQuoteTierHighlight(tier);
+  qwRenderPricing();
+  qwPdfUrl = null;
+  document.getElementById('qw-pdf-preview').style.display = 'none';
+  document.getElementById('qw-pdf-link-row').style.display = 'none';
+  document.getElementById('qw-pdf-status').textContent = '';
+}
+
+function selectQuoteTierHighlight(tier) {
+  document.querySelectorAll('.qw-tier-btn').forEach(b => {
+    b.classList.remove('btn-amber');
+    b.classList.add('btn-ghost');
+  });
+  document.querySelectorAll('.qw-tier-btn').forEach(b => {
+    if (b.textContent.trim() === tier) {
+      b.classList.remove('btn-ghost');
+      b.classList.add('btn-amber');
+    }
+  });
+}
+
+function qwRenderPricing() {
+  const el = document.getElementById('qw-pricing-display');
+  if (!qwTier || !RATE_SHEET[qwTier]) { el.innerHTML = '<p class="text-slate-400 text-sm">Select a tier to see pricing.</p>'; return; }
+  const t = RATE_SHEET[qwTier];
+  el.innerHTML = `
+    <div class="grid grid-cols-2 gap-3">
+      <div><div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Tier</div><div class="font-bold text-slate-900">${qwTier} — ${t.name}</div></div>
+      <div><div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Staff</div><div class="font-medium text-slate-700">${t.staff}</div></div>
+      <div><div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Monthly Retainer</div><div class="font-bold text-amber-700">GYD ${t.monthly.toLocaleString()}</div></div>
+      <div><div class="text-xs text-slate-400 uppercase tracking-wide mb-1">9-Month Total</div><div class="font-bold text-slate-900">GYD ${t.total.toLocaleString()}</div></div>
+    </div>`;
+}
+
+async function generateQuoteWizardPDF() {
+  if (!qwTier) { alert('Select a tier first.'); return; }
+  const lead = leadsCache.find(r => r.id === qwLeadId);
+  if (!lead) return;
+
+  const btn = document.getElementById('qw-gen-pdf-btn');
+  const status = document.getElementById('qw-pdf-status');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch(PDF_EDGE_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ type: 'quote', lead, tier: qwTier }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || 'PDF generation failed');
+
+    qwPdfUrl = data.url;
+    document.getElementById('qw-pdf-iframe').src = qwPdfUrl;
+    document.getElementById('qw-pdf-preview').style.display = '';
+    document.getElementById('qw-pdf-link').href = qwPdfUrl;
+    document.getElementById('qw-pdf-link-row').style.display = '';
+    status.textContent = 'PDF ready - review above';
+    status.style.color = '#059669';
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#b91c1c';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate Quote PDF';
+  }
+}
+
+async function sendQuote() {
+  const errEl = document.getElementById('qw-send-error');
+  errEl.textContent = '';
+  if (!qwPdfUrl) { errEl.textContent = 'Please generate the PDF first.'; return; }
+
+  const lead = leadsCache.find(r => r.id === qwLeadId);
+  if (!lead) return;
+
+  const btn = document.getElementById('qw-next-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  try {
+    const { error: dbErr } = await sb.from('qualified_leads').update({
+      tier: qwTier,
+      status: 'quote_sent',
+      quote_sent_at: new Date().toISOString(),
+      notes: document.getElementById('qw-notes').value.trim() || null,
+    }).eq('id', qwLeadId);
+    if (dbErr) throw new Error('DB error: ' + dbErr.message);
+
+    const toName = document.getElementById('qw-contact').value.trim() || lead.contact_person;
+    const toEmail = document.getElementById('qw-email').value.trim() || lead.email;
+    const company = document.getElementById('qw-company').value.trim() || lead.company_name;
+
+    if (typeof emailjs !== 'undefined') {
+      await emailjs.send(EJS_SERVICE_ID, EJS_ONBOARD_TMPL, {
+        to_name: toName,
+        company_name: company,
+        onboarding_link: qwPdfUrl,
+        contract_url: qwPdfUrl,
+        to_email: toEmail,
+      });
+    } else {
+      const subject = encodeURIComponent(`Your Preqal Quote - ${company}`);
+      const body = encodeURIComponent(`Hi ${toName},\n\nPlease find your Preqal quotation here:\n${qwPdfUrl}\n\nThis link is valid for 48 hours.\n\nBest regards,\nStefan Gravesande\nPreqal`);
+      window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(toEmail)}&su=${subject}&body=${body}`, '_blank');
+    }
+
+    closeQuoteWizard();
+    loadQuotes();
+  } catch (err) {
+    errEl.textContent = 'Error: ' + err.message;
+    btn.disabled = false; btn.textContent = 'Approve & Send';
+  }
+}
+
+// ── ONBOARDING WIZARD ─────────────────────────────────────────────────────────
+let owLeadId = null;
+let owStep = 1;
+let owPdfUrl = null;
+
+function openOnboardWizard(leadId) {
+  const lead = leadsCache.find(r => r.id === leadId);
+  if (!lead) return;
+  owLeadId = leadId;
+  owStep = 1;
+  owPdfUrl = null;
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('ow-contract-start').value = today;
+
+  document.getElementById('ow-pdf-preview').style.display = 'none';
+  document.getElementById('ow-pdf-link-row').style.display = 'none';
+  document.getElementById('ow-pdf-status').textContent = '';
+  document.getElementById('ow-send-error').textContent = '';
+
+  owRenderStep();
+  document.getElementById('onboard-wizard-overlay').classList.add('open');
+}
+
+function closeOnboardWizard() {
+  document.getElementById('onboard-wizard-overlay').classList.remove('open');
+}
+
+function owRenderStep() {
+  document.getElementById('ow-step-1').style.display = owStep === 1 ? '' : 'none';
+  document.getElementById('ow-step-2').style.display = owStep === 2 ? '' : 'none';
+  document.getElementById('ow-back-btn').style.display = owStep > 1 ? '' : 'none';
+
+  const p1 = document.getElementById('ow-step-1-pill');
+  const p2 = document.getElementById('ow-step-2-pill');
+  if (owStep === 1) {
+    p1.style.background = '#6366f1'; p1.style.color = '#fff';
+    p2.style.background = 'rgba(163,177,198,.3)'; p2.style.color = '#64748b';
+  } else {
+    p1.style.background = 'rgba(16,185,129,.15)'; p1.style.color = '#065f46';
+    p2.style.background = '#6366f1'; p2.style.color = '#fff';
+  }
+
+  document.getElementById('ow-next-btn').textContent = owStep === 2 ? 'Approve & Send' : 'Next';
+}
+
+function owBack() { if (owStep > 1) { owStep--; owRenderStep(); } }
+
+async function owNext() {
+  if (owStep === 1) {
+    if (!owPdfUrl) { alert('Please generate the Service Agreement PDF first.'); return; }
+    const lead = leadsCache.find(r => r.id === owLeadId);
+    document.getElementById('ow-send-summary').textContent = `${lead?.contact_person || ''} <${lead?.email || ''}>`;
+    document.getElementById('ow-send-link').href = owPdfUrl;
+    document.getElementById('ow-token-preview').textContent = 'preqal.org/client-onboarding?token=<generated on send>';
+    owStep = 2; owRenderStep();
+  } else if (owStep === 2) {
+    await sendOnboarding();
+  }
+}
+
+async function generateAgreementWizardPDF() {
+  const lead = leadsCache.find(r => r.id === owLeadId);
+  if (!lead) return;
+
+  const btn = document.getElementById('ow-gen-pdf-btn');
+  const status = document.getElementById('ow-pdf-status');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  status.textContent = '';
+
+  try {
+    const contractStart = document.getElementById('ow-contract-start').value;
+    const res = await fetch(PDF_EDGE_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ type: 'agreement', lead, tier: lead.tier || lead.recommended_tier, contract_start: contractStart }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || 'PDF generation failed');
+
+    owPdfUrl = data.url;
+    document.getElementById('ow-pdf-iframe').src = owPdfUrl;
+    document.getElementById('ow-pdf-preview').style.display = '';
+    document.getElementById('ow-pdf-link').href = owPdfUrl;
+    document.getElementById('ow-pdf-link-row').style.display = '';
+    status.textContent = 'Agreement ready';
+    status.style.color = '#059669';
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#b91c1c';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate Service Agreement PDF';
+  }
+}
+
+function generateUUID() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>
+    (c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+}
+
+async function sendOnboarding() {
+  const errEl = document.getElementById('ow-send-error');
+  errEl.textContent = '';
+  const lead = leadsCache.find(r => r.id === owLeadId);
+  if (!lead) return;
+
+  const btn = document.getElementById('ow-next-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  try {
+    const token = generateUUID();
+    const onboardingLink = `https://preqal.org/client-onboarding?token=${token}`;
+
+    const { error: dbErr } = await sb.from('qualified_leads').update({
+      onboarding_token: token,
+      status: 'onboarding_sent',
+      agreement_sent_at: new Date().toISOString(),
+    }).eq('id', owLeadId);
+    if (dbErr) throw new Error('DB error: ' + dbErr.message);
+
+    const toName = lead.contact_person || '';
+    const toEmail = lead.email || '';
+    const company = lead.company_name || '';
+
+    if (typeof emailjs !== 'undefined') {
+      await emailjs.send(EJS_SERVICE_ID, EJS_ONBOARD_TMPL, {
+        to_name: toName,
+        company_name: company,
+        onboarding_link: onboardingLink,
+        contract_url: owPdfUrl,
+        to_email: toEmail,
+      });
+    } else {
+      const subject = encodeURIComponent(`Welcome to Preqal - Your Onboarding Link, ${company}`);
+      const body = encodeURIComponent(`Hi ${toName},\n\nWelcome to Preqal! Please complete your onboarding here:\n${onboardingLink}\n\nYour Service Agreement:\n${owPdfUrl}\n\nBest regards,\nStefan Gravesande\nPreqal`);
+      window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(toEmail)}&su=${subject}&body=${body}`, '_blank');
+    }
+
+    closeOnboardWizard();
+    loadQuotes();
+  } catch (err) {
+    errEl.textContent = 'Error: ' + err.message;
+    btn.disabled = false; btn.textContent = 'Approve & Send';
+  }
 }
 
 // ── INVITE QUALIFIED LEAD ─────────────────────────────────────────────────
