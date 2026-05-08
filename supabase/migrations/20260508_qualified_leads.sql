@@ -22,6 +22,10 @@ ALTER TABLE qualified_leads
 -- If column already exists, ensure default is set
 ALTER TABLE qualified_leads
   ALTER COLUMN status SET DEFAULT 'new';
+-- Backfill nulls and enforce NOT NULL on pre-existing nullable column
+UPDATE qualified_leads SET status = 'new' WHERE status IS NULL;
+ALTER TABLE qualified_leads
+  ALTER COLUMN status SET NOT NULL;
 
 -- ── 3. Unique index on onboarding_token ──────────────────────────────────────
 CREATE UNIQUE INDEX IF NOT EXISTS qualified_leads_onboarding_token_idx
