@@ -12,6 +12,7 @@ const SUPABASE_URL            = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY    = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const BUCKET                  = "pdf-temp";
 const SIGNED_URL_EXPIRY_SECS  = 172800; // 48 hours
+const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 // ── Rate sheet ────────────────────────────────────────────────────────────────
 const RATE_SHEET: Record<string, { name: string; staff: string; monthly: number; total: number }> = {
@@ -56,6 +57,13 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...CORS, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json();
     const { type, lead, tier, contract_start } = body;
 
@@ -72,6 +80,12 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (type !== "quote" && type !== "agreement") {
+      return new Response(JSON.stringify({ error: 'Invalid type: must be "quote" or "agreement"' }), {
+        status: 400, headers: { ...CORS, "Content-Type": "application/json" },
+      });
+    }
+
     // Generate PDF bytes
     const pdfBytes = type === "quote"
       ? await generateQuotePDF(lead, tier, tierData)
@@ -79,8 +93,6 @@ Deno.serve(async (req) => {
 
     // Upload to storage
     const filename = `${type}-${lead.id ?? "draft"}-${Date.now()}.pdf`;
-    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
     const { error: upErr } = await sb.storage
       .from(BUCKET)
       .upload(filename, pdfBytes, { contentType: "application/pdf", upsert: true });
@@ -168,7 +180,7 @@ async function generateQuotePDF(
   page.drawText("PROGRAMME SUMMARY", { x: ML, y, size: 8, font: fontBold, color: amber });
   y -= 16;
 
-  const selectedSteps = Number(lead.selected_steps ?? 1);
+  const selectedSteps = Math.min(8, Math.max(1, Number(lead.selected_steps ?? 1)));
   const stepsText = `Steps 1-${selectedSteps} (${selectedSteps} phase${selectedSteps > 1 ? "s" : ""})`;
   page.drawText(stepsText, { x: ML, y, size: 11, font: fontBold, color: navy });
   y -= 14;
@@ -292,7 +304,7 @@ async function generateAgreementPDF(
 
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
   const startDate = contractStart ? fmtDate(contractStart) : "To be confirmed";
-  const selectedSteps = Number(lead.selected_steps ?? 1);
+  const selectedSteps = Math.min(8, Math.max(1, Number(lead.selected_steps ?? 1)));
 
   // Parties
   section("PARTIES");
@@ -356,15 +368,15 @@ async function generateAgreementPDF(
     "This agreement is governed by the laws of the Cooperative Republic of Guyana.",
   ];
   for (const term of terms) {
+    maybeNewPage(40);
     page.drawRectangle({ x: ML, y: y - 2, width: 4, height: 4, color: muted });
     const words = term.split(" ");
-    let line = "", firstLine = true;
+    let line = "";
     for (const word of words) {
       if ((line + word).length > 90) {
         drawText(line.trim(), ML + 12, y, 8, fontNormal, slate);
         y -= 12;
         line = word + " ";
-        firstLine = false;
         maybeNewPage(40);
       } else {
         line += word + " ";
@@ -375,8 +387,6 @@ async function generateAgreementPDF(
       y -= 12;
     }
     y -= 6;
-    maybeNewPage(40);
-    void firstLine;
   }
 
   // Signatures
