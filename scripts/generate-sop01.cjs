@@ -100,7 +100,7 @@ function docxFooter() {
 
 // ─── Location Table ───────────────────────────────────────────────────────────
 function locationTable() {
-  const colW = [800, 2200, 3400, 3680];
+  const colW = [800, 2200, 3200, 3880];
   const hdr = new TableRow({ children:[
     navyCell([p([tr('#', { bold:true, color:C.WHITE, size:20 })])], colW[0]),
     navyCell([p([tr('Location', { bold:true, color:C.WHITE, size:20 })])], colW[1]),
@@ -109,9 +109,8 @@ function locationTable() {
   ]});
 
   const rows = [
-    ['1', 'Mac (Primary)', '/Users/stefangravesande/Documents/Projects/Preqal QMS/', 'Master working copy. Organised in 6 subfolders. Changes here are pushed to the website via git.'],
-    ['2', 'Website (GitHub Pages)', 'https://preqal.org/ims/', 'Auto-published on every git push to master. Public-facing document library. Accessible at preqal.org/ims/.'],
-    ['3', 'Google Drive (Cloud Backup)', 'https://drive.google.com/drive/folders/1wIA1LapOeWvCScjh37AMNgawEQizGRfF', 'Restricted to stefan.gravesande@preqal.org and stefan.gravesande@gmail.com. Provides off-site redundancy and audit access.'],
+    ['1', 'Mac (Primary)', '/Users/stefangravesande/Documents/Projects/Preqal QMS/', 'Master working copy. Organised in 6 subfolders. This is the authoritative source. Running scripts/sync-ims-file.cjs after any edit pushes the updated file to Supabase Storage.'],
+    ['2', 'Supabase Storage (Cloud)', 'Project gndcjmxxgtnoidxgcdnx — bucket: ims', 'Private storage bucket. Files are served exclusively to authenticated and authorised Preqal personnel via time-limited signed URLs at preqal.org/ims/. No public access.'],
   ];
 
   const dataRows = rows.map(([n, loc, addr, note]) =>
@@ -220,7 +219,7 @@ async function main() {
         p([]),
         locationTable(),
         p([]),
-        p([tr('Synchronisation protocol: The Mac copy is the working master. When a document is created or updated, the author copies the file to ', { size:20 }), tr('public/ims/', { bold:true, size:20 }), tr(' in the GitHub repository and pushes to the ', { size:20 }), tr('master', { bold:true, size:20 }), tr(' branch. This triggers automatic deployment to the website. The Google Drive folder is updated manually at the same time.', { size:20 })]),
+        p([tr('Synchronisation protocol: The Mac copy is the working master. When a document is created or updated, the author runs ', { size:20 }), tr('node scripts/sync-ims-file.cjs <filepath>', { bold:true, size:20 }), tr(' from the project root. This uploads the file to the Supabase Storage bucket and updates the corresponding ', { size:20 }), tr('qms_documents.file_url', { bold:true, size:20 }), tr(' record. To bulk-sync all documents, run ', { size:20 }), tr('node scripts/upload-all-ims.cjs', { bold:true, size:20 }), tr('. Both scripts require the ', { size:20 }), tr('SUPABASE_SERVICE_KEY', { bold:true, size:20 }), tr(' environment variable (Supabase dashboard → Settings → API → service_role).', { size:20 })]),
         p([]),
 
         // 4. Document Numbering
@@ -268,11 +267,15 @@ async function main() {
 
         // 9. Access and Security
         sH('9', 'Access and Security'),
-        p([tr('Google Drive documents are restricted to authorised personnel only:')]),
-        bullet('stefan.gravesande@preqal.org (primary)'),
-        bullet('stefan.gravesande@gmail.com (backup)'),
-        p([tr('Website documents at preqal.org/ims/ are accessible to any user with the URL. Documents do not contain client PII or confidential pricing. Refer to POL-02 (Data Protection & Privacy Policy) for data handling rules.')]),
-        p([tr('The Admin Dashboard (SOP-11) provides authenticated access to document management functions for internal staff.')]),
+        p([tr('All IMS documents are stored in a private Supabase Storage bucket (ims). Access is enforced at two levels:')]),
+        bullet('Authentication — users must sign in via Supabase Auth (magic link sent to their registered email).'),
+        bullet('Authorisation — the signed-in user\'s email is checked against the authorized_ims_users table. Only listed emails are granted access.'),
+        bullet('Time-limited signed URLs — the IMS library generates a signed URL valid for 1 hour per document open action. No permanent public URLs exist.'),
+        p([tr('Authorised users are managed in the authorized_ims_users table in Supabase (Project gndcjmxxgtnoidxgcdnx). Initial authorised users:')]),
+        bullet('stefan.gravesande@preqal.org (Management Representative)'),
+        bullet('stefan.gravesande@gmail.com (personal backup access)'),
+        p([tr('To grant access to additional staff, insert their email into the authorized_ims_users table. Refer to POL-02 (Data Protection & Privacy Policy) for data handling rules.')]),
+        p([tr('The Admin Dashboard (SOP-11) provides additional authenticated access to document management functions for internal staff.')]),
         p([]),
 
         // 10. Roles and Responsibilities

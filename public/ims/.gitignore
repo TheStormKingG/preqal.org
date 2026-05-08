@@ -1,0 +1,13 @@
+# IMS document files are stored in Supabase Storage (private, auth-gated).
+# They are NOT served as public static files from GitHub Pages.
+# Edit files on Mac (Preqal QMS folder), then sync with:
+#   SUPABASE_SERVICE_KEY=<key> node scripts/sync-ims-file.cjs <filepath>
+# or bulk upload:
+#   SUPABASE_SERVICE_KEY=<key> node scripts/upload-all-ims.cjs
+
+*.docx
+*.xlsx
+*.pdf
+*.png
+*.jpg
+*.jpeg
