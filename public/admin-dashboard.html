@@ -217,7 +217,7 @@
         CRM Clients
       </button>
       <div style="height:1px;background:rgba(255,255,255,.07);margin:12px 0"></div>
-      <button class="nav-item" onclick="openFunnelModal()">
+      <button class="nav-item" data-section="funnel" onclick="switchSection('funnel')">
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
         Funnel
       </button>
@@ -382,6 +382,11 @@
             <tbody id="crm-tbody"><tr><td colspan="11" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
+      </div>
+
+      <!-- ── FUNNEL ── -->
+      <div id="section-funnel" class="section-anchor fade-in" style="display:none">
+        <iframe src="/funnel.html" style="width:100%;height:calc(100dvh - 120px);border:none;border-radius:16px" loading="lazy"></iframe>
       </div>
 
       </div>
@@ -667,23 +672,6 @@
   </div>
 </div>
 
-<!-- ══════════════════════════ FUNNEL MODAL ═══ -->
-<div class="modal-overlay" id="funnel-modal-overlay" onclick="closeFunnelModal(event)" style="padding:0;align-items:stretch">
-  <div class="neu-card rounded-2xl flex flex-col" style="width:100%;max-width:1100px;max-height:92vh;margin:24px;overflow:hidden">
-    <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid rgba(163,177,198,.3);flex-shrink:0">
-      <div class="flex items-center gap-3">
-        <span class="text-sm font-bold text-slate-800">Marketing Funnel &amp; Client Onboarding</span>
-        <a href="/funnel.html" target="_blank" rel="noopener"
-           class="neu-raised-sm flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-500 hover:text-amber-700 transition-colors">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Open full page
-        </a>
-      </div>
-      <button onclick="closeFunnelModalBtn()" class="btn btn-ghost btn-sm">✕ Close</button>
-    </div>
-    <iframe src="/funnel.html" style="flex:1;border:none;min-height:0" loading="lazy" id="funnel-iframe"></iframe>
-  </div>
-</div>
 
 <script>
 const SUPABASE_URL  = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
@@ -761,8 +749,8 @@ async function signInWithGoogle(){
 async function signOut(){await sb.auth.signOut();location.reload();}
 
 // ── SECTION SWITCHING ──────────────────────────────────────────────────────
-const SECTIONS=['overview','leads','quotes','course','traffic','crm'];
-const SECTION_TITLES={overview:'Admin Dashboard',leads:'Lead Submissions',quotes:'Client Pipeline',course:'E-Course',traffic:'Traffic',crm:'CRM Clients'};
+const SECTIONS=['overview','leads','quotes','course','traffic','crm','funnel'];
+const SECTION_TITLES={overview:'Admin Dashboard',leads:'Lead Submissions',quotes:'Client Pipeline',course:'E-Course',traffic:'Traffic',crm:'CRM Clients',funnel:'Marketing Funnel'};
 function switchSection(section){
   SECTIONS.forEach(s=>{
     const el=document.getElementById('section-'+s);
@@ -1613,21 +1601,9 @@ function fmtDate(iso){if(!iso)return'–';return new Date(iso).toLocaleDateStrin
 function row(c){return`<tr><td colspan="${c}" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr>`;}
 function empty(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records found.'}</td></tr>`;}
 
-function openFunnelModal(){
-  document.getElementById('funnel-modal-overlay').classList.add('open');
-}
-function closeFunnelModal(e){
-  if(e&&e.target!==document.getElementById('funnel-modal-overlay'))return;
-  document.getElementById('funnel-modal-overlay').classList.remove('open');
-}
-function closeFunnelModalBtn(){
-  document.getElementById('funnel-modal-overlay').classList.remove('open');
-}
-
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.getElementById('crm-modal-overlay').classList.remove('open');
-    document.getElementById('funnel-modal-overlay').classList.remove('open');
   }
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
