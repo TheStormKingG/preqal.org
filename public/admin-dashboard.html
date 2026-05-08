@@ -59,6 +59,8 @@
   .badge-amber{background:rgba(245,158,11,.12);color:#b45309}
   .badge-green{background:rgba(16,185,129,.12);color:#065f46}
   .badge-blue{background:rgba(99,102,241,.1);color:#4338ca}
+  .badge-indigo{background:rgba(67,56,202,.12);color:#3730a3}
+  .badge-purple{background:rgba(126,34,206,.1);color:#6b21a8}
   .badge-slate{background:rgba(100,116,139,.1);color:#475569}
 
   .field{width:100%;background:rgba(255,255,255,.55);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;border:none;border-radius:.75rem;padding:10px 14px;font-size:14px;color:#334155;font-family:inherit;outline:none;transition:box-shadow .2s}
@@ -86,6 +88,8 @@
 
   .period-active{background:rgba(255,255,255,.7);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;color:#b45309;font-weight:700}
   .period-inactive{color:#64748b;font-weight:500}
+  .filter-active{background:rgba(255,255,255,.7);box-shadow:inset 2px 2px 4px #a3b1c6,inset -2px -2px 4px #ffffff;color:#b45309;font-weight:700}
+  .filter-inactive{color:#64748b;font-weight:500}
 
   .prog-track{height:6px;background:rgba(163,177,198,.3);border-radius:3px;overflow:hidden;box-shadow:inset 1px 1px 3px #a3b1c6}
   .prog-fill{height:100%;background:#f59e0b;border-radius:3px;transition:width .4s}
@@ -268,22 +272,34 @@
         </div></div>
       </div>
 
-      <!-- ── QUALIFIED LEADS ── -->
+      <!-- ── QUALIFIED LEADS PIPELINE ── -->
       <div id="section-quotes" class="section-anchor fade-in">
         <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
           <div>
-            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Qualified Leads</h3>
-            <p class="text-sm text-slate-500 mt-0.5">Companies that have filled the Quote Classifier or been directly invited.</p>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Client Pipeline</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Qualified leads — track each company from quote to onboarding.</p>
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="btn btn-ghost btn-sm" onclick="loadQuotes()">↻ Refresh</button>
-            <button class="btn btn-amber btn-sm" onclick="openInviteLeadModal()">+ Invite Qualified Lead</button>
+            <button class="btn btn-amber btn-sm" onclick="openInviteLeadModal()">+ Invite Lead</button>
           </div>
+        </div>
+        <!-- Filter bar -->
+        <div class="flex gap-2 flex-wrap mb-4">
+          <div class="neu-pressed-sm flex rounded-xl p-1 gap-1 flex-wrap">
+            <button class="pipeline-filter-tab filter-active px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('all',this)">All</button>
+            <button class="pipeline-filter-tab filter-inactive px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('new',this)">New</button>
+            <button class="pipeline-filter-tab filter-inactive px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('quote_sent',this)">Quote Sent</button>
+            <button class="pipeline-filter-tab filter-inactive px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('quote_accepted',this)">Accepted</button>
+            <button class="pipeline-filter-tab filter-inactive px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('onboarding_sent',this)">Onboarding</button>
+            <button class="pipeline-filter-tab filter-inactive px-3 py-1.5 rounded-lg text-xs transition-all" onclick="filterPipeline('onboarded',this)">Onboarded</button>
+          </div>
+          <input id="pipeline-search" class="field text-xs py-2 px-3 rounded-xl" style="max-width:200px" type="search" placeholder="Search company / contact…" oninput="renderPipelineTable()">
         </div>
         <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
           <table>
-            <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>Email</th><th>Staff</th><th>Services</th><th>Tier</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="quotes-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
+            <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>Steps</th><th>Tier</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="quotes-tbody"><tr><td colspan="7" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
           </table>
         </div></div>
       </div>
@@ -645,42 +661,126 @@ async function loadLeads() {
   </tr>`).join('');
 }
 
-// ── QUALIFIED LEADS ───────────────────────────────────────────────────────
-const LEAD_STATUS_BADGE={submitted:'badge-blue',invited:'badge-amber',qualified:'badge-green',added_to_crm:'badge-slate'};
-const LEAD_STATUS_LABEL={submitted:'Submitted',invited:'Invited',qualified:'Qualified',added_to_crm:'In CRM'};
-let leadsCache=[];
+// ── QUALIFIED LEADS PIPELINE ─────────────────────────────────────────────
+// Pipeline status → badge CSS class
+const LEAD_STATUS_BADGE={
+  new:'badge-amber',
+  quote_sent:'badge-blue',
+  quote_accepted:'badge-indigo',
+  onboarding_sent:'badge-purple',
+  onboarded:'badge-green',
+  invited:'badge-amber',  // legacy
+};
+const LEAD_STATUS_LABEL={
+  new:'New',
+  quote_sent:'Quote Sent',
+  quote_accepted:'Accepted',
+  onboarding_sent:'Onboarding Sent',
+  onboarded:'Onboarded ✓',
+  invited:'Invited',  // legacy
+};
+
+// Rate sheet — tier pricing in GYD
+const RATE_SHEET={
+  T1:{name:'Solo Founder',     staff:'1 person',    monthly:50000,  total:450000 },
+  T2:{name:'Micro Business',   staff:'2–5 people',  monthly:70000,  total:630000 },
+  T3:{name:'Small Business',   staff:'6–15 people', monthly:90000,  total:810000 },
+  T4:{name:'Growing SME',      staff:'16–40 people',monthly:120000, total:1080000},
+  T5:{name:'Medium Company',   staff:'41–100 people',monthly:180000,total:1620000},
+  T6:{name:'Large Organisation',staff:'100+ people',monthly:233333,total:2099997},
+};
+
+// Edge Function URL for PDF generation
+const PDF_EDGE_FN = 'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/generate-pdf';
+// ── QUALIFIED LEADS PIPELINE ──────────────────────────────────────────────
+// (LEAD_STATUS_BADGE, LEAD_STATUS_LABEL, RATE_SHEET, PDF_EDGE_FN already defined above)
+
+let leadsCache = [];
+let pipelineFilter = 'all';
+
 async function loadQuotes() {
-  const tb=document.getElementById('quotes-tbody');tb.innerHTML=row(9);
-  const{data,error}=await sb.from('qualified_leads').select('*').order('created_at',{ascending:false});
-  if(error||!data?.length){tb.innerHTML=empty(9,error?.message);return;}
-  leadsCache=data;
-  set('ov-quotes',data.length);
-  tb.innerHTML=data.map(r=>{
-    const st=r.status||'submitted';
-    return`<tr>
+  const tb = document.getElementById('quotes-tbody');
+  tb.innerHTML = row(7);
+  const { data, error } = await sb.from('qualified_leads').select('*').order('created_at', { ascending: false });
+  if (error || !data?.length) { tb.innerHTML = empty(7, error?.message); return; }
+  leadsCache = data;
+  set('ov-quotes', data.length);
+  renderPipelineTable();
+}
+
+function renderPipelineTable() {
+  const tb = document.getElementById('quotes-tbody');
+  const search = (document.getElementById('pipeline-search')?.value || '').toLowerCase();
+  let rows = leadsCache;
+
+  if (pipelineFilter !== 'all') {
+    rows = rows.filter(r => (r.status || 'new') === pipelineFilter);
+  }
+  if (search) {
+    rows = rows.filter(r =>
+      (r.company_name || '').toLowerCase().includes(search) ||
+      (r.contact_person || '').toLowerCase().includes(search)
+    );
+  }
+
+  if (!rows.length) { tb.innerHTML = empty(7, 'No leads match this filter.'); return; }
+
+  tb.innerHTML = rows.map(r => {
+    const st = r.status || 'new';
+    const recTier = r.recommended_tier ? `T${r.recommended_tier}` : '–';
+    const confTier = r.tier || '';
+    const tierDisplay = confTier ? `${recTier} → ${confTier}` : recTier;
+    const stepLabel = r.selected_steps ? `Step ${r.selected_steps}` : '–';
+    return `<tr>
       <td class="td-muted">${fmtDate(r.created_at)}</td>
-      <td class="font-semibold">${esc(r.company_name||'—')}</td>
-      <td>${esc(r.contact_person||'—')}</td>
-      <td class="td-muted" style="font-size:12px">${esc(r.email||'—')}</td>
-      <td>${esc(r.staff_size||'–')}</td>
-      <td class="text-center">${r.num_services??'–'}</td>
-      <td><span class="badge badge-amber">${esc(r.recommended_tier||'–')}</span></td>
-      <td><span class="badge ${LEAD_STATUS_BADGE[st]||'badge-slate'}">${LEAD_STATUS_LABEL[st]||esc(st)}</span></td>
-      <td><div class="flex gap-1 flex-wrap">
-        ${(st==='submitted'||st==='invited')?`<button class="btn btn-ghost btn-sm" onclick="markLeadQualified('${r.id}')">✓ Qualify</button>`:''}
-        ${st!=='added_to_crm'?`<button class="btn btn-amber btn-sm" onclick="openClientModalFromLead('${r.id}')">+ CRM</button>`:''}
-      </div></td>
+      <td class="font-semibold">${esc(r.company_name || '—')}</td>
+      <td><div class="text-sm">${esc(r.contact_person || '—')}</div><div class="text-xs td-muted">${esc(r.email || '')}</div></td>
+      <td><span class="badge badge-slate">${esc(stepLabel)}</span></td>
+      <td class="text-xs">${esc(tierDisplay)}</td>
+      <td><span class="badge ${LEAD_STATUS_BADGE[st] || 'badge-slate'}">${LEAD_STATUS_LABEL[st] || esc(st)}</span></td>
+      <td>${pipelineActions(r)}</td>
     </tr>`;
   }).join('');
 }
-async function markLeadQualified(id){
-  await sb.from('qualified_leads').update({status:'qualified'}).eq('id',id);
-  loadQuotes();
+
+function pipelineActions(r) {
+  const st = r.status || 'new';
+  const id = r.id;
+  const parts = [];
+  if (st === 'new' || st === 'invited' || st === 'submitted') {
+    parts.push(`<button class="btn btn-amber btn-sm" onclick="openQuoteWizard('${id}')">Prepare Quote</button>`);
+  }
+  if (st === 'quote_sent') {
+    parts.push(`<button class="btn btn-ghost btn-sm" disabled style="opacity:.5;cursor:default">Quote Sent</button>`);
+    parts.push(`<button class="btn btn-ghost btn-sm" onclick="markQuoteAccepted('${id}')">Mark Accepted</button>`);
+  }
+  if (st === 'quote_accepted') {
+    parts.push(`<button class="btn btn-sm" style="background:#6366f1;color:#fff;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #fff" onclick="openOnboardWizard('${id}')">Onboard</button>`);
+  }
+  if (st === 'onboarding_sent') {
+    parts.push(`<button class="btn btn-ghost btn-sm" disabled style="opacity:.5;cursor:default">Onboarding Sent</button>`);
+  }
+  if (st === 'onboarded') {
+    parts.push(`<span class="badge badge-green">Onboarded ✓</span>`);
+  }
+  return `<div class="flex gap-1 flex-wrap">${parts.join('')}</div>`;
 }
-async function openClientModalFromLead(leadId){
-  await openClientModal();
-  const sel=document.getElementById('crm-lead-select');
-  if(sel){sel.value=leadId;prefillFromLead();}
+
+function filterPipeline(status, btn) {
+  pipelineFilter = status;
+  document.querySelectorAll('.pipeline-filter-tab').forEach(b => {
+    b.classList.remove('filter-active'); b.classList.add('filter-inactive');
+  });
+  btn.classList.remove('filter-inactive'); btn.classList.add('filter-active');
+  renderPipelineTable();
+}
+
+async function markQuoteAccepted(id) {
+  const { error } = await sb.from('qualified_leads')
+    .update({ status: 'quote_accepted', quote_accepted_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  loadQuotes();
 }
 
 // ── INVITE QUALIFIED LEAD ─────────────────────────────────────────────────
