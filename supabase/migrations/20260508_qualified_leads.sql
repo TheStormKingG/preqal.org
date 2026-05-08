@@ -141,11 +141,11 @@ INSERT INTO qms_documents (doc_id, title, category, description, file_url, versi
 VALUES (
   'REG-02',
   'Qualified Leads Register',
-  'Registers',
+  'Record',
   'Live register of all qualified leads from the Business Growth Assessment form, tracking pipeline status from quote through to onboarding.',
   'REG-02-QUALIFIED-LEADS-REGISTER.xlsx',
   '1.0',
-  'Active'
+  'active'
 )
 ON CONFLICT (doc_id) DO UPDATE SET
   title       = EXCLUDED.title,
