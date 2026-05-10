@@ -110,14 +110,21 @@ async function main() {
   }
 
   // 5. Git commit + push via osascript (uses Mac keychain credentials)
-  const fileArgs = downloaded.map(f => `public/ims/${f}`).join(' ');
-  const msg      = `sync: apply browser edits to IMS (${downloaded.join(', ')})`;
+  // Validate all filenames against strict allowlist before shell interpolation
+  const safeFiles = downloaded.filter(f => /^[A-Za-z0-9._-]+\.docx$/.test(f));
+  if (safeFiles.length === 0) {
+    console.log('  Nothing safe to commit (filenames failed allowlist)');
+    return;
+  }
+
+  const fileArgs = safeFiles.map(f => `'public/ims/${f}'`).join(' ');
+  const msg      = `sync: apply browser edits to IMS (${safeFiles.join(', ')})`;
 
   const osCmd = `osascript -e 'do shell script "cd \\"/Users/stefangravesande/Documents/Projects/Preqal 2027/Apps/preqal.org\\" && git add ${fileArgs} && git commit -m \\"${msg}\\" && git push origin master --no-verify 2>&1"'`;
 
   try {
     execSync(osCmd, { stdio: 'pipe' });
-    console.log(`  PUSHED: ${downloaded.join(', ')}`);
+    console.log(`  PUSHED: ${safeFiles.join(', ')}`);
   } catch (e) {
     console.error('  Git push failed:', e.message);
   }
