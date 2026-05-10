@@ -3242,7 +3242,20 @@ async function saveChanges() {
   // Spinner state
   saveBtn.disabled = true;
   saveLabel.textContent = 'Saving…';
-  saveIcon.innerHTML = '<circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="20" stroke-dashoffset="5"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 6 6" to="360 6 6" dur="0.8s" repeatCount="indefinite"/></circle>';
+  saveIcon.innerHTML = '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="40" stroke-dashoffset="10"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></circle>';
+
+  // Warn user about formatting loss before upload
+  const confirmed = confirm(
+    'Save Changes will overwrite the cloud copy of this document.\n\n' +
+    'Note: Complex formatting (brand colours, images, tables) may be simplified by the editor.\n\n' +
+    'Continue with save?'
+  );
+  if (!confirmed) {
+    saveBtn.disabled = false;
+    saveLabel.textContent = 'Save Changes';
+    saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
+    return;
+  }
 
   try {
     // 1. Build DOCX blob from editor HTML
@@ -3263,8 +3276,8 @@ async function saveChanges() {
       });
     if (upErr) throw upErr;
 
-    // 3. Update in-memory buffer from saved blob
-    _viewerBuf = await blob.arrayBuffer();
+    // 3. Build ArrayBuffer from saved blob for rendering (don't update _viewerBuf yet)
+    const newBuf = await blob.arrayBuffer();
 
     // 4. Exit edit mode and re-render view with updated content
     _editMode = false;
@@ -3273,7 +3286,7 @@ async function saveChanges() {
     container.innerHTML = '';
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Refreshing…';
-    await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+    await docx.renderAsync(newBuf.slice(0), container, null, {
       className: 'docx-viewer',
       inWrapper: true,
       ignoreWidth: false,
@@ -3283,13 +3296,29 @@ async function saveChanges() {
       experimental: true,
       trimXmlDeclaration: true,
     });
+    // Only update _viewerBuf after render succeeds — prevents corrupted state on render failure
+    _viewerBuf = newBuf;
     _showPanel('doc-preview-wrap');
 
     // 5. Success feedback
     showToast('✅', 'Document saved', `${_viewerFilename} updated in cloud storage.`);
 
   } catch (err) {
-    showToast('❌', 'Save failed', err.message || 'Unknown error. Check your connection and try again.');
+    // Offer download of the draft so edits are not lost
+    const draftBlob = htmlDocx.asBlob(
+      `<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
+      h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
+      table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
+      </style></head><body>${document.getElementById('doc-editor').innerHTML}</body></html>`
+    );
+    const draftUrl = URL.createObjectURL(draftBlob);
+    const draftLink = document.createElement('a');
+    draftLink.href = draftUrl;
+    draftLink.download = (_viewerFilename || 'draft.docx').replace('.docx', '-draft.docx');
+    draftLink.click();
+    setTimeout(() => URL.revokeObjectURL(draftUrl), 15000);
+    showToast('❌', 'Save failed — draft downloaded', (err.message || 'Upload failed') + '. Your edits have been downloaded as a draft file.');
   } finally {
     // Restore button
     saveBtn.disabled = false;
