@@ -181,6 +181,10 @@
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Employees
       </button>
+      <button class="nav-item" id="tab-orgchart" onclick="switchTab('orgchart')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="1" y="16" width="6" height="4" rx="1"/><rect x="17" y="16" width="6" height="4" rx="1"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="12" x2="4" y2="16"/><line x1="20" y1="12" x2="20" y2="16"/></svg>
+        Org Chart
+      </button>
       <button class="nav-item" id="tab-legal" onclick="switchTab('legal')">
         <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Legal
@@ -242,6 +246,7 @@
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('docs')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1568667256549-094345857637?w=400&h=250&q=70&fit=crop&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Documents</div><div class="text-2xl font-bold" style="color:#fff" id="ov-docs">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">active</div></div>
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('org')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=250&q=70&fit=crop&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Context</div><div class="text-2xl font-bold" style="color:#fff" id="ov-org">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">parties</div></div>
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('emp')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=250&q=70&fit=crop&crop=faces&auto=format') center 25%/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Employees</div><div class="text-2xl font-bold" style="color:#fff" id="ov-emp">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">active</div></div>
+        <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('orgchart')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&q=70&fit=crop&crop=faces&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="1" y="16" width="6" height="4" rx="1"/><rect x="17" y="16" width="6" height="4" rx="1"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="12" x2="4" y2="16"/><line x1="20" y1="12" x2="20" y2="16"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Org Chart</div><div class="text-2xl font-bold" style="color:#fff" id="ov-orgchart">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">team members</div></div>
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('legal')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=250&q=70&fit=crop&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Legal</div><div class="text-2xl font-bold" style="color:#fff" id="ov-legal">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">obligations</div></div>
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('qr')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=250&q=70&fit=crop&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Quality Risks</div><div class="text-2xl font-bold" style="color:#fff" id="ov-qr">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">open</div></div>
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('hse')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=250&q=70&fit=crop&auto=format') center 20%/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M4.5 12.5l4 4L19.5 7"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">HSE Risks</div><div class="text-2xl font-bold" style="color:#fff" id="ov-hse">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">open</div></div>
@@ -250,24 +255,31 @@
         <div class="neu-card rounded-2xl p-4 cursor-pointer" onclick="switchTab('audit')" style="transition:transform 200ms cubic-bezier(0.23,1,0.32,1);background:linear-gradient(rgba(15,23,42,.58),rgba(15,23,42,.76)),url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&q=70&fit=crop&auto=format') center/cover;backdrop-filter:none" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><svg width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="1.8" viewBox="0 0 24 24" style="margin-bottom:6px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:#fbbf24">Audits</div><div class="text-2xl font-bold" style="color:#fff" id="ov-audit">–</div><div class="text-xs mt-0.5" style="color:rgba(255,255,255,.55)">this year</div></div>
       </div>
 
-      <!-- ─── ORG CHART ─── -->
-      <div class="neu-card rounded-2xl mb-6 fade-in">
-        <div class="flex items-center justify-between px-5 py-4 cursor-pointer" onclick="toggleOrgChart()" style="border-bottom:1px solid rgba(163,177,198,.2)" id="org-chart-header">
-          <div>
-            <span class="text-sm font-bold text-slate-900">Organisation Chart</span>
-            <span class="text-xs text-slate-400 ml-3">Auto-generated from Employee Register</span>
+      </div><!-- /section-dashboard -->
+
+      <!-- ── ORG CHART ── -->
+      <div id="section-orgchart" class="section-anchor fade-in" style="display:none">
+        <div class="section-cover" style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=380&q=75&fit=crop&crop=faces&auto=format');background-position:center top">
+          <div class="section-cover-content">
+            <span class="section-cover-label">People &amp; Structure</span>
+            <h2 class="section-cover-title">Organisation Chart</h2>
           </div>
-          <span id="org-chart-chevron" class="text-slate-400 font-bold text-xs">▲ Hide</span>
         </div>
-        <div id="org-chart-body" class="py-6 px-4 overflow-x-auto">
-          <div id="org-chart-tree" class="flex justify-center min-h-[60px]">
-            <p class="text-sm text-slate-400 self-center">Add employees to generate the org chart.</p>
+        <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Organisation Chart</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Auto-generated from the Employee Register. Add employees to build the hierarchy.</p>
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="switchTab('emp')">Manage Employees</button>
+        </div>
+        <div class="neu-card rounded-2xl overflow-hidden">
+          <div class="py-8 px-6 overflow-x-auto">
+            <div id="org-chart-tree" class="flex justify-center min-h-[80px]">
+              <p class="text-sm text-slate-400 self-center">Add employees to generate the org chart.</p>
+            </div>
           </div>
         </div>
       </div>
-
-
-      </div><!-- /section-dashboard -->
 
       <!-- ── DOCUMENTS ── -->
       <div id="section-docs" class="section-anchor fade-in" style="display:none">
@@ -1549,8 +1561,8 @@ async function signInMagicLink(){
 async function signOut(){await sb.auth.signOut();location.reload();}
 
 // ── TABS ──────────────────────────────────────────────────────────────────
-const TABS=['dashboard','docs','org','emp','legal','qr','hse','ncr','capa','audit'];
-const TAB_TITLES={dashboard:'QMS Dashboard',docs:'Documents',org:'Context of the Organisation',emp:'Employees',legal:'Legal & Compliance',qr:'Quality Risk Register',hse:'HSE Risk Register',ncr:'Non-Conformances',capa:'CAPA Register',audit:'Audits'};
+const TABS=['dashboard','docs','org','emp','orgchart','legal','qr','hse','ncr','capa','audit'];
+const TAB_TITLES={dashboard:'QMS Dashboard',docs:'Documents',org:'Context of the Organisation',emp:'Employees',orgchart:'Organisation Chart',legal:'Legal & Compliance',qr:'Quality Risk Register',hse:'HSE Risk Register',ncr:'Non-Conformances',capa:'CAPA Register',audit:'Audits'};
 function switchTab(tab){
   TABS.forEach(t=>{
     document.getElementById('section-'+t).style.display=t===tab?'block':'none';
@@ -1582,6 +1594,7 @@ async function loadOverview(){
     sb.from('qms_audit').select('id',{count:'exact',head:true}).gte('created_at',`${yr}-01-01`)
   ]);
   set('ov-docs',docs.count??0);set('ov-org',org.count??0);set('ov-emp',emp.count??0);
+  set('ov-orgchart',emp.count??0);
   set('ov-legal',legal.count??0);set('ov-qr',qr.count??0);set('ov-hse',hse.count??0);
   set('ov-ncr',ncr.count??0);set('ov-capa',capa.count??0);set('ov-audit',audit.count??0);
 }
@@ -1984,12 +1997,6 @@ async function executeDelete(){
 }
 
 // ── ORG CHART ─────────────────────────────────────────────────────────────
-let orgChartVisible=true;
-function toggleOrgChart(){
-  orgChartVisible=!orgChartVisible;
-  document.getElementById('org-chart-body').style.display=orgChartVisible?'block':'none';
-  document.getElementById('org-chart-chevron').textContent=orgChartVisible?'▲ Hide':'▼ Show';
-}
 function orgNodeAvatar(e){
   if(e.profile_picture_url){
     return`<img src="${esc(e.profile_picture_url)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;margin-bottom:5px;flex-shrink:0;box-shadow:2px 2px 5px #a3b1c6,-2px -2px 5px #ffffff" onerror="this.outerHTML='<div class=&quot;org-avatar&quot;>${e.full_name.charAt(0).toUpperCase()}</div>'" alt="">`;
