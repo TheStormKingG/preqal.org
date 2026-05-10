@@ -31,3 +31,6 @@ public/e-courses/modules/*/video.mp4
 
 # Internal business documents — never commit
 Preqal Website/
+
+# Local secrets — never commit
+.env.secrets
