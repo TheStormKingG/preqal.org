@@ -180,17 +180,26 @@
   #doc-viewer-loading .v-spinner{width:36px;height:36px;border:3px solid rgba(245,158,11,.2);border-top-color:#f59e0b;border-radius:50%;animation:vspin 0.7s linear infinite}
   @keyframes vspin{to{transform:rotate(360deg)}}
   /* HTML draft view panel */
-  #doc-html-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none;padding:24px 0}
-  .doc-html-inner{max-width:820px;margin:0 auto 32px;background:#fff;padding:56px 64px;box-shadow:0 8px 40px rgba(0,0,0,.18);border-radius:4px;font-family:Calibri,Georgia,serif;font-size:11pt;line-height:1.6;color:#1e293b;min-height:400px}
-  .doc-html-inner h1{font-size:20pt;font-weight:700;margin:1.2em 0 .4em}
-  .doc-html-inner h2{font-size:15pt;font-weight:700;margin:1em 0 .35em}
-  .doc-html-inner h3{font-size:12pt;font-weight:700;margin:.8em 0 .3em}
-  .doc-html-inner p{margin:.3em 0}
-  .doc-html-inner table{border-collapse:collapse;width:100%;margin:1em 0}
-  .doc-html-inner td,.doc-html-inner th{border:1px solid #cbd5e1;padding:6px 10px;font-size:10pt}
-  .doc-html-inner th{background:#f8fafc;font-weight:700}
-  .doc-html-inner ul,.doc-html-inner ol{padding-left:1.6em;margin:.4em 0}
-  .doc-html-inner .draft-notice{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 16px;margin-bottom:24px;font-size:11px;font-weight:700;color:#92400e;display:flex;align-items:center;gap:8px;font-family:system-ui,sans-serif}
+  #doc-html-wrap{flex:1;overflow:auto;background:#e8edf3;display:none;padding:32px 0 48px}
+  .doc-html-inner{max-width:850px;margin:0 auto;background:#fff;padding:72px 80px;box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 32px rgba(0,0,0,.12);font-family:'Calibri','Carlito',Arial,sans-serif;font-size:12pt;line-height:1.55;color:#111;min-height:500px}
+  .doc-html-inner h1{font-size:18pt;font-weight:700;margin:1.4em 0 .5em;color:#111;border-bottom:2px solid #e2e8f0;padding-bottom:.3em}
+  .doc-html-inner h2{font-size:14pt;font-weight:700;margin:1.2em 0 .4em;color:#1e293b}
+  .doc-html-inner h3{font-size:12pt;font-weight:700;margin:1em 0 .35em;color:#1e293b}
+  .doc-html-inner h4{font-size:11pt;font-weight:700;margin:.8em 0 .3em;color:#334155}
+  .doc-html-inner p{margin:.45em 0;line-height:1.6}
+  .doc-html-inner p:first-child{margin-top:0}
+  .doc-html-inner table{border-collapse:collapse;width:100%;margin:1.2em 0;font-size:11pt}
+  .doc-html-inner td,.doc-html-inner th{border:1px solid #94a3b8;padding:8px 12px;vertical-align:top}
+  .doc-html-inner th,.doc-html-inner tr:first-child td{background:#f1f5f9;font-weight:700;color:#1e293b}
+  .doc-html-inner tr:nth-child(even) td{background:#f8fafc}
+  .doc-html-inner ul{padding-left:1.8em;margin:.5em 0}
+  .doc-html-inner ol{padding-left:1.8em;margin:.5em 0}
+  .doc-html-inner li{margin:.25em 0;line-height:1.6}
+  .doc-html-inner strong,.doc-html-inner b{font-weight:700}
+  .doc-html-inner em,.doc-html-inner i{font-style:italic}
+  .doc-html-inner hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
+  /* Topbar draft badge */
+  #viewer-draft-badge{display:none;align-items:center;gap:5px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:#92400e;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap;font-family:system-ui,sans-serif}
   .viewer-btn-revert{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.22)}
   .viewer-btn-revert:hover{background:rgba(239,68,68,.22);color:#fef2f2}
   /* ── SAVE CONFIRM MODAL ──────────────────────────────────────────────── */
@@ -3076,7 +3085,13 @@ init();
     <div class="viewer-vdivider"></div>
     <div id="doc-viewer-meta">
       <span class="viewer-label">IMS Document</span>
-      <div class="viewer-docname" id="viewer-docname">–</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="viewer-docname" id="viewer-docname">–</div>
+        <span id="viewer-draft-badge">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Draft
+        </span>
+      </div>
     </div>
     <button id="viewer-edit-btn" class="viewer-btn viewer-btn-close" onclick="toggleEditMode()" style="display:none">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -3207,11 +3222,7 @@ function _sanitizeHtml(html) {
     .replace(/\son\w+\s*=/gi, ' data-removed=');
 }
 function _renderHtmlView(html) {
-  document.getElementById('doc-html-inner').innerHTML =
-    `<div class="draft-notice">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Draft saved — download the original to open in Word with full formatting
-    </div>` + _sanitizeHtml(html);
+  document.getElementById('doc-html-inner').innerHTML = _sanitizeHtml(html);
 }
 
 /* Save-confirm modal */
@@ -3258,6 +3269,8 @@ function _showPanel(id) {
   if(editBtn) editBtn.style.display = (isDocx || isHtml) ? 'inline-flex' : 'none';
   const revertBtn = document.getElementById('viewer-revert-btn');
   if(revertBtn) revertBtn.style.display = isHtml ? 'inline-flex' : 'none';
+  const draftBadge = document.getElementById('viewer-draft-badge');
+  if(draftBadge) draftBadge.style.display = isHtml ? 'inline-flex' : 'none';
 }
 
 function execFmt(cmd, val) {
