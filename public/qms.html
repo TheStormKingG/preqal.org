@@ -3044,9 +3044,9 @@ init();
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       <span id="viewer-edit-label">Edit</span>
     </button>
-    <button id="viewer-save-btn" class="viewer-btn viewer-btn-save" onclick="saveDocx()" style="display:none">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-      Save as DOCX
+    <button id="viewer-save-btn" class="viewer-btn viewer-btn-save" onclick="saveChanges()" style="display:none">
+      <svg id="viewer-save-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span id="viewer-save-label">Save Changes</span>
     </button>
     <a id="viewer-dl-btn" href="#" class="viewer-btn viewer-btn-dl" download>
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -3234,19 +3234,68 @@ async function openDocViewer(fileUrl, title) {
   }
 }
 
-async function saveDocx() {
-  const html = document.getElementById('doc-editor').innerHTML;
-  const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-    <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
-    h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
-    table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
-    </style></head><body>${html}</body></html>`;
-  const blob = htmlDocx.asBlob(fullHtml);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = _viewerFilename || 'document.docx';
-  a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 10000);
+async function saveChanges() {
+  const saveBtn   = document.getElementById('viewer-save-btn');
+  const saveLabel = document.getElementById('viewer-save-label');
+  const saveIcon  = document.getElementById('viewer-save-icon');
+
+  // Spinner state
+  saveBtn.disabled = true;
+  saveLabel.textContent = 'Saving…';
+  saveIcon.innerHTML = '<circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="20" stroke-dashoffset="5"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 6 6" to="360 6 6" dur="0.8s" repeatCount="indefinite"/></circle>';
+
+  try {
+    // 1. Build DOCX blob from editor HTML
+    const html = document.getElementById('doc-editor').innerHTML;
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
+      h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
+      table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
+      </style></head><body>${html}</body></html>`;
+    const blob = htmlDocx.asBlob(fullHtml);
+
+    // 2. Upload to Supabase Storage (upsert — overwrite existing file)
+    const { error: upErr } = await sb.storage
+      .from('ims')
+      .upload(_viewerFilename, blob, {
+        contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        upsert: true,
+      });
+    if (upErr) throw upErr;
+
+    // 3. Update in-memory buffer from saved blob
+    _viewerBuf = await blob.arrayBuffer();
+
+    // 4. Exit edit mode and re-render view with updated content
+    _editMode = false;
+    document.getElementById('viewer-edit-label').textContent = 'Edit';
+    const container = document.getElementById('doc-preview-container');
+    container.innerHTML = '';
+    _showPanel('doc-viewer-loading');
+    document.getElementById('doc-viewer-loading-msg').textContent = 'Refreshing…';
+    await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+      className: 'docx-viewer',
+      inWrapper: true,
+      ignoreWidth: false,
+      ignoreHeight: false,
+      ignoreFonts: false,
+      breakPages: true,
+      experimental: true,
+      trimXmlDeclaration: true,
+    });
+    _showPanel('doc-preview-wrap');
+
+    // 5. Success feedback
+    showToast('✅', 'Document saved', `${_viewerFilename} updated in cloud storage.`);
+
+  } catch (err) {
+    showToast('❌', 'Save failed', err.message || 'Unknown error. Check your connection and try again.');
+  } finally {
+    // Restore button
+    saveBtn.disabled = false;
+    saveLabel.textContent = 'Save Changes';
+    saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
+  }
 }
 
 function closeDocViewer() {
