@@ -9,6 +9,8 @@ const SUPABASE_URL         = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const WEBHOOK_SECRET       = Deno.env.get("WEBHOOK_SECRET") ?? "";
 
+const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
 Deno.serve(async (req: Request): Promise<Response> => {
   // ── Auth ─────────────────────────────────────────────────────────────────
   if (!WEBHOOK_SECRET || req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
@@ -32,6 +34,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     // ── 1. Download source DOCX ─────────────────────────────────────────────
+    if (!isSafeUrl(record.file_url as string)) {
+      throw new Error(`Rejected file_url with disallowed hostname: ${record.file_url}`);
+    }
     const docxResp = await fetch(record.file_url as string);
     if (!docxResp.ok) {
       throw new Error(`fetch DOCX failed: ${docxResp.status} ${record.file_url}`);
@@ -55,7 +60,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
     });
 
     // ── 3. Upload to Storage ims bucket ────────────────────────────────────
-    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const { error: upErr } = await sb.storage
       .from("ims")
       .upload(filename, patchedBuf, {
@@ -76,6 +80,20 @@ Deno.serve(async (req: Request): Promise<Response> => {
 });
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+const ALLOWED_HOSTS = new Set([
+  "preqal.org",
+  "gndcjmxxgtnoidxgcdnx.supabase.co",
+]);
+
+function isSafeUrl(urlStr: string): boolean {
+  try {
+    const { hostname } = new URL(urlStr);
+    return ALLOWED_HOSTS.has(hostname);
+  } catch {
+    return false;
+  }
+}
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -143,8 +161,12 @@ function patchDocxXml(xml: string, contentHtml: string): string {
     (_match: string, open: string, content: string, close: string): string => {
       let patched = content;
       for (const { oldWord, newWord } of changes) {
-        if (patched.includes(oldWord)) {
-          patched = patched.split(oldWord).join(newWord);
+        // escape special regex chars in oldWord
+        const escaped = oldWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp(`(?<![\\w])${escaped}(?![\\w])`, "g");
+        if (re.test(patched)) {
+          re.lastIndex = 0; // reset after .test()
+          patched = patched.replace(re, newWord);
         }
       }
       return open + patched + close;
