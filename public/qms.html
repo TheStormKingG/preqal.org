@@ -1615,6 +1615,9 @@ async function loadOverview(){
 const DOC_STATUS_BADGE={draft:'badge-slate',active:'badge-green',under_review:'badge-amber',superseded:'badge-slate'};
 let docCache={};
 let docsAllData=[];
+const SUPABASE_STORAGE='https://gndcjmxxgtnoidxgcdnx.supabase.co/storage/v1/object/public/ims';
+function resolveFileUrl(url){if(!url)return null;if(url.startsWith('http'))return url;return `${SUPABASE_STORAGE}/${url}`;}
+
 let activeDocCat='__all__';
 
 const DOC_FOLDER_CATS=['Policy','Procedure','Work Instruction','Form','Record','External'];
@@ -1658,7 +1661,7 @@ function renderDocsTable(data){
     <td><span class="badge ${DOC_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
     <td class="td-muted">${esc(r.owner||'–')}</td>
     <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
-    <td>${r.file_url?`<a href="${esc(r.file_url)}" target="_blank" rel="noopener" class="text-xs font-bold text-amber-700 hover:text-amber-900">Open ↗</a>`:'<span class="td-muted">–</span>'}</td>
+    <td>${r.file_url?`<a href="${esc(resolveFileUrl(r.file_url))}" target="_blank" rel="noopener" class="text-xs font-bold text-amber-700 hover:text-amber-900">Open ↗</a>`:'<span class="td-muted">–</span>'}</td>
     <td><div class="flex gap-2">
       <button class="btn btn-ghost btn-sm" onclick="editDoc('${r.id}')">Edit</button>
       <button class="btn btn-ghost btn-sm" onclick="uploadDoc('${r.id}','${esc(r.file_url||'')}')">↑ Upload</button>
@@ -1709,7 +1712,8 @@ async function uploadDoc(docId,currentFileUrl){
       alert('Upload failed: '+upErr.message);
       return;
     }
-    const{error:dbErr}=await sb.from('qms_documents').update({file_url:storagePath,updated_at:new Date().toISOString()}).eq('id',docId);
+    const publicUrl=`${SUPABASE_STORAGE}/${storagePath}`;
+    const{error:dbErr}=await sb.from('qms_documents').update({file_url:publicUrl,updated_at:new Date().toISOString()}).eq('id',docId);
     if(dbErr){
       if(btn){btn.textContent=origText;btn.disabled=false;}
       alert('File uploaded but DB update failed: '+dbErr.message);
