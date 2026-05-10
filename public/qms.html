@@ -3257,15 +3257,17 @@ async function saveChanges() {
     return;
   }
 
-  try {
-    // 1. Build DOCX blob from editor HTML
-    const html = document.getElementById('doc-editor').innerHTML;
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  // Capture editor HTML before try — reused in catch for draft download
+  const _editorHtml = document.getElementById('doc-editor').innerHTML;
+  const _fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
       <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
       h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
       table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
-      </style></head><body>${html}</body></html>`;
-    const blob = htmlDocx.asBlob(fullHtml);
+      </style></head><body>${_editorHtml}</body></html>`;
+
+  try {
+    // 1. Build DOCX blob from editor HTML
+    const blob = htmlDocx.asBlob(_fullHtml);
 
     // 2. Upload to Supabase Storage (upsert — overwrite existing file)
     const { error: upErr } = await sb.storage
@@ -3305,13 +3307,7 @@ async function saveChanges() {
 
   } catch (err) {
     // Offer download of the draft so edits are not lost
-    const draftBlob = htmlDocx.asBlob(
-      `<!DOCTYPE html><html><head><meta charset="UTF-8">
-      <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
-      h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
-      table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
-      </style></head><body>${document.getElementById('doc-editor').innerHTML}</body></html>`
-    );
+    const draftBlob = htmlDocx.asBlob(_fullHtml);
     const draftUrl = URL.createObjectURL(draftBlob);
     const draftLink = document.createElement('a');
     draftLink.href = draftUrl;
