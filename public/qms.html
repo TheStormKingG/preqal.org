@@ -3260,17 +3260,19 @@ function _showPanel(id) {
   });
   const isEditor  = id === 'doc-editor-wrap';
   const isDocx    = id === 'doc-preview-wrap' || isEditor;
-  const isHtml    = id === 'doc-html-wrap';
+  const hasDraft  = !!_viewerContentHtml;
   const tb = document.getElementById('doc-editor-toolbar');
   if(tb) tb.style.display = isEditor ? 'flex' : 'none';
   const saveBtn = document.getElementById('viewer-save-btn');
   if(saveBtn) saveBtn.style.display = isEditor ? 'inline-flex' : 'none';
   const editBtn = document.getElementById('viewer-edit-btn');
-  if(editBtn) editBtn.style.display = (isDocx || isHtml) ? 'inline-flex' : 'none';
+  if(editBtn) editBtn.style.display = isDocx ? 'inline-flex' : 'none';
+  // Revert button: visible whenever a draft exists and we're not in the editor
   const revertBtn = document.getElementById('viewer-revert-btn');
-  if(revertBtn) revertBtn.style.display = isHtml ? 'inline-flex' : 'none';
+  if(revertBtn) revertBtn.style.display = (hasDraft && !isEditor) ? 'inline-flex' : 'none';
+  // Draft badge: visible whenever a draft exists
   const draftBadge = document.getElementById('viewer-draft-badge');
-  if(draftBadge) draftBadge.style.display = isHtml ? 'inline-flex' : 'none';
+  if(draftBadge) draftBadge.style.display = hasDraft ? 'inline-flex' : 'none';
 }
 
 function execFmt(cmd, val) {
@@ -3284,17 +3286,18 @@ async function toggleEditMode() {
   if (_editMode) {
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Preparing editor…';
-    // Always extract from original DOCX via mammoth (gives clean editable HTML)
-    const result = await mammoth.convertToHtml({arrayBuffer: _viewerBuf.slice(0)});
-    document.getElementById('doc-editor').innerHTML = result.value || '<p><em>Empty document.</em></p>';
+    if (_viewerContentHtml) {
+      // Resume from saved draft — user's last edits are the starting point
+      document.getElementById('doc-editor').innerHTML = _viewerContentHtml;
+    } else {
+      // Fresh edit — extract from original DOCX via mammoth
+      const result = await mammoth.convertToHtml({arrayBuffer: _viewerBuf.slice(0)});
+      document.getElementById('doc-editor').innerHTML = result.value || '<p><em>Empty document.</em></p>';
+    }
     _showPanel('doc-editor-wrap');
   } else {
-    // Return to whichever view mode is appropriate
-    if (_viewerContentHtml) {
-      _showPanel('doc-html-wrap');
-    } else {
-      _showPanel('doc-preview-wrap');
-    }
+    // Always return to the original DOCX view (styled, looks correct)
+    _showPanel('doc-preview-wrap');
   }
 }
 
@@ -3335,18 +3338,12 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
       _showPanel('doc-sheet-wrap');
 
     } else if (['docx','doc'].includes(ext)) {
-      // Always fetch the original DOCX so Edit mode (mammoth) can re-extract from it
-      document.getElementById('doc-viewer-loading-msg').textContent = 'Loading document…';
+      // Always render the original DOCX via docx-preview (preserves brand styling).
+      // If a content_html draft exists, the DRAFT badge and Revert button will show via _showPanel.
+      document.getElementById('doc-viewer-loading-msg').textContent = 'Rendering document…';
       const resp = await fetch(fileUrl);
       _viewerBuf = await resp.arrayBuffer();
-
-      if (_viewerContentHtml) {
-        // Show saved HTML draft — original DOCX is NEVER modified
-        _renderHtmlView(_viewerContentHtml);
-        _showPanel('doc-html-wrap');
-      } else {
-        // Render original DOCX with docx-preview
-        document.getElementById('doc-viewer-loading-msg').textContent = 'Rendering document…';
+      {
         const container = document.getElementById('doc-preview-container');
         container.innerHTML = '';
         await docx.renderAsync(_viewerBuf.slice(0), container, null, {
@@ -3418,7 +3415,7 @@ async function saveChanges() {
     _editMode = false;
     document.getElementById('viewer-edit-label').textContent = 'Edit';
 
-    // Update cached row and re-render table so "View Draft" label updates immediately
+    // Update cached row and re-render table so badge updates immediately
     const row = docsAllData.find(r => r.id === _viewerDocId);
     if (row) {
       row.content_html = _editorHtml;
@@ -3426,11 +3423,19 @@ async function saveChanges() {
       renderDocsTable(rows);
     }
 
-    // Show HTML draft view
-    _renderHtmlView(_editorHtml);
-    _showPanel('doc-html-wrap');
+    // Re-render the original DOCX — preserves all brand styling, badge signals draft exists
+    _showPanel('doc-viewer-loading');
+    document.getElementById('doc-viewer-loading-msg').textContent = 'Refreshing…';
+    const container = document.getElementById('doc-preview-container');
+    container.innerHTML = '';
+    await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+      className: 'docx-viewer', inWrapper: true, ignoreWidth: false,
+      ignoreHeight: false, ignoreFonts: false, breakPages: true,
+      experimental: true, trimXmlDeclaration: true,
+    });
+    _showPanel('doc-preview-wrap');
 
-    showToast('✅', 'Draft saved', 'Changes saved. Download the original .docx for the fully formatted version.');
+    showToast('✅', 'Changes saved', 'Your edits are stored. Click Edit to continue editing.');
 
   } catch (err) {
     // Save failed — download as plain HTML so edits are not lost
