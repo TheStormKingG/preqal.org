@@ -129,21 +129,52 @@
   #doc-viewer-overlay{position:fixed;inset:0;z-index:9999;background:#0f172a;display:none;flex-direction:column;opacity:0;transition:opacity 280ms cubic-bezier(0.23,1,0.32,1)}
   #doc-viewer-overlay.viewer-open{display:flex}
   #doc-viewer-overlay.viewer-visible{opacity:1}
-  #doc-viewer-topbar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0f172a;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;min-height:56px}
-  #doc-viewer-topbar .viewer-logo{height:30px;width:auto;flex-shrink:0}
-  #doc-viewer-topbar .viewer-divider{width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0}
+  #doc-viewer-topbar{display:flex;align-items:center;gap:12px;padding:10px 18px;background:#0f172a;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;min-height:56px}
+  #doc-viewer-topbar .viewer-logo{height:28px;width:auto;flex-shrink:0}
+  .viewer-vdivider{width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0}
   #doc-viewer-meta{flex:1;min-width:0}
-  #doc-viewer-meta .viewer-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(245,158,11,.8);display:block;line-height:1}
+  #doc-viewer-meta .viewer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:rgba(245,158,11,.8);display:block;line-height:1}
   #doc-viewer-meta .viewer-docname{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
-  .viewer-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:transform 160ms cubic-bezier(0.23,1,0.32,1),background 160ms;flex-shrink:0;text-decoration:none}
-  .viewer-btn:active{transform:scale(0.96)}
-  .viewer-btn-download{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
-  .viewer-btn-download:hover{background:rgba(245,158,11,.25)}
+  .viewer-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:transform 150ms cubic-bezier(0.23,1,0.32,1),background 150ms,opacity 150ms;flex-shrink:0;text-decoration:none;white-space:nowrap}
+  .viewer-btn:active{transform:scale(0.95)}
+  .viewer-btn:disabled{opacity:.4;cursor:default;pointer-events:none}
+  .viewer-btn-save{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a}
+  .viewer-btn-save:hover{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+  .viewer-btn-dl{background:rgba(245,158,11,.13);color:#fbbf24;border:1px solid rgba(245,158,11,.22)}
+  .viewer-btn-dl:hover{background:rgba(245,158,11,.22)}
   .viewer-btn-close{background:rgba(255,255,255,.07);color:#94a3b8;border:1px solid rgba(255,255,255,.1)}
   .viewer-btn-close:hover{background:rgba(255,255,255,.13);color:#fff}
-  #doc-viewer-frame{flex:1;border:none;width:100%;background:#1e293b}
-  #doc-viewer-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;overflow:auto;background:#1e293b}
-  #doc-viewer-img-wrap img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+  /* Editor toolbar */
+  #doc-editor-toolbar{display:none;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 16px;background:#1e293b;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+  #doc-editor-toolbar .tb-btn{background:none;border:none;color:#94a3b8;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:13px;font-weight:700;line-height:1;transition:background 120ms,color 120ms;min-width:28px;text-align:center}
+  #doc-editor-toolbar .tb-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+  #doc-editor-toolbar .tb-btn.tb-active{background:rgba(245,158,11,.2);color:#fbbf24}
+  #doc-editor-toolbar .tb-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 4px;flex-shrink:0}
+  #doc-editor-toolbar select.tb-sel{background:#0f172a;border:1px solid rgba(255,255,255,.12);color:#94a3b8;border-radius:6px;padding:4px 6px;font-size:12px;cursor:pointer}
+  /* Editor content area */
+  #doc-editor-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none}
+  #doc-editor{max-width:820px;margin:32px auto;background:#fff;padding:56px 64px;min-height:calc(100% - 64px);box-shadow:0 8px 40px rgba(0,0,0,.18);border-radius:4px;outline:none;font-family:Calibri,Georgia,serif;font-size:11pt;line-height:1.6;color:#1e293b}
+  #doc-editor h1{font-size:20pt;font-weight:700;margin:1.2em 0 .4em}
+  #doc-editor h2{font-size:15pt;font-weight:700;margin:1em 0 .35em}
+  #doc-editor h3{font-size:12pt;font-weight:700;margin:.8em 0 .3em}
+  #doc-editor p{margin:.3em 0}
+  #doc-editor table{border-collapse:collapse;width:100%;margin:1em 0}
+  #doc-editor td,#doc-editor th{border:1px solid #cbd5e1;padding:6px 10px;font-size:10pt}
+  #doc-editor th{background:#f8fafc;font-weight:700}
+  #doc-editor ul,#doc-editor ol{padding-left:1.6em;margin:.4em 0}
+  #doc-editor img{max-width:100%;height:auto}
+  /* Sheet viewer (XLSX) */
+  #doc-sheet-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none;padding:24px}
+  #doc-sheet-wrap table{border-collapse:collapse;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.12);border-radius:4px;font-size:11px;min-width:100%}
+  #doc-sheet-wrap td,#doc-sheet-wrap th{border:1px solid #e2e8f0;padding:5px 10px;white-space:nowrap}
+  #doc-sheet-wrap th{background:#0f172a;color:#fbbf24;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;position:sticky;top:0;z-index:1}
+  /* Image viewer */
+  #doc-viewer-img-wrap{flex:1;display:none;align-items:center;justify-content:center;padding:32px;overflow:auto;background:#1e293b}
+  #doc-viewer-img-wrap img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+  /* Loading state */
+  #doc-viewer-loading{flex:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:#1e293b;color:#64748b;font-size:13px;font-weight:600}
+  #doc-viewer-loading .v-spinner{width:36px;height:36px;border:3px solid rgba(245,158,11,.2);border-top-color:#f59e0b;border-radius:50%;animation:vspin 0.7s linear infinite}
+  @keyframes vspin{to{transform:rotate(360deg)}}
   /* ── DOCUMENT FOLDER GRID ─────────────────────────────────────────────── */
   .doc-folder-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
   .doc-folder{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 20px;border-radius:14px;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff;background:#e0e5ec;min-width:86px;transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
@@ -2983,81 +3014,206 @@ document.addEventListener('keydown',e=>{
 init();
 </script>
 
-<!-- ══ DOCUMENT VIEWER OVERLAY ══ -->
+<!-- ══ CDN: mammoth (DOCX→HTML) + html-docx-js (HTML→DOCX) + SheetJS (XLSX) ══ -->
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+<!-- ══ DOCUMENT VIEWER / EDITOR OVERLAY ══ -->
 <div id="doc-viewer-overlay">
+
+  <!-- Top bar -->
   <div id="doc-viewer-topbar">
     <picture>
       <source type="image/avif" srcset="/Preqal%20Logo%20Sep25-9-200.avif">
       <source type="image/webp" srcset="/Preqal%20Logo%20Sep25-9-200.webp">
       <img class="viewer-logo" src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal">
     </picture>
-    <div class="viewer-divider"></div>
+    <div class="viewer-vdivider"></div>
     <div id="doc-viewer-meta">
       <span class="viewer-label">IMS Document</span>
       <div class="viewer-docname" id="viewer-docname">–</div>
     </div>
-    <a id="viewer-download-btn" href="#" download class="viewer-btn viewer-btn-download">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <button id="viewer-save-btn" class="viewer-btn viewer-btn-save" onclick="saveDocx()" style="display:none">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save as DOCX
+    </button>
+    <a id="viewer-dl-btn" href="#" class="viewer-btn viewer-btn-dl" download>
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download
     </a>
     <button class="viewer-btn viewer-btn-close" onclick="closeDocViewer()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       Close
     </button>
   </div>
-  <iframe id="doc-viewer-frame" src="" allowfullscreen style="display:none"></iframe>
-  <div id="doc-viewer-img-wrap" style="display:none">
+
+  <!-- DOCX formatting toolbar (visible only for DOCX) -->
+  <div id="doc-editor-toolbar">
+    <select class="tb-sel" onchange="execFmt('formatBlock',this.value);this.value='p'">
+      <option value="p">Normal</option>
+      <option value="h1">Heading 1</option>
+      <option value="h2">Heading 2</option>
+      <option value="h3">Heading 3</option>
+    </select>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Bold" onclick="execFmt('bold')"><b>B</b></button>
+    <button class="tb-btn" title="Italic" onclick="execFmt('italic')"><i>I</i></button>
+    <button class="tb-btn" title="Underline" onclick="execFmt('underline')"><u>U</u></button>
+    <button class="tb-btn" title="Strikethrough" onclick="execFmt('strikeThrough')"><s>S</s></button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Bullet list" onclick="execFmt('insertUnorderedList')">≡</button>
+    <button class="tb-btn" title="Numbered list" onclick="execFmt('insertOrderedList')">⒈</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Align left" onclick="execFmt('justifyLeft')">⬤≡</button>
+    <button class="tb-btn" title="Align centre" onclick="execFmt('justifyCenter')">≡</button>
+    <button class="tb-btn" title="Align right" onclick="execFmt('justifyRight')">≡⬤</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Indent" onclick="execFmt('indent')">→</button>
+    <button class="tb-btn" title="Outdent" onclick="execFmt('outdent')">←</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Clear formatting" onclick="execFmt('removeFormat')" style="font-size:11px">✕ fmt</button>
+  </div>
+
+  <!-- Loading state -->
+  <div id="doc-viewer-loading">
+    <div class="v-spinner"></div>
+    <span id="doc-viewer-loading-msg">Loading document…</span>
+  </div>
+
+  <!-- DOCX editor (contenteditable) -->
+  <div id="doc-editor-wrap">
+    <div id="doc-editor" contenteditable="true" spellcheck="true"></div>
+  </div>
+
+  <!-- XLSX sheet viewer -->
+  <div id="doc-sheet-wrap">
+    <div id="doc-sheet-inner"></div>
+  </div>
+
+  <!-- Image viewer -->
+  <div id="doc-viewer-img-wrap">
     <img id="doc-viewer-img" src="" alt="Document preview">
   </div>
+
 </div>
 
 <script>
-function openDocViewer(fileUrl, title) {
-  const overlay = document.getElementById('doc-viewer-overlay');
-  const frame   = document.getElementById('doc-viewer-frame');
-  const imgWrap = document.getElementById('doc-viewer-img-wrap');
-  const img     = document.getElementById('doc-viewer-img');
-  const dlBtn   = document.getElementById('viewer-download-btn');
+/* ── Document viewer / editor ─────────────────────────────────────────── */
+let _viewerFileUrl = '';
+let _viewerFilename = '';
+
+function _showPanel(id) {
+  ['doc-editor-wrap','doc-sheet-wrap','doc-viewer-img-wrap','doc-viewer-loading']
+    .forEach(p => { const el=document.getElementById(p); if(el) el.style.display = p===id?'':'none'; });
+  // toolbar only for editor
+  const tb = document.getElementById('doc-editor-toolbar');
+  if(tb) tb.style.display = id==='doc-editor-wrap'?'flex':'none';
+  const saveBtn = document.getElementById('viewer-save-btn');
+  if(saveBtn) saveBtn.style.display = id==='doc-editor-wrap'?'':'none';
+}
+
+function execFmt(cmd, val) {
+  document.getElementById('doc-editor').focus();
+  document.execCommand(cmd, false, val || null);
+}
+
+async function openDocViewer(fileUrl, title) {
+  _viewerFileUrl = fileUrl;
+  _viewerFilename = fileUrl.split('/').pop();
+  const ext = _viewerFilename.split('.').pop().toLowerCase();
+
   document.getElementById('viewer-docname').textContent = title;
+  const dlBtn = document.getElementById('viewer-dl-btn');
   dlBtn.href = fileUrl;
-  dlBtn.setAttribute('download', fileUrl.split('/').pop());
+  dlBtn.setAttribute('download', _viewerFilename);
 
-  const ext = fileUrl.split('.').pop().toLowerCase();
-  const isImage = ['png','jpg','jpeg','webp','gif'].includes(ext);
-
-  if (isImage) {
-    frame.style.display = 'none';
-    frame.src = '';
-    imgWrap.style.display = 'flex';
-    img.src = fileUrl;
-  } else {
-    imgWrap.style.display = 'none';
-    img.src = '';
-    frame.style.display = 'block';
-    frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fileUrl);
-  }
-
+  // Open overlay immediately with loading state
+  const overlay = document.getElementById('doc-viewer-overlay');
+  _showPanel('doc-viewer-loading');
   overlay.classList.add('viewer-open');
   requestAnimationFrame(() => overlay.classList.add('viewer-visible'));
   document.body.style.overflow = 'hidden';
+
+  try {
+    if (['png','jpg','jpeg','webp','gif'].includes(ext)) {
+      // ── Image ──
+      document.getElementById('doc-viewer-img').src = fileUrl;
+      _showPanel('doc-viewer-img-wrap');
+
+    } else if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') {
+      // ── Spreadsheet via SheetJS ──
+      document.getElementById('doc-viewer-loading-msg').textContent = 'Loading spreadsheet…';
+      const resp = await fetch(fileUrl);
+      const buf  = await resp.arrayBuffer();
+      const wb   = XLSX.read(buf, {type:'array'});
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const html = XLSX.utils.sheet_to_html(ws, {id:'sheetjs-table'});
+      document.getElementById('doc-sheet-inner').innerHTML = html;
+      // Style the generated table
+      const tbl = document.getElementById('sheetjs-table');
+      if(tbl){ tbl.style.borderCollapse='collapse'; tbl.style.width='100%'; }
+      _showPanel('doc-sheet-wrap');
+
+    } else if (['docx','doc'].includes(ext)) {
+      // ── DOCX via mammoth ──
+      document.getElementById('doc-viewer-loading-msg').textContent = 'Converting document…';
+      const resp = await fetch(fileUrl);
+      const buf  = await resp.arrayBuffer();
+      const result = await mammoth.convertToHtml({arrayBuffer: buf});
+      document.getElementById('doc-editor').innerHTML = result.value || '<p><em>Document appears to be empty.</em></p>';
+      _showPanel('doc-editor-wrap');
+
+    } else {
+      // ── Unknown — just offer download ──
+      _showPanel('doc-viewer-img-wrap');
+      document.getElementById('doc-viewer-img-wrap').innerHTML =
+        `<div style="text-align:center;color:#64748b">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 16px;display:block"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <p style="font-size:13px;font-weight:600">Preview not available for this file type.</p>
+          <p style="font-size:12px;margin-top:6px">Use the Download button to open it locally.</p>
+        </div>`;
+    }
+  } catch(err) {
+    _showPanel('doc-viewer-img-wrap');
+    document.getElementById('doc-viewer-img-wrap').innerHTML =
+      `<div style="text-align:center;color:#ef4444;font-size:13px;font-weight:600">
+        <p>Failed to load document.</p><p style="font-size:11px;margin-top:6px;color:#64748b">${err.message}</p>
+      </div>`;
+  }
+}
+
+async function saveDocx() {
+  const html = document.getElementById('doc-editor').innerHTML;
+  const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
+    h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
+    table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
+    </style></head><body>${html}</body></html>`;
+  const blob = htmlDocx.asBlob(fullHtml);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = _viewerFilename || 'document.docx';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),10000);
 }
 
 function closeDocViewer() {
   const overlay = document.getElementById('doc-viewer-overlay');
   overlay.classList.remove('viewer-visible');
-  overlay.addEventListener('transitionend', function handler() {
+  overlay.addEventListener('transitionend', function h() {
     overlay.classList.remove('viewer-open');
-    document.getElementById('doc-viewer-frame').src = '';
+    document.getElementById('doc-editor').innerHTML = '';
+    document.getElementById('doc-sheet-inner').innerHTML = '';
     document.getElementById('doc-viewer-img').src = '';
     document.body.style.overflow = '';
-    overlay.removeEventListener('transitionend', handler);
+    overlay.removeEventListener('transitionend', h);
   });
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('doc-viewer-overlay').classList.contains('viewer-open')) {
+  if (e.key==='Escape' && document.getElementById('doc-viewer-overlay').classList.contains('viewer-open'))
     closeDocViewer();
-  }
 });
 </script>
 </body>
