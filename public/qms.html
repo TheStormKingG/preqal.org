@@ -1519,11 +1519,48 @@ async function loadDocs(){
     <td>${r.file_url?`<a href="${esc(r.file_url)}" target="_blank" rel="noopener" class="text-xs font-bold text-amber-700 hover:text-amber-900">Open ↗</a>`:'<span class="td-muted">–</span>'}</td>
     <td><div class="flex gap-2">
       <button class="btn btn-ghost btn-sm" onclick="editDoc('${r.id}')">Edit</button>
+      <button class="btn btn-ghost btn-sm" onclick="uploadDoc('${r.id}','${esc(r.file_url||'')}')">↑ Upload</button>
       <button class="btn btn-danger btn-sm" onclick="delRecord('qms_documents','${r.id}','doc')">Del</button>
     </div></td>
   </tr>`).join('');
 }
 
+async function uploadDoc(docId,currentFileUrl){
+  let input=document.createElement('input');
+  input.type='file';
+  input.accept='*/*';
+  input.onchange=async function(){
+    const file=input.files[0];
+    input=null;
+    if(!file)return;
+    // derive storage path from currentFileUrl (basename) or fall back to file name
+    let storagePath=currentFileUrl?currentFileUrl.split('/').pop():file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    if(!storagePath)storagePath=file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    // sanitize: strip query strings/fragments and disallow path traversal characters
+    storagePath=storagePath.split('?')[0].split('#')[0];
+    storagePath=storagePath.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    if(!storagePath)storagePath=file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    // find the button that triggered this upload so we can show inline feedback
+    const btn=document.querySelector(`button[onclick="uploadDoc('${docId}','${currentFileUrl}')"]`);
+    const origText=btn?btn.textContent:'';
+    if(btn){btn.textContent='Uploading…';btn.disabled=true;}
+    const{error:upErr}=await sb.storage.from('ims').upload(storagePath,file,{upsert:true});
+    if(upErr){
+      if(btn){btn.textContent=origText;btn.disabled=false;}
+      alert('Upload failed: '+upErr.message);
+      return;
+    }
+    const{error:dbErr}=await sb.from('qms_documents').update({file_url:storagePath,updated_at:new Date().toISOString()}).eq('id',docId);
+    if(dbErr){
+      if(btn){btn.textContent=origText;btn.disabled=false;}
+      alert('File uploaded but DB update failed: '+dbErr.message);
+      return;
+    }
+    if(btn){btn.textContent='✓ Uploaded';setTimeout(()=>{btn.textContent=origText;btn.disabled=false;},2000);}
+    loadDocs();
+  };
+  input.click();
+}
 async function editDoc(id){if(!docCache[id]){const{data}=await sb.from('qms_documents').select('*').eq('id',id).single();if(data)docCache[id]=data;}openModal('doc',id);}
 async function openModal(type,id){
   if(type==='issue'){openIssueModal(id);return;}
@@ -2758,7 +2795,7 @@ async function saveQR(){
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
 function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function fmtDate(iso){if(!iso)return'–';return new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 function rowSpin(c){return`<tr><td colspan="${c}" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr>`;}
 function emptyRow(c,msg){return`<tr><td colspan="${c}" class="text-center py-12 text-sm text-slate-400 font-medium">${msg?'⚠ '+esc(msg):'No records yet.'}</td></tr>`;}
