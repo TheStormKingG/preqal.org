@@ -125,6 +125,25 @@
   .topbar-link:hover{color:#b45309}
   /* ── MAIN WRAPPER ─────────────────────────────────────────────────────── */
   #main-wrapper{flex:1;min-width:0;display:flex;flex-direction:column;min-height:100dvh}
+  /* ── DOCUMENT VIEWER OVERLAY ──────────────────────────────────────────── */
+  #doc-viewer-overlay{position:fixed;inset:0;z-index:9999;background:#0f172a;display:none;flex-direction:column;opacity:0;transition:opacity 280ms cubic-bezier(0.23,1,0.32,1)}
+  #doc-viewer-overlay.viewer-open{display:flex}
+  #doc-viewer-overlay.viewer-visible{opacity:1}
+  #doc-viewer-topbar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0f172a;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;min-height:56px}
+  #doc-viewer-topbar .viewer-logo{height:30px;width:auto;flex-shrink:0}
+  #doc-viewer-topbar .viewer-divider{width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0}
+  #doc-viewer-meta{flex:1;min-width:0}
+  #doc-viewer-meta .viewer-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(245,158,11,.8);display:block;line-height:1}
+  #doc-viewer-meta .viewer-docname{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+  .viewer-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:transform 160ms cubic-bezier(0.23,1,0.32,1),background 160ms;flex-shrink:0;text-decoration:none}
+  .viewer-btn:active{transform:scale(0.96)}
+  .viewer-btn-download{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+  .viewer-btn-download:hover{background:rgba(245,158,11,.25)}
+  .viewer-btn-close{background:rgba(255,255,255,.07);color:#94a3b8;border:1px solid rgba(255,255,255,.1)}
+  .viewer-btn-close:hover{background:rgba(255,255,255,.13);color:#fff}
+  #doc-viewer-frame{flex:1;border:none;width:100%;background:#1e293b}
+  #doc-viewer-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;overflow:auto;background:#1e293b}
+  #doc-viewer-img-wrap img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
   /* ── DOCUMENT FOLDER GRID ─────────────────────────────────────────────── */
   .doc-folder-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
   .doc-folder{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 20px;border-radius:14px;box-shadow:3px 3px 6px #a3b1c6,-3px -3px 6px #ffffff;background:#e0e5ec;min-width:86px;transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
@@ -1661,7 +1680,7 @@ function renderDocsTable(data){
     <td><span class="badge ${DOC_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
     <td class="td-muted">${esc(r.owner||'–')}</td>
     <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
-    <td>${r.file_url?`<a href="${esc(resolveFileUrl(r.file_url))}" target="_blank" rel="noopener" class="text-xs font-bold text-amber-700 hover:text-amber-900">Open ↗</a>`:'<span class="td-muted">–</span>'}</td>
+    <td>${r.file_url?`<button class="btn btn-ghost btn-sm" style="color:#d97706;font-weight:700" onclick="openDocViewer('${esc(resolveFileUrl(r.file_url))}','${esc(r.title)}')">⊞ View</button>`:'<span class="td-muted">–</span>'}</td>
     <td><div class="flex gap-2">
       <button class="btn btn-ghost btn-sm" onclick="editDoc('${r.id}')">Edit</button>
       <button class="btn btn-ghost btn-sm" onclick="uploadDoc('${r.id}','${esc(r.file_url||'')}')">↑ Upload</button>
@@ -2962,6 +2981,84 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')signIn();
 });
 init();
+</script>
+
+<!-- ══ DOCUMENT VIEWER OVERLAY ══ -->
+<div id="doc-viewer-overlay">
+  <div id="doc-viewer-topbar">
+    <picture>
+      <source type="image/avif" srcset="/Preqal%20Logo%20Sep25-9-200.avif">
+      <source type="image/webp" srcset="/Preqal%20Logo%20Sep25-9-200.webp">
+      <img class="viewer-logo" src="/Preqal%20Logo%20Sep25-9-200.webp" alt="Preqal">
+    </picture>
+    <div class="viewer-divider"></div>
+    <div id="doc-viewer-meta">
+      <span class="viewer-label">IMS Document</span>
+      <div class="viewer-docname" id="viewer-docname">–</div>
+    </div>
+    <a id="viewer-download-btn" href="#" download class="viewer-btn viewer-btn-download">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download
+    </a>
+    <button class="viewer-btn viewer-btn-close" onclick="closeDocViewer()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Close
+    </button>
+  </div>
+  <iframe id="doc-viewer-frame" src="" allowfullscreen style="display:none"></iframe>
+  <div id="doc-viewer-img-wrap" style="display:none">
+    <img id="doc-viewer-img" src="" alt="Document preview">
+  </div>
+</div>
+
+<script>
+function openDocViewer(fileUrl, title) {
+  const overlay = document.getElementById('doc-viewer-overlay');
+  const frame   = document.getElementById('doc-viewer-frame');
+  const imgWrap = document.getElementById('doc-viewer-img-wrap');
+  const img     = document.getElementById('doc-viewer-img');
+  const dlBtn   = document.getElementById('viewer-download-btn');
+  document.getElementById('viewer-docname').textContent = title;
+  dlBtn.href = fileUrl;
+  dlBtn.setAttribute('download', fileUrl.split('/').pop());
+
+  const ext = fileUrl.split('.').pop().toLowerCase();
+  const isImage = ['png','jpg','jpeg','webp','gif'].includes(ext);
+
+  if (isImage) {
+    frame.style.display = 'none';
+    frame.src = '';
+    imgWrap.style.display = 'flex';
+    img.src = fileUrl;
+  } else {
+    imgWrap.style.display = 'none';
+    img.src = '';
+    frame.style.display = 'block';
+    frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fileUrl);
+  }
+
+  overlay.classList.add('viewer-open');
+  requestAnimationFrame(() => overlay.classList.add('viewer-visible'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDocViewer() {
+  const overlay = document.getElementById('doc-viewer-overlay');
+  overlay.classList.remove('viewer-visible');
+  overlay.addEventListener('transitionend', function handler() {
+    overlay.classList.remove('viewer-open');
+    document.getElementById('doc-viewer-frame').src = '';
+    document.getElementById('doc-viewer-img').src = '';
+    document.body.style.overflow = '';
+    overlay.removeEventListener('transitionend', handler);
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('doc-viewer-overlay').classList.contains('viewer-open')) {
+    closeDocViewer();
+  }
+});
 </script>
 </body>
 </html>
