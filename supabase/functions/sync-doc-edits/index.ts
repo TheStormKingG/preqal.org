@@ -11,7 +11,7 @@ const WEBHOOK_SECRET       = Deno.env.get("WEBHOOK_SECRET") ?? "";
 
 Deno.serve(async (req: Request): Promise<Response> => {
   // ── Auth ─────────────────────────────────────────────────────────────────
-  if (WEBHOOK_SECRET && req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
+  if (!WEBHOOK_SECRET || req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -19,8 +19,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const payload = await req.json();
     const record  = payload?.record;
 
-    if (!record?.content_html || !record?.file_url) {
-      return json({ skipped: "no content_html or file_url" });
+    if (!record?.content_html) {
+      return json({ skipped: "no content_html" });
+    }
+    if (!record?.file_url) {
+      return json({ skipped: "no file_url" });
     }
 
     const filename = (record.file_url as string).split("/").pop() ?? "";
