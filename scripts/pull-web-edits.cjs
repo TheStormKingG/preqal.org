@@ -23,9 +23,12 @@
  *   --apply   Patch local DOCX files with detected text changes
  *   --clear   After --apply, clear content_html in DB (marks document as in-sync)
  *
- * Limitation: word-level diff only. If a changed word is split across multiple
- * Word formatting runs (e.g., partially bold), the patch will report a warning
- * and leave that word unchanged. Fix manually in Word if needed.
+ * Limitation: word-level diff handles substitutions only. Inserted or deleted words
+ * are detected and reported as WARN but cannot be patched into the DOCX automatically
+ * (DOCX XML structure cannot be safely modified without a full OOXML parser).
+ * If a changed word is split across multiple Word formatting runs (e.g., partially
+ * bold), the patch will report a warning and leave that word unchanged.
+ * Fix either case manually in Word if needed.
  *
  * Get the service role key from:
  *   Supabase → Project gndcjmxxgtnoidxgcdnx → Settings → API → service_role
@@ -54,9 +57,11 @@ function extractTextFromHtml(html) {
     .replace(/<style[\s\S]*?<\/style>/gi, '')  // remove embedded stylesheets
     .replace(/<script[\s\S]*?<\/script>/gi, '') // remove any scripts
     .replace(/<[^>]+>/g, ' ')                   // strip all tags
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g,  '<')
-    .replace(/&gt;/,   '>')
+    .replace(/&amp;/g,  '&')
+    .replace(/&lt;/g,   '<')
+    .replace(/&gt;/g,   '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g,  "'")
     .replace(/&nbsp;|&#160;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -76,27 +81,33 @@ function extractTextFromDocxXml(xml) {
 }
 
 // ─── Word-level diff ──────────────────────────────────────────────────────────
-// Returns an array of { oldWord, newWord } pairs describing changed words.
+// Returns an object with:
+//   changes:    { oldWord, newWord }[] — word substitutions that can be patched
+//   unhandled:  string[]              — insertions/deletions that cannot be auto-patched
+//
 // Uses a sliding-window scan: when words diverge, it looks up to 5 tokens
-// ahead in each side to find where they resync (handles insertions/deletions).
-// Pure substitutions are recorded as { oldWord, newWord }.
+// ahead in each side to find where they resync. Pure substitutions go into
+// `changes`. Insertions and deletions are flagged in `unhandled`.
 function findWordChanges(oldText, newText) {
-  const oldTokens = oldText.split(/(\s+)/);  // preserves whitespace tokens
-  const newTokens = newText.split(/(\s+)/);
-
-  // Work only with non-whitespace words, but remember their original forms
   const oldWords = oldText.match(/\S+/g) || [];
   const newWords = newText.match(/\S+/g) || [];
 
-  const changes = [];
+  const changes   = [];
+  const unhandled = [];
   let i = 0, j = 0;
 
   while (i < oldWords.length || j < newWords.length) {
     const ow = oldWords[i];
     const nw = newWords[j];
 
-    if (i >= oldWords.length) { j++; continue; } // extra words in new (insertion)
-    if (j >= newWords.length) { i++; continue; } // missing words in new (deletion)
+    if (i >= oldWords.length) {
+      unhandled.push(`inserted "${nw}"`);
+      j++; continue;
+    }
+    if (j >= newWords.length) {
+      unhandled.push(`deleted "${ow}"`);
+      i++; continue;
+    }
 
     if (ow === nw) { i++; j++; continue; } // words match — no change
 
@@ -107,22 +118,24 @@ function findWordChanges(oldText, newText) {
     for (let k = 1; k <= WINDOW && !matched; k++) {
       // Extra word(s) in old (deletion in new)
       if (i + k < oldWords.length && oldWords[i + k] === nw) {
+        for (let d = 0; d < k; d++) unhandled.push(`deleted "${oldWords[i + d]}"`);
         i += k; matched = true; break;
       }
       // Extra word(s) in new (insertion in old)
       if (j + k < newWords.length && ow === newWords[j + k]) {
+        for (let d = 0; d < k; d++) unhandled.push(`inserted "${newWords[j + d]}"`);
         j += k; matched = true; break;
       }
     }
 
     if (!matched) {
-      // Direct word substitution
+      // Direct word substitution — can be patched
       changes.push({ oldWord: ow, newWord: nw });
       i++; j++;
     }
   }
 
-  return changes;
+  return { changes, unhandled };
 }
 
 // ─── Escape string for use in a RegExp ───────────────────────────────────────
@@ -150,25 +163,16 @@ function applyChangesToXml(xml, changes) {
     const escapedOld    = escapeRegex(escapeXml(oldWord));
     const escapedNewXml = escapeXml(newWord);
 
-    // Match the old word as a whole-word substring within a single <w:t> element.
-    // The lookahead/lookbehind ensures we don't partially replace words
-    // (e.g. "it" inside "with").
+    // Primary: match the old word inside a <w:t> element using lookahead/lookbehind
+    // to prevent partial matches (e.g. "it" inside "with"). Handles punctuation-
+    // adjacent words by using non-word-char boundaries rather than \b.
     const regex = new RegExp(
-      `(<w:t(?:\\s[^>]*)?>(?:[^<]*)?)\\b${escapedOld}\\b((?:[^<]*)?<\\/w:t>)`,
+      `(<w:t(?:\\s[^>]*)?>(?:[^<]*)?)(?<![\\w])${escapedOld}(?![\\w])((?:[^<]*)?<\\/w:t>)`,
       'g'
     );
 
     const before = patchedXml;
     patchedXml = patchedXml.replace(regex, `$1${escapedNewXml}$2`);
-
-    if (patchedXml === before) {
-      // Also try without word boundaries (handles punctuation-adjacent words)
-      const regexNoBound = new RegExp(
-        `(<w:t(?:\\s[^>]*)?>(?:[^<]*)?)${escapedOld}((?:[^<]*)?<\\/w:t>)`,
-        'g'
-      );
-      patchedXml = patchedXml.replace(regexNoBound, `$1${escapedNewXml}$2`);
-    }
 
     if (patchedXml !== before) {
       applied++;
@@ -214,16 +218,32 @@ async function main() {
   const results = [];
 
   for (const doc of docs) {
-    const filename = (doc.file_url || '').split('/').pop();
+    const docId = doc.doc_id || '(no id)';
+    const title = doc.title  || '(no title)';
 
-    if (!filename || !filename.endsWith('.docx')) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'SKIP', detail: 'Not a DOCX — sync not applicable' });
+    const rawFilename = (doc.file_url || '').split('/').pop();
+
+    // Guard: reject filenames with path separators (path traversal defence)
+    if (!rawFilename || rawFilename.includes('/') || rawFilename.includes('\\')) {
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Rejected: invalid filename in file_url' });
       continue;
     }
 
-    const localPath = path.join(IMS_DIR, filename);
+    if (!rawFilename.endsWith('.docx')) {
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Not a DOCX — sync not applicable' });
+      continue;
+    }
+
+    const localPath = path.join(IMS_DIR, rawFilename);
+
+    // Guard: ensure resolved path stays inside IMS_DIR (path traversal defence)
+    if (!localPath.startsWith(IMS_DIR + path.sep) && localPath !== IMS_DIR) {
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Rejected: path escapes IMS_DIR' });
+      continue;
+    }
+
     if (!fs.existsSync(localPath)) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'SKIP', detail: `Local file not found: public/ims/${filename}` });
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: `Local file not found: public/ims/${rawFilename}` });
       continue;
     }
 
@@ -231,18 +251,25 @@ async function main() {
     const htmlText = extractTextFromHtml(doc.content_html);
 
     // 2. Load local DOCX as ZIP
-    const docxBuffer = fs.readFileSync(localPath);
+    let docxBuffer;
+    try {
+      docxBuffer = fs.readFileSync(localPath);
+    } catch (e) {
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `File read error: ${e.message}` });
+      continue;
+    }
+
     let zip;
     try {
       zip = await JSZip.loadAsync(docxBuffer);
     } catch (e) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'FAIL', detail: `Could not open DOCX as ZIP: ${e.message}` });
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `Could not open DOCX as ZIP: ${e.message}` });
       continue;
     }
 
     const docXmlFile = zip.file('word/document.xml');
     if (!docXmlFile) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'FAIL', detail: 'word/document.xml not found in DOCX' });
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: 'word/document.xml not found in DOCX' });
       continue;
     }
 
@@ -250,17 +277,23 @@ async function main() {
     const originalText = extractTextFromDocxXml(originalXml);
 
     // 3. Diff the texts at the word level
-    const changes = findWordChanges(originalText, htmlText);
+    const { changes, unhandled } = findWordChanges(originalText, htmlText);
 
+    // Warn if texts differ but no substitutions were found (only insertions/deletions)
     if (changes.length === 0) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'IN_SYNC', detail: 'Text matches — nothing to patch' });
+      if (unhandled.length > 0) {
+        results.push({ doc_id: docId, title, status: 'WARN', detail: `Unhandled changes (insertions/deletions only — patch manually): ${unhandled.slice(0, 5).join(', ')}` });
+      } else {
+        results.push({ doc_id: docId, title, status: 'IN_SYNC', detail: 'Text matches — nothing to patch' });
+      }
       continue;
     }
 
     const changesDesc = changes.map(c => `"${c.oldWord}" → "${c.newWord}"`).join(', ');
+    const unhandledNote = unhandled.length > 0 ? `  |  unhandled: ${unhandled.slice(0, 3).join(', ')}` : '';
 
     if (!APPLY) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'WOULD_PATCH', detail: changesDesc });
+      results.push({ doc_id: docId, title, status: 'WOULD_PATCH', detail: changesDesc + unhandledNote });
       continue;
     }
 
@@ -268,31 +301,45 @@ async function main() {
     const { patchedXml, applied, skipped } = applyChangesToXml(originalXml, changes);
 
     if (applied === 0) {
-      results.push({ doc_id: doc.doc_id, title: doc.title, status: 'WARN', detail: `Diff found changes but none could be applied (${skipped.join('; ')})` });
+      results.push({ doc_id: docId, title, status: 'WARN', detail: `Diff found changes but none could be applied (${skipped.join('; ')})` });
       continue;
     }
 
     // 5. Repack DOCX with patched XML
     zip.file('word/document.xml', patchedXml);
-    const patchedBuffer = await zip.generateAsync({
-      type:        'nodebuffer',
-      compression: 'DEFLATE',
-      compressionOptions: { level: 6 },
-    });
+    let patchedBuffer;
+    try {
+      patchedBuffer = await zip.generateAsync({
+        type:        'nodebuffer',
+        compression: 'DEFLATE',
+        compressionOptions: { level: 6 },
+      });
+    } catch (e) {
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `DOCX repack failed: ${e.message}` });
+      continue;
+    }
 
     // 6. Overwrite local file (write to .tmp then rename for safety)
     const tmpPath = localPath + '.sync.tmp';
-    fs.writeFileSync(tmpPath, patchedBuffer);
-    fs.renameSync(tmpPath, localPath);
+    try {
+      fs.writeFileSync(tmpPath, patchedBuffer);
+      fs.renameSync(tmpPath, localPath);
+    } catch (e) {
+      // Clean up tmp file if rename failed
+      try { fs.unlinkSync(tmpPath); } catch (_) {}
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `File write error: ${e.message}` });
+      continue;
+    }
 
     let statusDetail = `${applied}/${changes.length} change(s) applied: ${changesDesc}`;
-    if (skipped.length > 0) statusDetail += `  |  WARN: ${skipped.join('; ')}`;
+    if (skipped.length > 0)   statusDetail += `  |  WARN: ${skipped.join('; ')}`;
+    if (unhandled.length > 0) statusDetail += `  |  unhandled: ${unhandled.slice(0, 3).join(', ')}`;
 
     // 7. Optionally clear content_html in DB
     if (CLEAR) {
       const { error: clearErr } = await sb
         .from('qms_documents')
-        .update({ content_html: null, updated_at: new Date().toISOString() })
+        .update({ content_html: null })
         .eq('id', doc.id);
       if (clearErr) {
         statusDetail += `  |  DB clear failed: ${clearErr.message}`;
@@ -301,7 +348,7 @@ async function main() {
       }
     }
 
-    results.push({ doc_id: doc.doc_id, title: doc.title, status: 'PATCHED', detail: statusDetail });
+    results.push({ doc_id: docId, title, status: 'PATCHED', detail: statusDetail });
   }
 
   // ─── Report ────────────────────────────────────────────────────────────────
@@ -320,8 +367,8 @@ async function main() {
   for (const r of results) {
     const icon = { PATCHED: '✅', WOULD_PATCH: '📝', IN_SYNC: '✓ ', SKIP: '⟳ ', FAIL: '✗ ', WARN: '⚠️' }[r.status] || '  ';
     console.log(
-      '  ' + r.doc_id.padEnd(COL_ID) +
-      r.title.slice(0, COL_TITLE - 1).padEnd(COL_TITLE) +
+      '  ' + (r.doc_id || '').padEnd(COL_ID) +
+      (r.title || '').slice(0, COL_TITLE - 1).padEnd(COL_TITLE) +
       (icon + ' ' + r.status).padEnd(COL_ST + 3) +
       r.detail
     );
@@ -334,9 +381,10 @@ async function main() {
 
   console.log('\n' + '─'.repeat(80));
   if (!APPLY) {
-    if (wouldPatch > 0) {
-      console.log(`\n  ${wouldPatch} file(s) have pending edits.\n`);
-      console.log(`  Run with --apply to patch local DOCX files.`);
+    if (wouldPatch > 0 || warns > 0) {
+      if (wouldPatch > 0) console.log(`\n  ${wouldPatch} file(s) have pending edits.`);
+      if (warns > 0)      console.log(`\n  ${warns} file(s) have changes that require manual intervention (insertions/deletions — see WARN detail above).`);
+      console.log(`\n  Run with --apply to patch substitution changes in local DOCX files.`);
       console.log(`  Run with --apply --clear to patch AND mark documents as in-sync in the DB.\n`);
     } else {
       console.log(`\n  All ${inSync} checked document(s) are in sync.\n`);
