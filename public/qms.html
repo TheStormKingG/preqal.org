@@ -3103,14 +3103,21 @@ init();
 let _viewerFileUrl = '';
 let _viewerFilename = '';
 
+const PANEL_SHOW = {
+  'doc-editor-wrap':    'block',
+  'doc-sheet-wrap':     'block',
+  'doc-viewer-img-wrap':'flex',
+  'doc-viewer-loading': 'flex'
+};
 function _showPanel(id) {
-  ['doc-editor-wrap','doc-sheet-wrap','doc-viewer-img-wrap','doc-viewer-loading']
-    .forEach(p => { const el=document.getElementById(p); if(el) el.style.display = p===id?'':'none'; });
-  // toolbar only for editor
+  Object.keys(PANEL_SHOW).forEach(p => {
+    const el = document.getElementById(p);
+    if(el) el.style.display = p===id ? PANEL_SHOW[p] : 'none';
+  });
   const tb = document.getElementById('doc-editor-toolbar');
-  if(tb) tb.style.display = id==='doc-editor-wrap'?'flex':'none';
+  if(tb) tb.style.display = id==='doc-editor-wrap' ? 'flex' : 'none';
   const saveBtn = document.getElementById('viewer-save-btn');
-  if(saveBtn) saveBtn.style.display = id==='doc-editor-wrap'?'':'none';
+  if(saveBtn) saveBtn.style.display = id==='doc-editor-wrap' ? 'inline-flex' : 'none';
 }
 
 function execFmt(cmd, val) {
