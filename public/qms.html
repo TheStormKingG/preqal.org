@@ -179,6 +179,20 @@
   #doc-viewer-loading{flex:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:#1e293b;color:#64748b;font-size:13px;font-weight:600}
   #doc-viewer-loading .v-spinner{width:36px;height:36px;border:3px solid rgba(245,158,11,.2);border-top-color:#f59e0b;border-radius:50%;animation:vspin 0.7s linear infinite}
   @keyframes vspin{to{transform:rotate(360deg)}}
+  /* HTML draft view panel */
+  #doc-html-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none;padding:24px 0}
+  .doc-html-inner{max-width:820px;margin:0 auto 32px;background:#fff;padding:56px 64px;box-shadow:0 8px 40px rgba(0,0,0,.18);border-radius:4px;font-family:Calibri,Georgia,serif;font-size:11pt;line-height:1.6;color:#1e293b;min-height:400px}
+  .doc-html-inner h1{font-size:20pt;font-weight:700;margin:1.2em 0 .4em}
+  .doc-html-inner h2{font-size:15pt;font-weight:700;margin:1em 0 .35em}
+  .doc-html-inner h3{font-size:12pt;font-weight:700;margin:.8em 0 .3em}
+  .doc-html-inner p{margin:.3em 0}
+  .doc-html-inner table{border-collapse:collapse;width:100%;margin:1em 0}
+  .doc-html-inner td,.doc-html-inner th{border:1px solid #cbd5e1;padding:6px 10px;font-size:10pt}
+  .doc-html-inner th{background:#f8fafc;font-weight:700}
+  .doc-html-inner ul,.doc-html-inner ol{padding-left:1.6em;margin:.4em 0}
+  .doc-html-inner .draft-notice{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 16px;margin-bottom:24px;font-size:11px;font-weight:700;color:#92400e;display:flex;align-items:center;gap:8px;font-family:system-ui,sans-serif}
+  .viewer-btn-revert{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.22)}
+  .viewer-btn-revert:hover{background:rgba(239,68,68,.22);color:#fef2f2}
   /* ── SAVE CONFIRM MODAL ──────────────────────────────────────────────── */
   #save-confirm-modal{position:fixed;inset:0;z-index:10100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .2s cubic-bezier(0.23,1,0.32,1)}
   #save-confirm-modal.scm-visible{opacity:1}
@@ -1723,6 +1737,12 @@ function renderFolderGrid(data){
   }).join('');
 }
 
+function openDocViewerById(rowId) {
+  const r = docsAllData.find(d => d.id === rowId);
+  if (!r || !r.file_url) return;
+  openDocViewer(resolveFileUrl(r.file_url), r.title, r.id, r.content_html || null);
+}
+
 function renderDocsTable(data){
   const tb=document.getElementById('docs-tbody');
   if(!data?.length){tb.innerHTML=emptyRow(9);return;}
@@ -1734,7 +1754,7 @@ function renderDocsTable(data){
     <td><span class="badge ${DOC_STATUS_BADGE[r.status]||'badge-slate'}">${esc(r.status?.replace('_',' '))}</span></td>
     <td class="td-muted">${esc(r.owner||'–')}</td>
     <td class="td-muted">${r.review_date?fmtDate(r.review_date):'–'}</td>
-    <td>${r.file_url?`<button class="btn btn-ghost btn-sm" style="color:#d97706;font-weight:700" onclick="openDocViewer('${esc(resolveFileUrl(r.file_url))}','${esc(r.title)}')">⊞ View</button>`:'<span class="td-muted">–</span>'}</td>
+    <td>${r.file_url?`<button class="btn btn-ghost btn-sm" style="color:#d97706;font-weight:700" onclick="openDocViewerById('${r.id}')">⊞ ${r.content_html?'View Draft':'View'}</button>`:'<span class="td-muted">–</span>'}</td>
     <td><div class="flex gap-2">
       <button class="btn btn-ghost btn-sm" onclick="editDoc('${r.id}')">Edit</button>
       <button class="btn btn-ghost btn-sm" onclick="uploadDoc('${r.id}','${esc(r.file_url||'')}')">↑ Upload</button>
@@ -3063,6 +3083,10 @@ init();
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       <span id="viewer-edit-label">Edit</span>
     </button>
+    <button id="viewer-revert-btn" class="viewer-btn viewer-btn-revert" onclick="revertToOriginal()" style="display:none">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+      Revert to Original
+    </button>
     <button id="viewer-save-btn" class="viewer-btn viewer-btn-save" onclick="saveChanges()" style="display:none">
       <svg id="viewer-save-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       <span id="viewer-save-label">Save Changes</span>
@@ -3120,6 +3144,11 @@ init();
     <div id="doc-editor" contenteditable="true" spellcheck="true"></div>
   </div>
 
+  <!-- HTML draft view (shown when content_html is saved in DB) -->
+  <div id="doc-html-wrap">
+    <div class="doc-html-inner" id="doc-html-inner"></div>
+  </div>
+
   <!-- XLSX sheet viewer -->
   <div id="doc-sheet-wrap">
     <div id="doc-sheet-inner"></div>
@@ -3164,9 +3193,20 @@ init();
 
 <script>
 /* ── Document viewer / editor ─────────────────────────────────────────── */
-let _viewerFileUrl = '';
-let _viewerFilename = '';
-let _viewerBuf = null;   // cached ArrayBuffer for the current doc
+let _viewerFileUrl     = '';
+let _viewerFilename    = '';
+let _viewerBuf         = null;  // cached ArrayBuffer for the current DOCX
+let _viewerDocId       = null;  // qms_documents.id (UUID) for DB saves
+let _viewerContentHtml = null;  // current content_html from DB (null = no draft saved)
+
+/* HTML draft view helper */
+function _renderHtmlView(html) {
+  document.getElementById('doc-html-inner').innerHTML =
+    `<div class="draft-notice">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Draft saved — download to open the original in Word with full formatting
+    </div>` + html;
+}
 
 /* Save-confirm modal */
 let _scmResolve = null;
@@ -3179,7 +3219,8 @@ function showSaveConfirm() {
       _scmResolve = null;
       resolve(val);
     };
-    document.getElementById('scm-filename').textContent = _viewerFilename;
+    document.getElementById('scm-filename').textContent =
+      document.getElementById('viewer-docname').textContent || _viewerFilename;
     const m = document.getElementById('save-confirm-modal');
     m.style.display = 'flex';
     requestAnimationFrame(() => m.classList.add('scm-visible'));
@@ -3189,6 +3230,7 @@ let _editMode  = false;
 
 const PANEL_SHOW = {
   'doc-preview-wrap':   'block',
+  'doc-html-wrap':      'block',
   'doc-editor-wrap':    'block',
   'doc-sheet-wrap':     'block',
   'doc-viewer-img-wrap':'flex',
@@ -3199,14 +3241,17 @@ function _showPanel(id) {
     const el = document.getElementById(p);
     if(el) el.style.display = p===id ? PANEL_SHOW[p] : 'none';
   });
-  const isEditor = id === 'doc-editor-wrap';
-  const isDocx   = id === 'doc-preview-wrap' || isEditor;
+  const isEditor  = id === 'doc-editor-wrap';
+  const isDocx    = id === 'doc-preview-wrap' || isEditor;
+  const isHtml    = id === 'doc-html-wrap';
   const tb = document.getElementById('doc-editor-toolbar');
   if(tb) tb.style.display = isEditor ? 'flex' : 'none';
   const saveBtn = document.getElementById('viewer-save-btn');
   if(saveBtn) saveBtn.style.display = isEditor ? 'inline-flex' : 'none';
   const editBtn = document.getElementById('viewer-edit-btn');
-  if(editBtn) editBtn.style.display = isDocx ? 'inline-flex' : 'none';
+  if(editBtn) editBtn.style.display = (isDocx || isHtml) ? 'inline-flex' : 'none';
+  const revertBtn = document.getElementById('viewer-revert-btn');
+  if(revertBtn) revertBtn.style.display = isHtml ? 'inline-flex' : 'none';
 }
 
 function execFmt(cmd, val) {
@@ -3218,21 +3263,27 @@ async function toggleEditMode() {
   _editMode = !_editMode;
   document.getElementById('viewer-edit-label').textContent = _editMode ? 'View' : 'Edit';
   if (_editMode) {
-    // Switch to mammoth editor
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Preparing editor…';
+    // Always extract from original DOCX via mammoth (gives clean editable HTML)
     const result = await mammoth.convertToHtml({arrayBuffer: _viewerBuf.slice(0)});
     document.getElementById('doc-editor').innerHTML = result.value || '<p><em>Empty document.</em></p>';
     _showPanel('doc-editor-wrap');
   } else {
-    // Switch back to docx-preview
-    _showPanel('doc-preview-wrap');
+    // Return to whichever view mode is appropriate
+    if (_viewerContentHtml) {
+      _showPanel('doc-html-wrap');
+    } else {
+      _showPanel('doc-preview-wrap');
+    }
   }
 }
 
-async function openDocViewer(fileUrl, title) {
-  _viewerFileUrl = fileUrl;
-  _viewerFilename = fileUrl.split('/').pop();
+async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
+  _viewerFileUrl     = fileUrl;
+  _viewerFilename    = fileUrl.split('/').pop();
+  _viewerDocId       = docId;
+  _viewerContentHtml = contentHtml || null;
   _editMode = false;
   const ext = _viewerFilename.split('.').pop().toLowerCase();
 
@@ -3265,22 +3316,32 @@ async function openDocViewer(fileUrl, title) {
       _showPanel('doc-sheet-wrap');
 
     } else if (['docx','doc'].includes(ext)) {
-      document.getElementById('doc-viewer-loading-msg').textContent = 'Rendering document…';
+      // Always fetch the original DOCX so Edit mode (mammoth) can re-extract from it
+      document.getElementById('doc-viewer-loading-msg').textContent = 'Loading document…';
       const resp = await fetch(fileUrl);
       _viewerBuf = await resp.arrayBuffer();
-      const container = document.getElementById('doc-preview-container');
-      container.innerHTML = '';
-      await docx.renderAsync(_viewerBuf.slice(0), container, null, {
-        className: 'docx-viewer',
-        inWrapper: true,
-        ignoreWidth: false,
-        ignoreHeight: false,
-        ignoreFonts: false,
-        breakPages: true,
-        experimental: true,
-        trimXmlDeclaration: true,
-      });
-      _showPanel('doc-preview-wrap');
+
+      if (_viewerContentHtml) {
+        // Show saved HTML draft — original DOCX is NEVER modified
+        _renderHtmlView(_viewerContentHtml);
+        _showPanel('doc-html-wrap');
+      } else {
+        // Render original DOCX with docx-preview
+        document.getElementById('doc-viewer-loading-msg').textContent = 'Rendering document…';
+        const container = document.getElementById('doc-preview-container');
+        container.innerHTML = '';
+        await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+          className: 'docx-viewer',
+          inWrapper: true,
+          ignoreWidth: false,
+          ignoreHeight: false,
+          ignoreFonts: false,
+          breakPages: true,
+          experimental: true,
+          trimXmlDeclaration: true,
+        });
+        _showPanel('doc-preview-wrap');
+      }
 
     } else {
       _showPanel('doc-viewer-img-wrap');
@@ -3320,38 +3381,73 @@ async function saveChanges() {
     return;
   }
 
-  // Capture editor HTML before try — reused in catch for draft download
+  // Capture editor HTML before try — reused in catch for draft download fallback
   const _editorHtml = document.getElementById('doc-editor').innerHTML;
-  const _fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-      <style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:2.54cm}
-      h1{font-size:20pt}h2{font-size:15pt}h3{font-size:12pt}
-      table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 10px}
-      </style></head><body>${_editorHtml}</body></html>`;
 
   try {
-    // 1. Build DOCX blob from editor HTML
-    const blob = htmlDocx.asBlob(_fullHtml);
+    if (!_viewerDocId) throw new Error('Document ID not available — cannot save. Reload and try again.');
 
-    // 2. Upload to Supabase Storage (upsert — overwrite existing file)
-    const { error: upErr } = await sb.storage
-      .from('ims')
-      .upload(_viewerFilename, blob, {
-        contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        upsert: true,
-      });
-    if (upErr) throw upErr;
+    // Save HTML to qms_documents.content_html — original DOCX in Storage is NEVER modified
+    const { error: dbErr } = await sb
+      .from('qms_documents')
+      .update({ content_html: _editorHtml, updated_at: new Date().toISOString() })
+      .eq('id', _viewerDocId);
+    if (dbErr) throw dbErr;
 
-    // 3. Build ArrayBuffer from saved blob for rendering (don't update _viewerBuf yet)
-    const newBuf = await blob.arrayBuffer();
-
-    // 4. Exit edit mode and re-render view with updated content
+    // Update in-memory state
+    _viewerContentHtml = _editorHtml;
     _editMode = false;
     document.getElementById('viewer-edit-label').textContent = 'Edit';
+
+    // Update cached row so "View Draft" label appears in table without reload
+    const row = docsAllData.find(r => r.id === _viewerDocId);
+    if (row) row.content_html = _editorHtml;
+
+    // Show HTML draft view
+    _renderHtmlView(_editorHtml);
+    _showPanel('doc-html-wrap');
+
+    showToast('✅', 'Draft saved', 'Changes saved. Download the original .docx for the fully formatted version.');
+
+  } catch (err) {
+    // Save failed — download as plain HTML so edits are not lost
+    const draftBlob = new Blob([_editorHtml], { type: 'text/html' });
+    const draftUrl = URL.createObjectURL(draftBlob);
+    const draftLink = document.createElement('a');
+    draftLink.href = draftUrl;
+    draftLink.download = (_viewerFilename || 'draft').replace(/\.[^.]+$/, '') + '-draft.html';
+    draftLink.click();
+    setTimeout(() => URL.revokeObjectURL(draftUrl), 15000);
+    showToast('❌', 'Save failed — draft downloaded as HTML', err.message || 'Unknown error.');
+  } finally {
+    saveBtn.disabled = false;
+    saveLabel.textContent = 'Save Changes';
+    saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
+  }
+}
+
+async function revertToOriginal() {
+  if (!_viewerDocId) return;
+  if (!confirm('Remove the saved draft and show the original document?')) return;
+
+  try {
+    const { error } = await sb
+      .from('qms_documents')
+      .update({ content_html: null, updated_at: new Date().toISOString() })
+      .eq('id', _viewerDocId);
+    if (error) throw error;
+
+    // Clear state
+    _viewerContentHtml = null;
+    const row = docsAllData.find(r => r.id === _viewerDocId);
+    if (row) row.content_html = null;
+
+    // Re-render original DOCX with docx-preview
+    _showPanel('doc-viewer-loading');
+    document.getElementById('doc-viewer-loading-msg').textContent = 'Loading original…';
     const container = document.getElementById('doc-preview-container');
     container.innerHTML = '';
-    _showPanel('doc-viewer-loading');
-    document.getElementById('doc-viewer-loading-msg').textContent = 'Refreshing…';
-    await docx.renderAsync(newBuf.slice(0), container, null, {
+    await docx.renderAsync(_viewerBuf.slice(0), container, null, {
       className: 'docx-viewer',
       inWrapper: true,
       ignoreWidth: false,
@@ -3361,28 +3457,10 @@ async function saveChanges() {
       experimental: true,
       trimXmlDeclaration: true,
     });
-    // Only update _viewerBuf after render succeeds — prevents corrupted state on render failure
-    _viewerBuf = newBuf;
     _showPanel('doc-preview-wrap');
-
-    // 5. Success feedback
-    showToast('✅', 'Document saved', `${_viewerFilename} updated in cloud storage.`);
-
+    showToast('✅', 'Reverted to original', 'Draft removed. Showing the original document.');
   } catch (err) {
-    // Offer download of the draft so edits are not lost
-    const draftBlob = htmlDocx.asBlob(_fullHtml);
-    const draftUrl = URL.createObjectURL(draftBlob);
-    const draftLink = document.createElement('a');
-    draftLink.href = draftUrl;
-    draftLink.download = (_viewerFilename || 'draft.docx').replace('.docx', '-draft.docx');
-    draftLink.click();
-    setTimeout(() => URL.revokeObjectURL(draftUrl), 15000);
-    showToast('❌', 'Save failed — draft downloaded', (err.message || 'Upload failed') + '. Your edits have been downloaded as a draft file.');
-  } finally {
-    // Restore button
-    saveBtn.disabled = false;
-    saveLabel.textContent = 'Save Changes';
-    saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
+    showToast('❌', 'Revert failed', err.message || 'Unknown error.');
   }
 }
 
@@ -3396,6 +3474,9 @@ function closeDocViewer() {
     document.getElementById('doc-sheet-inner').innerHTML = '';
     document.getElementById('doc-viewer-img').src = '';
     _viewerBuf = null;
+    document.getElementById('doc-html-inner').innerHTML = '';
+    _viewerDocId = null;
+    _viewerContentHtml = null;
     document.body.style.overflow = '';
     overlay.removeEventListener('transitionend', h);
   });
