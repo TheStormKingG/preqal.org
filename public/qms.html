@@ -649,7 +649,7 @@
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="doc-title" class="field" type="text" placeholder="Quality Policy"></div>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
-          <select id="doc-category" class="field"><option value="Policy">Policy</option><option value="Procedure">Procedure</option><option value="Work Instruction">Work Instruction</option><option value="Form">Form</option><option value="Record">Record</option><option value="External">External</option></select>
+          <select id="doc-category" class="field"><option value="POL">Policies (POL)</option><option value="PRO">Procedures (PRO)</option><option value="WOI">Work Instructions (WOI)</option><option value="FRM">Forms (FRM)</option><option value="REG">Registers (REG)</option><option value="DIA">Diagrams (DIA)</option><option value="TMP">Templates (TMP)</option></select>
         </div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
           <select id="doc-status" class="field"><option value="draft">Draft</option><option value="active">Active</option><option value="under_review">Under Review</option><option value="superseded">Superseded</option></select>
@@ -1716,7 +1716,15 @@ function resolveFileUrl(url){if(!url)return null;if(url.startsWith('http'))retur
 
 let activeDocCat='__all__';
 
-const DOC_FOLDER_CATS=['Policy','Procedure','Work Instruction','Form','Record','External'];
+const DOC_FOLDER_CATS=[
+  {key:'POL',label:'Policies'},
+  {key:'PRO',label:'Procedures'},
+  {key:'WOI',label:'Work Instructions'},
+  {key:'FRM',label:'Forms'},
+  {key:'REG',label:'Registers'},
+  {key:'DIA',label:'Diagrams'},
+  {key:'TMP',label:'Templates'},
+];
 
 function folderSVG(active){
   const body=active?'#c05621':'#d97706';
@@ -1734,8 +1742,7 @@ function renderFolderGrid(data){
   if(!grid)return;
   const counts={};
   data.forEach(r=>{const c=r.category||'Other';counts[c]=(counts[c]||0)+1;});
-  const all=[{key:'__all__',label:'All Files'},{...DOC_FOLDER_CATS.map(c=>({key:c,label:c}))}];
-  const folders=[{key:'__all__',label:'All Files',count:data.length},...DOC_FOLDER_CATS.map(c=>({key:c,label:c,count:counts[c]||0}))];
+  const folders=[{key:'__all__',label:'All Files',count:data.length},...DOC_FOLDER_CATS.map(({key,label})=>({key,label,count:counts[key]||0}))];
   grid.innerHTML=folders.map(({key,label,count})=>{
     const active=key===activeDocCat;
     return `<div class="doc-folder${active?' folder-active':''}" onclick="filterDocs('${key}')">
@@ -1842,7 +1849,7 @@ async function openModal(type,id){
     qr:['qr-id','qr-title','qr-risk-type','qr-category','qr-source','qr-source-ref','qr-qms-process','qr-date-raised','qr-description','qr-cause','qr-consequence','qr-affected-process','qr-existing-controls','qr-likelihood','qr-impact','qr-treatment-option','qr-status','qr-treatment','qr-owner','qr-target-date','qr-res-likelihood','qr-res-impact','qr-review-date','qr-notes']
   };
   const defaults={
-    doc:{'doc-version':'1.0','doc-category':'Policy','doc-status':'draft'},
+    doc:{'doc-version':'1.0','doc-category':'POL','doc-status':'draft'},
     ncr:{'ncr-severity':'minor','ncr-status':'open','ncr-detected-date':new Date().toISOString().split('T')[0]},
     capa:{'capa-type':'corrective','capa-status':'open'},
     audit:{'audit-type':'Internal','audit-status':'planned','audit-minor':'0','audit-major':'0','audit-obs':'0'},
