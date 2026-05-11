@@ -26,12 +26,13 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .spinner{display:inline-block;width:22px;height:22px;border:2px solid #d1d5db;border-top-color:#f59e0b;border-radius:50%;animation:spin .65s linear infinite}
   .tbl-wrap{overflow-x:auto}
+  .tbl-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #f1f5f9}
   table{width:100%;border-collapse:collapse;min-width:580px}
-  thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#64748b;border-bottom:1px solid rgba(163,177,198,.3);white-space:nowrap;background:rgba(255,255,255,.3)}
-  tbody tr{border-bottom:1px solid rgba(163,177,198,.2);transition:background .12s}
+  thead th{padding:11px 16px 10px;text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#94a3b8;border-bottom:1.5px solid #e2e8f0;white-space:nowrap;background:none}
+  tbody tr{border-bottom:1px solid #f1f5f9;transition:background .1s}
   tbody tr:last-child{border-bottom:none}
-  tbody tr:hover{background:rgba(245,158,11,.06)}
-  tbody td{padding:10px 14px;font-size:13px;color:#334155;vertical-align:middle}
+  tbody tr:hover{background:rgba(248,250,252,.9)}
+  tbody td{padding:11px 16px;font-size:13px;color:#334155;vertical-align:middle}
   .td-muted{color:#94a3b8}
   .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
   .badge-amber{background:rgba(245,158,11,.12);color:#b45309}
@@ -410,7 +411,7 @@
           <button class="btn btn-amber btn-sm" onclick="openModal('doc')">+ Add Document</button>
         </div>
         <div class="doc-folder-grid" id="doc-folder-grid"></div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>Doc ID</th><th>Title</th><th>Category</th><th>Version</th><th>Status</th><th>Owner</th><th>Review Date</th><th>File</th><th>Actions</th></tr></thead>
             <tbody id="docs-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -433,7 +434,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('ncr')">+ Raise NCR</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>NCR #</th><th>Date</th><th>Title</th><th>Source</th><th>Process Area</th><th>Severity</th><th>Status</th><th>CAPA?</th><th>Actions</th></tr></thead>
             <tbody id="ncr-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -456,7 +457,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('capa')">+ Add CAPA</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>CAPA #</th><th>Type</th><th>Title</th><th>Source / NCR</th><th>Assigned To</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="capa-tbody"><tr><td colspan="8" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -479,7 +480,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('audit')">+ Log Audit</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>Audit #</th><th>Type</th><th>Scope</th><th>Auditor</th><th>Scheduled</th><th>Status</th><th>Minor</th><th>Major</th><th>Obs.</th><th>Actions</th></tr></thead>
             <tbody id="audit-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -516,7 +517,7 @@
             </div>
             <button class="btn btn-amber btn-sm" onclick="openModal('issue')">+ Add Issue</button>
           </div>
-          <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <div class="tbl-card"><div class="tbl-wrap">
             <table>
               <thead><tr><th>ID</th><th>Issue / Factor</th><th>Category</th><th>Type</th><th>SWOT</th><th>Impact Area</th><th>Impact</th><th>Likelihood</th><th>Rating</th><th>Response</th><th>Owner</th><th>Status</th><th>Review</th><th>Actions</th></tr></thead>
               <tbody id="issue-tbody"><tr><td colspan="14" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -533,7 +534,7 @@
             </div>
             <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Party</button>
           </div>
-          <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+          <div class="tbl-card"><div class="tbl-wrap">
             <table>
               <thead><tr><th>ID</th><th>Name / Entity</th><th>Context</th><th>Party Type</th><th>Needs &amp; Expectations</th><th>Requirements</th><th>Compliance</th><th>Priority</th><th>Engagement</th><th>Status</th><th>Review</th><th>Actions</th></tr></thead>
               <tbody id="org-tbody"><tr><td colspan="12" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -557,7 +558,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('hse')">+ Add Risk</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>Risk ID</th><th>Hazard</th><th>Category</th><th>Activity / Location</th><th>Persons at Risk</th><th>Harm Potential</th><th>L</th><th>C</th><th>Rating</th><th>Level</th><th>Controls Applied</th><th>Res. Rating</th><th>ALARP</th><th>Source</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="hse-tbody"><tr><td colspan="16" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -580,7 +581,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openEmpAddModal()">+ Add Employee</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Type</th><th>Status</th><th>Start Date</th><th>Salary (Gross)</th><th>Actions</th></tr></thead>
             <tbody id="emp-tbody"><tr><td colspan="9" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -603,7 +604,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('legal')">+ Add Obligation</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Jurisdiction</th><th>Ref. No.</th><th>Applicable To</th><th>Responsible</th><th>Compliance</th><th>Review Date</th><th>Actions</th></tr></thead>
             <tbody id="legal-tbody"><tr><td colspan="10" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
@@ -626,7 +627,7 @@
           </div>
           <button class="btn btn-amber btn-sm" onclick="openModal('qr')">+ Add Risk</button>
         </div>
-        <div class="neu-card rounded-2xl overflow-hidden"><div class="tbl-wrap">
+        <div class="tbl-card"><div class="tbl-wrap">
           <table>
             <thead><tr><th>Risk ID</th><th>Title</th><th>Type</th><th>Category</th><th>Source</th><th>Process</th><th>L</th><th>I</th><th>Rating</th><th>Level</th><th>Treatment Option</th><th>Owner</th><th>Res. Rating</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="qr-tbody"><tr><td colspan="15" class="text-center py-12"><div class="spinner mx-auto"></div></td></tr></tbody>
