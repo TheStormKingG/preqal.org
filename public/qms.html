@@ -1743,7 +1743,7 @@ function renderFolderGrid(data){
   grid.innerHTML=folders.map(({key,label,count})=>{
     const active=key===activeDocCat;
     return `<div class="doc-folder${active?' folder-active':''}" onclick="filterDocs('${key}')">
-      <img src="/folder-3d.webp" alt="${label}" draggable="false">
+      <img src="/folder-icon.png" alt="${label}" draggable="false">
       <span class="doc-folder-name">${label}</span>
       <span class="doc-folder-count">${count}</span>
     </div>`;
