@@ -19,6 +19,15 @@ const SUPABASE_URL = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
 const REPO_ROOT    = path.resolve(__dirname, '..');
 const IMS_DIR      = path.join(REPO_ROOT, 'public', 'ims');
 
+// Mirror downloaded files into the local QMS working folder.
+// Keys are filename prefixes; values are absolute directory paths.
+const QMS_ROOT = '/Users/stefangravesande/Documents/Projects/Preqal QMS';
+const QMS_DIR_MAP = {
+  'POL-': path.join(QMS_ROOT, '05 - Policies'),
+  'SOP-': path.join(QMS_ROOT, '02 - SOPs'),
+  'REG-': path.join(QMS_ROOT, '06 - Registers'),
+};
+
 async function main() {
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!key) {
@@ -87,6 +96,25 @@ async function main() {
       try { fs.unlinkSync(tmp); } catch (_) { /* ignore */ }
       console.log(`  FAIL ${doc.doc_id} — file write error: ${e.message}`);
       continue;
+    }
+
+    // 3b. Mirror to local QMS working folder (best-effort — never blocks the pipeline)
+    const qmsPrefix = Object.keys(QMS_DIR_MAP).find(p => filename.startsWith(p));
+    if (qmsPrefix) {
+      const qmsDir  = QMS_DIR_MAP[qmsPrefix];
+      const qmsPath = path.join(qmsDir, filename);
+      // Guard: path must stay inside the expected QMS subdirectory
+      if (qmsPath.startsWith(qmsDir + path.sep) || qmsPath === path.join(qmsDir, filename)) {
+        const qmsTmp = qmsPath + '.sync.tmp';
+        try {
+          fs.writeFileSync(qmsTmp, buf);
+          fs.renameSync(qmsTmp, qmsPath);
+          console.log(`  QMS  ${doc.doc_id} — mirrored to ${qmsDir}`);
+        } catch (e) {
+          try { fs.unlinkSync(qmsTmp); } catch (_) { /* ignore */ }
+          console.log(`  WARN ${doc.doc_id} — QMS mirror failed: ${e.message}`);
+        }
+      }
     }
 
     // 4. Clear content_html in DB
