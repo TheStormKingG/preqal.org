@@ -1,0 +1,156 @@
+<h2>Preqal's Current Pipeline — Where the Gaps Are</h2>
+<p class="subtitle">Before we design the new system, here's what exists today and where clients fall through the cracks.</p>
+
+<div style="margin: 24px 0;">
+
+  <style>
+    .pipeline-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 8px;
+    }
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      min-width: 90px;
+      border-radius: 8px;
+      flex: 1;
+      position: relative;
+    }
+    .stage-label {
+      font-size: 10px;
+      font-weight: 400;
+      opacity: 0.7;
+      margin-top: 3px;
+    }
+    .arrow {
+      display: flex;
+      align-items: center;
+      color: #64748b;
+      font-size: 18px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+    .ok { background: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7; }
+    .gap { background: #fee2e2; color: #991b1b; border: 1.5px dashed #f87171; }
+    .partial { background: #fef3c7; color: #92400e; border: 1.5px dashed #fcd34d; }
+    .gap-badge {
+      position: absolute;
+      top: -8px;
+      right: -6px;
+      background: #ef4444;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 99px;
+      letter-spacing: 0.5px;
+    }
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+    .gap-list {
+      margin-top: 24px;
+      background: #fff8f0;
+      border: 1.5px solid #fed7aa;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .gap-list h3 { font-size: 13px; color: #9a3412; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+    .gap-list li { font-size: 13px; color: #44403c; margin-bottom: 6px; line-height: 1.5; }
+  </style>
+
+  <div class="pipeline-row">
+    <div class="stage ok">
+      🌐 Marketing
+      <span class="stage-label">Site / Blog / SEO</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage partial" style="position:relative;">
+      📋 Lead Capture
+      <span class="stage-label">BGA or BookScan</span>
+      <span class="gap-badge">SPLIT</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage partial" style="position:relative;">
+      🏷️ Classification
+      <span class="stage-label">Tier in BGA only</span>
+      <span class="gap-badge">PARTIAL</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage gap" style="position:relative;">
+      📤 Quote
+      <span class="stage-label">Manual / Email only</span>
+      <span class="gap-badge">GAP</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage ok">
+      ✅ Proposal Sent
+      <span class="stage-label">Manual</span>
+    </div>
+  </div>
+
+  <div class="pipeline-row" style="margin-top: 4px;">
+    <div class="stage ok">
+      🤝 Client Signs
+      <span class="stage-label">Manual</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage partial" style="position:relative;">
+      📝 Onboarding
+      <span class="stage-label">client-onboarding.html</span>
+      <span class="gap-badge">NO ALERT</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage ok">
+      🚀 Project Delivery
+      <span class="stage-label">CRM stages (manual)</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage gap" style="position:relative;">
+      🧾 Billing / AR
+      <span class="stage-label">Not tracked at all</span>
+      <span class="gap-badge">MISSING</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="stage gap" style="position:relative;">
+      🔄 Renewal / Upsell
+      <span class="stage-label">Not tracked at all</span>
+      <span class="gap-badge">MISSING</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot ok"></div> Working</div>
+    <div class="legend-item"><div class="legend-dot partial" style="background:#fef3c7;border:1.5px dashed #fcd34d;"></div> Partial / Inconsistent</div>
+    <div class="legend-item"><div class="legend-dot gap" style="background:#fee2e2;border:1.5px dashed #f87171;"></div> Gap / Missing</div>
+  </div>
+
+  <div class="gap-list">
+    <h3>⚠️ Critical Gaps Found</h3>
+    <ul>
+      <li><strong>Two entry points:</strong> BookScan (EmailJS only, no Supabase write) and BGA (Supabase write) — duplicate leads, inconsistent data</li>
+      <li><strong>BookScan drops leads:</strong> If EmailJS fails, the lead is lost entirely — no database fallback</li>
+      <li><strong>BGA missing phone + privacy checkbox</strong> — incomplete lead profile</li>
+      <li><strong>No billing/AR tracking</strong> — invoice amounts, payment status, renewal dates invisible to dashboard</li>
+      <li><strong>No admin notification</strong> when client completes onboarding form</li>
+      <li><strong>No automation</strong> between pipeline stages — every status change is manual</li>
+    </ul>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top: 16px;">Take a look — does this match your mental model of the current state? Respond in the terminal.</p>

@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/people-drive-quality/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/people-drive-quality/slides';
-const WORKSPACE = 'Module-6-People-Drive-Quality';
+const WORKSPACE = 'docs/course-content/Module-6-People-Drive-Quality';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE6_SLIDES_DIR,

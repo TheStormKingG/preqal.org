@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/audits-capa/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/audits-capa/slides';
-const WORKSPACE = 'Module-8-Audits-and-Corrective-Action-CAPA';
+const WORKSPACE = 'docs/course-content/Module-8-Audits-and-Corrective-Action-CAPA';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE8_SLIDES_DIR,

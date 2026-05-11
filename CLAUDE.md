@@ -52,6 +52,11 @@ preqal.org/
 └── medical-director-scope-tool-(md-st)/  # Separate Vite app (sub-project)
 ```
 
+**Docs layout:**
+- `docs/guides/` — setup, migration, and configuration reference docs
+- `docs/course-content/` — Module-1 through Module-9 slide source folders (used by `scripts/sync-module*.mjs`)
+- `docs/superpowers/` — AI design specs and implementation plans
+
 ---
 
 ## Routes

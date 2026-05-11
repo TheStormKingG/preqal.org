@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/ms-really/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/ms-really/slides';
-const WORKSPACE = 'Module-1-What-is-a-Management-System-Really';
+const WORKSPACE = 'docs/course-content/Module-1-What-is-a-Management-System-Really';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE1_SLIDES_DIR,

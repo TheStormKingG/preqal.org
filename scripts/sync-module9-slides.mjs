@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/continual-improvement/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/continual-improvement/slides';
-const WORKSPACE = 'Module-9-Continual-Improvement-and-Business-Performance';
+const WORKSPACE = 'docs/course-content/Module-9-Continual-Improvement-and-Business-Performance';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE9_SLIDES_DIR,

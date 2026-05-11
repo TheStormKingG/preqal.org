@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/process-thinking/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/process-thinking/slides';
-const WORKSPACE = 'Module-3-Process-Thinking';
+const WORKSPACE = 'docs/course-content/Module-3-Process-Thinking';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE3_SLIDES_DIR,

@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/quality-iso-simplified/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/quality-iso-simplified/slides';
-const WORKSPACE = 'Module-2-Understanding-Quality';
+const WORKSPACE = 'docs/course-content/Module-2-Understanding-Quality';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE2_SLIDES_DIR,

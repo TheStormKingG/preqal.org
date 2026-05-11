@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const OUT_DIR = path.join(root, 'public/e-courses/modules/risk-based-thinking/slides');
 const PUBLIC_PREFIX = '/e-courses/modules/risk-based-thinking/slides';
-const WORKSPACE = 'Module-4-Risk-Based-Thinking';
+const WORKSPACE = 'docs/course-content/Module-4-Risk-Based-Thinking';
 const srcDir = resolveSlideSourceDir({
   root,
   envValue: process.env.MODULE4_SLIDES_DIR,
