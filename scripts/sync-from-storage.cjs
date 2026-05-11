@@ -26,6 +26,7 @@ const QMS_DIR_MAP = {
   'POL-': path.join(QMS_ROOT, '05 - Policies'),
   'SOP-': path.join(QMS_ROOT, '02 - SOPs'),
   'REG-': path.join(QMS_ROOT, '06 - Registers'),
+  'TPL-': path.join(QMS_ROOT, '04 - Forms & Templates'),
 };
 
 async function main() {
