@@ -229,7 +229,7 @@ const QuoteClassifier: React.FC = () => {
     };
 
     // Log for development / debugging
-    console.log('[Preqal Quote Classifier] Submission:', submission);
+    console.warn('[Preqal Quote Classifier] Submission:', submission);
 
     try {
       // ─── Save to Supabase ─────────────────────────────────────────────────

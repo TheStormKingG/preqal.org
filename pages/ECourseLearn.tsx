@@ -109,28 +109,31 @@ const ECourseLearn: React.FC = () => {
   // ── Detect full course completion ────────────────────────────────────────
   useEffect(() => {
     const complete = COURSE_MODULES.every((m) => moduleGateComplete(m));
-    setIsCourseComplete(complete);
-    if (complete && user) {
-      // Load existing cert (if any) so we can show download without re-issuing
-      supabase
-        .from('ecourse_certificates')
-        .select('cert_key, issued_at')
-        .eq('user_id', user.id)
-        .order('issued_at', { ascending: false })
-        .limit(1)
-        .single()
-        .then(({ data }) => {
-          if (data) setExistingCert(data as CertRecord);
-        });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [/* bumpGating causes this to re-evaluate */]);
+    const raf = requestAnimationFrame(() => {
+      setIsCourseComplete(complete);
+      if (complete && user) {
+        // Load existing cert (if any) so we can show download without re-issuing
+        supabase
+          .from('ecourse_certificates')
+          .select('cert_key, issued_at')
+          .eq('user_id', user.id)
+          .order('issued_at', { ascending: false })
+          .limit(1)
+          .single()
+          .then(({ data }) => {
+            if (data) setExistingCert(data as CertRecord);
+          });
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [user]);
 
   // Re-check whenever gating bumps
   useEffect(() => {
     const complete = COURSE_MODULES.every((m) => moduleGateComplete(m));
-    setIsCourseComplete(complete);
-  });
+    const raf = requestAnimationFrame(() => setIsCourseComplete(complete));
+    return () => cancelAnimationFrame(raf);
+  }, [bumpGating]);
 
   const handleClaimCert = useCallback(async () => {
     if (!user || !profile) return;
@@ -214,7 +217,8 @@ const ECourseLearn: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setExpandedModuleIds((prev) => new Set(prev).add(current.id));
+    const raf = requestAnimationFrame(() => setExpandedModuleIds((prev) => new Set(prev).add(current.id)));
+    return () => cancelAnimationFrame(raf);
   }, [current.id]);
 
   useEffect(() => {
@@ -237,12 +241,15 @@ const ECourseLearn: React.FC = () => {
     const expand = new Set(
       keys.map((k) => parseRibbonTargetKey(k)?.moduleId).filter((id): id is string => Boolean(id)),
     );
-    setExpandedModuleIds((prev) => {
-      const n = new Set(prev);
-      expand.forEach((id) => n.add(id));
-      return n;
+    const raf = requestAnimationFrame(() => {
+      setExpandedModuleIds((prev) => {
+        const n = new Set(prev);
+        expand.forEach((id) => n.add(id));
+        return n;
+      });
+      setFlyQueue((q) => [...q, ...keys]);
     });
-    setFlyQueue((q) => [...q, ...keys]);
+    return () => cancelAnimationFrame(raf);
   }, [bumpGating]);
 
   const onSlidesFinalizeAcknowledged = useCallback(

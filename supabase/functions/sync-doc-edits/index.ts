@@ -44,7 +44,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const docxBuf = await docxResp.arrayBuffer();
 
     // ── 2. Patch word/document.xml ──────────────────────────────────────────
-    // @ts-ignore — JSZip default export works at runtime
+    // @ts-expect-error — JSZip default export works at runtime
     const zip        = await JSZip.loadAsync(docxBuf);
     const docXmlFile = zip.file("word/document.xml");
     if (!docXmlFile) throw new Error("word/document.xml not found in DOCX");
@@ -69,7 +69,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     if (upErr) throw upErr;
 
-    console.log(`sync-doc-edits: patched and uploaded ${filename}`);
+    console.warn(`sync-doc-edits: patched and uploaded ${filename}`);
     return json({ ok: true, filename });
 
   } catch (err) {

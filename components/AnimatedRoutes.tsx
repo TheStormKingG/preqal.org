@@ -39,18 +39,16 @@ const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
   const [displayLocation, setDisplayLocation] = useState(location);
   const [transitionStage, setTransitionStage] = useState<'enter' | 'exit'>('enter');
-  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
+
+  // Derive direction at render time from the two locations — no separate state needed
+  const fromIndex = routeOrder.indexOf(displayLocation.pathname);
+  const toIndex = routeOrder.indexOf(location.pathname);
+  const direction: 'forward' | 'backward' = toIndex >= fromIndex ? 'forward' : 'backward';
 
   useEffect(() => {
     if (location.pathname !== displayLocation.pathname) {
-      const currentIndex = routeOrder.indexOf(displayLocation.pathname);
-      const nextIndex = routeOrder.indexOf(location.pathname);
-      if (nextIndex > currentIndex) {
-        setDirection('forward');
-      } else {
-        setDirection('backward');
-      }
-      setTransitionStage('exit');
+      const raf = requestAnimationFrame(() => setTransitionStage('exit'));
+      return () => cancelAnimationFrame(raf);
     }
   }, [location, displayLocation]);
 

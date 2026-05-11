@@ -99,7 +99,8 @@ const GatedModuleVideo: React.FC<GatedModuleVideoProps> = ({ moduleId, src, unlo
   useEffect(() => {
     const done = videoCompleteFromStorage(moduleId);
     maxWatchedRef.current = done ? Number.POSITIVE_INFINITY : loadMaxWatched(moduleId);
-    bumpComplete(done);
+    const raf = requestAnimationFrame(() => bumpComplete(done));
+    return () => cancelAnimationFrame(raf);
   }, [moduleId, bumpComplete]);
 
   const clampIfNeeded = useCallback(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { CheckCircle2, Loader2, Search, ShieldCheck, XCircle } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -52,16 +52,7 @@ const ECourseVerifyCertificate: React.FC = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-search when there's a cert key in the URL
-  useEffect(() => {
-    if (urlKey) {
-      setInputKey(urlKey);
-      void runSearch(urlKey);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlKey]);
-
-  async function runSearch(key: string) {
+  const runSearch = useCallback(async (key: string) => {
     const normalised = normaliseCertKey(key);
     if (!normalised) return;
 
@@ -87,7 +78,18 @@ const ECourseVerifyCertificate: React.FC = () => {
 
     setSearched(true);
     setSearching(false);
-  }
+  }, []);
+
+  // Auto-search when there's a cert key in the URL
+  useEffect(() => {
+    if (urlKey) {
+      const raf = requestAnimationFrame(() => {
+        setInputKey(urlKey);
+        void runSearch(urlKey);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [urlKey, runSearch]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

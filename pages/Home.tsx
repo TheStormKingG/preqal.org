@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Shield, Heart, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
-import GlassCard from '../components/ui/GlassCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 

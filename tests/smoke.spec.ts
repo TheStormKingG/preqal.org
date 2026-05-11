@@ -135,7 +135,7 @@ test('navbar links are present on homepage', async ({ page }) => {
 });
 
 test('404 page is handled gracefully', async ({ page }) => {
-  const response = await page.goto('/this-page-does-not-exist-at-all');
+  await page.goto('/this-page-does-not-exist-at-all');
   // GitHub Pages serves 404.html — it should still be a Preqal-branded page, not a raw server error
   await expect(page.locator('body')).toBeVisible();
   // Should not show an empty white screen

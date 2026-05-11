@@ -29,6 +29,8 @@ const GoogleIcon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 // ---------------------------------------------------------------------------
+const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
+
 // Component
 // ---------------------------------------------------------------------------
 
@@ -43,7 +45,6 @@ const ECourseRegister: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   // ── Redirect if already fully registered ──────────────────────────────────
-  const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
   useEffect(() => {
     if (!loading && user && profile) {
       if (ADMIN_EMAILS.includes((user.email ?? '').toLowerCase())) {
@@ -61,8 +62,11 @@ const ECourseRegister: React.FC = () => {
         (user.user_metadata?.full_name as string | undefined) ||
         (user.user_metadata?.name as string | undefined) ||
         '';
-      setEditName(googleName);
-      setTimeout(() => nameRef.current?.focus(), 60);
+      const raf = requestAnimationFrame(() => {
+        setEditName(googleName);
+        setTimeout(() => nameRef.current?.focus(), 60);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [user, profile]);
 

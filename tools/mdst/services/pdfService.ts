@@ -45,7 +45,6 @@ export async function generatePDFReport(
   doc.setFont('helvetica', 'normal');
   
   const date = new Date().toLocaleString();
-  const timestamp = new Date().toISOString().split('T')[0];
 
   // Load Preqal logo
   let logoData: string | null = null;
@@ -78,11 +77,9 @@ export async function generatePDFReport(
   const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
   const usableWidth = pageWidth - (marginInch * 2); // 159.2mm for A4
-  const usableHeight = pageHeight - (marginInch * 2); // 246.2mm for A4
-  
+
   // Footer height
   const footerHeight = 12;
-  const contentEndY = pageHeight - marginInch - footerHeight;
 
   // Header with logo (top left) - positioned within 1 inch top margin
   // Logo positioned at top of page, within the margin space
@@ -299,7 +296,7 @@ export async function generatePDFReport(
   });
 
   // Scoring Notes - positioned above footer with 1 inch margins
-  const finalY = (doc as any).lastAutoTable?.finalY || (tableStartY + 60);
+  const finalY = (doc as unknown as { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY || (tableStartY + 60);
   const notesY = finalY + 6;
   
   doc.setFontSize(10);

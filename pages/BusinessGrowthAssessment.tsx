@@ -323,7 +323,7 @@ const BusinessGrowthAssessment: React.FC = () => {
       timestamp:              new Date().toISOString(),
     };
 
-    console.log('[Preqal Business Growth Assessment] Submission:', submission);
+    console.warn('[Preqal Business Growth Assessment] Submission:', submission);
 
     // ── Save to Supabase qualified_leads ──────────────────────────────────
     const { error: dbError } = await supabase.from('qualified_leads').insert([{

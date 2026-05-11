@@ -104,18 +104,22 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, fly
   const [style, setStyle] = useState<React.CSSProperties>(() => initialStyleFromRect(flyFromRect));
   const finishedRef = useRef(false);
 
-  const finish = () => {
-    if (finishedRef.current) return;
-    finishedRef.current = true;
-    onDone();
-  };
-
   useLayoutEffect(() => {
     finishedRef.current = false;
     document.body.style.overflow = 'hidden';
     const fromModalOrigin = Boolean(flyFromRect && flyFromRect.width >= 8 && flyFromRect.height >= 8);
-    setStyle(initialStyleFromRect(flyFromRect));
-    setPop(!fromModalOrigin);
+
+    const finish = () => {
+      if (finishedRef.current) return;
+      finishedRef.current = true;
+      onDone();
+    };
+
+    // Schedule initial style setup asynchronously to avoid synchronous setState in effect
+    const initRaf = requestAnimationFrame(() => {
+      setStyle(initialStyleFromRect(flyFromRect));
+      setPop(!fromModalOrigin);
+    });
 
     /* Center path: pop celebration then fly. Modal path: hold at large rect (sidebar can open on mobile) then shrink to target. */
     const preFlyDelayMs = fromModalOrigin ? 320 : 520;
@@ -166,6 +170,7 @@ const EcourseRibbonFlyover: React.FC<EcourseRibbonFlyoverProps> = ({ flyKey, fly
     const failSafe = window.setTimeout(finish, fromModalOrigin ? 3200 : 2400);
 
     return () => {
+      cancelAnimationFrame(initRaf);
       document.body.style.overflow = '';
       window.clearTimeout(flyTimer);
       window.clearTimeout(attach);

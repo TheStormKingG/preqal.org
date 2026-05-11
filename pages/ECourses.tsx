@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Eye, SlidersHorizontal, TrendingUp } from 'lucide-react';
 import SEO from '../components/SEO';
 import Section from '../components/ecourses/Section';

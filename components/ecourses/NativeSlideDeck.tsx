@@ -102,10 +102,15 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
 
   useEffect(() => {
     let cancelled = false;
-    setLoadError(null);
-    setManifest(null);
-    setLayerDocs([]);
-    setRasterUrls([]);
+    // Schedule resets asynchronously to avoid synchronous setState in effect body
+    const resetRaf = requestAnimationFrame(() => {
+      if (!cancelled) {
+        setLoadError(null);
+        setManifest(null);
+        setLayerDocs([]);
+        setRasterUrls([]);
+      }
+    });
     fetch(manifestUrl)
       .then((r) => {
         if (!r.ok) throw new Error(`Could not load slides (${r.status})`);
@@ -142,14 +147,18 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
       });
     return () => {
       cancelled = true;
+      cancelAnimationFrame(resetRaf);
     };
   }, [manifestUrl, moduleId, onAllSlidesReadChange]);
 
   useEffect(() => {
     if (!manifest || slideCount === 0) return;
     const flags = loadReadFlags(moduleId, slideCount);
-    setReadFlags(flags);
-    onAllSlidesReadChange?.(flags.every(Boolean));
+    const raf = requestAnimationFrame(() => {
+      setReadFlags(flags);
+      onAllSlidesReadChange?.(flags.every(Boolean));
+    });
+    return () => cancelAnimationFrame(raf);
   }, [manifest, slideCount, moduleId, slidesReloadToken, onAllSlidesReadChange]);
 
   const currentSlideRead = readFlags[slideIndex] ?? false;
@@ -160,12 +169,13 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
 
   useEffect(() => {
     if (!manifest || slideCount === 0) return;
+    let initRaf = 0;
     if (currentSlideRead) {
-      setDwellMs(minDwellMs);
-      return;
+      initRaf = requestAnimationFrame(() => setDwellMs(minDwellMs));
+      return () => cancelAnimationFrame(initRaf);
     }
     dwellOriginRef.current = Date.now();
-    setDwellMs(0);
+    initRaf = requestAnimationFrame(() => setDwellMs(0));
     const id = window.setInterval(() => {
       const elapsed = Date.now() - dwellOriginRef.current;
       setDwellMs(Math.min(elapsed, minDwellMs));
@@ -184,7 +194,10 @@ const NativeSlideDeck: React.FC<NativeSlideDeckProps> = ({
         });
       }
     }, 200);
-    return () => window.clearInterval(id);
+    return () => {
+      cancelAnimationFrame(initRaf);
+      window.clearInterval(id);
+    };
   }, [
     manifest,
     slideCount,

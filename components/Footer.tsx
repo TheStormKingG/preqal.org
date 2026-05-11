@@ -16,25 +16,25 @@ const FooterComplianceStandards: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!expandedItem) {
-      setPanelMaxHeight('0px');
-      return;
-    }
     const el = panelContentRef.current;
-    if (el) {
-      setPanelMaxHeight(`${el.scrollHeight}px`);
-    }
-  }, [expandedItem]);
+    let raf = 0;
+    let ro: ResizeObserver | null = null;
 
-  useEffect(() => {
-    if (!expandedItem) return;
-    const el = panelContentRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => {
-      setPanelMaxHeight(`${el.scrollHeight}px`);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
+    if (!expandedItem || !el) {
+      // Collapsed — schedule height reset outside the synchronous effect body
+      raf = requestAnimationFrame(() => setPanelMaxHeight('0px'));
+    } else {
+      // Initial measurement + live resize tracking via ResizeObserver
+      ro = new ResizeObserver(() => {
+        setPanelMaxHeight(`${el.scrollHeight}px`);
+      });
+      ro.observe(el);
+    }
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      ro?.disconnect();
+    };
   }, [expandedItem]);
 
   return (

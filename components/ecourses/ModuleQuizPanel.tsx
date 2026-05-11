@@ -44,16 +44,20 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({
   const { ref: fsRef, active: fsOpen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
 
   useEffect(() => {
-    setAcked(quizAckFromStorage(moduleId));
+    const raf = requestAnimationFrame(() => setAcked(quizAckFromStorage(moduleId)));
+    return () => cancelAnimationFrame(raf);
   }, [moduleId]);
 
   useEffect(() => {
-    setPracticeOpen(false);
-    setQuestionIndex(0);
-    setPick(null);
-    setResponses({});
-    setShowGrading(false);
-    setPhase('in');
+    const raf = requestAnimationFrame(() => {
+      setPracticeOpen(false);
+      setQuestionIndex(0);
+      setPick(null);
+      setResponses({});
+      setShowGrading(false);
+      setPhase('in');
+    });
+    return () => cancelAnimationFrame(raf);
   }, [moduleId]);
 
   const q: QuizQuestion | undefined = questions[questionIndex];
@@ -65,8 +69,8 @@ const ModuleQuizPanel: React.FC<ModuleQuizPanelProps> = ({
   const showPassCelebrate = showGrading && passedCourse && !acked && !practiceOpen;
 
   useEffect(() => {
-    if (showPassCelebrate) setPassCelebrateOpen(true);
-    else setPassCelebrateOpen(false);
+    const raf = requestAnimationFrame(() => setPassCelebrateOpen(showPassCelebrate));
+    return () => cancelAnimationFrame(raf);
   }, [showPassCelebrate]);
 
   const resetRunner = useCallback(() => {

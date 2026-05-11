@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AssessmentResult, BandDetails } from '../types';
+import { AssessmentResult } from '../types';
 import { QUESTIONS, BAND_MAP } from '../constants';
 import { generatePDFReport } from '../services/pdfService';
 import { LeadInfo } from './LeadCaptureForm';

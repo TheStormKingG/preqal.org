@@ -62,7 +62,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const originalWarn = console.warn;
-    console.warn = (...args: any[]) => {
+    console.warn = (...args: unknown[]) => {
       if (args[0] && typeof args[0] === 'string' && args[0].includes('NavigationPreloadManager')) return;
       originalWarn.apply(console, args);
     };

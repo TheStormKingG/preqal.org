@@ -121,9 +121,9 @@ const Resources: React.FC = () => {
       setAcceptPrivacy(false);
       setAcceptTerms(false);
       recaptchaRef.current?.reset();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error saving lead:', err);
-      setError(err.message || 'Failed to submit. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

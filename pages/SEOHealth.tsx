@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 
+// Declared outside the component to avoid re-creation on every render
+const StatusIcon: React.FC<{ status: boolean }> = ({ status }) =>
+  status
+    ? <CheckCircle2 className="h-5 w-5 text-green-600" />
+    : <XCircle className="h-5 w-5 text-red-600" />;
+
+const checkStatus = (value: string | boolean | null): boolean =>
+  typeof value === 'boolean' ? value : value !== null && value.trim() !== '';
+
 const SEOHealth: React.FC = () => {
   const [seoData, setSeoData] = useState<{
     title: string | null; description: string | null; canonical: string | null;
@@ -9,19 +18,19 @@ const SEOHealth: React.FC = () => {
   }>({ title: null, description: null, canonical: null, ogTitle: null, ogDescription: null, ogImage: null, schema: false });
 
   useEffect(() => {
-    setSeoData({
-      title: document.querySelector('title')?.textContent || null,
-      description: document.querySelector('meta[name="description"]')?.getAttribute('content') || null,
-      canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || null,
-      ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || null,
-      ogDescription: document.querySelector('meta[property="og:description"]')?.getAttribute('content') || null,
-      ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || null,
-      schema: !!document.querySelector('script[type="application/ld+json"]'),
+    const raf = requestAnimationFrame(() => {
+      setSeoData({
+        title: document.querySelector('title')?.textContent || null,
+        description: document.querySelector('meta[name="description"]')?.getAttribute('content') || null,
+        canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || null,
+        ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || null,
+        ogDescription: document.querySelector('meta[property="og:description"]')?.getAttribute('content') || null,
+        ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || null,
+        schema: !!document.querySelector('script[type="application/ld+json"]'),
+      });
     });
+    return () => cancelAnimationFrame(raf);
   }, []);
-
-  const checkStatus = (value: string | boolean | null) => typeof value === 'boolean' ? value : value !== null && value.trim() !== '';
-  const StatusIcon = ({ status }: { status: boolean }) => status ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <XCircle className="h-5 w-5 text-red-600" />;
 
   return (
     <>

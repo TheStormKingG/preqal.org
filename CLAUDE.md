@@ -193,6 +193,16 @@ do shell script "cd '/Users/stefangravesande/Documents/Projects/Preqal 2027/Apps
 
 `--no-verify` is required — git-lfs is configured as a pre-push hook but isn't on the PATH in the shell environment.
 
+## Build commands
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Local dev server (port 3000) |
+| `npm run build` | Production build → `dist/` |
+| `npm run lint` | ESLint strict check — must pass before committing |
+| `npm run test:unit` | Vitest unit tests |
+| `npx playwright test` | E2e smoke tests (runs against live preqal.org) |
+
 ---
 
 ## Standalone HTML pages in `/public`
