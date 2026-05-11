@@ -102,74 +102,98 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
-function extractTextFromHtml(html: string): string {
+// ── HTML paragraph extraction ──────────────────────────────────────────────
+// Returns one string per visible paragraph; skips blank lines.
+
+function extractParagraphsFromHtml(html: string): string[] {
   return html
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&amp;/g,  "&")
-    .replace(/&lt;/g,   "<")
-    .replace(/&gt;/g,   ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g,  "'")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi,      "\n")
+    .replace(/<\/div>/gi,    "\n")
+    .replace(/<\/li>/gi,     "\n")
+    .replace(/<\/h[1-6]>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g,       "&")
+    .replace(/&lt;/g,        "<")
+    .replace(/&gt;/g,        ">")
+    .replace(/&quot;/g,      '"')
+    .replace(/&#39;/g,       "'")
     .replace(/&nbsp;|&#160;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+    .split("\n")
+    .map(s => s.replace(/\s+/g, " ").trim())
+    .filter(s => s.length > 0);
 }
 
-function extractTextFromDocxXml(xml: string): string {
+// ── DOCX paragraph text extraction ────────────────────────────────────────
+
+function extractTextFromPara(paraContent: string): string {
   let text = "";
   const re = /<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(xml)) !== null) text += m[1];
+  while ((m = re.exec(paraContent)) !== null) text += m[1];
   return text.replace(/\s+/g, " ").trim();
 }
 
-interface Change { oldWord: string; newWord: string }
+// ── XML escaping ───────────────────────────────────────────────────────────
 
-function findWordSubstitutions(oldText: string, newText: string): Change[] {
-  const oldWords = oldText.match(/\S+/g) ?? [];
-  const newWords = newText.match(/\S+/g) ?? [];
-  const changes: Change[] = [];
-  let i = 0, j = 0;
-
-  while (i < oldWords.length || j < newWords.length) {
-    const ow = oldWords[i], nw = newWords[j];
-    if (i >= oldWords.length) { j++; continue; }
-    if (j >= newWords.length) { i++; continue; }
-    if (ow === nw)            { i++; j++; continue; }
-
-    let matched = false;
-    for (let k = 1; k <= 5 && !matched; k++) {
-      if (i + k < oldWords.length && oldWords[i + k] === nw) { i += k; matched = true; break; }
-      if (j + k < newWords.length && ow === newWords[j + k]) { j += k; matched = true; break; }
-    }
-    if (!matched) { changes.push({ oldWord: ow, newWord: nw }); i++; j++; }
-  }
-  return changes;
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
-function patchDocxXml(xml: string, contentHtml: string): string {
-  const changes = findWordSubstitutions(
-    extractTextFromDocxXml(xml),
-    extractTextFromHtml(contentHtml),
+// ── Paragraph-level text replacement ──────────────────────────────────────
+// Puts newText into the FIRST <w:t> run, empties the rest.
+// Preserves all run formatting (<w:rPr>: bold, size, colour, etc.).
+
+function replaceParaText(paraContent: string, newText: string): string {
+  let first = true;
+  return paraContent.replace(
+    /(<w:t(?:\s[^>]*)?>)([\s\S]*?)(<\/w:t>)/g,
+    (_match: string, open: string, _old: string, close: string): string => {
+      if (first) {
+        first = false;
+        // Ensure xml:space="preserve" so leading/trailing spaces survive
+        const safeOpen = open.includes("xml:space")
+          ? open
+          : open.replace("<w:t", '<w:t xml:space="preserve"');
+        return safeOpen + escapeXml(newText) + close;
+      }
+      return open + close; // clear subsequent runs
+    }
   );
-  if (changes.length === 0) return xml;
+}
+
+// ── Main patch function ────────────────────────────────────────────────────
+// Paragraph-level alignment: each non-empty DOCX <w:p> maps to the
+// corresponding HTML paragraph in document order.
+// Never crosses paragraph boundaries → no cross-paragraph word corruption.
+
+function patchDocxXml(xml: string, contentHtml: string): string {
+  const htmlParas = extractParagraphsFromHtml(contentHtml);
+  if (htmlParas.length === 0) return xml;
+
+  let htmlIdx = 0;
 
   return xml.replace(
-    /(<w:t(?:\s[^>]*)?>)([\s\S]*?)(<\/w:t>)/g,
-    (_match: string, open: string, content: string, close: string): string => {
-      let patched = content;
-      for (const { oldWord, newWord } of changes) {
-        // escape special regex chars in oldWord
-        const escaped = oldWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const re = new RegExp(`(?<![\\w])${escaped}(?![\\w])`, "g");
-        if (re.test(patched)) {
-          re.lastIndex = 0; // reset after .test()
-          patched = patched.replace(re, newWord);
-        }
-      }
-      return open + patched + close;
-    },
+    /(<w:p(?:[ \t][^>]*)?>)([\s\S]*?)(<\/w:p>)/g,
+    (match: string, open: string, content: string, close: string): string => {
+      if (htmlIdx >= htmlParas.length) return match;
+
+      const docxText = extractTextFromPara(content);
+      if (!docxText) return match; // skip empty/structural paragraphs
+
+      const htmlText = htmlParas[htmlIdx];
+      htmlIdx++;
+
+      if (docxText === htmlText) return match; // unchanged
+
+      return open + replaceParaText(content, htmlText) + close;
+    }
   );
 }
