@@ -21,7 +21,8 @@
     "crop-module1-watermark": "node scripts/crop-module1-watermark.mjs",
     "build-slides-from-pptx": "node scripts/build-native-slides.mjs",
     "preview": "vite preview",
-    "convert-images": "node scripts/convert-images.js"
+    "convert-images": "node scripts/convert-images.js",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -63,6 +64,7 @@
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^6.2.0",
-    "vite-plugin-prerender": "^1.0.8"
+    "vite-plugin-prerender": "^1.0.8",
+    "vitest": "^2.1.9"
   }
 }

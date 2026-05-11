@@ -53,6 +53,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Unit tests
+        run: npm run test:unit
+
       - name: Install Chrome for prerender
         uses: browser-actions/setup-chrome@v1
         id: setup-chrome
