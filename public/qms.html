@@ -649,7 +649,7 @@
       <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Title *</label><input id="doc-title" class="field" type="text" placeholder="Quality Policy"></div>
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Category</label>
-          <select id="doc-category" class="field"><option value="POL">Policies (POL)</option><option value="PRO">Procedures (PRO)</option><option value="WOI">Work Instructions (WOI)</option><option value="FRM">Forms (FRM)</option><option value="REG">Registers (REG)</option><option value="DIA">Diagrams (DIA)</option><option value="TMP">Templates (TMP)</option></select>
+          <select id="doc-category" class="field"><option value="POL">Policies (POL)</option><option value="PRO">Procedures (PRO)</option><option value="MAN">Manuals (MAN)</option><option value="WOI">Work Instructions (WOI)</option><option value="FRM">Forms (FRM)</option><option value="REG">Registers (REG)</option><option value="DIA">Diagrams (DIA)</option><option value="TMP">Templates (TMP)</option></select>
         </div>
         <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Status</label>
           <select id="doc-status" class="field"><option value="draft">Draft</option><option value="active">Active</option><option value="under_review">Under Review</option><option value="superseded">Superseded</option></select>
@@ -1719,6 +1719,7 @@ let activeDocCat='__all__';
 const DOC_FOLDER_CATS=[
   {key:'POL',label:'Policies'},
   {key:'PRO',label:'Procedures'},
+  {key:'MAN',label:'Manuals'},
   {key:'WOI',label:'Work Instructions'},
   {key:'FRM',label:'Forms'},
   {key:'REG',label:'Registers'},

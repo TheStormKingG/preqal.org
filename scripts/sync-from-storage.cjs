@@ -25,6 +25,7 @@ const QMS_ROOT = '/Users/stefangravesande/Documents/Projects/Preqal QMS';
 const QMS_DIR_MAP = {
   'POL-': path.join(QMS_ROOT, 'POL'),
   'PRO-': path.join(QMS_ROOT, 'PRO'),
+  'MAN-': path.join(QMS_ROOT, 'MAN'),
   'WOI-': path.join(QMS_ROOT, 'WOI'),
   'FRM-': path.join(QMS_ROOT, 'FRM'),
   'REG-': path.join(QMS_ROOT, 'REG'),
