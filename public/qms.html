@@ -405,7 +405,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Document Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">All QMS documents — policies, procedures, work instructions, forms and records.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('doc')">+ Add Document</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('docs')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('docs')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('doc')">+ Add Document</button>
+          </div>
         </div>
         <div class="doc-folder-grid" id="doc-folder-grid"></div>
         <div class="tbl-card"><div class="tbl-wrap">
@@ -429,7 +433,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Non-Conformance Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Log and track all non-conformances. Each NCR can generate a CAPA automatically.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('ncr')">+ Raise NCR</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('ncr')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('ncr')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('ncr')">+ Raise NCR</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -452,7 +460,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">CAPA Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Corrective and preventive actions. Created from NCRs or raised independently.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('capa')">+ Add CAPA</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('capa')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('capa')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('capa')">+ Add CAPA</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -475,7 +487,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Audit Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Schedule and track internal and external audits. Findings count drives NCR and CAPA creation.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('audit')">+ Log Audit</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('audit')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('audit')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('audit')">+ Log Audit</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -512,7 +528,11 @@
               <p class="text-sm font-semibold text-slate-700">Internal &amp; External Issues (ISO 9001 §4.1)</p>
               <p class="text-xs text-slate-400 mt-0.5">All factors — PESTLE, SWOT, climate change — that affect the QMS and strategic direction.</p>
             </div>
-            <button class="btn btn-amber btn-sm" onclick="openModal('issue')">+ Add Issue</button>
+            <div class="flex gap-2 flex-wrap items-center">
+              <button class="btn btn-ghost btn-sm" onclick="viewRegister('context')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+              <button class="btn btn-ghost btn-sm" onclick="downloadRegister('context')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+              <button class="btn btn-amber btn-sm" onclick="openModal('issue')">+ Add Issue</button>
+            </div>
           </div>
           <div class="tbl-card"><div class="tbl-wrap">
             <table>
@@ -529,7 +549,11 @@
               <p class="text-sm font-semibold text-slate-700">Interested Parties (ISO 9001 §4.2)</p>
               <p class="text-xs text-slate-400 mt-0.5">All parties whose needs and expectations are relevant to the QMS.</p>
             </div>
-            <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Party</button>
+            <div class="flex gap-2 flex-wrap items-center">
+              <button class="btn btn-ghost btn-sm" onclick="viewRegister('org')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+              <button class="btn btn-ghost btn-sm" onclick="downloadRegister('org')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+              <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Party</button>
+            </div>
           </div>
           <div class="tbl-card"><div class="tbl-wrap">
             <table>
@@ -553,7 +577,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">HSE Risk Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Health, Safety &amp; Environment hazards and risks. Rated by likelihood × consequence (1–5 scale).</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('hse')">+ Add Risk</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('hse')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('hse')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('hse')">+ Add Risk</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -576,7 +604,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Employee Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">All personnel — full-time, part-time, contractors and casuals. Drives the organisation chart above.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openEmpAddModal()">+ Add Employee</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('employees')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('employees')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openEmpAddModal()">+ Add Employee</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -599,7 +631,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Legal &amp; Compliance Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Legislation, regulations, standards, licences and contractual obligations applicable to Preqal's operations.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('legal')">+ Add Obligation</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('legal')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('legal')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('legal')">+ Add Obligation</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -622,7 +658,11 @@
             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Quality Risk Register</h3>
             <p class="text-sm text-slate-500 mt-0.5">Quality-related risks across processes, products, customers and compliance. Rated by likelihood × impact.</p>
           </div>
-          <button class="btn btn-amber btn-sm" onclick="openModal('qr')">+ Add Risk</button>
+          <div class="flex gap-2 flex-wrap items-center">
+            <button class="btn btn-ghost btn-sm" onclick="viewRegister('qr')" title="View in browser"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> View</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRegister('qr')" title="Download Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+            <button class="btn btn-amber btn-sm" onclick="openModal('qr')">+ Add Risk</button>
+          </div>
         </div>
         <div class="tbl-card"><div class="tbl-wrap">
           <table>
@@ -1669,6 +1709,73 @@ const TABLE_TO_REG_KEY = {
   qms_legal_register: 'legal',
   qms_org_register:   'org',
 };
+
+// ── REGISTER EXCEL DOWNLOAD / VIEW ────────────────────────────────────────
+// Maps register key → Storage filename (mirrors Edge Function REGISTERS config).
+const REG_FILENAMES = {
+  docs:      'REG-01-Document-Register.xlsx',
+  context:   'REG-03-Context-Register.xlsx',
+  employees: 'REG-04-Employee-Register.xlsx',
+  hse:       'REG-05-HSE-Risk-Register.xlsx',
+  audit:     'REG-06-Audit-Register.xlsx',
+  ncr:       'REG-07-NCR-Register.xlsx',
+  capa:      'REG-07b-CAPA-Register.xlsx',
+  qr:        'REG-08-Quality-Risk-Register.xlsx',
+  legal:     'REG-09-Legal-Register.xlsx',
+  org:       'REG-10-Stakeholder-Register.xlsx',
+};
+
+// Returns a short-lived (1 hour) signed URL for the register's Excel file,
+// or null if the file hasn't been generated yet.
+async function getRegisterSignedUrl(registerKey) {
+  const filename = REG_FILENAMES[registerKey];
+  if (!filename) return null;
+  const storagePath = CLIENT_ID
+    ? `clients/${CLIENT_ID}/${filename}`
+    : `preqal/${filename}`;
+  const { data, error } = await sb.storage
+    .from('registers')
+    .createSignedUrl(storagePath, 3600);
+  if (error || !data) return null;
+  return data.signedUrl;
+}
+
+// Triggers a browser download of the register's Excel file.
+async function downloadRegister(registerKey) {
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<svg class="animate-spin" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> …';
+  btn.disabled = true;
+  try {
+    const url = await getRegisterSignedUrl(registerKey);
+    if (!url) { alert('Excel file not yet generated — save at least one record first.'); return; }
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = REG_FILENAMES[registerKey];
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } finally {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  }
+}
+
+// Opens the register's Excel file in Microsoft Office Online viewer (new tab).
+async function viewRegister(registerKey) {
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<svg class="animate-spin" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> …';
+  btn.disabled = true;
+  try {
+    const url = await getRegisterSignedUrl(registerKey);
+    if (!url) { alert('Excel file not yet generated — save at least one record first.'); return; }
+    window.open('https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(url), '_blank');
+  } finally {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  }
+}
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
 async function init(){
