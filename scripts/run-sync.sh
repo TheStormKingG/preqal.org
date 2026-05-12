@@ -1,5 +1,5 @@
 #!/bin/bash
-# run-sync.sh — launchd wrapper for sync-from-storage.cjs
+# run-sync.sh — launchd wrapper for IMS DOCX sync + Excel register sync
 # Loads PATH for homebrew node and reads SUPABASE_SERVICE_KEY from .env.secrets
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
@@ -13,4 +13,5 @@ if [ -f "$SECRETS_FILE" ]; then
   source "$SECRETS_FILE"
 fi
 
-exec node "$SCRIPT_DIR/sync-from-storage.cjs"
+node "$SCRIPT_DIR/sync-from-storage.cjs"    # DOCX sync (existing)
+node "$SCRIPT_DIR/sync-registers-local.cjs" # Excel register sync (new)
