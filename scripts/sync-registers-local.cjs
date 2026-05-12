@@ -23,6 +23,21 @@ const PREQAL_REGISTERS_DIR = '/Users/stefangravesande/Documents/Projects/Preqal 
 const CLIENTS_ROOT         = '/Users/stefangravesande/Documents/Projects/Preqal QMS/CLIENTS';
 const XLSX_RE              = /^[A-Za-z0-9._-]+\.xlsx$/;
 
+/** Fetches all items in a Storage prefix, paginating through 200-item pages. */
+async function listAll(sb, bucket, prefix) {
+  const all = [];
+  let offset = 0;
+  const limit = 200;
+  while (true) {
+    const { data, error } = await sb.storage.from(bucket).list(prefix, { limit, offset });
+    if (error) throw error;
+    all.push(...(data || []));
+    if (!data || data.length < limit) break;
+    offset += limit;
+  }
+  return all;
+}
+
 async function main() {
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!key) {
@@ -40,18 +55,9 @@ async function main() {
   if (cErr) throw cErr;
   const clientMap = Object.fromEntries((clients || []).map(c => [c.id, c.company_name]));
 
-  // 2. List all files in registers bucket
-  const { data: preqalFiles, error: lErr1 } = await sb.storage
-    .from('registers')
-    .list('preqal', { limit: 200 });
-  if (lErr1) throw lErr1;
-  if (preqalFiles && preqalFiles.length === 200) console.log('  WARN preqal/ has 200+ files — pagination needed');
-
-  const { data: clientDirs, error: lErr2 } = await sb.storage
-    .from('registers')
-    .list('clients', { limit: 200 });
-  if (lErr2) throw lErr2;
-  if (clientDirs && clientDirs.length === 200) console.log('  WARN clients/ has 200+ dirs — pagination needed');
+  // 2. List all files in registers bucket (paginated)
+  const preqalFiles = await listAll(sb, 'registers', 'preqal');
+  const clientDirs  = await listAll(sb, 'registers', 'clients');
 
   // Build a flat list of { storagePath, localDir, filename }
   const jobs = [];
@@ -74,10 +80,9 @@ async function main() {
       console.log(`  SKIP unknown clientId ${clientId} — not in crm_clients`);
       continue;
     }
-    const { data: clientFiles, error: lErr3 } = await sb.storage
-      .from('registers')
-      .list(`clients/${clientId}`, { limit: 200 });
-    if (lErr3) { console.log(`  WARN ${clientId} — list error: ${lErr3.message}`); continue; }
+    let clientFiles;
+    try { clientFiles = await listAll(sb, 'registers', `clients/${clientId}`); }
+    catch (lErr3) { console.log(`  WARN ${clientId} — list error: ${lErr3.message}`); continue; }
 
     const localDir = path.join(CLIENTS_ROOT, companyName, '06 - Registers');
     for (const f of (clientFiles || [])) {
