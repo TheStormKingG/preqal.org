@@ -45,11 +45,13 @@ async function main() {
     .from('registers')
     .list('preqal', { limit: 200 });
   if (lErr1) throw lErr1;
+  if (preqalFiles && preqalFiles.length === 200) console.log('  WARN preqal/ has 200+ files — pagination needed');
 
   const { data: clientDirs, error: lErr2 } = await sb.storage
     .from('registers')
     .list('clients', { limit: 200 });
   if (lErr2) throw lErr2;
+  if (clientDirs && clientDirs.length === 200) console.log('  WARN clients/ has 200+ dirs — pagination needed');
 
   // Build a flat list of { storagePath, localDir, filename }
   const jobs = [];
@@ -101,8 +103,8 @@ async function main() {
 
     const localPath = path.join(localDir, filename);
 
-    // Guard: path must stay inside expected directory
-    if (!localPath.startsWith(localDir + path.sep) && localPath !== path.join(localDir, filename)) {
+    // Guard: resolved path must stay inside localDir to prevent traversal
+    if (!path.resolve(localPath).startsWith(path.resolve(localDir) + path.sep)) {
       console.log(`  SKIP ${storagePath} — path escape rejected`);
       continue;
     }

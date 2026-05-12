@@ -13,5 +13,5 @@ if [ -f "$SECRETS_FILE" ]; then
   source "$SECRETS_FILE"
 fi
 
-node "$SCRIPT_DIR/sync-from-storage.cjs"    # DOCX sync (existing)
-node "$SCRIPT_DIR/sync-registers-local.cjs" # Excel register sync (new)
+node "$SCRIPT_DIR/sync-from-storage.cjs" || echo "[run-sync.sh] DOCX sync failed at $(date)" >&2
+node "$SCRIPT_DIR/sync-registers-local.cjs" || echo "[run-sync.sh] Register sync failed at $(date)" >&2
