@@ -339,6 +339,7 @@
       <div style="flex:1;display:flex;align-items:baseline;gap:6px">
         <span class="topbar-label">QMS</span>
         <span id="topbar-title">Documents</span>
+        <div id="client-context-banner" style="display:none;background:#f59e0b;color:#0f172a;font-size:12px;font-weight:700;padding:2px 16px;border-radius:6px;margin-left:12px"></div>
       </div>
     </div>
     <main class="flex-1 pb-16 pt-6" style="padding-left:28px;padding-right:28px">
@@ -1689,6 +1690,15 @@ function handleSession(session){
     const cover=document.querySelector('#section-dashboard .section-cover');
     if(cover){cover.classList.remove('visible');cover.offsetHeight;cover.classList.add('visible');}
   });
+  if (CLIENT_ID) {
+    sb.from('crm_clients').select('company_name').eq('id', CLIENT_ID).single()
+      .then(({ data }) => {
+        if (!data) return;
+        document.title = `${data.company_name} — QMS | Preqal`;
+        const banner = document.getElementById('client-context-banner');
+        if (banner) { banner.textContent = `Viewing: ${data.company_name} QMS`; banner.style.display = 'block'; }
+      });
+  }
   loadAll();
 }
 async function signIn(){
