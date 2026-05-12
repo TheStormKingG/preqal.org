@@ -319,7 +319,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     if (upErr) throw upErr;
 
-    console.log(`sync-register-excel: ${storagePath} — ${(rows ?? []).length} rows`);
+    console.warn(`sync-register-excel: ${storagePath} — ${(rows ?? []).length} rows`);
     return json({ ok: true, path: storagePath, rows: (rows ?? []).length });
 
   } catch (err) {
