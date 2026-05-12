@@ -23,14 +23,14 @@ const IMS_DIR      = path.join(REPO_ROOT, 'public', 'ims');
 // Keys are filename prefixes; values are absolute directory paths.
 const QMS_ROOT = '/Users/stefangravesande/Documents/Projects/Preqal QMS';
 const QMS_DIR_MAP = {
-  'POL-': path.join(QMS_ROOT, 'POL'),
-  'PRO-': path.join(QMS_ROOT, 'PRO'),
-  'MAN-': path.join(QMS_ROOT, 'MAN'),
-  'WOI-': path.join(QMS_ROOT, 'WOI'),
-  'FRM-': path.join(QMS_ROOT, 'FRM'),
-  'REG-': path.join(QMS_ROOT, 'REG'),
-  'DIA-': path.join(QMS_ROOT, 'DIA'),
-  'TMP-': path.join(QMS_ROOT, 'TMP'),
+  'POL-': path.join(QMS_ROOT, '01 - Policies'),
+  'PRO-': path.join(QMS_ROOT, '02 - Procedures'),
+  'MAN-': path.join(QMS_ROOT, '03 - Manuals'),
+  'WOI-': path.join(QMS_ROOT, '04 - Work Instructions'),
+  'FRM-': path.join(QMS_ROOT, '05 - Forms'),
+  'REG-': path.join(QMS_ROOT, '06 - Registers'),
+  'DIA-': path.join(QMS_ROOT, '08 - Diagrams'),
+  'TMP-': path.join(QMS_ROOT, '07 - Templates'),
 };
 
 async function main() {
