@@ -525,7 +525,7 @@
               <p class="text-xs text-slate-400 mt-0.5">All factors — PESTLE, SWOT, climate change — that affect the QMS and strategic direction.</p>
             </div>
             <div class="flex gap-2 flex-wrap items-center">
-              <button class="btn btn-ghost btn-sm" onclick="exportRegister('context')" title="Export Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Excel</button>
+              <button class="btn btn-ghost btn-sm" onclick="exportRegister('context')" title="Export Context Register"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Excel</button>
               <button class="btn btn-amber btn-sm" onclick="openModal('issue')">+ Add Issue</button>
             </div>
           </div>
@@ -545,7 +545,7 @@
               <p class="text-xs text-slate-400 mt-0.5">All parties whose needs and expectations are relevant to the QMS.</p>
             </div>
             <div class="flex gap-2 flex-wrap items-center">
-              <button class="btn btn-ghost btn-sm" onclick="exportRegister('org')" title="Export Excel"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Excel</button>
+              <button class="btn btn-ghost btn-sm" onclick="exportRegister('org')" title="Export Stakeholders Register"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Excel</button>
               <button class="btn btn-amber btn-sm" onclick="openModal('org')">+ Add Party</button>
             </div>
           </div>
@@ -1734,7 +1734,8 @@ const SPIN_SVG = '<svg class="animate-spin" width="14" height="14" fill="none" s
 
 // Generates the current register Excel via Edge Function, then downloads it.
 async function exportRegister(registerKey) {
-  const btn = event.currentTarget;
+  const btn = event.currentTarget; // captured sync before first await — safe
+  const filename = REG_FILENAMES[registerKey];
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `${SPIN_SVG} Exporting…`;
@@ -1747,7 +1748,7 @@ async function exportRegister(registerKey) {
     if (!url) throw new Error('File not found after generation');
     const a = document.createElement('a');
     a.href = url;
-    a.download = REG_FILENAMES[registerKey];
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
