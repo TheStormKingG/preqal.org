@@ -1991,10 +1991,11 @@ async function saveDoc(){
   if(!docId||!title){err.textContent='Doc ID and title are required.';return;}
   const payload={doc_id:docId,title,category:document.getElementById('doc-category').value,version:document.getElementById('doc-version').value||'1.0',status:document.getElementById('doc-status').value,owner:document.getElementById('doc-owner').value.trim()||null,file_url:document.getElementById('doc-file-url').value.trim()||null,issue_date:document.getElementById('doc-issue-date').value||null,review_date:document.getElementById('doc-review-date').value||null,description:document.getElementById('doc-description').value.trim()||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_documents').update(payload).eq('id',id):await sb.from('qms_documents').insert([payload]);
+  const{error}=id?await sb.from('qms_documents').update(payload).eq('id',id):await sb.from('qms_documents').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Document';
   if(error){err.textContent=error.message;return;}
   closeModal('doc');loadDocs();loadOverview();
+  syncExcel('docs');
 }
 
 // ── NCR ───────────────────────────────────────────────────────────────────
@@ -2039,7 +2040,7 @@ async function saveNCR(){
     ncrNumber=`NCR-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
   const payload={ncr_number:ncrNumber,title,description:desc,source:document.getElementById('ncr-source').value||null,severity:document.getElementById('ncr-severity').value,detected_by:document.getElementById('ncr-detected-by').value.trim()||null,detected_date:document.getElementById('ncr-detected-date').value||new Date().toISOString().split('T')[0],process_area:document.getElementById('ncr-process-area').value.trim()||null,status:document.getElementById('ncr-status').value,immediate_action:document.getElementById('ncr-immediate-action').value.trim()||null,root_cause:document.getElementById('ncr-root-cause').value.trim()||null,updated_at:new Date().toISOString()};
-  const{data:saved,error}=id?await sb.from('qms_ncr').update(payload).eq('id',id).select().single():await sb.from('qms_ncr').insert([payload]).select().single();
+  const{data:saved,error}=id?await sb.from('qms_ncr').update(payload).eq('id',id).select().single():await sb.from('qms_ncr').insert([withClient(payload)]).select().single();
   btn.disabled=false;btn.textContent='Save NCR';
   if(error){err.textContent=error.message;return;}
   // Auto-create CAPA if checked
@@ -2048,6 +2049,7 @@ async function saveNCR(){
     await sb.from('qms_ncr').update({status:'capa_raised'}).eq('id',saved.id);
   }
   closeModal('ncr');loadNCR();loadCAPA();loadOverview();
+  syncExcel('ncr');syncExcel('capa');
 }
 
 async function raiseCapa(ncrId){
@@ -2056,12 +2058,13 @@ async function raiseCapa(ncrId){
   await createLinkedCapa(ncrId,r.ncr_number,r.title);
   await sb.from('qms_ncr').update({status:'capa_raised'}).eq('id',ncrId);
   loadNCR();loadCAPA();loadOverview();
+  syncExcel('ncr');syncExcel('capa');
 }
 
 async function createLinkedCapa(ncrId,ncrNumber,ncrTitle){
   const{count}=await sb.from('qms_capa').select('id',{count:'exact',head:true});
   const capaNumber=`CAPA-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
-  await sb.from('qms_capa').insert([{capa_number:capaNumber,type:'corrective',title:`Corrective action for ${ncrNumber}`,description:`Address root cause and prevent recurrence of non-conformance: ${ncrTitle}`,source:ncrNumber,ncr_id:ncrId,status:'open'}]);
+  await sb.from('qms_capa').insert([withClient({capa_number:capaNumber,type:'corrective',title:`Corrective action for ${ncrNumber}`,description:`Address root cause and prevent recurrence of non-conformance: ${ncrTitle}`,source:ncrNumber,ncr_id:ncrId,status:'open'})]);
 }
 
 // ── CAPA ──────────────────────────────────────────────────────────────────
@@ -2108,10 +2111,11 @@ async function saveCapa(){
   }
   const ncrId=document.getElementById('capa-ncr-id').value||null;
   const payload={capa_number:capaNumber,type:document.getElementById('capa-type').value,title,description:desc,source:document.getElementById('capa-source').value.trim()||null,ncr_id:ncrId||null,assigned_to:document.getElementById('capa-assigned-to').value.trim()||null,due_date:document.getElementById('capa-due-date').value||null,status:document.getElementById('capa-status').value,action_taken:document.getElementById('capa-action-taken').value.trim()||null,effectiveness_review:document.getElementById('capa-effectiveness').value.trim()||null,updated_at:new Date().toISOString()};
-  const{error}=id?await sb.from('qms_capa').update(payload).eq('id',id):await sb.from('qms_capa').insert([payload]);
+  const{error}=id?await sb.from('qms_capa').update(payload).eq('id',id):await sb.from('qms_capa').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save CAPA';
   if(error){err.textContent=error.message;return;}
   closeModal('capa');loadCAPA();loadOverview();
+  syncExcel('capa');
 }
 
 // ── AUDIT ─────────────────────────────────────────────────────────────────
@@ -2155,10 +2159,11 @@ async function saveAudit(){
     auditNumber=`AUD-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   }
   const payload={audit_number:auditNumber,audit_type:document.getElementById('audit-type').value,audit_scope:scope,auditor:document.getElementById('audit-auditor').value.trim()||null,auditee:document.getElementById('audit-auditee').value.trim()||null,scheduled_date:document.getElementById('audit-scheduled-date').value||null,conducted_date:document.getElementById('audit-conducted-date').value||null,findings_minor:parseInt(document.getElementById('audit-minor').value)||0,findings_major:parseInt(document.getElementById('audit-major').value)||0,findings_observation:parseInt(document.getElementById('audit-obs').value)||0,status:document.getElementById('audit-status').value,summary:document.getElementById('audit-summary').value.trim()||null,updated_at:new Date().toISOString()};
-  const{error}=id?await sb.from('qms_audit').update(payload).eq('id',id):await sb.from('qms_audit').insert([payload]);
+  const{error}=id?await sb.from('qms_audit').update(payload).eq('id',id):await sb.from('qms_audit').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Audit';
   if(error){err.textContent=error.message;return;}
   closeModal('audit');loadAudit();loadOverview();
+  syncExcel('audit');
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
@@ -2196,6 +2201,8 @@ async function executeDelete(){
   const loaders={doc:loadDocs,ncr:loadNCR,capa:loadCAPA,audit:loadAudit,org:loadOrg,issue:loadIssues,emp:()=>{loadEmployees();renderOrgChart(Object.values(empCache).filter(e=>e.status==='active'));},legal:loadLegal,hse:loadHSE,qr:loadQR};
   if(loaders[type])loaders[type]();
   loadOverview();
+  const regKey=TABLE_TO_REG_KEY[table];
+  if(regKey)syncExcel(regKey);
 }
 
 // ── ORG CHART ─────────────────────────────────────────────────────────────
@@ -2306,7 +2313,7 @@ async function saveEmployeeQuick(){
   const recordId=`EMP-${new Date().getFullYear()}-${String((count||0)+1).padStart(3,'0')}`;
   const token=crypto.randomUUID();
   const payload={record_id:recordId,full_name:name,position:pos,department:document.getElementById('emp-add-department').value.trim()||null,employment_type:document.getElementById('emp-add-employment-type').value,manager_id:document.getElementById('emp-add-manager-id').value||null,email:document.getElementById('emp-add-email').value.trim()||null,start_date:document.getElementById('emp-add-start-date').value||null,job_description_url:document.getElementById('emp-add-jd-url').value||null,gross_salary:parseFloat(document.getElementById('emp-add-gross').value)||null,net_salary:parseFloat(document.getElementById('emp-add-net').value)||null,status:'active',onboarding_status:'pending',onboarding_token:token,updated_at:new Date().toISOString()};
-  const{error}=await sb.from('qms_employees').insert([payload]);
+  const{error}=await sb.from('qms_employees').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save & Get Link';
   if(error){err.textContent=error.message;return;}
   const link=`${window.location.origin}/employee-onboarding.html?token=${token}`;
@@ -2314,6 +2321,7 @@ async function saveEmployeeQuick(){
   document.getElementById('emp-add-link-section').style.display='block';
   document.getElementById('emp-add-save-btn').style.display='none';
   loadEmployees();loadOverview();
+  syncExcel('employees');
 }
 function copyOnboardingLink(){
   const input=document.getElementById('emp-add-onboarding-link');
@@ -2565,10 +2573,11 @@ async function saveEmployee(){
   const profilePic=g('emp-offer-letter-url')!==null?g('emp-profile-pic'):null;// profile pic is the visible url input
   const payload={record_id:recordId,full_name:name,position:pos,department:g('emp-department'),employment_type:document.getElementById('emp-employment-type').value,manager_id:managerId,email:g('emp-email'),phone:g('emp-phone'),start_date:document.getElementById('emp-start-date').value||null,status:document.getElementById('emp-status').value,qualifications_json:quals,notes:g('emp-notes'),profile_picture_url:g('emp-profile-pic')||null,date_of_birth:document.getElementById('emp-dob').value||null,nis_number:g('emp-nis'),tin_number:g('emp-tin'),id_passport_number:g('emp-id-passport'),address:g('emp-address'),marital_status:document.getElementById('emp-marital-status').value||null,num_dependents:document.getElementById('emp-dependents').value?parseInt(document.getElementById('emp-dependents').value):null,religion:g('emp-religion'),hobby:g('emp-hobby'),dietary_restriction:document.getElementById('emp-dietary').value||null,allergies:g('emp-allergies'),medical_conditions:g('emp-medical'),disabilities:g('emp-disabilities'),bank_name:g('emp-bank-name'),bank_branch:g('emp-bank-branch'),bank_account_number:g('emp-bank-account'),offer_letter_url:document.getElementById('emp-offer-letter-url').value||null,job_description_url:document.getElementById('emp-jd-url').value||null,signed_contract_url:document.getElementById('emp-contract-url').value||null,cv_url:document.getElementById('emp-cv-url').value||null,police_clearance_url:document.getElementById('emp-police-clearance-url').value||null,gross_salary:parseFloat(document.getElementById('emp-gross').value)||null,net_salary:parseFloat(document.getElementById('emp-net').value)||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([payload]);
+  const{error}=id?await sb.from('qms_employees').update(payload).eq('id',id):await sb.from('qms_employees').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Employee';
   if(error){err.textContent=error.message;return;}
   closeModal('emp');loadEmployees();loadOverview();
+  syncExcel('employees');
 }
 
 // ── LEGAL REGISTER ────────────────────────────────────────────────────────
@@ -2610,10 +2619,11 @@ async function saveLegal(){
   }
   const payload={record_id:recordId,title,category:document.getElementById('legal-category').value,jurisdiction:document.getElementById('legal-jurisdiction').value,reference_number:document.getElementById('legal-reference').value.trim()||null,compliance_status:document.getElementById('legal-compliance').value,summary:document.getElementById('legal-summary').value.trim()||null,applicable_to:document.getElementById('legal-applicable').value.trim()||null,obligations:document.getElementById('legal-obligations').value.trim()||null,responsible_person:document.getElementById('legal-responsible').value.trim()||null,review_date:document.getElementById('legal-review-date').value||null,effective_date:document.getElementById('legal-effective-date').value||null,file_url:document.getElementById('legal-file-url').value.trim()||null,notes:document.getElementById('legal-notes').value.trim()||null,updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_legal_register').update(payload).eq('id',id):await sb.from('qms_legal_register').insert([payload]);
+  const{error}=id?await sb.from('qms_legal_register').update(payload).eq('id',id):await sb.from('qms_legal_register').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Obligation';
   if(error){err.textContent=error.message;return;}
   closeModal('legal');loadLegal();loadOverview();
+  syncExcel('legal');
 }
 
 // ── ORGANISATION REGISTER ─────────────────────────────────────────────────
@@ -2720,10 +2730,11 @@ async function saveIssue(){
     notes:g('issue-notes'),updated_at:new Date().toISOString()
   };
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_context_issues').update(payload).eq('id',id):await sb.from('qms_context_issues').insert([payload]);
+  const{error}=id?await sb.from('qms_context_issues').update(payload).eq('id',id):await sb.from('qms_context_issues').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Issue';
   if(error){err.textContent=error.message;return;}
   closeModal('issue');loadIssues();
+  syncExcel('context');
   // Auto-route medium/high issues to the appropriate risk register
   await autoRouteToRisk(payload,id);
 }
@@ -2795,11 +2806,12 @@ async function autoRouteToRisk(payload,existingIssueId){
         date_assessed:new Date().toISOString().split('T')[0],
         updated_at:new Date().toISOString()
       };
-      const{error:hseErr}=await sb.from('qms_hse_risk').insert([hsePayload]);
+      const{error:hseErr}=await sb.from('qms_hse_risk').insert([withClient(hsePayload)]);
       if(hseErr)throw new Error(`HSE insert: ${hseErr.message}`);
       // Write linked risk back to the context issue using record_id (safe for both new + edit)
       await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'hse'}).eq('record_id',payload.record_id);
       loadHSE();loadIssues();
+      syncExcel('hse');
       showToast('🦺','Routed to HSE Risk Register',`${riskId} created — ${level.label} risk (${rating}/25). Open the HSE Register to complete the HIRA assessment.`);
     } else {
       // ── Route to Quality Risk Register ───────────────────────────────────
@@ -2829,11 +2841,12 @@ async function autoRouteToRisk(payload,existingIssueId){
         status:'open',
         updated_at:new Date().toISOString()
       };
-      const{error:qrErr}=await sb.from('qms_quality_risk').insert([qrPayload]);
+      const{error:qrErr}=await sb.from('qms_quality_risk').insert([withClient(qrPayload)]);
       if(qrErr)throw new Error(`QR insert: ${qrErr.message}`);
       // Write linked risk back to the context issue using record_id
       await sb.from('qms_context_issues').update({linked_risk_id:riskId,linked_risk_type:'qr'}).eq('record_id',payload.record_id);
       loadQR();loadIssues();
+      syncExcel('qr');
       const icon=isOpp?'🚀':'⚠️';
       showToast(icon,'Routed to Quality Risk Register',`${riskId} created — ${level.label} ${isOpp?'opportunity':'risk'} (${rating}/25). Open the Quality Risk Register to complete the assessment.`);
     }
@@ -2936,10 +2949,11 @@ async function saveOrg(){
     notes:g('org-notes'),updated_at:new Date().toISOString()
   };
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_org_register').update(payload).eq('id',id):await sb.from('qms_org_register').insert([payload]);
+  const{error}=id?await sb.from('qms_org_register').update(payload).eq('id',id):await sb.from('qms_org_register').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Party';
   if(error){err.textContent=error.message;return;}
   closeModal('org');loadOrg();loadOverview();
+  syncExcel('org');
 }
 
 // ── HSE RISK REGISTER ─────────────────────────────────────────────────────
@@ -3010,10 +3024,11 @@ async function saveHSE(){
   const rc=parseInt(document.getElementById('hse-res-consequence').value)||null;
   const payload={risk_id:riskId,source:document.getElementById('hse-source').value,source_ref:g('hse-source-ref'),hazard,hazard_category:document.getElementById('hse-category').value,activity_task:g('hse-activity-task'),location_activity:g('hse-location'),persons_at_risk:g('hse-persons'),hazard_event:g('hse-hazard-event'),harm_potential:g('hse-harm-potential'),legal_requirement:g('hse-legal-requirement'),existing_controls:g('hse-existing-controls'),likelihood:l,consequence:c,risk_rating:l*c,ctrl_elimination:g('hse-ctrl-elimination'),ctrl_substitution:g('hse-ctrl-substitution'),ctrl_engineering:g('hse-ctrl-engineering'),ctrl_administrative:g('hse-ctrl-administrative'),ctrl_ppe:g('hse-ctrl-ppe'),additional_controls:g('hse-additional-controls'),responsible_person:g('hse-responsible'),target_date:document.getElementById('hse-target-date').value||null,date_assessed:document.getElementById('hse-date-assessed').value||null,residual_likelihood:rl,residual_consequence:rc,residual_rating:rl&&rc?rl*rc:null,alarp_justified:document.getElementById('hse-alarp')?.checked||false,status:document.getElementById('hse-status').value,review_date:document.getElementById('hse-review-date').value||null,notes:g('hse-notes'),updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_hse_risk').update(payload).eq('id',id):await sb.from('qms_hse_risk').insert([payload]);
+  const{error}=id?await sb.from('qms_hse_risk').update(payload).eq('id',id):await sb.from('qms_hse_risk').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Risk';
   if(error){err.textContent=error.message;return;}
   closeModal('hse');loadHSE();loadOverview();
+  syncExcel('hse');
 }
 
 // ── QUALITY RISK REGISTER ─────────────────────────────────────────────────
@@ -3083,10 +3098,11 @@ async function saveQR(){
   const ri=parseInt(document.getElementById('qr-res-impact').value)||null;
   const payload={risk_id:riskId,risk_title:title,risk_type:document.getElementById('qr-risk-type').value,risk_category:document.getElementById('qr-category').value,source:document.getElementById('qr-source').value,source_ref:gq('qr-source-ref'),qms_process:gq('qr-qms-process'),date_raised:document.getElementById('qr-date-raised').value||null,risk_description:gq('qr-description'),potential_cause:gq('qr-cause'),potential_consequence:gq('qr-consequence'),affected_process:gq('qr-affected-process'),existing_controls:gq('qr-existing-controls'),likelihood:l,impact:i,risk_rating:l*i,treatment_option:gq('qr-treatment-option'),treatment_action:gq('qr-treatment'),risk_owner:gq('qr-owner'),target_date:document.getElementById('qr-target-date').value||null,residual_likelihood:rl,residual_impact:ri,residual_rating:rl&&ri?rl*ri:null,status:document.getElementById('qr-status').value,review_date:document.getElementById('qr-review-date').value||null,notes:gq('qr-notes'),updated_at:new Date().toISOString()};
   btn.disabled=true;btn.textContent='Saving…';
-  const{error}=id?await sb.from('qms_quality_risk').update(payload).eq('id',id):await sb.from('qms_quality_risk').insert([payload]);
+  const{error}=id?await sb.from('qms_quality_risk').update(payload).eq('id',id):await sb.from('qms_quality_risk').insert([withClient(payload)]);
   btn.disabled=false;btn.textContent='Save Risk';
   if(error){err.textContent=error.message;return;}
   closeModal('qr');loadQR();loadOverview();
+  syncExcel('qr');
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
