@@ -247,15 +247,30 @@ const REGISTERS: Record<string, RegConfig> = {
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
   });
 }
 
+// ── CORS ───────────────────────────────────────────────────────────────────────
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 // ── Handler ────────────────────────────────────────────────────────────────────
 Deno.serve(async (req: Request): Promise<Response> => {
+  // Handle CORS preflight — must come before any auth check
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+
   // Require a valid JWT (Supabase injects Authorization header via sb.functions.invoke)
   if (!req.headers.get("Authorization")) {
-    return json({ error: "Unauthorized" }, 401);
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    });
   }
 
   try {
