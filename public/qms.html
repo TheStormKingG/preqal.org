@@ -1629,6 +1629,46 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const ADMIN_EMAILS=['stefan.gravesande@gmail.com','stefan.gravesande@preqal.org'];
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 
+// ── CLIENT CONTEXT ─────────────────────────────────────────────────────────
+// qms.html?clientId=UUID → client's registers. No param → Preqal's own (NULL).
+const CLIENT_ID = new URLSearchParams(location.search).get('clientId') || null;
+
+// Wraps an insert payload to stamp client_id (null for Preqal).
+function withClient(payload) {
+  return { ...payload, client_id: CLIENT_ID };
+}
+
+// Adds the correct client_id filter to any Supabase query builder.
+// CLIENT_ID = null  → .is('client_id', null)  (IS NULL)
+// CLIENT_ID = uuid  → .eq('client_id', CLIENT_ID)
+function clientFilter(query) {
+  return CLIENT_ID
+    ? query.eq('client_id', CLIENT_ID)
+    : query.is('client_id', null);
+}
+
+// Fire-and-forget: tells the Edge Function to regenerate the Excel for this register.
+// Never awaited — a failure here only means the Excel falls behind until the next save.
+function syncExcel(registerKey) {
+  sb.functions.invoke('sync-register-excel', {
+    body: { registerKey, clientId: CLIENT_ID }
+  }).catch(() => {});
+}
+
+// Maps DB table name → register key (used by executeDelete to call syncExcel).
+const TABLE_TO_REG_KEY = {
+  qms_documents:      'docs',
+  qms_context_issues: 'context',
+  qms_employees:      'employees',
+  qms_hse_risk:       'hse',
+  qms_audit:          'audit',
+  qms_ncr:            'ncr',
+  qms_capa:           'capa',
+  qms_quality_risk:   'qr',
+  qms_legal_register: 'legal',
+  qms_org_register:   'org',
+};
+
 // ── AUTH ──────────────────────────────────────────────────────────────────
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
