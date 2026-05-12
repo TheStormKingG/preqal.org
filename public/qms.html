@@ -1734,15 +1734,15 @@ async function loadAll(){
 async function loadOverview(){
   const yr=new Date().getFullYear();
   const[docs,org,emp,legal,qr,hse,ncr,capa,audit]=await Promise.all([
-    sb.from('qms_documents').select('id',{count:'exact',head:true}).eq('status','active'),
-    sb.from('qms_org_register').select('id',{count:'exact',head:true}).eq('status','active'),
-    sb.from('qms_employees').select('id',{count:'exact',head:true}).eq('status','active'),
-    sb.from('qms_legal_register').select('id',{count:'exact',head:true}).neq('compliance_status','not_applicable'),
-    sb.from('qms_quality_risk').select('id',{count:'exact',head:true}).in('status',['open','under_treatment']),
-    sb.from('qms_hse_risk').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
-    sb.from('qms_ncr').select('id',{count:'exact',head:true}).in('status',['open','under_investigation','capa_raised']),
-    sb.from('qms_capa').select('id',{count:'exact',head:true}).in('status',['open','in_progress']),
-    sb.from('qms_audit').select('id',{count:'exact',head:true}).gte('created_at',`${yr}-01-01`)
+    clientFilter(sb.from('qms_documents').select('id',{count:'exact',head:true})).eq('status','active'),
+    clientFilter(sb.from('qms_org_register').select('id',{count:'exact',head:true})).eq('status','active'),
+    clientFilter(sb.from('qms_employees').select('id',{count:'exact',head:true})).eq('status','active'),
+    clientFilter(sb.from('qms_legal_register').select('id',{count:'exact',head:true})).neq('compliance_status','not_applicable'),
+    clientFilter(sb.from('qms_quality_risk').select('id',{count:'exact',head:true})).in('status',['open','under_treatment']),
+    clientFilter(sb.from('qms_hse_risk').select('id',{count:'exact',head:true})).in('status',['open','in_progress']),
+    clientFilter(sb.from('qms_ncr').select('id',{count:'exact',head:true})).in('status',['open','under_investigation','capa_raised']),
+    clientFilter(sb.from('qms_capa').select('id',{count:'exact',head:true})).in('status',['open','in_progress']),
+    clientFilter(sb.from('qms_audit').select('id',{count:'exact',head:true})).gte('created_at',`${yr}-01-01`)
   ]);
   set('ov-docs',docs.count??0);set('ov-org',org.count??0);set('ov-emp',emp.count??0);
   set('ov-orgchart',emp.count??0);
@@ -1817,7 +1817,7 @@ function filterDocs(cat){
 }
 async function loadDocs(){
   const tb=document.getElementById('docs-tbody');tb.innerHTML=rowSpin(9);
-  const{data,error}=await sb.from('qms_documents').select('*').order('doc_id');
+  const{data,error}=await clientFilter(sb.from('qms_documents').select('*')).order('doc_id');
   if(error){tb.innerHTML=emptyRow(9,error.message);renderFolderGrid([]);return;}
   docCache=Object.fromEntries((data||[]).map(r=>[r.id,r]));
   docsAllData=data||[];
@@ -2003,7 +2003,7 @@ const NCR_STATUS_BADGE={open:'badge-red',under_investigation:'badge-amber',capa_
 let ncrCache={};
 async function loadNCR(){
   const tb=document.getElementById('ncr-tbody');tb.innerHTML=rowSpin(9);
-  const{data,error}=await sb.from('qms_ncr').select('*').order('created_at',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_ncr').select('*')).order('created_at',{ascending:false});
   if(error){tb.innerHTML=emptyRow(9,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(9);return;}
   ncrCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2069,7 +2069,7 @@ const CAPA_STATUS_BADGE={open:'badge-red',in_progress:'badge-amber',completed:'b
 let capaCache={};
 async function loadCAPA(){
   const tb=document.getElementById('capa-tbody');tb.innerHTML=rowSpin(8);
-  const{data,error}=await sb.from('qms_capa').select('*').order('created_at',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_capa').select('*')).order('created_at',{ascending:false});
   if(error){tb.innerHTML=emptyRow(8,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(8);return;}
   capaCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2119,7 +2119,7 @@ const AUDIT_STATUS_BADGE={planned:'badge-slate',in_progress:'badge-amber',comple
 let auditCache={};
 async function loadAudit(){
   const tb=document.getElementById('audit-tbody');tb.innerHTML=rowSpin(10);
-  const{data,error}=await sb.from('qms_audit').select('*').order('created_at',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_audit').select('*')).order('created_at',{ascending:false});
   if(error){tb.innerHTML=emptyRow(10,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(10);return;}
   auditCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2475,7 +2475,7 @@ const EMP_STATUS_BADGE={active:'badge-green',inactive:'badge-slate',on_leave:'ba
 let empCache={};
 async function loadEmployees(){
   const tb=document.getElementById('emp-tbody');tb.innerHTML=rowSpin(9);
-  const{data,error}=await sb.from('qms_employees').select('*').order('full_name');
+  const{data,error}=await clientFilter(sb.from('qms_employees').select('*')).order('full_name');
   if(error){tb.innerHTML=emptyRow(9,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(9);return;}
   empCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2576,7 +2576,7 @@ const LEGAL_COMPLIANCE_BADGE={compliant:'badge-green',non_compliant:'badge-red',
 let legalCache={};
 async function loadLegal(){
   const tb=document.getElementById('legal-tbody');tb.innerHTML=rowSpin(10);
-  const{data,error}=await sb.from('qms_legal_register').select('*').order('title');
+  const{data,error}=await clientFilter(sb.from('qms_legal_register').select('*')).order('title');
   if(error){tb.innerHTML=emptyRow(10,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(10);return;}
   legalCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2643,7 +2643,7 @@ function calcIssueRating(){
 }
 async function loadIssues(){
   const tb=document.getElementById('issue-tbody');tb.innerHTML=rowSpin(14);
-  const{data,error}=await sb.from('qms_context_issues').select('*').order('created_at',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_context_issues').select('*')).order('created_at',{ascending:false});
   if(error){tb.innerHTML=emptyRow(14,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(14);return;}
   issueCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2885,7 +2885,7 @@ const ORG_CONTEXT_BADGE={Internal:'badge-blue',External:'badge-slate'};
 let orgCache={};
 async function loadOrg(){
   const tb=document.getElementById('org-tbody');tb.innerHTML=rowSpin(12);
-  const{data,error}=await sb.from('qms_org_register').select('*').order('entity_name');
+  const{data,error}=await clientFilter(sb.from('qms_org_register').select('*')).order('entity_name');
   if(error){tb.innerHTML=emptyRow(12,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(12);return;}
   orgCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -2960,7 +2960,7 @@ const HSE_STATUS_BADGE={open:'badge-red',in_progress:'badge-amber',closed:'badge
 let hseCache={};
 async function loadHSE(){
   const tb=document.getElementById('hse-tbody');tb.innerHTML=rowSpin(16);
-  const{data,error}=await sb.from('qms_hse_risk').select('*').order('risk_rating',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_hse_risk').select('*')).order('risk_rating',{ascending:false});
   if(error){tb.innerHTML=emptyRow(16,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(16);return;}
   hseCache=Object.fromEntries(data.map(r=>[r.id,r]));
@@ -3033,7 +3033,7 @@ const QR_STATUS_BADGE={open:'badge-red',under_treatment:'badge-amber',accepted:'
 let qrCache={};
 async function loadQR(){
   const tb=document.getElementById('qr-tbody');tb.innerHTML=rowSpin(15);
-  const{data,error}=await sb.from('qms_quality_risk').select('*').order('risk_rating',{ascending:false});
+  const{data,error}=await clientFilter(sb.from('qms_quality_risk').select('*')).order('risk_rating',{ascending:false});
   if(error){tb.innerHTML=emptyRow(15,error.message);return;}
   if(!data?.length){tb.innerHTML=emptyRow(15);return;}
   qrCache=Object.fromEntries(data.map(r=>[r.id,r]));
