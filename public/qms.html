@@ -3677,6 +3677,10 @@ function downloadOriginal() {
 
 function downloadAsPdf() {
   _closeDlMenu();
+  if (_editMode) {
+    showToast('⚠️', 'PDF export', 'Switch to View mode first, then export as PDF.');
+    return;
+  }
   const frame = document.getElementById('doc-html-inner');
   if (!frame || !frame.contentWindow) {
     showToast('⚠️', 'PDF export', 'Switch to View mode first, then export as PDF.');
