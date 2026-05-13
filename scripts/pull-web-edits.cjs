@@ -27,8 +27,18 @@ const path = require('path');
 
 const SUPABASE_URL = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
 const IMS_DIR      = path.resolve(__dirname, '../public/ims');
+const QMS_DIR      = path.resolve(__dirname, '../../../../Preqal QMS');
 const APPLY        = process.argv.includes('--apply');
 const CLEAR        = process.argv.includes('--clear');
+
+// Maps doc_id prefix → subfolder inside QMS_DIR
+const QMS_SUBDIR = {
+  POL: '01 - Policies',
+  PRO: '02 - Procedures',
+  MAN: '03 - Manuals',
+  WOI: '04 - Work Instructions',
+  FOR: '05 - Forms',
+};
 
 if (CLEAR && !APPLY) {
   console.error('\nERROR: --clear requires --apply.\n');
@@ -321,11 +331,63 @@ function extractSectPr(docXml) {
   return m ? m[0] : '';
 }
 
-function patchDocxBody(originalXml, newBodyContent) {
-  const sectPr    = extractSectPr(originalXml);
-  const newBody   = `<w:body>${newBodyContent}${sectPr}</w:body>`;
-  const patched   = originalXml.replace(/<w:body(?:\s[^>]*)?>[\s\S]*<\/w:body>/, newBody);
-  if (patched === originalXml) throw new Error('<w:body> not found in document.xml');
+// Extracts the branded header block from a body XML string.
+// Returns the Preqal branded header tables from a document body. A table is
+// considered a branding/metadata header only if it contains the word "PREQAL".
+// All leading content up to and including the last PREQAL-bearing table is returned.
+function extractBodyHeader(bodyXml) {
+  let cursor = 0;
+  let prevEnd = 0;
+  for (let i = 0; i < 3; i++) {
+    const end = bodyXml.indexOf('</w:tbl>', cursor);
+    if (end < 0) break;
+    const tableXml = bodyXml.slice(cursor, end + 8);
+    const tableText = tableXml.replace(/<[^>]+>/g, ' ');
+    if (!/PREQAL/.test(tableText)) break; // stop at first non-branding table
+    prevEnd = end + 8;
+    cursor = prevEnd;
+  }
+  return bodyXml.slice(0, prevEnd);
+}
+
+// Returns the body XML string (inner content, no <w:body> tags) from a document.xml string.
+function getBodyContent(docXml) {
+  const m = docXml.match(/<w:body(?:\s[^>]*)?>[\s\S]*?<\/w:body>/);
+  if (!m) return '';
+  const open = m[0].indexOf('>') + 1;
+  return m[0].slice(open, -9); // strip <w:body...> and </w:body>
+}
+
+// Extracts the Preqal branded header from the local public/ims/ DOCX file.
+// Falls back to the QMS working folder if the ims file is missing.
+async function getQmsHeaderXml(docId, rawFilename) {
+  // Try public/ims/ first (git-tracked, reliable source of branding header)
+  const imsPath = path.join(IMS_DIR, rawFilename);
+  const tryFile = async (filePath) => {
+    if (!fs.existsSync(filePath)) return '';
+    try {
+      const zip = await JSZip.loadAsync(fs.readFileSync(filePath));
+      const docXml = await zip.file('word/document.xml').async('string');
+      return extractBodyHeader(getBodyContent(docXml));
+    } catch (_) { return ''; }
+  };
+  const imsHeader = await tryFile(imsPath);
+  if (imsHeader) return imsHeader;
+  // Fall back to QMS working folder
+  const prefix = (docId || '').split('-')[0];
+  const subdir = QMS_SUBDIR[prefix];
+  if (!subdir) return '';
+  return tryFile(path.join(QMS_DIR, subdir, rawFilename));
+}
+
+function patchDocxBody(originalXml, newBodyContent, headerXml) {
+  const sectPr  = extractSectPr(originalXml);
+  const header  = headerXml != null ? headerXml : extractBodyHeader(getBodyContent(originalXml));
+  const newBody = `<w:body>${header}${newBodyContent}${sectPr}</w:body>`;
+  const patched = originalXml.replace(/<w:body(?:\s[^>]*)?>[\s\S]*<\/w:body>/, () => newBody);
+  if (!/<w:body(?:\s[^>]*)?>[\s\S]*<\/w:body>/.test(originalXml)) {
+    throw new Error('<w:body> not found in document.xml');
+  }
   return patched;
 }
 
@@ -407,11 +469,14 @@ async function main() {
 
     const originalXml = await docXmlFile.async('string');
 
+    // Get branded header from QMS folder master file (fallback: extract from current file)
+    const headerXml = await getQmsHeaderXml(docId, rawFilename);
+
     // Convert HTML to OOXML and replace body
     let patchedXml;
     try {
       const newBodyContent = htmlToOoxml(doc.content_html);
-      patchedXml = patchDocxBody(originalXml, newBodyContent);
+      patchedXml = patchDocxBody(originalXml, newBodyContent, headerXml);
     } catch (e) {
       results.push({ doc_id: docId, title, status: 'FAIL', detail: `Conversion failed: ${e.message}` });
       continue;
@@ -427,7 +492,7 @@ async function main() {
       continue;
     }
 
-    // Atomic write
+    // Atomic write to public/ims/
     const tmpPath = localPath + '.sync.tmp';
     try {
       fs.writeFileSync(tmpPath, patchedBuf);
@@ -438,7 +503,21 @@ async function main() {
       continue;
     }
 
-    let detail = 'Body replaced from browser edits (header/footer/styles preserved)';
+    // Mirror to QMS working folder if the file exists there
+    const prefix = (docId || '').split('-')[0];
+    const qmsSubdir = QMS_SUBDIR[prefix];
+    let qmsCopied = false;
+    if (qmsSubdir) {
+      const qmsPath = path.join(QMS_DIR, qmsSubdir, rawFilename);
+      if (fs.existsSync(qmsPath)) {
+        try {
+          fs.writeFileSync(qmsPath, patchedBuf);
+          qmsCopied = true;
+        } catch (_) {}
+      }
+    }
+
+    let detail = `Body replaced from browser edits (header preserved${qmsCopied ? ', QMS folder updated' : ''})`;
 
     if (CLEAR) {
       const { error: clearErr } = await sb
