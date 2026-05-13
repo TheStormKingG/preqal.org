@@ -3390,8 +3390,39 @@ function _sanitizeHtml(html) {
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/\son\w+\s*=/gi, ' data-removed=');
 }
+const DOC_IFRAME_STYLES = `
+  body{max-width:850px;margin:0 auto;background:#fff;padding:72px 80px;
+    box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 32px rgba(0,0,0,.12);
+    font-family:'Calibri','Carlito',Arial,sans-serif;font-size:12pt;
+    line-height:1.55;color:#111;min-height:500px;box-sizing:border-box}
+  h1{font-size:18pt;font-weight:700;margin:1.4em 0 .5em;color:#111;
+    border-bottom:2px solid #e2e8f0;padding-bottom:.3em}
+  h2{font-size:14pt;font-weight:700;margin:1.2em 0 .4em;color:#1e293b}
+  h3{font-size:12pt;font-weight:700;margin:1em 0 .35em;color:#1e293b}
+  h4{font-size:11pt;font-weight:700;margin:.8em 0 .3em;color:#334155}
+  p{margin:.45em 0;line-height:1.6}
+  p:first-child{margin-top:0}
+  table{border-collapse:collapse;width:100%;margin:1.2em 0;font-size:11pt}
+  td,th{border:1px solid #94a3b8;padding:8px 12px;vertical-align:top}
+  th,tr:first-child td{background:#f1f5f9;font-weight:700;color:#1e293b}
+  tr:nth-child(even) td{background:#f8fafc}
+  ul{padding-left:1.8em;margin:.5em 0}
+  ol{padding-left:1.8em;margin:.5em 0}
+  li{margin:.25em 0;line-height:1.6}
+  strong,b{font-weight:700}
+  em,i{font-style:italic}
+  hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
+`;
 function _renderHtmlView(html) {
-  document.getElementById('doc-html-inner').innerHTML = _sanitizeHtml(html);
+  const frame = document.getElementById('doc-html-inner');
+  frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>${DOC_IFRAME_STYLES}</style></head><body>${_sanitizeHtml(html)}</body></html>`;
+  frame.onload = () => {
+    try {
+      const h = frame.contentDocument.body.scrollHeight;
+      if (h > 0) frame.style.height = h + 32 + 'px';
+    } catch (_) { /* sandboxed — height stays at min-height */ }
+  };
 }
 
 /* Save-confirm modal */
@@ -3664,7 +3695,7 @@ function closeDocViewer() {
     document.getElementById('doc-sheet-inner').innerHTML = '';
     document.getElementById('doc-viewer-img').src = '';
     _viewerBuf = null;
-    document.getElementById('doc-html-inner').innerHTML = '';
+    const _f = document.getElementById('doc-html-inner'); if(_f) _f.srcdoc = '';
     _viewerDocId = null;
     _viewerContentHtml = null;
     document.body.style.overflow = '';
