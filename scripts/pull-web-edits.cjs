@@ -332,18 +332,20 @@ function extractSectPr(docXml) {
 }
 
 // Extracts the branded header block from a body XML string.
-// Returns the Preqal branded header tables from a document body. A table is
-// considered a branding/metadata header only if it contains the word "PREQAL".
-// All leading content up to and including the last PREQAL-bearing table is returned.
+// Returns the Preqal branded header tables from a document body.
+// A table qualifies as a header table if it contains the all-caps "PREQAL"
+// branding OR the "Document No" metadata label.
+// IMPORTANT: PREQAL check is case-sensitive — body text uses "Preqal" (mixed
+// case) so a case-insensitive match would include nearly every table.
 function extractBodyHeader(bodyXml) {
+  const isHeaderTable = (t) => /PREQAL/.test(t) || /Document No/i.test(t);
   let cursor = 0;
   let prevEnd = 0;
   for (let i = 0; i < 3; i++) {
     const end = bodyXml.indexOf('</w:tbl>', cursor);
     if (end < 0) break;
-    const tableXml = bodyXml.slice(cursor, end + 8);
-    const tableText = tableXml.replace(/<[^>]+>/g, ' ');
-    if (!/PREQAL/.test(tableText)) break; // stop at first non-branding table
+    const tableText = bodyXml.slice(cursor, end + 8).replace(/<[^>]+>/g, ' ');
+    if (!isHeaderTable(tableText)) break;
     prevEnd = end + 8;
     cursor = prevEnd;
   }
@@ -358,26 +360,44 @@ function getBodyContent(docXml) {
   return m[0].slice(open, -9); // strip <w:body...> and </w:body>
 }
 
-// Extracts the Preqal branded header from the local public/ims/ DOCX file.
-// Falls back to the QMS working folder if the ims file is missing.
+// Extracts the Preqal branded header (title + metadata tables) from the
+// git history baseline, where all DOCX files still have their original
+// PREQAL branding intact. Falls back to the current public/ims/ file or
+// the QMS working folder if the file didn't exist at the baseline commit.
+const HEADER_BASELINE_COMMIT = '28147ea'; // commit with original PREQAL-branded headers
 async function getQmsHeaderXml(docId, rawFilename) {
-  // Try public/ims/ first (git-tracked, reliable source of branding header)
-  const imsPath = path.join(IMS_DIR, rawFilename);
-  const tryFile = async (filePath) => {
-    if (!fs.existsSync(filePath)) return '';
+  const headerFromBuf = async (buf) => {
     try {
-      const zip = await JSZip.loadAsync(fs.readFileSync(filePath));
+      const zip = await JSZip.loadAsync(buf);
       const docXml = await zip.file('word/document.xml').async('string');
       return extractBodyHeader(getBodyContent(docXml));
     } catch (_) { return ''; }
   };
-  const imsHeader = await tryFile(imsPath);
-  if (imsHeader) return imsHeader;
-  // Fall back to QMS working folder
+
+  // 1. Git history baseline is the authoritative source for branding headers
+  try {
+    const gitBuf = require('child_process').execSync(
+      `git show ${HEADER_BASELINE_COMMIT}:public/ims/${rawFilename}`,
+      { cwd: path.resolve(__dirname, '..') }
+    );
+    const h = await headerFromBuf(gitBuf);
+    if (h) return h;
+  } catch (_) { /* file may not exist at that commit */ }
+
+  // 2. Fall back to current public/ims/ file
+  const imsPath = path.join(IMS_DIR, rawFilename);
+  if (fs.existsSync(imsPath)) {
+    const h = await headerFromBuf(fs.readFileSync(imsPath));
+    if (h) return h;
+  }
+
+  // 3. Fall back to QMS working folder
   const prefix = (docId || '').split('-')[0];
   const subdir = QMS_SUBDIR[prefix];
   if (!subdir) return '';
-  return tryFile(path.join(QMS_DIR, subdir, rawFilename));
+  const qmsPath = path.join(QMS_DIR, subdir, rawFilename);
+  if (!fs.existsSync(qmsPath)) return '';
+  return headerFromBuf(fs.readFileSync(qmsPath));
 }
 
 function patchDocxBody(originalXml, newBodyContent, headerXml) {
