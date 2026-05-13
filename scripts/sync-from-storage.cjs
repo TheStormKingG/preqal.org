@@ -11,7 +11,6 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
-const { execSync }     = require('child_process');
 const fs               = require('fs');
 const path             = require('path');
 
@@ -61,8 +60,6 @@ async function main() {
 
   console.log(ts, `— ${docs.length} doc(s) pending sync`);
 
-  const downloaded = [];
-
   for (const doc of docs) {
     const filename = (doc.file_url ?? '').split('/').pop();
 
@@ -70,14 +67,6 @@ async function main() {
     if (!filename || !filename.endsWith('.docx') ||
         filename.includes('/') || filename.includes('\\')) {
       console.log(`  SKIP ${doc.doc_id} — invalid filename`);
-      continue;
-    }
-
-    const localPath = path.join(IMS_DIR, filename);
-
-    // Guard: path must stay inside IMS_DIR
-    if (!localPath.startsWith(IMS_DIR + path.sep)) {
-      console.log(`  SKIP ${doc.doc_id} — path escape rejected`);
       continue;
     }
 
@@ -91,19 +80,14 @@ async function main() {
       continue;
     }
 
-    // 3. Save atomically: write to .tmp then rename
     const buf = Buffer.from(await blob.arrayBuffer());
-    const tmp = localPath + '.sync.tmp';
-    try {
-      fs.writeFileSync(tmp, buf);
-      fs.renameSync(tmp, localPath);
-    } catch (e) {
-      try { fs.unlinkSync(tmp); } catch (_) { /* ignore */ }
-      console.log(`  FAIL ${doc.doc_id} — file write error: ${e.message}`);
-      continue;
-    }
 
-    // 3b. Mirror to local QMS working folder (best-effort — never blocks the pipeline)
+    // 3. Mirror to local QMS working folder only (best-effort — never blocks the pipeline).
+    // NOTE: public/ims/ (the git-tracked repo copy) is intentionally NOT written here.
+    // Browser edits are authoritative as content_html in Supabase; the repo DOCX is the
+    // archival source and is only updated via a deliberate manual upload (sync-ims-file.cjs).
+    // Writing browser-edit-derived DOCX bytes back to public/ims/ caused repeated corruption
+    // when the patch algorithm mis-aligned paragraphs (restored 2026-05-13).
     const qmsPrefix = Object.keys(QMS_DIR_MAP).find(p => filename.startsWith(p));
     if (qmsPrefix) {
       const qmsDir  = QMS_DIR_MAP[qmsPrefix];
@@ -122,44 +106,17 @@ async function main() {
       }
     }
 
-    // 4. Clear content_html in DB
+    // 4. Clear content_html in DB — Storage now holds the canonical edited copy
     const { error: clearErr } = await sb
       .from('qms_documents')
       .update({ content_html: null })
       .eq('id', doc.id);
 
     if (clearErr) {
-      console.log(`  WARN ${doc.doc_id} — saved locally but DB clear failed: ${clearErr.message}`);
+      console.log(`  WARN ${doc.doc_id} — DB clear failed: ${clearErr.message}`);
     } else {
-      console.log(`  OK   ${doc.doc_id} — downloaded and DB cleared`);
+      console.log(`  OK   ${doc.doc_id} — Storage downloaded, QMS mirrored, DB draft cleared`);
     }
-
-    downloaded.push(filename);
-  }
-
-  if (downloaded.length === 0) {
-    console.log('  Nothing to commit');
-    return;
-  }
-
-  // 5. Git commit + push via osascript (uses Mac keychain credentials)
-  // Validate all filenames against strict allowlist before shell interpolation
-  const safeFiles = downloaded.filter(f => /^[A-Za-z0-9._-]+\.docx$/.test(f));
-  if (safeFiles.length === 0) {
-    console.log('  Nothing safe to commit (filenames failed allowlist)');
-    return;
-  }
-
-  const fileArgs = safeFiles.map(f => `'public/ims/${f}'`).join(' ');
-  const msg      = `sync: apply browser edits to IMS (${safeFiles.join(', ')})`;
-
-  const osCmd = `osascript -e 'do shell script "cd \\"/Users/stefangravesande/Documents/Projects/Preqal 2027/Apps/preqal.org\\" && git add ${fileArgs} && git commit -m \\"${msg}\\" && git push origin master --no-verify 2>&1"'`;
-
-  try {
-    execSync(osCmd, { stdio: 'pipe' });
-    console.log(`  PUSHED: ${safeFiles.join(', ')}`);
-  } catch (e) {
-    console.error('  Git push failed:', e.message);
   }
 }
 
