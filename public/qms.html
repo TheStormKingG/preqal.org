@@ -3459,7 +3459,7 @@ function _showPanel(id) {
     if(el) el.style.display = p===id ? PANEL_SHOW[p] : 'none';
   });
   const isEditor  = id === 'doc-editor-wrap';
-  const isDocx    = id === 'doc-preview-wrap' || isEditor;
+  const isDocx    = id === 'doc-preview-wrap' || id === 'doc-html-wrap' || isEditor;
   const hasDraft  = !!_viewerContentHtml;
   const tb = document.getElementById('doc-editor-toolbar');
   if(tb) tb.style.display = isEditor ? 'flex' : 'none';
@@ -3487,14 +3487,19 @@ async function toggleEditMode() {
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Preparing editor…';
     // Use the already-styled preview HTML as the editable content (WYSIWYG).
-    // If a draft exists, resume from it; otherwise copy the current rendered view.
+    // Draft source when content_html exists; DOCX-rendered container fallback otherwise
     const src = _viewerContentHtml
       || document.getElementById('doc-preview-container').innerHTML;
     document.getElementById('doc-editor').innerHTML = src;
     _showPanel('doc-editor-wrap');
   } else {
-    // Always return to the original DOCX view (styled, looks correct)
-    _showPanel('doc-preview-wrap');
+    // Return to draft view if one exists; otherwise return to DOCX view
+    if (_viewerContentHtml) {
+      _renderHtmlView(_viewerContentHtml);
+      _showPanel('doc-html-wrap');
+    } else {
+      _showPanel('doc-preview-wrap');
+    }
   }
 }
 
