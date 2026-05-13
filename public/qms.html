@@ -3419,6 +3419,7 @@ let _viewerBuf         = null;  // cached ArrayBuffer for the current DOCX
 let _viewerDocId       = null;  // qms_documents.id (UUID) for DB saves
 let _viewerContentHtml  = null;  // current content_html from DB (null = no draft saved)
 let _viewerCategory    = null;  // document category code (POL/PRO/MAN/WOI/FRM/TMP/REG/DIA)
+let _lastSecContent    = null;  // last focused .sec-content element — toolbar target
 /* Section templates per document category — drives the structured section editor */
 const DOC_SECTIONS = {
   POL: ['Purpose','Scope','Policy Statement','Roles and Responsibilities','Definitions','Related Documents','Review History'],
@@ -3498,6 +3499,10 @@ function _buildSectionEditor(sectionNames, contentHtml) {
       <div class="sec-content" contenteditable="true" spellcheck="true">${existing.get(name) || ''}</div>
     </div>`
   ).join('');
+  // Track which section was last focused so the toolbar can re-focus it
+  wrap.querySelectorAll('.sec-content').forEach(el => {
+    el.addEventListener('focus', () => { _lastSecContent = el; });
+  });
 }
 
 /**
@@ -3633,12 +3638,10 @@ function _showPanel(id) {
 }
 
 function execFmt(cmd, val) {
-  const active = document.activeElement;
-  if (active && active.classList.contains('sec-content')) {
-    active.focus();
-  } else {
-    document.getElementById('doc-editor').focus();
-  }
+  // Re-focus the last active section area (or plain editor) before execCommand.
+  // document.activeElement is the toolbar control at this point, not the contenteditable.
+  const target = _lastSecContent || document.getElementById('doc-editor');
+  target.focus();
   document.execCommand(cmd, false, val || null);
 }
 
@@ -3865,6 +3868,7 @@ function closeDocViewer() {
     _viewerDocId = null;
     _viewerContentHtml = null;
     _viewerCategory = null;
+    _lastSecContent = null;
     document.body.style.overflow = '';
     overlay.removeEventListener('transitionend', h);
   });
