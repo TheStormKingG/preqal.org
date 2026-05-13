@@ -3500,10 +3500,32 @@ function _parseSectionsFromHtml(html, sectionNames) {
     return map;
   }
 
-  // Format 2 — split by headings matching section names
-  // Normalize: strip leading "N." or "N. " and lowercase for comparison
+  // Format 2 — split by headings matching section names.
+  // Normalize: strip leading "N." / "N. " prefix and lowercase for comparison.
+  // Detects two heading patterns produced by mammoth:
+  //   a) <h1>–<h4> elements (Word Heading styles)
+  //   b) <p><strong>…</strong></p> or <p><b>…</b></p> — bold-only default paragraphs
+  //      (common in Preqal IMS docs where headings use bold rather than Heading styles)
   const norm = s => s.replace(/^\d+[\.\s]+/, '').trim().toLowerCase();
   const secByNorm = new Map(sectionNames.map(n => [norm(n), n]));
+
+  // Returns the matched canonical section name if node is a heading, else null.
+  const matchHeading = node => {
+    if (node.nodeType !== 1) return null;
+    const tag = node.tagName;
+    // a) real heading element
+    if (/^H[1-4]$/.test(tag)) return secByNorm.get(norm(node.textContent || '')) || null;
+    // b) bold-only paragraph: <p> whose sole non-empty child is <strong> or <b>
+    if (tag === 'P') {
+      const kids = Array.from(node.childNodes).filter(
+        n => !(n.nodeType === 3 && n.textContent.trim() === '')
+      );
+      if (kids.length === 1 && (kids[0].tagName === 'STRONG' || kids[0].tagName === 'B')) {
+        return secByNorm.get(norm(kids[0].textContent || '')) || null;
+      }
+    }
+    return null;
+  };
 
   const allNodes = Array.from(d.body.childNodes);
   let current = null;
@@ -3517,15 +3539,12 @@ function _parseSectionsFromHtml(html, sectionNames) {
   };
 
   for (const node of allNodes) {
-    if (node.nodeType === 1 && /^H[1-4]$/.test(node.tagName)) {
-      const headNorm = norm(node.textContent || '');
-      const matched  = secByNorm.get(headNorm);
-      if (matched) {
-        flush();
-        current = matched;
-        bucket  = [];
-        continue; // heading itself is omitted — the card header shows the section name
-      }
+    const matched = matchHeading(node);
+    if (matched) {
+      flush();
+      current = matched;
+      bucket  = [];
+      continue; // heading node itself is dropped — the card header shows the section name
     }
     if (current) bucket.push(node);
   }
