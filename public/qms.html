@@ -3455,7 +3455,7 @@ const DOC_IFRAME_STYLES = `
  */
 function _parseSectionsFromHtml(html, sectionNames) {
   const map = new Map();
-  if (!html || !sectionNames.length) return map;
+  if (!html || !sectionNames.length) return map; // guards sectionNames[0] below
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   const articles = doc.querySelectorAll('article[data-sec]');
