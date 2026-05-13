@@ -164,6 +164,20 @@
   #doc-editor th{background:#f8fafc;font-weight:700}
   #doc-editor ul,#doc-editor ol{padding-left:1.6em;margin:.4em 0}
   #doc-editor img{max-width:100%;height:auto}
+  #sec-editor-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none;padding:24px 32px}
+  .sec-card{max-width:820px;margin:0 auto 20px;background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12);overflow:hidden}
+  .sec-card-head{padding:11px 24px;background:#1e293b;color:#f8fafc;font-size:10.5pt;font-weight:700;letter-spacing:.02em}
+  .sec-content{padding:20px 24px;min-height:90px;outline:none;font-family:Calibri,Georgia,serif;font-size:11pt;line-height:1.6;color:#1e293b}
+  .sec-content:focus{background:#fafcff}
+  .sec-content p{margin:.3em 0}
+  .sec-content h1{font-size:18pt;font-weight:700;margin:1em 0 .35em}
+  .sec-content h2{font-size:14pt;font-weight:700;margin:.8em 0 .3em}
+  .sec-content h3{font-size:12pt;font-weight:700;margin:.7em 0 .25em}
+  .sec-content ul,.sec-content ol{padding-left:1.6em;margin:.4em 0}
+  .sec-content li{margin:.2em 0}
+  .sec-content table{border-collapse:collapse;width:100%;margin:.8em 0}
+  .sec-content td,.sec-content th{border:1px solid #cbd5e1;padding:6px 10px;font-size:10pt}
+  .sec-content th{background:#f8fafc;font-weight:700}
   /* Sheet viewer (XLSX) */
   #doc-sheet-wrap{flex:1;overflow:auto;background:#f1f5f9;display:none;padding:24px}
   #doc-sheet-wrap table{border-collapse:collapse;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.12);border-radius:4px;font-size:11px;min-width:100%}
@@ -3318,6 +3332,9 @@ init();
     <div id="doc-preview-container"></div>
   </div>
 
+  <!-- Structured section editor (shown for POL/PRO/MAN/WOI/FRM/TMP) -->
+  <div id="sec-editor-wrap"></div>
+
   <!-- DOCX editor (mammoth + contenteditable — edit mode) -->
   <div id="doc-editor-wrap">
     <div id="doc-editor" contenteditable="true" spellcheck="true"></div>
@@ -3383,6 +3400,18 @@ let _viewerFilename    = '';
 let _viewerBuf         = null;  // cached ArrayBuffer for the current DOCX
 let _viewerDocId       = null;  // qms_documents.id (UUID) for DB saves
 let _viewerContentHtml  = null;  // current content_html from DB (null = no draft saved)
+let _viewerCategory    = null;  // document category code (POL/PRO/MAN/WOI/FRM/TMP/REG/DIA)
+/* Section templates per document category — drives the structured section editor */
+const DOC_SECTIONS = {
+  POL: ['Purpose','Scope','Policy Statement','Roles and Responsibilities','Definitions','Related Documents','Review History'],
+  PRO: ['Purpose','Scope','Roles and Responsibilities','Definitions','Equipment and Materials','Procedure','Related Documents','Records','Review History'],
+  MAN: ['Introduction','Scope and Application','Quality Policy','Organisational Context','Leadership and Commitment','Planning','Support','Operation','Performance Evaluation','Improvement','Document Control','References'],
+  WOI: ['Purpose','Scope','Responsibilities','Equipment and Materials Required','Safety Precautions','Step-by-Step Instructions','Quality Checks','References'],
+  FRM: ['Instructions','Form Fields','Notes'],
+  TMP: ['Purpose','Instructions for Use','Template Content','Notes'],
+  REG: null,
+  DIA: null,
+};
 // _viewerRenderedHtml removed — DOCX now renders inside iframe, no innerHTML capture needed
 
 /* HTML draft view helper */
@@ -3415,6 +3444,8 @@ const DOC_IFRAME_STYLES = `
   strong,b{font-weight:700}
   em,i{font-style:italic}
   hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
+  article[data-sec]{margin-bottom:2.2em}
+  h2.sec-heading{font-size:14pt;font-weight:700;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:.25em;margin:.1em 0 .7em}
 `;
 function _renderHtmlView(html) {
   const frame = document.getElementById('doc-html-inner');
