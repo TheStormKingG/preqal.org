@@ -3380,7 +3380,8 @@ let _viewerFileUrl     = '';
 let _viewerFilename    = '';
 let _viewerBuf         = null;  // cached ArrayBuffer for the current DOCX
 let _viewerDocId       = null;  // qms_documents.id (UUID) for DB saves
-let _viewerContentHtml = null;  // current content_html from DB (null = no draft saved)
+let _viewerContentHtml  = null;  // current content_html from DB (null = no draft saved)
+let _viewerRenderedHtml = null;  // captured innerHTML after docx.renderAsync — editor source fallback
 
 /* HTML draft view helper */
 function _sanitizeHtml(html) {
@@ -3487,19 +3488,13 @@ async function toggleEditMode() {
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Preparing editor…';
     // Use the already-styled preview HTML as the editable content (WYSIWYG).
-    // Draft source when content_html exists; DOCX-rendered container fallback otherwise
-    const src = _viewerContentHtml
-      || document.getElementById('doc-preview-container').innerHTML;
+    // Draft source when content_html exists; captured DOCX render fallback otherwise
+    const src = _viewerContentHtml || _viewerRenderedHtml || '';
     document.getElementById('doc-editor').innerHTML = src;
     _showPanel('doc-editor-wrap');
   } else {
-    // Return to draft view if one exists; otherwise return to DOCX view
-    if (_viewerContentHtml) {
-      _renderHtmlView(_viewerContentHtml);
-      _showPanel('doc-html-wrap');
-    } else {
-      _showPanel('doc-preview-wrap');
-    }
+    // Return to iframe view — either the saved draft or the captured DOCX render
+    _showPanel('doc-html-wrap');
   }
 }
 
@@ -3507,7 +3502,8 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
   _viewerFileUrl     = fileUrl;
   _viewerFilename    = fileUrl.split('/').pop();
   _viewerDocId       = docId;
-  _viewerContentHtml = contentHtml || null;
+  _viewerContentHtml  = contentHtml || null;
+  _viewerRenderedHtml = null;
   _editMode = false;
   const ext = _viewerFilename.split('.').pop().toLowerCase();
 
@@ -3550,7 +3546,8 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
         _renderHtmlView(_viewerContentHtml);
         _showPanel('doc-html-wrap');
       } else {
-        // Render original DOCX
+        // Render original DOCX into a hidden container, then immediately capture the HTML
+        // and move it into the sandboxed iframe — extensions cannot reach inside the iframe.
         await docx.renderAsync(_viewerBuf.slice(0), container, null, {
           className: 'docx-viewer',
           inWrapper: true,
@@ -3561,7 +3558,10 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
           experimental: true,
           trimXmlDeclaration: true,
         });
-        _showPanel('doc-preview-wrap');
+        _viewerRenderedHtml = container.innerHTML;
+        container.innerHTML = '';
+        _renderHtmlView(_viewerRenderedHtml);
+        _showPanel('doc-html-wrap');
       }
 
     } else {
@@ -3701,6 +3701,7 @@ function closeDocViewer() {
     document.getElementById('doc-sheet-inner').innerHTML = '';
     document.getElementById('doc-viewer-img').src = '';
     _viewerBuf = null;
+    _viewerRenderedHtml = null;
     const _f = document.getElementById('doc-html-inner'); if(_f) _f.srcdoc = '';
     _viewerDocId = null;
     _viewerContentHtml = null;
