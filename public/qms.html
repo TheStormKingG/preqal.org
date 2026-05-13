@@ -3541,8 +3541,9 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
       const container = document.getElementById('doc-preview-container');
       container.innerHTML = '';
       if (_viewerContentHtml) {
-        // Inject saved draft — edits are visible with full brand styling preserved
-        container.innerHTML = _sanitizeHtml(_viewerContentHtml);
+        // Inject saved draft into sandboxed iframe — isolated from browser extensions
+        _renderHtmlView(_viewerContentHtml);
+        _showPanel('doc-html-wrap');
       } else {
         // Render original DOCX
         await docx.renderAsync(_viewerBuf.slice(0), container, null, {
@@ -3555,8 +3556,8 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
           experimental: true,
           trimXmlDeclaration: true,
         });
+        _showPanel('doc-preview-wrap');
       }
-      _showPanel('doc-preview-wrap');
 
     } else {
       _showPanel('doc-viewer-img-wrap');
@@ -3622,9 +3623,9 @@ async function saveChanges() {
       renderDocsTable(rows);
     }
 
-    // Show the edited content immediately — inject styled HTML back into the preview container
-    document.getElementById('doc-preview-container').innerHTML = _sanitizeHtml(_editorHtml);
-    _showPanel('doc-preview-wrap');
+    // Show the edited content immediately in the sandboxed iframe
+    _renderHtmlView(_editorHtml);
+    _showPanel('doc-html-wrap');
 
     showToast('✅', 'Changes saved', 'Your edits are saved and visible.');
 
