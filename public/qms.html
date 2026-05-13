@@ -3447,6 +3447,54 @@ const DOC_IFRAME_STYLES = `
   article[data-sec]{margin-bottom:2.2em}
   h2.sec-heading{font-size:14pt;font-weight:700;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:.25em;margin:.1em 0 .7em}
 `;
+/**
+ * Parse existing content_html into a Map<sectionName → innerHTML>.
+ * Handles two formats:
+ *   New: <article data-sec="Purpose">…</article> blocks
+ *   Legacy / mammoth: plain HTML with no data-sec articles → content goes into first section
+ */
+function _parseSectionsFromHtml(html, sectionNames) {
+  const map = new Map();
+  if (!html || !sectionNames.length) return map;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const articles = doc.querySelectorAll('article[data-sec]');
+  if (articles.length > 0) {
+    articles.forEach(a => map.set(a.dataset.sec, a.innerHTML));
+    return map;
+  }
+  // Legacy plain HTML — seed the first section with everything
+  map.set(sectionNames[0], doc.body.innerHTML);
+  return map;
+}
+
+/**
+ * Render section cards into #sec-editor-wrap, pre-filling from existing HTML.
+ */
+function _buildSectionEditor(sectionNames, contentHtml) {
+  const existing = _parseSectionsFromHtml(contentHtml || '', sectionNames);
+  const wrap = document.getElementById('sec-editor-wrap');
+  wrap.innerHTML = sectionNames.map(name =>
+    `<div class="sec-card" data-section="${esc(name)}">
+      <div class="sec-card-head">${esc(name)}</div>
+      <div class="sec-content" contenteditable="true" spellcheck="true">${existing.get(name) || ''}</div>
+    </div>`
+  ).join('');
+}
+
+/**
+ * Collect content from all section cards and produce structured HTML for storage.
+ * Output: <article data-sec="…"><h2 class="sec-heading">…</h2>…content…</article> blocks.
+ */
+function _serializeSections() {
+  const cards = document.getElementById('sec-editor-wrap').querySelectorAll('.sec-card');
+  return Array.from(cards).map(card => {
+    const name  = card.dataset.section;
+    const inner = card.querySelector('.sec-content').innerHTML;
+    return `<article data-sec="${esc(name)}"><h2 class="sec-heading">${esc(name)}</h2>${inner}</article>`;
+  }).join('\n');
+}
+
 function _renderHtmlView(html) {
   const frame = document.getElementById('doc-html-inner');
   frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
