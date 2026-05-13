@@ -3370,11 +3370,11 @@ init();
   </div>
 
   <!-- HTML draft view (shown when content_html is saved in DB) -->
-  <!-- allow-scripts is required so docx-preview JS can run inside the iframe for the DOCX path.  -->
-  <!-- Extensions default to allFrames:false so they cannot reach inside this iframe.            -->
+  <!-- allow-same-origin lets the parent read frame.contentDocument for height/rendering.       -->
+  <!-- Extensions default to allFrames:false so they cannot reach inside this iframe.          -->
   <div id="doc-html-wrap">
     <iframe id="doc-html-inner"
-      sandbox="allow-same-origin allow-scripts"
+      sandbox="allow-same-origin"
       style="width:100%;border:none;display:block;min-height:500px;"
       title="Document preview">
     </iframe>
@@ -3541,61 +3541,39 @@ function _renderHtmlView(html) {
   };
 }
 
-/* Render a DOCX ArrayBuffer INSIDE the sandboxed iframe.
-   docx-preview JS runs entirely inside the iframe so browser extensions
-   (which inject into the top frame only) can never touch the rendered text. */
-const _DOCX_IFRAME_PAGE = `<!DOCTYPE html><html><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.css">
-<style>
-  html,body{margin:0;padding:0;background:#cbd5e1}
-  body{padding:24px 0}
-  .docx-wrapper{background:transparent!important}
-  .docx-wrapper>section.docx{margin:0 auto 24px;box-shadow:0 8px 40px rgba(0,0,0,.25)!important;border-radius:2px}
-</style>
-</head><body>
-<div id="t"></div>
-<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.umd.min.js"><\/script>
-<script>
-window.addEventListener('message', async function(e) {
-  if (!e.data || e.data.type !== 'RENDER_DOCX') return;
-  try {
-    await docx.renderAsync(e.data.buf, document.getElementById('t'), null, {
-      className: 'docx-viewer',
-      inWrapper: true,
-      ignoreWidth: false,
-      ignoreHeight: false,
-      ignoreFonts: false,
-      breakPages: true,
-      experimental: true,
-      trimXmlDeclaration: true,
-    });
-  } catch(err) {
-    document.getElementById('t').innerHTML =
-      '<p style="color:#ef4444;font-size:13px;padding:24px">Render error: ' + err.message + '</p>';
-  }
-  parent.postMessage({ type: 'DOCX_HEIGHT', height: document.body.scrollHeight }, '*');
-});
-<\/script>
-</body></html>`;
-
+/* Render a DOCX ArrayBuffer into the sandboxed iframe.
+   The parent's already-loaded docx (docx-preview) renders directly into
+   frame.contentDocument — no CDN scripts needed inside the iframe.
+   Extensions injecting into the top frame cannot touch frame.contentDocument. */
 function _renderDocxView(buf) {
   const frame = document.getElementById('doc-html-inner');
-  frame.style.height = '500px'; // reset before new content
-  frame.srcdoc = _DOCX_IFRAME_PAGE;
-  frame.onload = () => {
+  frame.style.height = '500px';
+  // Inject a CSS-only shell — no scripts, no CDN calls inside the iframe
+  frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.css">
+<style>html,body{margin:0;padding:0;background:#cbd5e1}body{padding:24px 0}.docx-wrapper{background:transparent!important}.docx-wrapper>section.docx{margin:0 auto 24px;box-shadow:0 8px 40px rgba(0,0,0,.25)!important;border-radius:2px}</style>
+</head><body><div id="t"></div></body></html>`;
+  frame.onload = async () => {
     frame.onload = null;
-    // Transfer the ArrayBuffer — zero-copy, avoids any main-thread exposure
-    frame.contentWindow.postMessage({ type: 'RENDER_DOCX', buf }, '*', [buf]);
+    const target = frame.contentDocument.getElementById('t');
+    try {
+      await docx.renderAsync(buf, target, null, {
+        className: 'docx-viewer',
+        inWrapper: true,
+        ignoreWidth: false,
+        ignoreHeight: false,
+        ignoreFonts: false,
+        breakPages: true,
+        experimental: true,
+        trimXmlDeclaration: true,
+      });
+      const h = frame.contentDocument.body.scrollHeight;
+      if (h > 0) frame.style.height = (h + 32) + 'px';
+    } catch (err) {
+      target.innerHTML = '<p style="color:#ef4444;font-size:13px;padding:24px">Render error: ' + err.message + '</p>';
+    }
   };
 }
-
-/* Listen for the iframe reporting its rendered height */
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.type === 'DOCX_HEIGHT') {
-    const frame = document.getElementById('doc-html-inner');
-    if (frame && e.data.height > 0) frame.style.height = (e.data.height + 32) + 'px';
-  }
-});
 
 /* Close download menu on outside click */
 document.addEventListener('click', function(e) {
@@ -3816,9 +3794,8 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null, c
         _renderHtmlView(_viewerContentHtml);
         _showPanel('doc-html-wrap');
       } else {
-        // Render the DOCX inside the sandboxed iframe using postMessage.
-        // docx-preview JS runs entirely within the iframe — browser extensions
-        // (allFrames:false by default) cannot inject there, so text is never scrambled.
+        // Render DOCX into the sandboxed iframe's DOM — extension MutationObservers
+        // on the top frame cannot reach frame.contentDocument, so text stays correct.
         _renderDocxView(_viewerBuf.slice(0));
         _showPanel('doc-html-wrap');
       }
