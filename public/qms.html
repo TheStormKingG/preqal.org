@@ -3325,7 +3325,11 @@ init();
 
   <!-- HTML draft view (shown when content_html is saved in DB) -->
   <div id="doc-html-wrap">
-    <div class="doc-html-inner" id="doc-html-inner"></div>
+    <iframe id="doc-html-inner"
+      sandbox="allow-same-origin"
+      style="width:100%;border:none;display:block;min-height:500px;"
+      title="Document preview">
+    </iframe>
   </div>
 
   <!-- XLSX sheet viewer -->
