@@ -1916,7 +1916,7 @@ function renderFolderGrid(data){
 function openDocViewerById(rowId) {
   const r = docsAllData.find(d => d.id === rowId);
   if (!r || !r.file_url) return;
-  openDocViewer(resolveFileUrl(r.file_url), r.title, r.id, r.content_html || null);
+  openDocViewer(resolveFileUrl(r.file_url), r.title, r.id, r.content_html || null, r.category || null);
 }
 
 function renderDocsTable(data){
@@ -3296,6 +3296,24 @@ init();
 
   <!-- DOCX formatting toolbar (visible only for DOCX) -->
   <div id="doc-editor-toolbar">
+    <select class="tb-sel" onchange="execFmt('fontName',this.value);this.value=''" title="Font family">
+      <option value="">Font</option>
+      <option value="Calibri">Calibri</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Courier New">Courier New</option>
+    </select>
+    <select class="tb-sel" onchange="execFmt('fontSize',this.value);this.value=''" title="Font size">
+      <option value="">Size</option>
+      <option value="1">8pt</option>
+      <option value="2">10pt</option>
+      <option value="3">12pt</option>
+      <option value="4">14pt</option>
+      <option value="5">18pt</option>
+      <option value="6">24pt</option>
+    </select>
+    <div class="tb-sep"></div>
     <select class="tb-sel" onchange="execFmt('formatBlock',this.value);this.value='p'">
       <option value="p">Normal</option>
       <option value="h1">Heading 1</option>
@@ -3587,6 +3605,7 @@ const PANEL_SHOW = {
   'doc-preview-wrap':   'block',
   'doc-html-wrap':      'block',
   'doc-editor-wrap':    'block',
+  'sec-editor-wrap':    'block',
   'doc-sheet-wrap':     'block',
   'doc-viewer-img-wrap':'flex',
   'doc-viewer-loading': 'flex'
@@ -3596,7 +3615,7 @@ function _showPanel(id) {
     const el = document.getElementById(p);
     if(el) el.style.display = p===id ? PANEL_SHOW[p] : 'none';
   });
-  const isEditor  = id === 'doc-editor-wrap';
+  const isEditor  = id === 'doc-editor-wrap' || id === 'sec-editor-wrap';
   const isDocx    = id === 'doc-preview-wrap' || id === 'doc-html-wrap' || isEditor;
   const hasDraft  = !!_viewerContentHtml;
   const tb = document.getElementById('doc-editor-toolbar');
@@ -3614,7 +3633,12 @@ function _showPanel(id) {
 }
 
 function execFmt(cmd, val) {
-  document.getElementById('doc-editor').focus();
+  const active = document.activeElement;
+  if (active && active.classList.contains('sec-content')) {
+    active.focus();
+  } else {
+    document.getElementById('doc-editor').focus();
+  }
   document.execCommand(cmd, false, val || null);
 }
 
@@ -3624,30 +3648,40 @@ async function toggleEditMode() {
   if (_editMode) {
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Preparing editor…';
+
+    // Resolve initial source HTML (saved draft first, then mammoth from DOCX)
     let src = _viewerContentHtml || '';
     if (!src && _viewerBuf) {
-      // No saved draft — use mammoth to convert the DOCX to clean editable HTML.
-      // mammoth works from the buffer (no DOM needed) so extension can't touch it here.
       try {
         const result = await mammoth.convertToHtml({ arrayBuffer: _viewerBuf.slice(0) });
         src = result.value;
       } catch (e) {
-        src = '<p style="color:#ef4444">Could not load document for editing: ' + e.message + '</p>';
+        src = '';
       }
     }
-    document.getElementById('doc-editor').innerHTML = src;
-    _showPanel('doc-editor-wrap');
+
+    const sections = _viewerCategory ? DOC_SECTIONS[_viewerCategory] : null;
+    if (sections) {
+      // Structured section editor
+      _buildSectionEditor(sections, src);
+      _showPanel('sec-editor-wrap');
+    } else {
+      // Fallback plain editor for REG / DIA / unknown category
+      document.getElementById('doc-editor').innerHTML = src || '<p></p>';
+      _showPanel('doc-editor-wrap');
+    }
   } else {
-    // Return to iframe view — iframe still holds the clean DOCX or HTML render
+    // Return to iframe view
     _showPanel('doc-html-wrap');
   }
 }
 
-async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
+async function openDocViewer(fileUrl, title, docId = null, contentHtml = null, category = null) {
   _viewerFileUrl     = fileUrl;
   _viewerFilename    = fileUrl.split('/').pop();
   _viewerDocId       = docId;
   _viewerContentHtml  = contentHtml || null;
+  _viewerCategory    = category;
   _editMode = false;
   const ext = _viewerFilename.split('.').pop().toLowerCase();
 
@@ -3736,7 +3770,10 @@ async function saveChanges() {
   }
 
   // Capture editor HTML before try — reused in catch for draft download fallback
-  const _editorHtml = document.getElementById('doc-editor').innerHTML;
+  const secWrap = document.getElementById('sec-editor-wrap');
+  const _editorHtml = secWrap.style.display !== 'none' && secWrap.children.length > 0
+    ? _serializeSections()
+    : document.getElementById('doc-editor').innerHTML;
 
   try {
     if (!_viewerDocId) throw new Error('Document ID not available — cannot save. Reload and try again.');
@@ -3819,6 +3856,7 @@ function closeDocViewer() {
   overlay.addEventListener('transitionend', function h() {
     overlay.classList.remove('viewer-open');
     document.getElementById('doc-editor').innerHTML = '';
+    document.getElementById('sec-editor-wrap').innerHTML = '';
     document.getElementById('doc-preview-container').innerHTML = '';
     document.getElementById('doc-sheet-inner').innerHTML = '';
     document.getElementById('doc-viewer-img').src = '';
@@ -3826,6 +3864,7 @@ function closeDocViewer() {
     const _f = document.getElementById('doc-html-inner'); if(_f) _f.srcdoc = '';
     _viewerDocId = null;
     _viewerContentHtml = null;
+    _viewerCategory = null;
     document.body.style.overflow = '';
     overlay.removeEventListener('transitionend', h);
   });
