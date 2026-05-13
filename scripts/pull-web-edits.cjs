@@ -2,42 +2,28 @@
 'use strict';
 
 /**
- * pull-web-edits.cjs — Sync browser-made document edits back to local DOCX files.
+ * pull-web-edits.cjs v2 — HTML-to-OOXML body replacement
  *
- * When a QMS document is edited in the browser (qms.html), the edited HTML is
- * saved to qms_documents.content_html in Supabase. This script:
- *   1. Queries for documents where content_html IS NOT NULL
- *   2. Extracts plain text from the saved HTML
- *   3. Opens the matching local .docx file in public/ims/
- *   4. Extracts the original plain text from word/document.xml
- *   5. Diffs the two texts at the word level
- *   6. Applies changed words back to the DOCX XML (preserving all formatting)
- *   7. Overwrites the local .docx file with the patched version
- *   8. Optionally clears content_html in the DB so the document is marked in-sync
+ * Converts content_html saved by the QMS browser editor into proper OOXML and
+ * replaces the <w:body> of the matching local DOCX file — preserving the
+ * original document's header, footer, styles, and page layout (w:sectPr).
+ *
+ * Unlike the previous word-diff approach, this handles ALL edit types:
+ * paragraph additions, deletions, formatting changes, list edits, table edits.
  *
  * Usage:
- *   SUPABASE_SERVICE_KEY=<service_role_key> node scripts/pull-web-edits.cjs [--apply] [--clear]
+ *   SUPABASE_SERVICE_KEY=<key> node scripts/pull-web-edits.cjs [--apply] [--clear]
  *
  * Flags:
- *   (none)    Dry run — reports what would change, does NOT write files or clear DB
- *   --apply   Patch local DOCX files with detected text changes
- *   --clear   After --apply, clear content_html in DB (marks document as in-sync)
- *
- * Limitation: word-level diff handles substitutions only. Inserted or deleted words
- * are detected and reported as WARN but cannot be patched into the DOCX automatically
- * (DOCX XML structure cannot be safely modified without a full OOXML parser).
- * If a changed word is split across multiple Word formatting runs (e.g., partially
- * bold), the patch will report a warning and leave that word unchanged.
- * Fix either case manually in Word if needed.
- *
- * Get the service role key from:
- *   Supabase → Project gndcjmxxgtnoidxgcdnx → Settings → API → service_role
+ *   (none)   Dry run — reports docs with pending edits, writes nothing
+ *   --apply  Replace body content in local DOCX files
+ *   --clear  After --apply, clear content_html in DB (marks doc as in-sync)
  */
 
-const JSZip   = require('jszip');
+const JSZip = require('jszip');
 const { createClient } = require('@supabase/supabase-js');
-const fs      = require('fs');
-const path    = require('path');
+const fs   = require('fs');
+const path = require('path');
 
 const SUPABASE_URL = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
 const IMS_DIR      = path.resolve(__dirname, '../public/ims');
@@ -45,143 +31,302 @@ const APPLY        = process.argv.includes('--apply');
 const CLEAR        = process.argv.includes('--clear');
 
 if (CLEAR && !APPLY) {
-  console.error('\nERROR: --clear requires --apply (nothing to clear on a dry run).\n');
+  console.error('\nERROR: --clear requires --apply.\n');
   process.exit(1);
 }
 
-// ─── Text extraction from HTML ────────────────────────────────────────────────
-// Strips all HTML tags, decodes common entities, collapses whitespace.
-// The result is the raw visible text of the document in reading order.
-function extractTextFromHtml(html) {
-  return html
-    .replace(/<style[\s\S]*?<\/style>/gi, '')  // remove embedded stylesheets
-    .replace(/<script[\s\S]*?<\/script>/gi, '') // remove any scripts
-    .replace(/<[^>]+>/g, ' ')                   // strip all tags
-    .replace(/&amp;/g,  '&')
-    .replace(/&lt;/g,   '<')
-    .replace(/&gt;/g,   '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g,  "'")
-    .replace(/&nbsp;|&#160;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// ─── Text extraction from DOCX XML ───────────────────────────────────────────
-// Concatenates the text content of all <w:t> elements in document order.
-// This is exactly the text that Word/docx-preview would display.
-function extractTextFromDocxXml(xml) {
-  let text = '';
-  const regex = /<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g;
-  let m;
-  while ((m = regex.exec(xml)) !== null) {
-    text += m[1];
-  }
-  return text.replace(/\s+/g, ' ').trim();
-}
-
-// ─── Word-level diff ──────────────────────────────────────────────────────────
-// Returns an object with:
-//   changes:    { oldWord, newWord }[] — word substitutions that can be patched
-//   unhandled:  string[]              — insertions/deletions that cannot be auto-patched
-//
-// Uses a sliding-window scan: when words diverge, it looks up to 5 tokens
-// ahead in each side to find where they resync. Pure substitutions go into
-// `changes`. Insertions and deletions are flagged in `unhandled`.
-function findWordChanges(oldText, newText) {
-  const oldWords = oldText.match(/\S+/g) || [];
-  const newWords = newText.match(/\S+/g) || [];
-
-  const changes   = [];
-  const unhandled = [];
-  let i = 0, j = 0;
-
-  while (i < oldWords.length || j < newWords.length) {
-    const ow = oldWords[i];
-    const nw = newWords[j];
-
-    if (i >= oldWords.length) {
-      unhandled.push(`inserted "${nw}"`);
-      j++; continue;
-    }
-    if (j >= newWords.length) {
-      unhandled.push(`deleted "${ow}"`);
-      i++; continue;
-    }
-
-    if (ow === nw) { i++; j++; continue; } // words match — no change
-
-    // Words differ. Look ahead to find how they resync.
-    const WINDOW = 5;
-    let matched = false;
-
-    for (let k = 1; k <= WINDOW && !matched; k++) {
-      // Extra word(s) in old (deletion in new)
-      if (i + k < oldWords.length && oldWords[i + k] === nw) {
-        for (let d = 0; d < k; d++) unhandled.push(`deleted "${oldWords[i + d]}"`);
-        i += k; matched = true; break;
-      }
-      // Extra word(s) in new (insertion in old)
-      if (j + k < newWords.length && ow === newWords[j + k]) {
-        for (let d = 0; d < k; d++) unhandled.push(`inserted "${newWords[j + d]}"`);
-        j += k; matched = true; break;
-      }
-    }
-
-    if (!matched) {
-      // Direct word substitution — can be patched
-      changes.push({ oldWord: ow, newWord: nw });
-      i++; j++;
-    }
-  }
-
-  return { changes, unhandled };
-}
-
-// ─── Escape string for use in a RegExp ───────────────────────────────────────
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-// ─── Escape text for XML character data ──────────────────────────────────────
-function escapeXml(str) {
-  return str
+// ─── XML escaping ─────────────────────────────────────────────────────────────
+function escXml(s) {
+  return String(s || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-// ─── Apply word changes to DOCX XML ──────────────────────────────────────────
-// Replaces each oldWord with newWord inside <w:t>...</w:t> elements only.
-// Returns { patchedXml, applied: number, skipped: string[] }.
-function applyChangesToXml(xml, changes) {
-  let patchedXml = xml;
-  let applied = 0;
-  const skipped = [];
+// ─── HTML tokenizer ───────────────────────────────────────────────────────────
+// Produces a flat list of {type, tag, attrs, content} tokens from HTML string.
+function tokenizeHtml(html) {
+  const tokens  = [];
+  const tagRe   = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^>]*)?)(\/?)\s*>/g;
+  // Self-closing void elements
+  const VOID    = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  let lastIdx   = 0;
+  let m;
 
-  for (const { oldWord, newWord } of changes) {
-    const escapedOld    = escapeRegex(escapeXml(oldWord));
-    const escapedNewXml = escapeXml(newWord);
+  const decodeEntities = s => s
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n));
 
-    // Primary: match the old word inside a <w:t> element using lookahead/lookbehind
-    // to prevent partial matches (e.g. "it" inside "with"). Handles punctuation-
-    // adjacent words by using non-word-char boundaries rather than \b.
-    const regex = new RegExp(
-      `(<w:t(?:\\s[^>]*)?>(?:[^<]*)?)(?<![\\w])${escapedOld}(?![\\w])((?:[^<]*)?<\\/w:t>)`,
-      'g'
-    );
+  while ((m = tagRe.exec(html)) !== null) {
+    if (m.index > lastIdx) {
+      const text = decodeEntities(html.slice(lastIdx, m.index));
+      if (text) tokens.push({ type: 'text', content: text });
+    }
+    const isClose     = m[1] === '/';
+    const tag         = m[2].toLowerCase();
+    const isSelfClose = m[4] === '/' || VOID.has(tag);
 
-    const before = patchedXml;
-    patchedXml = patchedXml.replace(regex, `$1${escapedNewXml}$2`);
+    const attrs = {};
+    const attrRe = /([a-zA-Z][a-zA-Z0-9\-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/g;
+    let am;
+    while ((am = attrRe.exec(m[3])) !== null) {
+      if (am[1]) attrs[am[1].toLowerCase()] = am[2] ?? am[3] ?? am[4] ?? true;
+    }
 
-    if (patchedXml !== before) {
-      applied++;
-    } else {
-      skipped.push(`"${oldWord}" → "${newWord}" (word may be split across formatting runs)`);
+    if (isClose)         tokens.push({ type: 'close', tag });
+    else if (isSelfClose) tokens.push({ type: 'self',  tag, attrs });
+    else                 tokens.push({ type: 'open',  tag, attrs });
+
+    lastIdx = m.index + m[0].length;
+  }
+
+  if (lastIdx < html.length) {
+    const text = decodeEntities(html.slice(lastIdx));
+    if (text.trim()) tokens.push({ type: 'text', content: text });
+  }
+
+  return tokens;
+}
+
+// ─── Build node tree ──────────────────────────────────────────────────────────
+function buildTree(tokens) {
+  const root  = { tag: 'root', attrs: {}, children: [] };
+  const stack = [root];
+
+  for (const tok of tokens) {
+    const parent = stack[stack.length - 1];
+    if (tok.type === 'text') {
+      parent.children.push({ type: 'text', content: tok.content });
+    } else if (tok.type === 'self') {
+      parent.children.push({ type: 'element', tag: tok.tag, attrs: tok.attrs, children: [] });
+    } else if (tok.type === 'open') {
+      const node = { type: 'element', tag: tok.tag, attrs: tok.attrs, children: [] };
+      parent.children.push(node);
+      stack.push(node);
+    } else if (tok.type === 'close') {
+      for (let i = stack.length - 1; i > 0; i--) {
+        if (stack[i].tag === tok.tag) { stack.length = i; break; }
+      }
+    }
+  }
+  return root;
+}
+
+// ─── OOXML run builder ────────────────────────────────────────────────────────
+function wRPr({ bold, italic, underline, size } = {}) {
+  let s = '';
+  if (bold)      s += '<w:b/><w:bCs/>';
+  if (italic)    s += '<w:i/><w:iCs/>';
+  if (underline) s += '<w:u w:val="single"/>';
+  if (size)      s += `<w:sz w:val="${size}"/><w:szCs w:val="${size}"/>`;
+  return s ? `<w:rPr>${s}</w:rPr>` : '';
+}
+
+function wRun(text, fmt = {}) {
+  if (!text) return '';
+  const displayText = text.replace(/\n/g, ' ');
+  return `<w:r>${wRPr(fmt)}<w:t xml:space="preserve">${escXml(displayText)}</w:t></w:r>`;
+}
+
+// ─── Inline run collector ─────────────────────────────────────────────────────
+// Walks mixed inline content (text, <strong>, <em>, <a>, <br>, etc.) and
+// emits OOXML runs. Inline tags accumulate formatting in ctx.
+function inlineToRuns(nodes, ctx = {}) {
+  let out = '';
+  for (const n of nodes) {
+    if (n.type === 'text') {
+      const txt = n.content.replace(/\n/g, ' ');
+      if (txt) out += wRun(txt, ctx);
+    } else if (n.type === 'element') {
+      switch (n.tag) {
+        case 'strong': case 'b':
+          out += inlineToRuns(n.children, { ...ctx, bold: true }); break;
+        case 'em': case 'i':
+          out += inlineToRuns(n.children, { ...ctx, italic: true }); break;
+        case 'u':
+          out += inlineToRuns(n.children, { ...ctx, underline: true }); break;
+        case 'br':
+          out += `<w:r><w:br/></w:r>`; break;
+        case 'span': case 'a': case 'abbr': case 'cite': case 'mark': case 'sub': case 'sup':
+          out += inlineToRuns(n.children, ctx); break;
+        default:
+          // Unknown inline — pass through
+          out += inlineToRuns(n.children, ctx);
+      }
+    }
+  }
+  return out;
+}
+
+// ─── Block converter ──────────────────────────────────────────────────────────
+// Converts an array of block nodes to OOXML paragraphs and tables.
+// Returns a string of OOXML elements.
+function blocksToOoxml(nodes) {
+  let out = '';
+
+  for (const n of nodes) {
+    if (n.type === 'text') {
+      const txt = n.content.trim();
+      if (txt) out += `<w:p><w:r><w:t xml:space="preserve">${escXml(txt)}</w:t></w:r></w:p>`;
+      continue;
+    }
+    if (n.type !== 'element') continue;
+
+    switch (n.tag) {
+      case 'p': case 'div': {
+        const runs = inlineToRuns(n.children);
+        out += runs
+          ? `<w:p><w:pPr><w:spacing w:after="80"/></w:pPr>${runs}</w:p>`
+          : `<w:p><w:pPr><w:spacing w:after="80"/></w:pPr></w:p>`;
+        break;
+      }
+
+      case 'h1':
+        out += headingPara(n, 32, 240, 120); break;
+      case 'h2':
+        out += headingPara(n, 28, 200, 100); break;
+      case 'h3':
+        out += headingPara(n, 24, 180,  80); break;
+      case 'h4':
+        out += headingPara(n, 22, 160,  60); break;
+
+      case 'ul': {
+        for (const li of n.children.filter(c => c.tag === 'li')) {
+          const runs = inlineToRuns(li.children);
+          out += `<w:p>`
+               + `<w:pPr><w:spacing w:after="60"/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `<w:r><w:t xml:space="preserve">•\t</w:t></w:r>`
+               + `${runs}</w:p>`;
+        }
+        break;
+      }
+
+      case 'ol': {
+        let i = 1;
+        for (const li of n.children.filter(c => c.tag === 'li')) {
+          const runs = inlineToRuns(li.children);
+          out += `<w:p>`
+               + `<w:pPr><w:spacing w:after="60"/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `<w:r><w:t xml:space="preserve">${i++}.\t</w:t></w:r>`
+               + `${runs}</w:p>`;
+        }
+        break;
+      }
+
+      case 'table':
+        out += tableToOoxml(n); break;
+
+      case 'hr':
+        out += `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="CBD5E1"/></w:pBdr></w:pPr></w:p>`;
+        break;
+
+      case 'blockquote':
+        out += `<w:p><w:pPr><w:ind w:left="720"/></w:pPr>${inlineToRuns(n.children)}</w:p>`;
+        break;
+
+      case 'article': {
+        // Section wrapper produced by the QMS browser editor.
+        // Emit a bold heading for the section name, then convert children —
+        // stripping any h2.sec-heading already embedded in the saved HTML
+        // (old saves baked the heading into the article content; new saves don't).
+        const secName = n.attrs['data-sec'] || '';
+        if (secName) out += sectionHeadingPara(secName);
+        const children = n.children.filter(c =>
+          !(c.tag === 'h2' && /sec-heading/.test(c.attrs?.class || ''))
+        );
+        out += blocksToOoxml(children);
+        break;
+      }
+
+      default:
+        // Unknown block — try as inline paragraph
+        out += blocksToOoxml(n.children);
     }
   }
 
-  return { patchedXml, applied, skipped };
+  return out || '<w:p/>';
+}
+
+// ─── Heading paragraph ────────────────────────────────────────────────────────
+function headingPara(node, halfPt, spaceBefore, spaceAfter) {
+  const runs = inlineToRuns(node.children, { bold: true, size: halfPt });
+  return `<w:p>`
+       + `<w:pPr><w:spacing w:before="${spaceBefore}" w:after="${spaceAfter}"/></w:pPr>`
+       + `${runs}</w:p>`;
+}
+
+// Section heading: matches the .sec-card-head style (bold, prominent)
+function sectionHeadingPara(text) {
+  return `<w:p>`
+       + `<w:pPr><w:spacing w:before="240" w:after="80"/></w:pPr>`
+       + `<w:r><w:rPr><w:b/><w:bCs/><w:sz w:val="28"/><w:szCs w:val="28"/>`
+       + `<w:u w:val="single"/></w:rPr>`
+       + `<w:t xml:space="preserve">${escXml(text)}</w:t></w:r>`
+       + `</w:p>`;
+}
+
+// ─── Table converter ──────────────────────────────────────────────────────────
+function tableToOoxml(tableNode) {
+  const rows = [];
+  const walk = ns => {
+    for (const n of ns) {
+      if (n.tag === 'tr')   rows.push(n);
+      else if (n.children) walk(n.children);
+    }
+  };
+  walk(tableNode.children);
+
+  const tblPr = `<w:tblPr>`
+              + `<w:tblW w:w="0" w:type="auto"/>`
+              + `<w:tblBorders>`
+              + `<w:top w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `<w:left w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `<w:bottom w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `<w:right w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `<w:insideH w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `<w:insideV w:val="single" w:sz="4" w:color="94A3B8"/>`
+              + `</w:tblBorders></w:tblPr>`;
+
+  const rowsXml = rows.map(tr => {
+    const cells = tr.children.filter(c => c.tag === 'td' || c.tag === 'th').map(cell => {
+      const isHdr  = cell.tag === 'th';
+      const runs   = inlineToRuns(cell.children, { bold: isHdr });
+      const shading = isHdr
+        ? `<w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/>`
+        : '';
+      return `<w:tc>`
+           + (shading ? `<w:tcPr>${shading}</w:tcPr>` : '')
+           + `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>${runs}</w:p>`
+           + `</w:tc>`;
+    }).join('');
+    return `<w:tr>${cells}</w:tr>`;
+  }).join('');
+
+  return `<w:tbl>${tblPr}${rowsXml}</w:tbl>`;
+}
+
+// ─── Top-level HTML → OOXML ───────────────────────────────────────────────────
+function htmlToOoxml(html) {
+  if (!html || !html.trim()) return '<w:p/>';
+  const tokens = tokenizeHtml(html);
+  const tree   = buildTree(tokens);
+  return blocksToOoxml(tree.children);
+}
+
+// ─── DOCX body replacement ────────────────────────────────────────────────────
+function extractSectPr(docXml) {
+  const m = docXml.match(/<w:sectPr[\s\S]*?<\/w:sectPr>/);
+  return m ? m[0] : '';
+}
+
+function patchDocxBody(originalXml, newBodyContent) {
+  const sectPr    = extractSectPr(originalXml);
+  const newBody   = `<w:body>${newBodyContent}${sectPr}</w:body>`;
+  const patched   = originalXml.replace(/<w:body(?:\s[^>]*)?>[\s\S]*<\/w:body>/, newBody);
+  if (patched === originalXml) throw new Error('<w:body> not found in document.xml');
+  return patched;
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -195,7 +340,6 @@ async function main() {
 
   const sb = createClient(SUPABASE_URL, key);
 
-  // Fetch Preqal's own docs (client_id IS NULL) that have browser edits
   const { data: docs, error } = await sb
     .from('qms_documents')
     .select('id, doc_id, title, file_url, content_html')
@@ -213,57 +357,45 @@ async function main() {
     return;
   }
 
-  console.log(`\n${APPLY ? '🔧' : '🔍'}  ${APPLY ? 'Applying' : 'Detecting'} browser edits in ${docs.length} document(s)…\n`);
+  console.log(`\n${APPLY ? '🔧' : '🔍'}  ${APPLY ? 'Applying' : 'Previewing'} browser edits in ${docs.length} document(s)…\n`);
 
   const results = [];
 
   for (const doc of docs) {
     const docId = doc.doc_id || '(no id)';
     const title = doc.title  || '(no title)';
-
     const rawFilename = (doc.file_url || '').split('/').pop();
 
-    // Guard: reject filenames with path separators (path traversal defence)
-    if (!rawFilename || rawFilename.includes('/') || rawFilename.includes('\\')) {
-      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Rejected: invalid filename in file_url' });
+    if (!rawFilename || /[\\/]/.test(rawFilename)) {
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Invalid filename in file_url' });
       continue;
     }
-
     if (!rawFilename.endsWith('.docx')) {
       results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Not a DOCX — sync not applicable' });
       continue;
     }
 
     const localPath = path.join(IMS_DIR, rawFilename);
-
-    // Guard: ensure resolved path stays inside IMS_DIR (path traversal defence)
-    if (!localPath.startsWith(IMS_DIR + path.sep) && localPath !== IMS_DIR) {
-      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Rejected: path escapes IMS_DIR' });
+    if (!localPath.startsWith(IMS_DIR + path.sep)) {
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: 'Path escapes IMS_DIR' });
       continue;
     }
-
     if (!fs.existsSync(localPath)) {
-      results.push({ doc_id: docId, title, status: 'SKIP', detail: `Local file not found: public/ims/${rawFilename}` });
+      results.push({ doc_id: docId, title, status: 'SKIP', detail: `File not found: public/ims/${rawFilename}` });
       continue;
     }
 
-    // 1. Extract plain text from browser-edited HTML
-    const htmlText = extractTextFromHtml(doc.content_html);
-
-    // 2. Load local DOCX as ZIP
-    let docxBuffer;
-    try {
-      docxBuffer = fs.readFileSync(localPath);
-    } catch (e) {
-      results.push({ doc_id: docId, title, status: 'FAIL', detail: `File read error: ${e.message}` });
+    if (!APPLY) {
+      results.push({ doc_id: docId, title, status: 'WOULD_PATCH', detail: 'Browser edits pending — run --apply to sync' });
       continue;
     }
 
+    // Load DOCX as ZIP
     let zip;
     try {
-      zip = await JSZip.loadAsync(docxBuffer);
+      zip = await JSZip.loadAsync(fs.readFileSync(localPath));
     } catch (e) {
-      results.push({ doc_id: docId, title, status: 'FAIL', detail: `Could not open DOCX as ZIP: ${e.message}` });
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `Cannot open DOCX: ${e.message}` });
       continue;
     }
 
@@ -273,128 +405,80 @@ async function main() {
       continue;
     }
 
-    const originalXml  = await docXmlFile.async('string');
-    const originalText = extractTextFromDocxXml(originalXml);
+    const originalXml = await docXmlFile.async('string');
 
-    // 3. Diff the texts at the word level
-    const { changes, unhandled } = findWordChanges(originalText, htmlText);
-
-    // Warn if texts differ but no substitutions were found (only insertions/deletions)
-    if (changes.length === 0) {
-      if (unhandled.length > 0) {
-        results.push({ doc_id: docId, title, status: 'WARN', detail: `Unhandled changes (insertions/deletions only — patch manually): ${unhandled.slice(0, 5).join(', ')}` });
-      } else {
-        results.push({ doc_id: docId, title, status: 'IN_SYNC', detail: 'Text matches — nothing to patch' });
-      }
-      continue;
-    }
-
-    const changesDesc = changes.map(c => `"${c.oldWord}" → "${c.newWord}"`).join(', ');
-    const unhandledNote = unhandled.length > 0 ? `  |  unhandled: ${unhandled.slice(0, 3).join(', ')}` : '';
-
-    if (!APPLY) {
-      results.push({ doc_id: docId, title, status: 'WOULD_PATCH', detail: changesDesc + unhandledNote });
-      continue;
-    }
-
-    // 4. Apply changes to the XML
-    const { patchedXml, applied, skipped } = applyChangesToXml(originalXml, changes);
-
-    if (applied === 0) {
-      results.push({ doc_id: docId, title, status: 'WARN', detail: `Diff found changes but none could be applied (${skipped.join('; ')})` });
-      continue;
-    }
-
-    // 5. Repack DOCX with patched XML
-    zip.file('word/document.xml', patchedXml);
-    let patchedBuffer;
+    // Convert HTML to OOXML and replace body
+    let patchedXml;
     try {
-      patchedBuffer = await zip.generateAsync({
-        type:        'nodebuffer',
-        compression: 'DEFLATE',
-        compressionOptions: { level: 6 },
-      });
+      const newBodyContent = htmlToOoxml(doc.content_html);
+      patchedXml = patchDocxBody(originalXml, newBodyContent);
+    } catch (e) {
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `Conversion failed: ${e.message}` });
+      continue;
+    }
+
+    // Repack DOCX
+    zip.file('word/document.xml', patchedXml);
+    let patchedBuf;
+    try {
+      patchedBuf = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE', compressionOptions: { level: 6 } });
     } catch (e) {
       results.push({ doc_id: docId, title, status: 'FAIL', detail: `DOCX repack failed: ${e.message}` });
       continue;
     }
 
-    // 6. Overwrite local file (write to .tmp then rename for safety)
+    // Atomic write
     const tmpPath = localPath + '.sync.tmp';
     try {
-      fs.writeFileSync(tmpPath, patchedBuffer);
+      fs.writeFileSync(tmpPath, patchedBuf);
       fs.renameSync(tmpPath, localPath);
     } catch (e) {
-      // Clean up tmp file if rename failed
       try { fs.unlinkSync(tmpPath); } catch (_) {}
-      results.push({ doc_id: docId, title, status: 'FAIL', detail: `File write error: ${e.message}` });
+      results.push({ doc_id: docId, title, status: 'FAIL', detail: `Write failed: ${e.message}` });
       continue;
     }
 
-    let statusDetail = `${applied}/${changes.length} change(s) applied: ${changesDesc}`;
-    if (skipped.length > 0)   statusDetail += `  |  WARN: ${skipped.join('; ')}`;
-    if (unhandled.length > 0) statusDetail += `  |  unhandled: ${unhandled.slice(0, 3).join(', ')}`;
+    let detail = 'Body replaced from browser edits (header/footer/styles preserved)';
 
-    // 7. Optionally clear content_html in DB
     if (CLEAR) {
       const { error: clearErr } = await sb
         .from('qms_documents')
         .update({ content_html: null })
         .eq('id', doc.id);
-      if (clearErr) {
-        statusDetail += `  |  DB clear failed: ${clearErr.message}`;
-      } else {
-        statusDetail += '  |  DB draft cleared';
-      }
+      detail += clearErr ? `  |  DB clear failed: ${clearErr.message}` : '  |  DB draft cleared';
     }
 
-    results.push({ doc_id: docId, title, status: 'PATCHED', detail: statusDetail });
+    results.push({ doc_id: docId, title, status: 'PATCHED', detail });
   }
 
-  // ─── Report ────────────────────────────────────────────────────────────────
-  const COL_ID    = 10;
-  const COL_TITLE = 36;
-  const COL_ST    = 12;
+  // ─── Report ─────────────────────────────────────────────────────────────────
+  const C_ID = 10, C_TIT = 36, C_ST = 14;
+  console.log('  ' + 'Doc ID'.padEnd(C_ID) + 'Title'.padEnd(C_TIT) + 'Status'.padEnd(C_ST) + 'Detail');
+  console.log('  ' + '─'.repeat(C_ID + C_TIT + C_ST + 40));
 
-  console.log(
-    '  ' + 'Doc ID'.padEnd(COL_ID) +
-    'Title'.padEnd(COL_TITLE) +
-    'Status'.padEnd(COL_ST) +
-    'Detail'
-  );
-  console.log('  ' + '─'.repeat(COL_ID + COL_TITLE + COL_ST + 40));
-
+  const ICON = { PATCHED: '✅', WOULD_PATCH: '📝', SKIP: '⟳ ', FAIL: '✗ ' };
   for (const r of results) {
-    const icon = { PATCHED: '✅', WOULD_PATCH: '📝', IN_SYNC: '✓ ', SKIP: '⟳ ', FAIL: '✗ ', WARN: '⚠️' }[r.status] || '  ';
+    const icon = ICON[r.status] || '  ';
     console.log(
-      '  ' + (r.doc_id || '').padEnd(COL_ID) +
-      (r.title || '').slice(0, COL_TITLE - 1).padEnd(COL_TITLE) +
-      (icon + ' ' + r.status).padEnd(COL_ST + 3) +
-      r.detail
+      '  ' + (r.doc_id || '').padEnd(C_ID)
+           + (r.title  || '').slice(0, C_TIT - 1).padEnd(C_TIT)
+           + (icon + ' ' + r.status).padEnd(C_ST + 3)
+           + r.detail
     );
   }
 
   const patched    = results.filter(r => r.status === 'PATCHED').length;
   const wouldPatch = results.filter(r => r.status === 'WOULD_PATCH').length;
-  const inSync     = results.filter(r => r.status === 'IN_SYNC').length;
-  const warns      = results.filter(r => r.status === 'WARN').length;
-
   console.log('\n' + '─'.repeat(80));
   if (!APPLY) {
-    if (wouldPatch > 0 || warns > 0) {
-      if (wouldPatch > 0) console.log(`\n  ${wouldPatch} file(s) have pending edits.`);
-      if (warns > 0)      console.log(`\n  ${warns} file(s) have changes that require manual intervention (insertions/deletions — see WARN detail above).`);
-      console.log(`\n  Run with --apply to patch substitution changes in local DOCX files.`);
-      console.log(`  Run with --apply --clear to patch AND mark documents as in-sync in the DB.\n`);
-    } else {
-      console.log(`\n  All ${inSync} checked document(s) are in sync.\n`);
-    }
+    console.log(wouldPatch > 0
+      ? `\n  ${wouldPatch} document(s) have pending browser edits.\n  Run with --apply to sync all edits into local DOCX files.\n`
+      : `\n  All documents are in sync.\n`
+    );
   } else {
     console.log(`\n  Patched : ${patched}`);
-    if (warns > 0)   console.log(`  Warnings: ${warns} (some word substitutions could not be applied — see detail above)`);
-    if (inSync > 0)  console.log(`  In sync : ${inSync}`);
     if (CLEAR && patched > 0) console.log(`  DB draft cleared for ${patched} document(s).`);
-    console.log(`\n  Next: git add public/ims/ && git commit -m "sync: apply browser edits to IMS docs" && git push origin master --no-verify\n`);
+    if (patched > 0) console.log(`\n  Next: git add public/ims/ && git commit -m "sync: apply browser edits to IMS docs" && git push origin master --no-verify\n`);
   }
 }
 
