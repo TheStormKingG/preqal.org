@@ -3433,8 +3433,10 @@ let _viewerCategory    = null;  // document category code (POL/PRO/MAN/WOI/FRM/T
 let _lastSecContent    = null;  // last focused .sec-content element — toolbar target
 /* Section templates per document category — drives the structured section editor */
 const DOC_SECTIONS = {
-  POL: ['Purpose','Scope','Policy Statement','Roles and Responsibilities','Definitions','Related Documents','Review History'],
-  PRO: ['Purpose','Scope','Roles and Responsibilities','Definitions','Equipment and Materials','Procedure','Related Documents','Records','Review History'],
+  // Policy: one page, one section — no scope/definitions/references per preqal-policy-creator skill
+  POL: ['Policy Statement'],
+  // SOP/Procedure: 6 canonical sections per preqal-sop-creator skill (1.0 PURPOSE … 6.0 RELATED DOCUMENTS)
+  PRO: ['Purpose', 'Scope', 'Responsibilities', 'Overview', 'Procedure', 'Related Documents'],
   MAN: ['Introduction','Scope and Application','Quality Policy','Organisational Context','Leadership and Commitment','Planning','Support','Operation','Performance Evaluation','Improvement','Document Control','References'],
   WOI: ['Purpose','Scope','Responsibilities','Equipment and Materials Required','Safety Precautions','Step-by-Step Instructions','Quality Checks','References'],
   FRM: ['Instructions','Form Fields','Notes'],
