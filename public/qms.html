@@ -3416,8 +3416,11 @@ const DOC_IFRAME_STYLES = `
 `;
 function _renderHtmlView(html) {
   const frame = document.getElementById('doc-html-inner');
+  // Include docx-preview CSS so .docx-wrapper/.docx classes render correctly inside the iframe.
+  // DOC_IFRAME_STYLES handles plain HTML drafts; the CDN link handles docx-preview rendered output.
   frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
-<style>${DOC_IFRAME_STYLES}</style></head><body>${_sanitizeHtml(html)}</body></html>`;
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.css">
+<style>body{background:#cbd5e1;padding:24px 0;margin:0}.docx-wrapper{background:transparent!important}.docx-wrapper>section.docx{margin:0 auto 24px;box-shadow:0 8px 40px rgba(0,0,0,.25)!important;border-radius:2px}${DOC_IFRAME_STYLES}</style></head><body>${_sanitizeHtml(html)}</body></html>`;
   frame.onload = () => {
     try {
       const h = frame.contentDocument.body.scrollHeight;
@@ -3546,9 +3549,10 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
         _renderHtmlView(_viewerContentHtml);
         _showPanel('doc-html-wrap');
       } else {
-        // Render original DOCX into a hidden container, then immediately capture the HTML
-        // and move it into the sandboxed iframe — extensions cannot reach inside the iframe.
-        await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+        // Render into a DETACHED element — not in the document tree, so extension
+        // MutationObservers on document never fire. Capture clean HTML then move into iframe.
+        const offscreen = document.createElement('div');
+        await docx.renderAsync(_viewerBuf.slice(0), offscreen, null, {
           className: 'docx-viewer',
           inWrapper: true,
           ignoreWidth: false,
@@ -3558,8 +3562,7 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null) {
           experimental: true,
           trimXmlDeclaration: true,
         });
-        _viewerRenderedHtml = container.innerHTML;
-        container.innerHTML = '';
+        _viewerRenderedHtml = offscreen.innerHTML;
         _renderHtmlView(_viewerRenderedHtml);
         _showPanel('doc-html-wrap');
       }
@@ -3667,12 +3670,11 @@ async function revertToOriginal() {
     const row = docsAllData.find(r => r.id === _viewerDocId);
     if (row) row.content_html = null;
 
-    // Re-render original DOCX with docx-preview
+    // Re-render original DOCX into detached element, then move into iframe
     _showPanel('doc-viewer-loading');
     document.getElementById('doc-viewer-loading-msg').textContent = 'Loading original…';
-    const container = document.getElementById('doc-preview-container');
-    container.innerHTML = '';
-    await docx.renderAsync(_viewerBuf.slice(0), container, null, {
+    const offscreenRevert = document.createElement('div');
+    await docx.renderAsync(_viewerBuf.slice(0), offscreenRevert, null, {
       className: 'docx-viewer',
       inWrapper: true,
       ignoreWidth: false,
@@ -3682,11 +3684,13 @@ async function revertToOriginal() {
       experimental: true,
       trimXmlDeclaration: true,
     });
-    _showPanel('doc-preview-wrap');
+    _viewerRenderedHtml = offscreenRevert.innerHTML;
+    _renderHtmlView(_viewerRenderedHtml);
+    _showPanel('doc-html-wrap');
     showToast('✅', 'Reverted to original', 'Draft removed. Showing the original document.');
   } catch (err) {
     // Ensure viewer doesn't get stuck on loading spinner if render fails
-    _showPanel('doc-preview-wrap');
+    _showPanel('doc-html-wrap');
     showToast('❌', 'Revert failed', err.message || 'Unknown error.');
   }
 }
