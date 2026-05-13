@@ -3605,12 +3605,13 @@ function _injectSectionHeadings(html) {
   const parser = new DOMParser();
   const d = parser.parseFromString(html, 'text/html');
   d.querySelectorAll('article[data-sec]').forEach(a => {
-    if (!a.querySelector('h2.sec-heading')) {
-      const h2 = d.createElement('h2');
-      h2.className = 'sec-heading';
-      h2.textContent = a.dataset.sec;
-      a.insertBefore(h2, a.firstChild);
-    }
+    // Always strip all stale embedded headings (may have accumulated from old saves)
+    a.querySelectorAll('h2.sec-heading').forEach(h => h.remove());
+    // Inject exactly one fresh heading
+    const h2 = d.createElement('h2');
+    h2.className = 'sec-heading';
+    h2.textContent = a.dataset.sec;
+    a.insertBefore(h2, a.firstChild);
   });
   return d.body.innerHTML;
 }
