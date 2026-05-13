@@ -196,6 +196,10 @@
   #viewer-draft-badge{display:none;align-items:center;gap:5px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:#92400e;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap;font-family:system-ui,sans-serif}
   .viewer-btn-revert{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.22)}
   .viewer-btn-revert:hover{background:rgba(239,68,68,.22);color:#fef2f2}
+  #dl-menu{display:none;position:absolute;right:0;top:calc(100% + 4px);background:#1e293b;border:1px solid rgba(255,255,255,.12);border-radius:8px;overflow:hidden;min-width:172px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .dl-menu-item{display:block;width:100%;padding:10px 16px;background:none;border:none;color:#e2e8f0;font-size:12px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap}
+  .dl-menu-item:hover{background:rgba(255,255,255,.08);color:#fff}
+  #viewer-dl-wrap{position:relative;display:none}
   /* ── SAVE CONFIRM MODAL ──────────────────────────────────────────────── */
   #save-confirm-modal{position:fixed;inset:0;z-index:10100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .2s cubic-bezier(0.23,1,0.32,1)}
   #save-confirm-modal.scm-visible{opacity:1}
@@ -3284,10 +3288,17 @@ init();
       <svg id="viewer-save-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       <span id="viewer-save-label">Save Changes</span>
     </button>
-    <a id="viewer-dl-btn" href="#" class="viewer-btn viewer-btn-dl" download>
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download
-    </a>
+    <div id="viewer-dl-wrap">
+      <button class="viewer-btn viewer-btn-dl" onclick="toggleDlMenu()" id="viewer-dl-btn">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download ▾
+      </button>
+      <div id="dl-menu">
+        <button class="dl-menu-item" onclick="downloadOriginal()">Original (.docx)</button>
+        <button class="dl-menu-item" onclick="downloadAsPdf()">Export as PDF</button>
+        <button class="dl-menu-item" onclick="downloadAsWord()">Export as Word (.doc)</button>
+      </div>
+    </div>
     <button class="viewer-btn viewer-btn-close" onclick="closeDocViewer()">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       Close
@@ -3586,6 +3597,11 @@ window.addEventListener('message', function(e) {
   }
 });
 
+/* Close download menu on outside click */
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#viewer-dl-wrap')) _closeDlMenu();
+});
+
 /* Save-confirm modal */
 let _scmResolve = null;
 function showSaveConfirm() {
@@ -3635,6 +3651,76 @@ function _showPanel(id) {
   // Draft badge: visible whenever a draft exists
   const draftBadge = document.getElementById('viewer-draft-badge');
   if(draftBadge) draftBadge.style.display = hasDraft ? 'inline-flex' : 'none';
+}
+
+/* ── Download dropdown ─────────────────────────────────────────────────── */
+function toggleDlMenu() {
+  const m = document.getElementById('dl-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+
+function _closeDlMenu() {
+  const m = document.getElementById('dl-menu');
+  if (m) m.style.display = 'none';
+}
+
+function downloadOriginal() {
+  _closeDlMenu();
+  if (!_viewerFileUrl) return;
+  const a = document.createElement('a');
+  a.href = _viewerFileUrl;
+  a.download = _viewerFilename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function downloadAsPdf() {
+  _closeDlMenu();
+  const frame = document.getElementById('doc-html-inner');
+  if (!frame || !frame.contentWindow) {
+    showToast('⚠️', 'PDF export', 'Switch to View mode first, then export as PDF.');
+    return;
+  }
+  try {
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
+  } catch (e) {
+    showToast('⚠️', 'PDF export', 'Use browser Print → Save as PDF from the document view.');
+  }
+}
+
+function downloadAsWord() {
+  _closeDlMenu();
+  if (!_viewerContentHtml) {
+    // No saved draft — download original DOCX
+    downloadOriginal();
+    return;
+  }
+  // Wrap content_html in a Word-compatible HTML envelope
+  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${esc(_viewerFilename)}</title>
+<style>
+  body{font-family:Calibri,sans-serif;font-size:11pt;margin:72pt 80pt;color:#111;line-height:1.55}
+  h2.sec-heading{font-size:14pt;font-weight:700;border-bottom:2px solid #e2e8f0;padding-bottom:4pt;margin:1.2em 0 .6em;color:#1e293b}
+  article[data-sec]{margin-bottom:2em}
+  table{border-collapse:collapse;width:100%}
+  td,th{border:1px solid #94a3b8;padding:6pt 10pt;font-size:10pt;vertical-align:top}
+  th{background:#f1f5f9;font-weight:700}
+  ul,ol{padding-left:1.6em;margin:.4em 0}
+  li{margin:.2em 0}
+  p{margin:.35em 0}
+</style>
+</head><body>${_viewerContentHtml}</body></html>`;
+  const blob = new Blob(['﻿', wordHtml], { type: 'application/msword' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = _viewerFilename.replace(/\.docx$/i, '') + '-edited.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 function execFmt(cmd, val) {
@@ -3690,9 +3776,8 @@ async function openDocViewer(fileUrl, title, docId = null, contentHtml = null, c
 
   document.getElementById('viewer-docname').textContent = title;
   document.getElementById('viewer-edit-label').textContent = 'Edit';
-  const dlBtn = document.getElementById('viewer-dl-btn');
-  dlBtn.href = fileUrl;
-  dlBtn.setAttribute('download', _viewerFilename);
+  const dlWrap = document.getElementById('viewer-dl-wrap');
+  if (dlWrap) dlWrap.style.display = fileUrl ? 'block' : 'none';
 
   const overlay = document.getElementById('doc-viewer-overlay');
   _showPanel('doc-viewer-loading');
@@ -3869,6 +3954,9 @@ function closeDocViewer() {
     _viewerContentHtml = null;
     _viewerCategory = null;
     _lastSecContent = null;
+    _closeDlMenu();
+    const _dlw = document.getElementById('viewer-dl-wrap');
+    if (_dlw) _dlw.style.display = 'none';
     document.body.style.overflow = '';
     overlay.removeEventListener('transitionend', h);
   });
