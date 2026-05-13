@@ -3433,8 +3433,8 @@ let _viewerCategory    = null;  // document category code (POL/PRO/MAN/WOI/FRM/T
 let _lastSecContent    = null;  // last focused .sec-content element — toolbar target
 /* Section templates per document category — drives the structured section editor */
 const DOC_SECTIONS = {
-  // Policy: one page, one section — no scope/definitions/references per preqal-policy-creator skill
-  POL: ['Policy Statement'],
+  // Policy sections — exact headings used in Preqal IMS policy documents
+  POL: ['Purpose', 'Our Quality Commitment', 'Quality Objectives', 'Responsibility', 'Communication'],
   // SOP/Procedure: 6 canonical sections per preqal-sop-creator skill (1.0 PURPOSE … 6.0 RELATED DOCUMENTS)
   PRO: ['Purpose', 'Scope', 'Responsibilities', 'Overview', 'Procedure', 'Related Documents'],
   MAN: ['Introduction','Scope and Application','Quality Policy','Organisational Context','Leadership and Commitment','Planning','Support','Operation','Performance Evaluation','Improvement','Document Control','References'],
@@ -3481,22 +3481,60 @@ const DOC_IFRAME_STYLES = `
 `;
 /**
  * Parse existing content_html into a Map<sectionName → innerHTML>.
- * Handles two formats:
- *   New: <article data-sec="Purpose">…</article> blocks
- *   Legacy / mammoth: plain HTML with no data-sec articles → content goes into first section
+ * Handles three formats:
+ *   1. New:    <article data-sec="Purpose">…</article> blocks (saved by this editor)
+ *   2. Mammoth: numbered headings like "1. Purpose" / "2. Our Quality Commitment" →
+ *               strip leading number+dot, fuzzy-match against sectionNames, split content
+ *   3. Fallback: all content into the first section
  */
 function _parseSectionsFromHtml(html, sectionNames) {
   const map = new Map();
-  if (!html || !sectionNames.length) return map; // guards sectionNames[0] below
+  if (!html || !sectionNames.length) return map;
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const articles = doc.querySelectorAll('article[data-sec]');
+  const d = parser.parseFromString(html, 'text/html');
+
+  // Format 1 — article blocks (editor's own saved format)
+  const articles = d.querySelectorAll('article[data-sec]');
   if (articles.length > 0) {
     articles.forEach(a => map.set(a.dataset.sec, a.innerHTML));
     return map;
   }
-  // Legacy plain HTML — seed the first section with everything
-  map.set(sectionNames[0], doc.body.innerHTML);
+
+  // Format 2 — split by headings matching section names
+  // Normalize: strip leading "N." or "N. " and lowercase for comparison
+  const norm = s => s.replace(/^\d+[\.\s]+/, '').trim().toLowerCase();
+  const secByNorm = new Map(sectionNames.map(n => [norm(n), n]));
+
+  const allNodes = Array.from(d.body.childNodes);
+  let current = null;
+  let bucket = [];
+
+  const flush = () => {
+    if (!current || !bucket.length) return;
+    const wrap = d.createElement('div');
+    bucket.forEach(n => wrap.appendChild(n.cloneNode(true)));
+    map.set(current, wrap.innerHTML);
+  };
+
+  for (const node of allNodes) {
+    if (node.nodeType === 1 && /^H[1-4]$/.test(node.tagName)) {
+      const headNorm = norm(node.textContent || '');
+      const matched  = secByNorm.get(headNorm);
+      if (matched) {
+        flush();
+        current = matched;
+        bucket  = [];
+        continue; // heading itself is omitted — the card header shows the section name
+      }
+    }
+    if (current) bucket.push(node);
+  }
+  flush();
+
+  if (map.size > 0) return map;
+
+  // Format 3 — fallback: everything into first section
+  map.set(sectionNames[0], d.body.innerHTML);
   return map;
 }
 
