@@ -11,29 +11,23 @@ Triggers + Edge Function regenerate REG-XX Excel files automatically on every ro
 ## One-time setup
 
 ```bash
-# 1. Push the migration
-supabase db push
+# 1. Apply the migration (via Supabase MCP or SQL editor — db push diverges
+#    from remote history in worktrees; use apply_migration instead)
+#    The migration creates regen_register_async() with the URL + token
+#    hardcoded as DECLARE constants, and wires the three triggers.
 
 # 2. Deploy keeping JWT verification ON (default)
-supabase functions deploy sync-register-excel
-
-# 3. Set the URL + token so triggers know where to POST. Use the service-role
-#    JWT (Supabase Dashboard → Project Settings → API → service_role secret).
-psql "$DATABASE_URL" <<SQL
-ALTER DATABASE postgres SET app.regen_url =
-  'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/sync-register-excel';
-ALTER DATABASE postgres SET app.regen_auth_token =
-  '<service-role JWT>';
-SQL
+supabase functions deploy sync-register-excel \
+  --project-ref gndcjmxxgtnoidxgcdnx \
+  --workdir /path/to/preqal.org
 ```
 
-> JWT verification stays ON; the migration's `app.regen_auth_token` GUC
-> supplies the service-role token in the `Authorization` header on every
-> trigger call.
-
-> The migration leaves `regen_register_async` as a silent no-op when these
-> settings are missing, so the migration is safe to push before completing
-> step 3 — triggers just won't fire until the URL/token are configured.
+> **Token storage.** The service-role JWT is stored directly in the
+> `regen_register_async` function body (DECLARE constants). `ALTER DATABASE`
+> is not used because the Supabase API connection doesn't have the superuser
+> privilege that command requires. To rotate: update the constant in
+> `supabase/migrations/20260514_register_triggers.sql` and re-apply the
+> function via `apply_migration` or the Supabase SQL Editor.
 
 ## Verify
 
@@ -64,18 +58,11 @@ SELECT regen_register_async('REG-02');  -- catch up
 ## Authentication notes
 
 - Edge Function JWT verification stays ON (the default — no flag needed at
-  deploy time). The trigger therefore must POST a valid token — we use the
-  **service-role JWT** stashed in `app.regen_auth_token`.
-- If you prefer to disable JWT verification on the function (open POST),
-  toggle it off in the Supabase Dashboard → Edge Functions → settings, and
-  set `app.regen_auth_token` to the project's anon key. The function still
-  requires an `Authorization` header to be present, so don't leave the
-  setting blank.
-- **Token storage / rotation.** The service-role JWT lives in a database
-  GUC (`app.regen_auth_token`), not in Supabase Function Secrets. Rotate it
-  with `ALTER DATABASE postgres SET app.regen_auth_token = '<new-jwt>';`
-  after issuing a new service-role key from the dashboard. Existing
-  connections may need to reconnect for the new value to take effect.
+  deploy time). The trigger therefore must POST a valid token — the service-role
+  JWT is embedded in the `regen_register_async` function's DECLARE block.
+- **Token rotation.** Update the `auth_token` constant in
+  `supabase/migrations/20260514_register_triggers.sql` and re-apply via
+  `apply_migration` or the Supabase SQL Editor. No server restart needed.
 
 ## Known limitations
 
