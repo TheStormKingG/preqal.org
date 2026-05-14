@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const fs   = require('fs');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
@@ -21,17 +21,20 @@ async function main() {
     process.exit(1);
   }
 
-  // Delegate the actual XLSX build to generate-excel-registers.cjs.
-  // It honours SUPABASE_SERVICE_KEY from the environment and writes to
-  // PUB_DIR (public/ims/) AND OUT_DIR (Preqal QMS folder).
-  execSync(`node "${path.join(__dirname, 'generate-excel-registers.cjs')}" ${regId}`, { stdio: 'inherit' });
-
-  // Upload the produced file to Supabase Storage.
+  // Check for required service key BEFORE running the expensive build,
+  // so a misconfigured run fails fast.
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!key) {
     console.error('SUPABASE_SERVICE_KEY required for upload');
     process.exit(1);
   }
+
+  // Delegate the actual XLSX build to generate-excel-registers.cjs.
+  // It honours SUPABASE_SERVICE_KEY from the environment and writes to
+  // PUB_DIR (public/ims/) AND OUT_DIR (Preqal QMS folder).
+  execFileSync('node', [path.join(__dirname, 'generate-excel-registers.cjs'), regId], { stdio: 'inherit' });
+
+  // Upload the produced file to Supabase Storage.
   const sb = createClient(SUPABASE_URL, key);
 
   const pubPath = path.resolve(__dirname, '../public/ims', def.file);
