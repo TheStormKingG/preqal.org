@@ -15,6 +15,7 @@ module.exports = [
     title: 'PREQAL DOCUMENT MASTER REGISTER',
     dcn: 'PQL-REG-01',
     scope: 'PREQAL INTEGRATED MANAGEMENT SYSTEM',
+    subtitle: 'Quality Management System  —  Controlled Document — Internal Use Only',
     liveTable: 'qms_documents',
     liveFilter: { client_id: null },        // Preqal's own docs only
     breakdownBy: 'category',                // grouping field for breakdown panel
@@ -38,6 +39,7 @@ module.exports = [
     title: 'PREQAL LEAD REGISTER',
     dcn: 'PQL-REG-02',
     scope: 'COMMERCIAL — LEAD CAPTURE TO QUALIFIED',
+    subtitle: 'Marketing & Lead Generation  —  Confidential — Internal Use Only',
     liveTable: 'qualified_leads',
     breakdownBy: 'status',
     columns: [
@@ -60,6 +62,7 @@ module.exports = [
     title: 'PREQAL CONTEXT OF THE ORGANISATION',
     dcn: 'PQL-REG-03',
     scope: 'ISO 9001:2015 §4.1 + §4.2',
+    subtitle: 'Strategic Context & Interested Parties  —  Controlled Document — Internal Use Only',
     liveTable: null,
     // hand-curated — keep existing tabs
   },
@@ -69,6 +72,7 @@ module.exports = [
     title: 'PREQAL EMPLOYEE REGISTER',
     dcn: 'PQL-REG-04',
     scope: 'HUMAN RESOURCES',
+    subtitle: 'Human Resources  —  Confidential — Internal Use Only',
     liveTable: null,
   },
   {
@@ -77,6 +81,7 @@ module.exports = [
     title: 'PREQAL HSE RISK REGISTER',
     dcn: 'PQL-REG-05',
     scope: 'HEALTH, SAFETY & ENVIRONMENT',
+    subtitle: 'Health, Safety & Environment  —  Controlled Document — Internal Use Only',
     liveTable: null,
   },
   {
@@ -85,6 +90,7 @@ module.exports = [
     title: 'PREQAL INTERNAL AUDIT REGISTER',
     dcn: 'PQL-REG-06',
     scope: 'ISO 9001:2015 §9.2',
+    subtitle: 'Internal Audit  —  Controlled Document — Internal Use Only',
     liveTable: null,
   },
   {
@@ -93,6 +99,7 @@ module.exports = [
     title: 'PREQAL NCR & CAPA REGISTER',
     dcn: 'PQL-REG-07',
     scope: 'NON-CONFORMANCE TO CORRECTIVE ACTION',
+    subtitle: 'Non-Conformances & Corrective Actions  —  Controlled Document — Internal Use Only',
     liveTable: null,
   },
   {
@@ -101,6 +108,7 @@ module.exports = [
     title: 'PREQAL QUALITY RISK REGISTER',
     dcn: 'PQL-REG-08',
     scope: 'ISO 9001:2015 §6.1',
+    subtitle: 'Quality Risk Management  —  Controlled Document — Internal Use Only',
     liveTable: null,
   },
   {
@@ -109,6 +117,7 @@ module.exports = [
     title: 'PREQAL LEGAL & COMPLIANCE REGISTER',
     dcn: 'PQL-REG-09',
     scope: 'LEGAL OBLIGATIONS',
+    subtitle: 'Legal & Regulatory Compliance  —  Controlled Document — Internal Use Only',
     liveTable: null,
   },
   {
@@ -117,6 +126,7 @@ module.exports = [
     title: 'PREQAL CRM CLIENT REGISTER',
     dcn: 'PQL-REG-10',
     scope: 'CLIENT LIFECYCLE',
+    subtitle: 'Commercial & Client Management  —  Confidential — Internal Use Only',
     liveTable: 'crm_clients',
     breakdownBy: 'pipeline_stage',
     columns: [

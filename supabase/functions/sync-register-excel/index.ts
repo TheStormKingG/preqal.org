@@ -22,7 +22,7 @@ interface RegConfig {
   title: string;       // PREQAL-uppercase title shown in the branded header
   dcn: string;
   scope: string;
-  breakdownBy?: string; // column name to group for the breakdown panel
+  subtitle?: string;
   sheets: SheetDef[];
 }
 
@@ -37,7 +37,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL DOCUMENT MASTER REGISTER",
     dcn: "PQL-REG-01",
     scope: "PREQAL INTEGRATED MANAGEMENT SYSTEM",
-    breakdownBy: "category",
+    subtitle: "Quality Management System  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Documents", columns: [
       { header: "Doc ID",      key: "doc_id",      width: 14 },
       { header: "Title",       key: "title",       width: 42 },
@@ -55,7 +55,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL CONTEXT OF THE ORGANISATION",
     dcn: "PQL-REG-03",
     scope: "ISO 9001:2015 §4.1 + §4.2",
-    breakdownBy: "context_category",
+    subtitle: "Strategic Context & Interested Parties  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Issues", columns: [
       { header: "Record ID",    key: "record_id",        width: 14 },
       { header: "Category",     key: "context_category", width: 16 },
@@ -76,7 +76,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL EMPLOYEE REGISTER",
     dcn: "PQL-REG-04",
     scope: "HUMAN RESOURCES",
-    breakdownBy: "department",
+    subtitle: "Human Resources  —  Confidential — Internal Use Only",
     sheets: [{ name: "Employees", columns: [
       { header: "Emp ID",       key: "record_id",        width: 14 },
       { header: "Full Name",    key: "full_name",        width: 28 },
@@ -95,7 +95,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL HSE RISK REGISTER",
     dcn: "PQL-REG-05",
     scope: "HEALTH, SAFETY & ENVIRONMENT",
-    breakdownBy: "hazard_category",
+    subtitle: "Health, Safety & Environment  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Risk Register", columns: [
       { header: "Risk ID",        key: "risk_id",           width: 12 },
       { header: "Hazard",         key: "hazard",            width: 32 },
@@ -116,7 +116,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL INTERNAL AUDIT REGISTER",
     dcn: "PQL-REG-06",
     scope: "ISO 9001:2015 §9.2",
-    breakdownBy: "audit_type",
+    subtitle: "Internal Audit  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Audits", columns: [
       { header: "Audit No.",       key: "audit_number",         width: 16 },
       { header: "Type",            key: "audit_type",           width: 16 },
@@ -137,7 +137,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL NON-CONFORMANCE REGISTER",
     dcn: "PQL-REG-07",
     scope: "NON-CONFORMANCE TO CORRECTIVE ACTION",
-    breakdownBy: "severity",
+    subtitle: "Non-Conformances & Corrective Actions  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "NCR Log", columns: [
       { header: "NCR No.",      key: "ncr_number",    width: 16 },
       { header: "Date",         key: "detected_date", width: 14 },
@@ -155,7 +155,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL CAPA REGISTER",
     dcn: "PQL-REG-07b",
     scope: "CORRECTIVE & PREVENTIVE ACTION",
-    breakdownBy: "type",
+    subtitle: "Non-Conformances & Corrective Actions  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "CAPA Log", columns: [
       { header: "CAPA No.",     key: "capa_number", width: 16 },
       { header: "Type",         key: "type",        width: 14 },
@@ -173,7 +173,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL QUALITY RISK REGISTER",
     dcn: "PQL-REG-08",
     scope: "ISO 9001:2015 §6.1",
-    breakdownBy: "risk_category",
+    subtitle: "Quality Risk Management  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Quality Risks", columns: [
       { header: "Risk ID",      key: "risk_id",         width: 14 },
       { header: "Title",        key: "risk_title",      width: 35 },
@@ -195,7 +195,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL LEGAL & COMPLIANCE REGISTER",
     dcn: "PQL-REG-09",
     scope: "LEGAL OBLIGATIONS",
-    breakdownBy: "category",
+    subtitle: "Legal & Regulatory Compliance  —  Controlled Document — Internal Use Only",
     sheets: [{ name: "Legal Obligations", columns: [
       { header: "Record ID",     key: "record_id",          width: 14 },
       { header: "Title",         key: "title",              width: 40 },
@@ -214,7 +214,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL INTERESTED PARTIES REGISTER",
     dcn: "PQL-REG-10",
     scope: "ISO 9001:2015 §4.2",
-    breakdownBy: "context_type",
+    subtitle: "Commercial & Client Management  —  Confidential — Internal Use Only",
     sheets: [{ name: "Stakeholders", columns: [
       { header: "Record ID",    key: "record_id",            width: 14 },
       { header: "Entity Name",  key: "entity_name",          width: 30 },
@@ -235,7 +235,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL LEAD REGISTER",
     dcn: "PQL-REG-02",
     scope: "COMMERCIAL — LEAD CAPTURE TO QUALIFIED",
-    breakdownBy: "status",
+    subtitle: "Marketing & Lead Generation  —  Confidential — Internal Use Only",
     sheets: [{ name: "Leads", columns: [
       { header: "Lead ID",             key: "id",                   width: 38 },
       { header: "Company",             key: "company_name",         width: 28 },
@@ -257,7 +257,7 @@ const REGISTERS: Record<string, RegConfig> = {
     title: "PREQAL CRM CLIENT REGISTER",
     dcn: "PQL-REG-10",
     scope: "CLIENT LIFECYCLE",
-    breakdownBy: "pipeline_stage",
+    subtitle: "Commercial & Client Management  —  Confidential — Internal Use Only",
     sheets: [{ name: "Clients", columns: [
       { header: "Client ID",        key: "id",               width: 38 },
       { header: "Company",          key: "company_name",     width: 30 },
@@ -294,23 +294,6 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-// ── Breakdown computation ──────────────────────────────────────────────────────
-function computeBreakdown(
-  rows: Array<Record<string, unknown>>,
-  field: string | undefined,
-): Array<[string, number]> {
-  if (!field) return [];
-  const counts = new Map<string, number>();
-  for (const r of rows) {
-    const raw = r[field];
-    const k = raw == null || raw === "" ? "—" : String(raw);
-    counts.set(k, (counts.get(k) ?? 0) + 1);
-  }
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
-}
 
 // ── Handler ────────────────────────────────────────────────────────────────────
 Deno.serve(async (req: Request): Promise<Response> => {
@@ -369,10 +352,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
         versionNumber: "1.0",
         currentRevisionDate: new Date().toISOString().slice(0, 10),
         scheduledRevisionDate: "",
-        bigNumber: rowsArr.length,
-        breakdown: computeBreakdown(rowsArr, config.breakdownBy),
-        status: { created: rowsArr.length, revised: 0, approved: 0 },
-        dataColCount: Math.max(sheet.columns.length, 10),
+        subtitle: config.subtitle || "",
+        dataColCount: sheet.columns.length,
       };
       await applyPreqalHeader(ws, meta);
       applyDataHeader(
@@ -387,7 +368,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
           i % 2 === 1,
         );
       });
-      // ySplit already set to 12 by applyPreqalHeader; nothing more to do.
+      // ySplit already set to 13 by applyPreqalHeader; nothing more to do.
     }
 
     const buf: Uint8Array = (await wb.xlsx.writeBuffer()) as Uint8Array;

@@ -38,18 +38,6 @@ async function buildLiveRegister(sb, def) {
   const { data: rows, error } = await q;
   if (error) throw new Error(`${def.id} fetch failed: ${error.message}`);
 
-  // Group for breakdown panel
-  const breakdownMap = {};
-  if (def.breakdownBy) {
-    rows.forEach(r => {
-      const k = String(r[def.breakdownBy] ?? '—').toUpperCase();
-      breakdownMap[k] = (breakdownMap[k] || 0) + 1;
-    });
-  }
-  const breakdown = Object.entries(breakdownMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
-
   const wb = new ExcelJS.Workbook();
   wb.creator = 'Preqal'; wb.created = new Date();
   const ws = wb.addWorksheet('Register');
@@ -59,9 +47,7 @@ async function buildLiveRegister(sb, def) {
     scope: def.scope,
     creationDate: TODAY,
     versionNumber: '1.0',
-    bigNumber: rows.length,
-    breakdown,
-    status: { created: rows.length, revised: 0, approved: 0 },
+    subtitle: def.subtitle || '',
     dataColCount: def.columns.length,
   });
   applyDataHeader(ws, def.columns.map(c => c.header), def.columns.map(c => c.width));
@@ -97,9 +83,7 @@ function buildHandRegister(def, tabs) {
       scope: tab.scope ?? def.scope,
       creationDate: tab.creationDate ?? TODAY,
       versionNumber: tab.versionNumber ?? '1.0',
-      bigNumber: tab.bigNumber ?? tab.rows.length,
-      breakdown: tab.breakdown ?? [],
-      status: tab.status ?? { created: tab.rows.length, revised: 0, approved: 0 },
+      subtitle: def.subtitle || '',
       dataColCount: tab.headers.length,
     });
     applyDataHeader(ws, tab.headers, tab.widths);

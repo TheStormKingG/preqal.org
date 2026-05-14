@@ -18,6 +18,7 @@ const thin = () => {
   const s = { style:'thin', color:{ argb: BORDER } };
   return { top:s, left:s, bottom:s, right:s };
 };
+const colLetter = (n) => String.fromCharCode(64 + n);
 
 function loadLogoBuf() {
   return fs.existsSync(FAVICON) ? fs.readFileSync(FAVICON) : null;
@@ -47,48 +48,66 @@ function applyBorderToRange(ws, range) {
 }
 
 /**
- * Renders the 11-row branded metadata header on a sheet.
+ * Renders the 13-row branded metadata header on a sheet.
  * meta: { title, dcn, scope, creationDate, approvalDate, versionNumber,
- *         currentRevisionDate, scheduledRevisionDate, bigNumber,
- *         breakdown: [[label, count], ...], status: {created, revised, approved},
- *         dataColCount }
+ *         currentRevisionDate, scheduledRevisionDate, subtitle, dataColCount }
  */
 function applyPreqalHeader(ws, meta) {
   const m = meta || {};
-  const widths = [4, 18, 18, 26, 18, 14, 10, 12, 12, 12];
-  widths.forEach((w, i) => { ws.getColumn(i + 1).width = w; });
+  const dataColCount = m.dataColCount || 10;
 
-  // Logo cell A2:B10 — borders before merge so every underlying cell keeps a
-  // thin border (ExcelJS writes attrs to the master only post-merge).
-  applyBorderToRange(ws, 'A2:B10');
-  ws.mergeCells('A2:B10');
-  const logoCell = ws.getCell('A2');
-  logoCell.fill = fill(WHITE);
-  logoCell.border = thin();
+  // Row 1: small logo (A1) + subtitle (B1:end merged)
+  ws.getRow(1).height = 20;
+  ws.getCell('A1').fill = fill(WHITE);
+  ws.getCell('A1').border = thin();
+
+  applyBorderToRange(ws, `B1:${colLetter(dataColCount)}1`);
+  ws.mergeCells(1, 2, 1, dataColCount);
+  const subCell = ws.getCell('B1');
+  subCell.value = m.subtitle || 'Controlled Document — Internal Use Only';
+  subCell.fill = fill(WHITE);
+  subCell.font = { name:'Arial', size:9, color:{ argb:SLATE_TEXT } };
+  subCell.alignment = { vertical:'middle', horizontal:'left', indent:1 };
+  subCell.border = thin();
+
+  // Row 2: navy title banner
+  ws.getRow(2).height = 24;
+  applyBorderToRange(ws, `A2:${colLetter(dataColCount)}2`);
+  ws.mergeCells(2, 1, 2, dataColCount);
+  const bannerCell = ws.getCell('A2');
+  bannerCell.value = 'PREQAL INTEGRATED MANAGEMENT SYSTEM  •  Controlled Document — Internal Use Only';
+  bannerCell.fill = fill(NAVY);
+  bannerCell.font = { name:'Arial', size:11, bold:true, color:{ argb:WHITE } };
+  bannerCell.alignment = { vertical:'middle', horizontal:'center' };
+  bannerCell.border = thin();
+
+  // Rows 3–10: large logo (A3:B10) + labels (C) + merged values (D:end per row)
+  applyBorderToRange(ws, 'A3:B10');
+  ws.mergeCells('A3:B10');
+  ws.getCell('A3').fill = fill(WHITE);
+  ws.getCell('A3').border = thin();
 
   const logoBuf = loadLogoBuf();
   if (logoBuf) {
-    const imgId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
-    ws.addImage(imgId, {
-      tl: { col: 0.4, row: 1.4 },
-      ext: { width: 90, height: 100 },
-      editAs: 'absolute',
-    });
+    const smallId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
+    ws.addImage(smallId, { tl: { col: 0.15, row: 0.1 }, ext: { width: 22, height: 24 }, editAs: 'absolute' });
+    const bigId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
+    ws.addImage(bigId, { tl: { col: 0.4, row: 2.4 }, ext: { width: 90, height: 100 }, editAs: 'absolute' });
   }
 
-  // Field labels (C2..C9) + values (D2..D9)
   const fields = [
-    ['TITLE',                  m.title          || ''],
-    ['DCN',                    m.dcn            || ''],
-    ['SCOPE',                  m.scope          || ''],
-    ['CREATION DATE',          m.creationDate   || ''],
-    ['APPROVAL DATE',          m.approvalDate   || ''],
-    ['VERSION NUMBER',         m.versionNumber  || ''],
-    ['CURRENT REVISION DATE',  m.currentRevisionDate  || ''],
-    ['SCHEDULED REVISION DATE',m.scheduledRevisionDate|| ''],
+    ['TITLE',                   m.title                 || ''],
+    ['DCN',                     m.dcn                   || ''],
+    ['SCOPE',                   m.scope                 || ''],
+    ['CREATION DATE',           m.creationDate          || ''],
+    ['APPROVAL DATE',           m.approvalDate          || ''],
+    ['VERSION NUMBER',          m.versionNumber         || ''],
+    ['CURRENT REVISION DATE',   m.currentRevisionDate   || ''],
+    ['SCHEDULED REVISION DATE', m.scheduledRevisionDate || ''],
   ];
+
   fields.forEach(([label, value], i) => {
-    const row = i + 2;
+    const row = i + 3;
     const lc = ws.getCell(row, 3);
     lc.value = label;
     lc.fill = fill(AMBER_100);
@@ -96,6 +115,8 @@ function applyPreqalHeader(ws, meta) {
     lc.alignment = { vertical:'middle', horizontal:'left', indent:1 };
     lc.border = thin();
 
+    applyBorderToRange(ws, `D${row}:${colLetter(dataColCount)}${row}`);
+    ws.mergeCells(row, 4, row, dataColCount);
     const vc = ws.getCell(row, 4);
     vc.value = value;
     vc.fill = fill(AMBER_50);
@@ -104,86 +125,19 @@ function applyPreqalHeader(ws, meta) {
     vc.border = thin();
   });
 
-  // Big number panel E2:E9
-  applyBorderToRange(ws, 'E2:E9');
-  ws.mergeCells('E2:E9');
-  const big = ws.getCell('E2');
-  big.value = m.bigNumber || 0;
-  big.fill = fill(AMBER_100);
-  big.font = { name:'Arial', size:36, bold:true, color:{ argb:NAVY } };
-  big.alignment = { vertical:'middle', horizontal:'center' };
-  big.border = thin();
+  for (let r = 3; r <= 10; r++) ws.getRow(r).height = 22;
 
-  // Breakdown table (F2:G5) — up to 4 rows
-  const breakdown = (m.breakdown || []).slice(0, 4);
-  for (let i = 0; i < 4; i++) {
-    const row = i + 2;
-    const lc = ws.getCell(row, 6);
-    const vc = ws.getCell(row, 7);
-    const entry = breakdown[i] || ['', ''];
-    lc.value = entry[0];
-    vc.value = entry[1];
-    [lc, vc].forEach(c => {
-      c.fill = fill(AMBER_100);
-      c.font = { name:'Arial', size:10, bold: c === vc };
-      c.alignment = { vertical:'middle', horizontal: c === lc ? 'left' : 'center', indent: c === lc ? 1 : 0 };
-      c.border = thin();
-    });
-  }
-
-  // Status panel (H2:J2 labels, H3:J5 counts merged per col, H6:J9 percentages merged per col)
-  const statusLabels = ['CREATED','REVISED','APPROVED'];
-  const counts = m.status || { created:0, revised:0, approved:0 };
-  const totals = [counts.created || 0, counts.revised || 0, counts.approved || 0];
-  // Denominator is the sum of status counts so the panel is internally
-  // consistent regardless of what bigNumber is. Fall back to 0% (not /1) when
-  // every count is zero so we never render a misleading percentage.
-  const total  = totals.reduce((a, b) => a + b, 0);
-  const colLetter = (n) => String.fromCharCode(64 + n);
-  statusLabels.forEach((label, i) => {
-    const col = 8 + i;
-    const L = colLetter(col);
-    const lc = ws.getCell(2, col);
-    lc.value = label;
-    lc.fill = fill(NAVY);
-    lc.font = { name:'Arial', size:9, bold:true, color:{ argb:WHITE } };
-    lc.alignment = { vertical:'middle', horizontal:'center' };
-    lc.border = thin();
-    applyBorderToRange(ws, `${L}3:${L}5`);
-    ws.mergeCells(3, col, 5, col);
-    const cc = ws.getCell(3, col);
-    cc.value = totals[i];
-    cc.fill = fill(AMBER_100);
-    cc.font = { name:'Arial', size:18, bold:true, color:{ argb:NAVY } };
-    cc.alignment = { vertical:'middle', horizontal:'center' };
-    cc.border = thin();
-    applyBorderToRange(ws, `${L}6:${L}9`);
-    ws.mergeCells(6, col, 9, col);
-    const pc = ws.getCell(6, col);
-    pc.value = total > 0 ? (totals[i] / total) : 0;
-    pc.numFmt = '0.0%';
-    pc.fill = fill(AMBER_100);
-    pc.font = { name:'Arial', size:10, bold:true, color:{ argb:NAVY } };
-    pc.alignment = { vertical:'middle', horizontal:'center' };
-    pc.border = thin();
-  });
-
-  // Row 10 navy divider
-  ws.getRow(10).height = 6;
-  for (let c = 1; c <= (m.dataColCount || 10); c++) {
-    ws.getCell(10, c).fill = fill(NAVY);
-  }
-  // Row 11 spacer
+  // Row 11 navy divider
   ws.getRow(11).height = 6;
+  for (let c = 1; c <= dataColCount; c++) ws.getCell(11, c).fill = fill(NAVY);
+  // Row 12 spacer
+  ws.getRow(12).height = 6;
 
-  // Heights
-  for (let r = 2; r <= 9; r++) ws.getRow(r).height = 22;
-
-  ws.views = [{ state:'frozen', xSplit:0, ySplit:12 }];
+  ws.views = [{ state:'frozen', xSplit:0, ySplit:13 }];
 }
 
 function applyDataHeader(ws, headers, widths) {
-  const row = ws.getRow(12);
+  const row = ws.getRow(13);
   headers.forEach((h, i) => {
     const c = row.getCell(i + 1);
     c.value = h;
