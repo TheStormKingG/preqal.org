@@ -343,6 +343,61 @@ Eight canonical sections, in this order: Purpose · Scope · Responsibilities ·
 
 ---
 
+## Preqal Register Branding (REG-XX Excel files)
+
+Every Excel register published to `public/ims/REG-*.xlsx` (and to Supabase `storage://registers/preqal/`) follows the same branded metadata header. Generators must call `scripts/lib/register-branding.cjs` (Node) or `supabase/functions/sync-register-excel/branding.ts` (Deno) — never inline styling.
+
+### Layout
+| Region | Cells | Style |
+|---|---|---|
+| Favicon | A2:B10 (merged) | `public/favicon.png` inset, white fill |
+| Field labels (TITLE / DCN / SCOPE / DATES / VERSION) | C2:C9 | `#FEF3C7` fill, Arial 10pt |
+| Field values | D2:D9 | `#FFFBEB` fill, Arial 10pt |
+| Big row count | E2:E9 (merged) | `#FEF3C7` fill, Arial 36pt bold navy |
+| Breakdown labels / counts | F2:G5 | `#FEF3C7` fill, Arial 10pt |
+| Status labels (CREATED / REVISED / APPROVED) | H2:J2 | navy fill, white Arial 9pt bold |
+| Status counts | H3:J5 (merged per col) | `#FEF3C7`, Arial 18pt bold |
+| Status percentages | H6:J9 (merged per col) | `#FEF3C7`, Arial 10pt bold, format `0.0%` |
+| Navy divider | row 10 | `#0F172A`, height 6pt |
+| Spacer | row 11 | white, height 6pt |
+| Data header | row 12 | navy fill, white Arial 11pt bold, wrap |
+| Data rows | row 13+ | alternate white / `#F8FAFC`, Arial 10pt |
+
+Freeze panes: `B13` (metadata block + data header always visible).
+
+### Live registers vs hand-curated
+- **Live** (auto-regenerated on every row change via Supabase triggers — see `supabase/migrations/20260514_register_triggers.sql`): REG-01 (qms_documents, filtered to `client_id IS NULL`), REG-02 (qualified_leads), REG-10 (crm_clients)
+- **Hand-curated** (regenerated only via `node scripts/generate-excel-registers.cjs REG-XX`): REG-03 (Context), REG-04 (Employee), REG-05 (HSE Risk), REG-06 (Internal Audit), REG-07 (NCR & CAPA), REG-08 (Quality Risk), REG-09 (Legal)
+
+### Single source of truth
+`scripts/lib/register-defs.cjs` lists every REG-XX with its DCN, scope, Supabase table (if live), breakdown grouping column, and complete column→source map. Adding a new register = one entry there + (if live) a trigger in `supabase/migrations/`. The Deno Edge Function mirrors the same metadata in `supabase/functions/sync-register-excel/index.ts` (legacy short keys like `docs`, `context` still work for the existing `qms.html` front-end; new REG-XX keys added as aliases).
+
+### Live-sync pipeline (push)
+1. Row INSERT/UPDATE/DELETE on `qms_documents` / `qualified_leads` / `crm_clients` fires `regen_register_async('REG-XX')` via Postgres trigger.
+2. `regen_register_async` POSTs to the `sync-register-excel` Edge Function via `pg_net.http_post`, including the service-role JWT in the Authorization header.
+3. The function fetches current rows, renders the branded XLSX, uploads to `storage://registers/preqal/REG-XX-*.xlsx` (`upsert: true`).
+
+### Local-sync pipeline (pull)
+`scripts/sync-registers-local.cjs` (cron'd every 5 min via `org.preqal.sync-ims` launchd job → `scripts/run-sync.sh`) mirrors Supabase Storage into `Preqal QMS/06 - Registers/`. No code change needed for new registers — the script lists all `registers/preqal/*.xlsx` and downloads them.
+
+### Manual regeneration
+```bash
+# Rebuild + upload one register to Storage
+source .env.secrets
+node scripts/regenerate-register.cjs REG-02
+
+# Rebuild ALL registers locally (no Storage upload, no Supabase auth needed for hand-curated)
+node scripts/generate-excel-registers.cjs
+
+# Rebuild just one local register
+node scripts/generate-excel-registers.cjs REG-05
+```
+
+### Deploy guide
+See `docs/guides/register-live-sync-deploy.md` for the one-time setup (migration push, function deploy, GUC settings for `app.regen_url` + `app.regen_auth_token`, storage bucket precondition).
+
+---
+
 ## QMS (`public/qms.html`)
 
 Standalone HTML served at `preqal.org/qms.html`. Rebuilt 2026-05-08 with dark navy sidebar layout matching admin dashboard.

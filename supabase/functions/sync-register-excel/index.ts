@@ -2,83 +2,42 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // @ts-expect-error — npm specifier works at Deno runtime
 import ExcelJS from "npm:exceljs@4";
+import {
+  applyPreqalHeader,
+  applyDataHeader,
+  applyDataRow,
+  type BrandedMeta,
+} from "./branding.ts";
 
 const SUPABASE_URL          = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY  = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-// ── Brand colours ─────────────────────────────────────────────────────────────
-const NAVY        = "FF0F172A";
-const WHITE       = "FFFFFFFF";
-const AMBER_LIGHT = "FFFEF3C7";
-const GRAY_BG     = "FFF8FAFC";
-const GRAY_BORDER = "FFCBD5E1";
-const SLATE       = "FF334155";
-
-function navyFill()       { return { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: NAVY } }; }
-function amberLightFill() { return { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: AMBER_LIGHT } }; }
-function grayFill()       { return { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: GRAY_BG } }; }
-function whiteFill()      { return { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: WHITE } }; }
-
-function thinBorder() {
-  const s = { style: "thin" as const, color: { argb: GRAY_BORDER } };
-  return { top: s, left: s, bottom: s, right: s };
-}
-
-function titleBlock(ws: ExcelJS.Worksheet, title: string, subtitle: string, colCount: number) {
-  ws.mergeCells(1, 1, 1, colCount);
-  const t = ws.getRow(1);
-  t.getCell(1).value = title;
-  t.getCell(1).font = { name: "Arial", size: 14, bold: true, color: { argb: "FF0F172A" } };
-  t.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
-  t.getCell(1).fill = amberLightFill();
-  t.height = 36;
-
-  ws.mergeCells(2, 1, 2, colCount);
-  const s = ws.getRow(2);
-  s.getCell(1).value = subtitle;
-  s.getCell(1).font = { name: "Arial", size: 10, color: { argb: SLATE } };
-  s.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
-  s.getCell(1).fill = whiteFill();
-  s.height = 20;
-
-  ws.addRow([]); // spacer row 3
-}
-
-function applyHeader(ws: ExcelJS.Worksheet, headers: string[], widths: number[]) {
-  const row = ws.addRow(headers);
-  row.eachCell((cell) => {
-    cell.fill = navyFill();
-    cell.font = { name: "Arial", size: 11, bold: true, color: { argb: WHITE } };
-    cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
-    cell.border = thinBorder();
-  });
-  row.height = 28;
-  widths.forEach((w, i) => { ws.getColumn(i + 1).width = w; });
-}
-
-function applyData(ws: ExcelJS.Worksheet, values: unknown[], isAlt: boolean) {
-  const row = ws.addRow(values);
-  row.eachCell((cell) => {
-    cell.fill = isAlt ? grayFill() : whiteFill();
-    cell.font = { name: "Arial", size: 10, color: { argb: SLATE } };
-    cell.alignment = { vertical: "middle", wrapText: true };
-    cell.border = thinBorder();
-  });
-  row.height = 18;
-}
-
 // ── Register config types ──────────────────────────────────────────────────────
 interface ColDef   { header: string; key: string; width: number; }
 interface SheetDef { name: string; columns: ColDef[]; }
-interface RegConfig { table: string; filename: string; title: string; sheets: SheetDef[]; }
+interface RegConfig {
+  table: string;
+  filename: string;
+  title: string;       // PREQAL-uppercase title shown in the branded header
+  dcn: string;
+  scope: string;
+  breakdownBy?: string; // column name to group for the breakdown panel
+  sheets: SheetDef[];
+}
 
 // ── Register definitions — one entry per sidebar register ──────────────────────
+// Keyed by legacy short keys (`docs`, `context`, …) used by `public/qms.html`.
+// New `REG-XX` keys are added as aliases below so DB triggers can call this
+// function with the canonical register id.
 const REGISTERS: Record<string, RegConfig> = {
   docs: {
     table: "qms_documents",
-    filename: "REG-01-Document-Register.xlsx",
-    title: "REG-01 — Document Register",
+    filename: "REG-01-Document-Master-Register.xlsx",
+    title: "PREQAL DOCUMENT MASTER REGISTER",
+    dcn: "PQL-REG-01",
+    scope: "PREQAL INTEGRATED MANAGEMENT SYSTEM",
+    breakdownBy: "category",
     sheets: [{ name: "Documents", columns: [
       { header: "Doc ID",      key: "doc_id",      width: 14 },
       { header: "Title",       key: "title",       width: 42 },
@@ -93,7 +52,10 @@ const REGISTERS: Record<string, RegConfig> = {
   context: {
     table: "qms_context_issues",
     filename: "REG-03-Context-Register.xlsx",
-    title: "REG-03 — Context of the Organisation",
+    title: "PREQAL CONTEXT OF THE ORGANISATION",
+    dcn: "PQL-REG-03",
+    scope: "ISO 9001:2015 §4.1 + §4.2",
+    breakdownBy: "context_category",
     sheets: [{ name: "Issues", columns: [
       { header: "Record ID",    key: "record_id",        width: 14 },
       { header: "Category",     key: "context_category", width: 16 },
@@ -111,9 +73,12 @@ const REGISTERS: Record<string, RegConfig> = {
   employees: {
     table: "qms_employees",
     filename: "REG-04-Employee-Register.xlsx",
-    title: "REG-04 — Employee Register",
+    title: "PREQAL EMPLOYEE REGISTER",
+    dcn: "PQL-REG-04",
+    scope: "HUMAN RESOURCES",
+    breakdownBy: "department",
     sheets: [{ name: "Employees", columns: [
-      { header: "Emp ID",       key: "record_id",       width: 14 },
+      { header: "Emp ID",       key: "record_id",        width: 14 },
       { header: "Full Name",    key: "full_name",        width: 28 },
       { header: "Position",     key: "position",         width: 28 },
       { header: "Department",   key: "department",       width: 20 },
@@ -127,7 +92,10 @@ const REGISTERS: Record<string, RegConfig> = {
   hse: {
     table: "qms_hse_risk",
     filename: "REG-05-HSE-Risk-Register.xlsx",
-    title: "REG-05 — HSE Risk Register",
+    title: "PREQAL HSE RISK REGISTER",
+    dcn: "PQL-REG-05",
+    scope: "HEALTH, SAFETY & ENVIRONMENT",
+    breakdownBy: "hazard_category",
     sheets: [{ name: "Risk Register", columns: [
       { header: "Risk ID",        key: "risk_id",           width: 12 },
       { header: "Hazard",         key: "hazard",            width: 32 },
@@ -144,8 +112,11 @@ const REGISTERS: Record<string, RegConfig> = {
   },
   audit: {
     table: "qms_audit",
-    filename: "REG-06-Audit-Register.xlsx",
-    title: "REG-06 — Audit Register",
+    filename: "REG-06-Internal-Audit-Register.xlsx",
+    title: "PREQAL INTERNAL AUDIT REGISTER",
+    dcn: "PQL-REG-06",
+    scope: "ISO 9001:2015 §9.2",
+    breakdownBy: "audit_type",
     sheets: [{ name: "Audits", columns: [
       { header: "Audit No.",       key: "audit_number",         width: 16 },
       { header: "Type",            key: "audit_type",           width: 16 },
@@ -163,7 +134,10 @@ const REGISTERS: Record<string, RegConfig> = {
   ncr: {
     table: "qms_ncr",
     filename: "REG-07-NCR-Register.xlsx",
-    title: "REG-07 — Non-Conformance Register",
+    title: "PREQAL NON-CONFORMANCE REGISTER",
+    dcn: "PQL-REG-07",
+    scope: "NON-CONFORMANCE TO CORRECTIVE ACTION",
+    breakdownBy: "severity",
     sheets: [{ name: "NCR Log", columns: [
       { header: "NCR No.",      key: "ncr_number",    width: 16 },
       { header: "Date",         key: "detected_date", width: 14 },
@@ -178,7 +152,10 @@ const REGISTERS: Record<string, RegConfig> = {
   capa: {
     table: "qms_capa",
     filename: "REG-07b-CAPA-Register.xlsx",
-    title: "REG-07b — CAPA Register",
+    title: "PREQAL CAPA REGISTER",
+    dcn: "PQL-REG-07b",
+    scope: "CORRECTIVE & PREVENTIVE ACTION",
+    breakdownBy: "type",
     sheets: [{ name: "CAPA Log", columns: [
       { header: "CAPA No.",     key: "capa_number", width: 16 },
       { header: "Type",         key: "type",        width: 14 },
@@ -193,7 +170,10 @@ const REGISTERS: Record<string, RegConfig> = {
   qr: {
     table: "qms_quality_risk",
     filename: "REG-08-Quality-Risk-Register.xlsx",
-    title: "REG-08 — Quality Risk Register",
+    title: "PREQAL QUALITY RISK REGISTER",
+    dcn: "PQL-REG-08",
+    scope: "ISO 9001:2015 §6.1",
+    breakdownBy: "risk_category",
     sheets: [{ name: "Quality Risks", columns: [
       { header: "Risk ID",      key: "risk_id",         width: 14 },
       { header: "Title",        key: "risk_title",      width: 35 },
@@ -212,7 +192,10 @@ const REGISTERS: Record<string, RegConfig> = {
   legal: {
     table: "qms_legal_register",
     filename: "REG-09-Legal-Register.xlsx",
-    title: "REG-09 — Legal & Compliance Register",
+    title: "PREQAL LEGAL & COMPLIANCE REGISTER",
+    dcn: "PQL-REG-09",
+    scope: "LEGAL OBLIGATIONS",
+    breakdownBy: "category",
     sheets: [{ name: "Legal Obligations", columns: [
       { header: "Record ID",     key: "record_id",          width: 14 },
       { header: "Title",         key: "title",              width: 40 },
@@ -228,7 +211,10 @@ const REGISTERS: Record<string, RegConfig> = {
   org: {
     table: "qms_org_register",
     filename: "REG-10-Stakeholder-Register.xlsx",
-    title: "REG-10 — Interested Parties Register",
+    title: "PREQAL INTERESTED PARTIES REGISTER",
+    dcn: "PQL-REG-10",
+    scope: "ISO 9001:2015 §4.2",
+    breakdownBy: "context_type",
     sheets: [{ name: "Stakeholders", columns: [
       { header: "Record ID",    key: "record_id",            width: 14 },
       { header: "Entity Name",  key: "entity_name",          width: 30 },
@@ -241,7 +227,58 @@ const REGISTERS: Record<string, RegConfig> = {
       { header: "Review Date",  key: "review_date",          width: 14 },
     ]}],
   },
+  // REG-02 lead register — driven by qualified_leads. New register, no
+  // legacy short-key alias in qms.html, but DB triggers POST `REG-02`.
+  "REG-02": {
+    table: "qualified_leads",
+    filename: "REG-02-Lead-Register.xlsx",
+    title: "PREQAL LEAD REGISTER",
+    dcn: "PQL-REG-02",
+    scope: "COMMERCIAL — LEAD CAPTURE TO QUALIFIED",
+    breakdownBy: "status",
+    sheets: [{ name: "Leads", columns: [
+      { header: "Lead ID",             key: "id",                   width: 38 },
+      { header: "Company",             key: "company_name",         width: 28 },
+      { header: "Contact",             key: "contact_person",       width: 24 },
+      { header: "Email",               key: "email",                width: 28 },
+      { header: "Staff Size",          key: "staff_size",           width: 12 },
+      { header: "Services",            key: "num_services",         width: 12 },
+      { header: "Business Description",key: "business_description", width: 40 },
+      { header: "Base Tier",           key: "base_tier",            width: 12 },
+      { header: "Recommended Tier",    key: "recommended_tier",     width: 14 },
+      { header: "Status",              key: "status",               width: 14 },
+      { header: "Submitted",           key: "created_at",           width: 18 },
+    ]}],
+  },
+  // REG-10 (CRM) — overrides the legacy `org` key for crm_clients-driven output.
+  "REG-10": {
+    table: "crm_clients",
+    filename: "REG-10-CRM-Client-Register.xlsx",
+    title: "PREQAL CRM CLIENT REGISTER",
+    dcn: "PQL-REG-10",
+    scope: "CLIENT LIFECYCLE",
+    breakdownBy: "pipeline_stage",
+    sheets: [{ name: "Clients", columns: [
+      { header: "Client ID",        key: "id",               width: 38 },
+      { header: "Company",          key: "company_name",     width: 30 },
+      { header: "Contact",          key: "contact_name",     width: 24 },
+      { header: "Email",            key: "contact_email",    width: 28 },
+      { header: "Pipeline Stage",   key: "pipeline_stage",   width: 18 },
+      { header: "Onboarding Stage", key: "onboarding_stage", width: 18 },
+      { header: "Tier",             key: "tier",             width: 12 },
+      { header: "QMS Active",       key: "qms_active",       width: 12 },
+      { header: "Created",          key: "created_at",       width: 18 },
+    ]}],
+  },
 };
+
+// REG-01 alias points to the same config as the legacy `docs` key.
+REGISTERS["REG-01"] = REGISTERS.docs;
+// NOTE: the legacy `org` key and the new `REG-10` key are intentionally
+// different configs — `org` maps to `qms_org_register` (the stakeholder /
+// interested-parties register driven by qms.html), whereas `REG-10` maps to
+// `crm_clients` (the CRM client register driven by DB triggers on the CRM
+// table). They share a REG-10 doc number but pull from different sources.
 
 // ── Helper ─────────────────────────────────────────────────────────────────────
 function json(body: unknown, status = 200): Response {
@@ -258,14 +295,31 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// ── Breakdown computation ──────────────────────────────────────────────────────
+function computeBreakdown(
+  rows: Array<Record<string, unknown>>,
+  field: string | undefined,
+): Array<[string, number]> {
+  if (!field) return [];
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    const raw = r[field];
+    const k = raw == null || raw === "" ? "—" : String(raw);
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4);
+}
+
 // ── Handler ────────────────────────────────────────────────────────────────────
 Deno.serve(async (req: Request): Promise<Response> => {
-  // Handle CORS preflight — must come before any auth check
+  // CORS preflight — must come before any auth check
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: CORS_HEADERS });
   }
 
-  // Require a valid JWT (Supabase injects Authorization header via sb.functions.invoke)
+  // Require a valid Authorization header (Supabase JWT or service-role token).
   if (!req.headers.get("Authorization")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
@@ -284,38 +338,56 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     // Query all rows for this register + client context
     let query = sb.from(config.table).select("*");
-    if (clientId) {
-      query = query.eq("client_id", clientId);
-    } else {
-      query = query.is("client_id", null);
+    // qualified_leads and crm_clients don't have a client_id column; only
+    // qms_* tables do. Scope by client_id only when the table is qms_*.
+    if (config.table.startsWith("qms_")) {
+      if (clientId) {
+        query = query.eq("client_id", clientId);
+      } else {
+        query = query.is("client_id", null);
+      }
     }
     const { data: rows, error: dbErr } = await query;
     if (dbErr) throw dbErr;
 
-    // Build subtitle label
-    let subtitle = "Preqal IMS | ISO 9001:2015";
-    if (clientId) {
-      const { data: client } = await sb
-        .from("crm_clients")
-        .select("company_name")
-        .eq("id", clientId)
-        .single();
-      subtitle = client ? `${client.company_name} IMS | Preqal` : `Client ${clientId}`;
-    }
+    const rowsArr = (rows ?? []) as Array<Record<string, unknown>>;
 
-    // Build workbook
+    // Build workbook with the BFF-style branded metadata header.
     const wb = new ExcelJS.Workbook();
     wb.creator = "Preqal";
     wb.created = new Date();
 
     for (const sheet of config.sheets) {
       const ws = wb.addWorksheet(sheet.name);
-      titleBlock(ws, config.title, subtitle, sheet.columns.length);
-      applyHeader(ws, sheet.columns.map((c) => c.header), sheet.columns.map((c) => c.width));
-      (rows ?? []).forEach((r: Record<string, unknown>, i: number) => {
-        applyData(ws, sheet.columns.map((c) => r[c.key] ?? ""), i % 2 === 1);
+
+      const meta: BrandedMeta = {
+        title: config.title,
+        dcn: config.dcn,
+        scope: config.scope,
+        creationDate: new Date().toISOString().slice(0, 10),
+        approvalDate: "",
+        versionNumber: "1.0",
+        currentRevisionDate: new Date().toISOString().slice(0, 10),
+        scheduledRevisionDate: "",
+        bigNumber: rowsArr.length,
+        breakdown: computeBreakdown(rowsArr, config.breakdownBy),
+        status: { created: rowsArr.length, revised: 0, approved: 0 },
+        dataColCount: Math.max(sheet.columns.length, 10),
+      };
+      await applyPreqalHeader(ws, meta);
+      applyDataHeader(
+        ws,
+        sheet.columns.map((c) => c.header),
+        sheet.columns.map((c) => c.width),
+      );
+      rowsArr.forEach((r, i) => {
+        applyDataRow(
+          ws,
+          sheet.columns.map((c) => r[c.key] ?? ""),
+          i % 2 === 1,
+        );
       });
-      ws.views = [{ state: "frozen", ySplit: 4 }];
+      // ySplit already set to 12 by applyPreqalHeader; nothing more to do.
     }
 
     const buf: Uint8Array = (await wb.xlsx.writeBuffer()) as Uint8Array;
@@ -334,8 +406,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     if (upErr) throw upErr;
 
-    console.warn(`sync-register-excel: ${storagePath} — ${(rows ?? []).length} rows`);
-    return json({ ok: true, path: storagePath, rows: (rows ?? []).length });
+    console.log(`sync-register-excel: ${storagePath} — ${rowsArr.length} rows`);
+    return json({ ok: true, path: storagePath, rows: rowsArr.length });
 
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
