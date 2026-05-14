@@ -297,6 +297,52 @@ Every page should follow:
 
 ---
 
+## IMS Document Branding (POL / PRO DOCX files)
+
+Every POL and PRO document published to `public/ims/` follows the same branded cover + header treatment. These rules are enforced by `scripts/pull-web-edits.cjs` and must be mirrored by any other generator (SOP / Policy skills, manual docs).
+
+### Logo assets
+| Asset | File | Used for |
+|---|---|---|
+| Favicon (hexagon-with-star) | `public/favicon.png` (254×286 px) | Cover page large mark + small mark in page header |
+| Wordmark (`PREQAL` text) | `public/ims/assets/preqal-wordmark.png` (240×105 px) | Below the favicon on the cover page |
+
+The wordmark is cropped from `public/Preqal Logo Sep25-9.png`. **Never** stretch — `noChangeAspect="1"` is set on every inline drawing.
+
+### Page header (recurring on every page)
+Single paragraph, bottom-border `#E2E8F0`:
+- **Top-left:** favicon image, ~22 px wide (~0.23")
+- Two spaces, then `PREQAL` (Arial 12pt bold, color `#D97706`)
+- Two spaces, dot separator, two spaces, then `— [Doc Title]` (Arial 10pt, color `#64748B`)
+- Right-aligned tab + `Confidential — Internal Use Only` (Arial 8pt italic, color `#94A3B8`)
+
+### Cover page (page 1)
+In order, all paragraphs in Arial:
+1. **Dark navy band** — full-width `#0F172A` paragraph, white bold 11pt: `PREQAL INTEGRATED MANAGEMENT SYSTEM  ·  Controlled Document — Internal Use Only`
+2. **Spacer** (24pt)
+3. **Favicon image** — centered, ~130 px wide (~1.35")
+4. **Wordmark image** — centered, ~220 px wide (~2.29"), 20pt space after
+5. **Title** — centered, 22pt Arial bold, color `#0F172A`, format: `<DOC-ID>: <Title>` (e.g. `PRO-06: Client Onboarding`, `POL-01: Quality Policy`)
+6. **Subtitle** — centered, 12pt Arial, color `#64748B`. Use `Policy` for POL docs, `Standard Operating Procedure` for PRO docs.
+7. **Metadata table** (two columns, dark-navy label cells, white value cells): Document No · Version · Effective Date · Document Owner · ISO Reference · Related Documents · Classification
+
+**Doc ID** on the cover must match the filename prefix (`PRO-XX:` / `POL-XX:`) — **never** `SOP-XX`.
+
+### Body sections (every PRO doc)
+Eight canonical sections, in this order: Purpose · Scope · Responsibilities · Definitions · Overview · Procedure · Communication (of this procedure) · Related Documents. Page layout:
+- **Page 2** = Purpose + Scope + Responsibilities + Definitions (compact 1.15× line spacing — must all fit on one page)
+- **Page 3** = Overview
+- **Pages 4+** = Procedure
+- **Last page** = Communication + Related Documents
+
+### Body formatting
+- Times New Roman 12pt throughout body
+- 1.5× line spacing (compact 1.15× for the page-2 sections)
+- `<w:keepLines/>` on every paragraph — no paragraph or bullet may split across pages
+- Tables: thin grey borders (`#94A3B8`); header rows shaded `#F1F5F9`
+
+---
+
 ## QMS (`public/qms.html`)
 
 Standalone HTML served at `preqal.org/qms.html`. Rebuilt 2026-05-08 with dark navy sidebar layout matching admin dashboard.
