@@ -13,9 +13,10 @@
 -- pg_net powers the async HTTP POST. No-op if already enabled.
 CREATE EXTENSION IF NOT EXISTS pg_net;
 
--- Fire-and-forget POST to the sync-register-excel function. If the runtime
--- settings aren't configured (e.g. on a freshly-pushed branch), the trigger
--- silently no-ops rather than failing the underlying row write.
+-- Fire-and-forget POST to the sync-register-excel function.
+-- URL and token are hardcoded (ALTER DATABASE requires superuser unavailable via Supabase API).
+-- To rotate the service-role token: update the constant below and re-run this function via
+-- apply_migration or Supabase SQL editor.
 CREATE OR REPLACE FUNCTION regen_register_async(p_register_key text)
 RETURNS void
 LANGUAGE plpgsql
@@ -23,12 +24,9 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-  url        text := current_setting('app.regen_url', true);
-  auth_token text := current_setting('app.regen_auth_token', true);
+  url        constant text := 'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/sync-register-excel';
+  auth_token constant text := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjE0Njk2NiwiZXhwIjoyMDgxNzIyOTY2fQ.C_qlYYgJXtXN4TocJHr4K93IyU5Zm6FRsgmCofm38Z0';
 BEGIN
-  IF url IS NULL OR auth_token IS NULL THEN
-    RETURN;
-  END IF;
   PERFORM net.http_post(
     url     := url,
     headers := jsonb_build_object(
