@@ -17,9 +17,9 @@ module.exports = [
     scope: 'PREQAL INTEGRATED MANAGEMENT SYSTEM',
     liveTable: 'qms_documents',
     liveFilter: { client_id: null },        // Preqal's own docs only
-    breakdownBy: 'doc_type',                // grouping field for breakdown panel
+    breakdownBy: 'category',                // grouping field for breakdown panel
     columns: [
-      { header:'TYPE',                width:10, source:'doc_type' },
+      { header:'CATEGORY',            width:14, source:'category' },
       { header:'CONTROL NUMBER',      width:14, source:'doc_id' },
       { header:'TITLE',               width:42, source:'title' },
       { header:'VERSION',             width:10, source:'version' },
@@ -42,13 +42,13 @@ module.exports = [
     breakdownBy: 'status',
     columns: [
       { header:'LEAD ID',            width:38, source:'id' },
-      { header:'COMPANY',            width:28, source:'company' },
-      { header:'CONTACT',            width:24, source:'name' },
+      { header:'COMPANY',            width:28, source:'company_name' },
+      { header:'CONTACT',            width:24, source:'contact_person' },
       { header:'EMAIL',              width:28, source:'email' },
-      { header:'PHONE',              width:18, source:(r) => `${r.dial_code||''} ${r.phone||''}`.trim() },
-      { header:'COUNTRY',            width:12, source:'country_iso' },
-      { header:'JOB TITLE',          width:24, source:'job_title' },
-      { header:'PRESSING PROBLEM',   width:40, source:'most_pressing_quality_problem' },
+      { header:'STAFF SIZE',         width:12, source:'staff_size' },
+      { header:'SERVICES',           width:12, source:'num_services' },
+      { header:'BUSINESS DESCRIPTION',width:40, source:'business_description' },
+      { header:'BASE TIER',          width:12, source:'base_tier' },
       { header:'RECOMMENDED TIER',   width:14, source:'recommended_tier' },
       { header:'STATUS',             width:14, source:'status' },
       { header:'SUBMITTED',          width:18, source:'created_at' },
