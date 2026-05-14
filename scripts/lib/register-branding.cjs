@@ -23,10 +23,33 @@ function loadLogoBuf() {
   return fs.existsSync(FAVICON) ? fs.readFileSync(FAVICON) : null;
 }
 
+// Apply the same thin border to every cell in a merged range. ExcelJS only
+// borders the anchor cell of a merge by default, which makes merged panels
+// render as a tiny rectangle around one cell's worth in some viewers.
+function applyBorderToRange(ws, range) {
+  const [start, end] = range.split(':');
+  const colLetterToNum = (s) => {
+    let n = 0;
+    for (let i = 0; i < s.length; i++) n = n * 26 + (s.charCodeAt(i) - 64);
+    return n;
+  };
+  const parse = (ref) => {
+    const m = ref.match(/^([A-Z]+)(\d+)$/);
+    return { col: colLetterToNum(m[1]), row: parseInt(m[2], 10) };
+  };
+  const s = parse(start);
+  const e = parse(end);
+  for (let r = s.row; r <= e.row; r++) {
+    for (let c = s.col; c <= e.col; c++) {
+      ws.getCell(r, c).border = thin();
+    }
+  }
+}
+
 /**
  * Renders the 11-row branded metadata header on a sheet.
  * meta: { title, dcn, scope, creationDate, approvalDate, versionNumber,
- *         currentRevisionDate, scheduledRevisionDate, bigNumber, bigNumberLabel,
+ *         currentRevisionDate, scheduledRevisionDate, bigNumber,
  *         breakdown: [[label, count], ...], status: {created, revised, approved},
  *         dataColCount }
  */
@@ -35,7 +58,9 @@ function applyPreqalHeader(ws, meta) {
   const widths = [4, 18, 18, 26, 18, 14, 10, 12, 12, 12];
   widths.forEach((w, i) => { ws.getColumn(i + 1).width = w; });
 
-  // Logo cell A2:B10
+  // Logo cell A2:B10 — borders before merge so every underlying cell keeps a
+  // thin border (ExcelJS writes attrs to the master only post-merge).
+  applyBorderToRange(ws, 'A2:B10');
   ws.mergeCells('A2:B10');
   const logoCell = ws.getCell('A2');
   logoCell.fill = fill(WHITE);
@@ -80,6 +105,7 @@ function applyPreqalHeader(ws, meta) {
   });
 
   // Big number panel E2:E9
+  applyBorderToRange(ws, 'E2:E9');
   ws.mergeCells('E2:E9');
   const big = ws.getCell('E2');
   big.value = m.bigNumber || 0;
@@ -109,15 +135,21 @@ function applyPreqalHeader(ws, meta) {
   const statusLabels = ['CREATED','REVISED','APPROVED'];
   const counts = m.status || { created:0, revised:0, approved:0 };
   const totals = [counts.created || 0, counts.revised || 0, counts.approved || 0];
-  const total  = (m.bigNumber || 0) || 1;
+  // Denominator is the sum of status counts so the panel is internally
+  // consistent regardless of what bigNumber is. Fall back to 0% (not /1) when
+  // every count is zero so we never render a misleading percentage.
+  const total  = totals.reduce((a, b) => a + b, 0);
+  const colLetter = (n) => String.fromCharCode(64 + n);
   statusLabels.forEach((label, i) => {
     const col = 8 + i;
+    const L = colLetter(col);
     const lc = ws.getCell(2, col);
     lc.value = label;
     lc.fill = fill(NAVY);
     lc.font = { name:'Arial', size:9, bold:true, color:{ argb:WHITE } };
     lc.alignment = { vertical:'middle', horizontal:'center' };
     lc.border = thin();
+    applyBorderToRange(ws, `${L}3:${L}5`);
     ws.mergeCells(3, col, 5, col);
     const cc = ws.getCell(3, col);
     cc.value = totals[i];
@@ -125,6 +157,7 @@ function applyPreqalHeader(ws, meta) {
     cc.font = { name:'Arial', size:18, bold:true, color:{ argb:NAVY } };
     cc.alignment = { vertical:'middle', horizontal:'center' };
     cc.border = thin();
+    applyBorderToRange(ws, `${L}6:${L}9`);
     ws.mergeCells(6, col, 9, col);
     const pc = ws.getCell(6, col);
     pc.value = total > 0 ? (totals[i] / total) : 0;
