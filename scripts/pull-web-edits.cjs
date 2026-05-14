@@ -184,6 +184,15 @@ const PRO_PAGE_BREAK_SECTIONS = new Set([
   'Communication (of this procedure)',
 ]);
 
+// PRO sections that must all fit on page 2 — use compact (1.15x) line spacing
+// so Purpose + Scope + Responsibilities + Definitions never overflow onto page 3.
+const PRO_COMPACT_SECTIONS = new Set([
+  'Purpose',
+  'Scope',
+  'Responsibilities',
+  'Definitions',
+]);
+
 // ─── Block converter ──────────────────────────────────────────────────────────
 // opts.proLayout — true for PRO documents: insert page breaks at designated sections
 function blocksToOoxml(nodes, opts = {}) {
@@ -200,7 +209,10 @@ function blocksToOoxml(nodes, opts = {}) {
     switch (n.tag) {
       case 'p': case 'div': {
         const runs = inlineToRuns(n.children);
-        out += `<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="80"/><w:keepLines/></w:pPr>${runs}</w:p>`;
+        const sp = opts.compact
+          ? `<w:spacing w:line="276" w:lineRule="auto" w:after="40"/>`
+          : `<w:spacing w:line="360" w:lineRule="auto" w:after="80"/>`;
+        out += `<w:p><w:pPr>${sp}<w:keepLines/></w:pPr>${runs}</w:p>`;
         break;
       }
 
@@ -214,21 +226,27 @@ function blocksToOoxml(nodes, opts = {}) {
         out += headingPara(n, 22, 160,  60); break;
 
       case 'ul': {
+        const liSp = opts.compact
+          ? `<w:spacing w:line="276" w:lineRule="auto" w:after="30"/>`
+          : `<w:spacing w:line="360" w:lineRule="auto" w:after="60"/>`;
         for (const li of n.children.filter(c => c.tag === 'li')) {
           const runs = inlineToRuns(li.children);
           out += `<w:p>`
-               + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="60"/><w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `<w:pPr>${liSp}<w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
                + `${wRun('•\t')}${runs}</w:p>`;
         }
         break;
       }
 
       case 'ol': {
+        const liSp = opts.compact
+          ? `<w:spacing w:line="276" w:lineRule="auto" w:after="30"/>`
+          : `<w:spacing w:line="360" w:lineRule="auto" w:after="60"/>`;
         let i = 1;
         for (const li of n.children.filter(c => c.tag === 'li')) {
           const runs = inlineToRuns(li.children);
           out += `<w:p>`
-               + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="60"/><w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `<w:pPr>${liSp}<w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
                + `${wRun(`${i++}.\t`)}${runs}</w:p>`;
         }
         break;
@@ -248,11 +266,12 @@ function blocksToOoxml(nodes, opts = {}) {
       case 'article': {
         const secName = n.attrs['data-sec'] || '';
         const pageBreak = opts.proLayout && PRO_PAGE_BREAK_SECTIONS.has(secName);
-        if (secName) out += sectionHeadingPara(secName, pageBreak);
+        const compact   = opts.proLayout && PRO_COMPACT_SECTIONS.has(secName);
+        if (secName) out += sectionHeadingPara(secName, pageBreak, compact);
         const children = n.children.filter(c =>
           !(c.tag === 'h2' && /sec-heading/.test(c.attrs?.class || ''))
         );
-        out += blocksToOoxml(children, opts);
+        out += blocksToOoxml(children, { ...opts, compact });
         break;
       }
 
@@ -273,9 +292,13 @@ function headingPara(node, halfPt, spaceBefore, spaceAfter) {
 }
 
 // Section heading: bold underline 14pt. pageBreakBefore inserts a hard page break.
-function sectionHeadingPara(text, pageBreakBefore = false) {
+// compact=true uses tighter spacing for page-2 sections (Purpose/Scope/Responsibilities/Definitions).
+function sectionHeadingPara(text, pageBreakBefore = false, compact = false) {
+  const sp = compact
+    ? `<w:spacing w:line="276" w:lineRule="auto" w:before="120" w:after="40"/>`
+    : `<w:spacing w:line="360" w:lineRule="auto" w:before="240" w:after="80"/>`;
   return `<w:p>`
-       + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:before="240" w:after="80"/><w:keepLines/>`
+       + `<w:pPr>${sp}<w:keepLines/>`
        + (pageBreakBefore ? '<w:pageBreakBefore/>' : '')
        + `</w:pPr>`
        + `<w:r><w:rPr>`
