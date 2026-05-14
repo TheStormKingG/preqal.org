@@ -327,7 +327,7 @@ async function generateREG06() {
   const checklist = [
     ['AUD-2026-01','Are all leads captured in the Supabase template_leads table?','8.2.1','','',''],
     ['AUD-2026-01','Are leads reviewed within 4 hours per SOP-02?','8.2.1','','',''],
-    ['AUD-2026-02','Are all quote submissions recorded in quote_submissions?','8.1','','',''],
+    ['AUD-2026-02','Are all quote submissions recorded in qualified_leads?','8.1','','',''],
     ['AUD-2026-02','Is a proposal sent within 48 hours of qualification?','8.1','','',''],
     ['AUD-2026-03','Are client records created in crm_clients upon contract execution?','8.5','','',''],
     ['AUD-2026-03','Is a deposit invoice issued within 24 hours of contract signing?','8.5.5','','',''],
