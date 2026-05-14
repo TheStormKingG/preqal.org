@@ -20,6 +20,7 @@ CREATE OR REPLACE FUNCTION regen_register_async(p_register_key text)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   url        text := current_setting('app.regen_url', true);

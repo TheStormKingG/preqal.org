@@ -36,12 +36,17 @@ let _faviconCache: Uint8Array | null | undefined; // undefined = not fetched yet
 export async function loadLogoBuf(): Promise<Uint8Array | null> {
   if (_faviconCache !== undefined) return _faviconCache;
   try {
-    const res = await fetch(FAVICON_URL);
+    const res = await fetch(FAVICON_URL, { signal: AbortSignal.timeout(3000) });
     if (!res.ok) {
       _faviconCache = null;
       return null;
     }
     const buf = new Uint8Array(await res.arrayBuffer());
+    // Size sanity check — guard against a giant or empty/error response body.
+    if (buf.byteLength < 512 || buf.byteLength > 100_000) {
+      _faviconCache = null;
+      return null;
+    }
     _faviconCache = buf;
     return buf;
   } catch {
@@ -148,7 +153,9 @@ export async function applyPreqalHeader(
   applyBorderToRange(ws, "E2:E9");
   ws.mergeCells("E2:E9");
   const big = ws.getCell("E2");
-  big.value = m.bigNumber ?? 0;
+  // Use `||` (not `??`) to stay bit-identical with the Node port in
+  // scripts/lib/register-branding.cjs. For empty registers both produce 0.
+  big.value = m.bigNumber || 0;
   big.fill = fill(AMBER_100);
   big.font = { name: "Arial", size: 36, bold: true, color: { argb: NAVY } };
   big.alignment = { vertical: "middle", horizontal: "center" };

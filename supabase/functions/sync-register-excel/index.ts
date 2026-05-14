@@ -274,9 +274,11 @@ const REGISTERS: Record<string, RegConfig> = {
 
 // REG-01 alias points to the same config as the legacy `docs` key.
 REGISTERS["REG-01"] = REGISTERS.docs;
-// Older `org` short-key callers also map to the new REG-10 layout when the
-// triggers fire; qms.html's local cache will pick up the new filename on next
-// page load. The legacy `org` entry above stays for backward compat.
+// NOTE: the legacy `org` key and the new `REG-10` key are intentionally
+// different configs — `org` maps to `qms_org_register` (the stakeholder /
+// interested-parties register driven by qms.html), whereas `REG-10` maps to
+// `crm_clients` (the CRM client register driven by DB triggers on the CRM
+// table). They share a REG-10 doc number but pull from different sources.
 
 // ── Helper ─────────────────────────────────────────────────────────────────────
 function json(body: unknown, status = 200): Response {
@@ -404,7 +406,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     if (upErr) throw upErr;
 
-    console.warn(`sync-register-excel: ${storagePath} — ${rowsArr.length} rows`);
+    console.log(`sync-register-excel: ${storagePath} — ${rowsArr.length} rows`);
     return json({ ok: true, path: storagePath, rows: rowsArr.length });
 
   } catch (err) {
