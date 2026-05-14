@@ -34,3 +34,4 @@ Preqal Website/
 
 # Local secrets — never commit
 .env.secrets
+~$*
