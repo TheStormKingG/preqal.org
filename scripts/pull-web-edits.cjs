@@ -126,12 +126,13 @@ function buildTree(tokens) {
 
 // ─── OOXML run builder ────────────────────────────────────────────────────────
 function wRPr({ bold, italic, underline, size } = {}) {
-  let s = '';
+  const hp = size || 24; // default 12pt = 24 half-points; callers pass explicit size for headings
+  let s = '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>';
   if (bold)      s += '<w:b/><w:bCs/>';
   if (italic)    s += '<w:i/><w:iCs/>';
   if (underline) s += '<w:u w:val="single"/>';
-  if (size)      s += `<w:sz w:val="${size}"/><w:szCs w:val="${size}"/>`;
-  return s ? `<w:rPr>${s}</w:rPr>` : '';
+  s += `<w:sz w:val="${hp}"/><w:szCs w:val="${hp}"/>`;
+  return `<w:rPr>${s}</w:rPr>`;
 }
 
 function wRun(text, fmt = {}) {
@@ -170,16 +171,28 @@ function inlineToRuns(nodes, ctx = {}) {
   return out;
 }
 
+// Standard paragraph properties: 1.5 line spacing + widow control.
+// keepLines prevents a paragraph from splitting across pages.
+const LINE_1_5 = '<w:spacing w:line="360" w:lineRule="auto"/>';
+
+// PRO sections that must start on a new page (page 2 = Purpose, page 3 = Overview,
+// page 4+ = Procedure, last page = Communication + Related Documents)
+const PRO_PAGE_BREAK_SECTIONS = new Set([
+  'Purpose',
+  'Overview',
+  'Procedure',
+  'Communication (of this procedure)',
+]);
+
 // ─── Block converter ──────────────────────────────────────────────────────────
-// Converts an array of block nodes to OOXML paragraphs and tables.
-// Returns a string of OOXML elements.
-function blocksToOoxml(nodes) {
+// opts.proLayout — true for PRO documents: insert page breaks at designated sections
+function blocksToOoxml(nodes, opts = {}) {
   let out = '';
 
   for (const n of nodes) {
     if (n.type === 'text') {
       const txt = n.content.trim();
-      if (txt) out += `<w:p><w:r><w:t xml:space="preserve">${escXml(txt)}</w:t></w:r></w:p>`;
+      if (txt) out += `<w:p><w:pPr>${LINE_1_5}<w:keepLines/></w:pPr>${wRun(txt)}</w:p>`;
       continue;
     }
     if (n.type !== 'element') continue;
@@ -187,9 +200,7 @@ function blocksToOoxml(nodes) {
     switch (n.tag) {
       case 'p': case 'div': {
         const runs = inlineToRuns(n.children);
-        out += runs
-          ? `<w:p><w:pPr><w:spacing w:after="80"/></w:pPr>${runs}</w:p>`
-          : `<w:p><w:pPr><w:spacing w:after="80"/></w:pPr></w:p>`;
+        out += `<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="80"/><w:keepLines/></w:pPr>${runs}</w:p>`;
         break;
       }
 
@@ -206,9 +217,8 @@ function blocksToOoxml(nodes) {
         for (const li of n.children.filter(c => c.tag === 'li')) {
           const runs = inlineToRuns(li.children);
           out += `<w:p>`
-               + `<w:pPr><w:spacing w:after="60"/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
-               + `<w:r><w:t xml:space="preserve">•\t</w:t></w:r>`
-               + `${runs}</w:p>`;
+               + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="60"/><w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `${wRun('•\t')}${runs}</w:p>`;
         }
         break;
       }
@@ -218,9 +228,8 @@ function blocksToOoxml(nodes) {
         for (const li of n.children.filter(c => c.tag === 'li')) {
           const runs = inlineToRuns(li.children);
           out += `<w:p>`
-               + `<w:pPr><w:spacing w:after="60"/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
-               + `<w:r><w:t xml:space="preserve">${i++}.\t</w:t></w:r>`
-               + `${runs}</w:p>`;
+               + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="60"/><w:keepLines/><w:ind w:left="720" w:hanging="360"/></w:pPr>`
+               + `${wRun(`${i++}.\t`)}${runs}</w:p>`;
         }
         break;
       }
@@ -229,30 +238,26 @@ function blocksToOoxml(nodes) {
         out += tableToOoxml(n); break;
 
       case 'hr':
-        out += `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="CBD5E1"/></w:pBdr></w:pPr></w:p>`;
+        out += `<w:p><w:pPr>${LINE_1_5}<w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="CBD5E1"/></w:pBdr></w:pPr></w:p>`;
         break;
 
       case 'blockquote':
-        out += `<w:p><w:pPr><w:ind w:left="720"/></w:pPr>${inlineToRuns(n.children)}</w:p>`;
+        out += `<w:p><w:pPr>${LINE_1_5}<w:keepLines/><w:ind w:left="720"/></w:pPr>${inlineToRuns(n.children)}</w:p>`;
         break;
 
       case 'article': {
-        // Section wrapper produced by the QMS browser editor.
-        // Emit a bold heading for the section name, then convert children —
-        // stripping any h2.sec-heading already embedded in the saved HTML
-        // (old saves baked the heading into the article content; new saves don't).
         const secName = n.attrs['data-sec'] || '';
-        if (secName) out += sectionHeadingPara(secName);
+        const pageBreak = opts.proLayout && PRO_PAGE_BREAK_SECTIONS.has(secName);
+        if (secName) out += sectionHeadingPara(secName, pageBreak);
         const children = n.children.filter(c =>
           !(c.tag === 'h2' && /sec-heading/.test(c.attrs?.class || ''))
         );
-        out += blocksToOoxml(children);
+        out += blocksToOoxml(children, opts);
         break;
       }
 
       default:
-        // Unknown block — try as inline paragraph
-        out += blocksToOoxml(n.children);
+        out += blocksToOoxml(n.children, opts);
     }
   }
 
@@ -263,15 +268,19 @@ function blocksToOoxml(nodes) {
 function headingPara(node, halfPt, spaceBefore, spaceAfter) {
   const runs = inlineToRuns(node.children, { bold: true, size: halfPt });
   return `<w:p>`
-       + `<w:pPr><w:spacing w:before="${spaceBefore}" w:after="${spaceAfter}"/></w:pPr>`
+       + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:before="${spaceBefore}" w:after="${spaceAfter}"/><w:keepLines/></w:pPr>`
        + `${runs}</w:p>`;
 }
 
-// Section heading: matches the .sec-card-head style (bold, prominent)
-function sectionHeadingPara(text) {
+// Section heading: bold underline 14pt. pageBreakBefore inserts a hard page break.
+function sectionHeadingPara(text, pageBreakBefore = false) {
   return `<w:p>`
-       + `<w:pPr><w:spacing w:before="240" w:after="80"/></w:pPr>`
-       + `<w:r><w:rPr><w:b/><w:bCs/><w:sz w:val="28"/><w:szCs w:val="28"/>`
+       + `<w:pPr><w:spacing w:line="360" w:lineRule="auto" w:before="240" w:after="80"/><w:keepLines/>`
+       + (pageBreakBefore ? '<w:pageBreakBefore/>' : '')
+       + `</w:pPr>`
+       + `<w:r><w:rPr>`
+       + `<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>`
+       + `<w:b/><w:bCs/><w:sz w:val="28"/><w:szCs w:val="28"/>`
        + `<w:u w:val="single"/></w:rPr>`
        + `<w:t xml:space="preserve">${escXml(text)}</w:t></w:r>`
        + `</w:p>`;
@@ -308,7 +317,7 @@ function tableToOoxml(tableNode) {
         : '';
       return `<w:tc>`
            + (shading ? `<w:tcPr>${shading}</w:tcPr>` : '')
-           + `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>${runs}</w:p>`
+           + `<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto" w:after="0"/><w:keepLines/></w:pPr>${runs}</w:p>`
            + `</w:tc>`;
     }).join('');
     return `<w:tr>${cells}</w:tr>`;
@@ -318,11 +327,12 @@ function tableToOoxml(tableNode) {
 }
 
 // ─── Top-level HTML → OOXML ───────────────────────────────────────────────────
-function htmlToOoxml(html) {
+// opts.proLayout — true for PRO documents: inserts page breaks at section boundaries
+function htmlToOoxml(html, opts = {}) {
   if (!html || !html.trim()) return '<w:p/>';
   const tokens = tokenizeHtml(html);
   const tree   = buildTree(tokens);
-  return blocksToOoxml(tree.children);
+  return blocksToOoxml(tree.children, opts);
 }
 
 // ─── DOCX body replacement ────────────────────────────────────────────────────
@@ -495,7 +505,7 @@ async function main() {
     // Convert HTML to OOXML and replace body
     let patchedXml;
     try {
-      const newBodyContent = htmlToOoxml(doc.content_html);
+      const newBodyContent = htmlToOoxml(doc.content_html, { proLayout: docId.startsWith('PRO-') });
       patchedXml = patchDocxBody(originalXml, newBodyContent, headerXml);
     } catch (e) {
       results.push({ doc_id: docId, title, status: 'FAIL', detail: `Conversion failed: ${e.message}` });
