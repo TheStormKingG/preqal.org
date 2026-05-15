@@ -49,6 +49,7 @@ async function buildLiveRegister(sb, def) {
     versionNumber: '1.0',
     subtitle: def.subtitle || '',
     dataColCount: def.columns.length,
+    colWidths: def.columns.map(c => c.width),
   });
   applyDataHeader(ws, def.columns.map(c => c.header), def.columns.map(c => c.width));
   rows.forEach((row, i) => {
@@ -85,6 +86,7 @@ function buildHandRegister(def, tabs) {
       versionNumber: tab.versionNumber ?? '1.0',
       subtitle: def.subtitle || '',
       dataColCount: tab.headers.length,
+      colWidths: tab.widths || [],
     });
     applyDataHeader(ws, tab.headers, tab.widths);
     tab.rows.forEach((r, i) => applyDataRow(ws, r, i % 2 === 1));

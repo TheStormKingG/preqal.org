@@ -81,6 +81,31 @@ export function applyBorderToRange(ws: ExcelJS.Worksheet, range: string): void {
 // ── Module-level helpers ───────────────────────────────────────────────────────
 const colLetter = (n: number): string => String.fromCharCode(64 + n);
 
+// Center an image within a merged cell area.
+// Returns { col, row } for the ExcelJS addImage tl parameter.
+// colWidths: array of column widths in chars (index 0 = col A)
+function centerImage(
+  imgW: number, imgH: number,
+  startCol: number, startRow: number,
+  colWidths: number[], rowHPt: number,
+  spanCols: number, spanRows: number,
+): { col: number; row: number } {
+  const COL_PX = 7;
+  const ROW_PX = 96 / 72;
+  const cellW = colWidths.slice(startCol, startCol + spanCols).reduce((a, w) => a + (w || 14) * COL_PX, 0);
+  const cellH = spanRows * rowHPt * ROW_PX;
+  const offX = Math.max(0, (cellW - imgW) / 2);
+  const offY = Math.max(0, (cellH - imgH) / 2);
+  let colFrac = startCol;
+  let rem = offX;
+  for (let i = startCol; i < startCol + spanCols; i++) {
+    const w = (colWidths[i] ?? 14) * COL_PX;
+    if (rem <= w) { colFrac = i + rem / w; break; }
+    rem -= w;
+  }
+  return { col: colFrac, row: startRow + offY / (rowHPt * ROW_PX) };
+}
+
 // ── Meta header (rows 1-13) ────────────────────────────────────────────────────
 export interface BrandedMeta {
   title?: string;
@@ -93,6 +118,7 @@ export interface BrandedMeta {
   scheduledRevisionDate?: string;
   subtitle?: string;
   dataColCount?: number;
+  colWidths?: number[];
 }
 
 export async function applyPreqalHeader(
@@ -101,6 +127,7 @@ export async function applyPreqalHeader(
 ): Promise<void> {
   const m = meta || {};
   const dataColCount = m.dataColCount || 10;
+  const colWidths = m.colWidths || Array(dataColCount).fill(14);
 
   // Row 1: small logo (A1) + subtitle (B1:end merged)
   ws.getRow(1).height = 20;
@@ -138,13 +165,13 @@ export async function applyPreqalHeader(
   if (logoBuf) {
     const smallId = ws.workbook.addImage({ buffer: logoBuf, extension: "png" });
     ws.addImage(smallId, {
-      tl: { col: 0.15, row: 0.1 },
+      tl: centerImage(22, 24, 0, 0, colWidths, 20, 1, 1),
       ext: { width: 22, height: 24 },
       editAs: "absolute",
     });
     const bigId = ws.workbook.addImage({ buffer: logoBuf, extension: "png" });
     ws.addImage(bigId, {
-      tl: { col: 0.4, row: 2.4 },
+      tl: centerImage(90, 100, 0, 2, colWidths, 22, 2, 8),
       ext: { width: 90, height: 100 },
       editAs: "absolute",
     });

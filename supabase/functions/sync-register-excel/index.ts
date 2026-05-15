@@ -354,6 +354,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
         scheduledRevisionDate: "",
         subtitle: config.subtitle || "",
         dataColCount: sheet.columns.length,
+        colWidths: sheet.columns.map(c => c.width),
       };
       await applyPreqalHeader(ws, meta);
       applyDataHeader(

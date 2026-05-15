@@ -20,6 +20,27 @@ const thin = () => {
 };
 const colLetter = (n) => String.fromCharCode(64 + n);
 
+// Center an image within a merged cell area.
+// Returns { col, row } for the ExcelJS addImage tl parameter.
+// colWidths: array of column widths in chars (index 0 = col A)
+function centerImage(imgW, imgH, startCol, startRow, colWidths, rowHPt, spanCols, spanRows) {
+  const COL_PX = 7;
+  const ROW_PX = 96 / 72;
+  const cellW = colWidths.slice(startCol, startCol + spanCols).reduce((a, w) => a + (w || 14) * COL_PX, 0);
+  const cellH = spanRows * rowHPt * ROW_PX;
+  const offX = Math.max(0, (cellW - imgW) / 2);
+  const offY = Math.max(0, (cellH - imgH) / 2);
+
+  let colFrac = startCol;
+  let rem = offX;
+  for (let i = startCol; i < startCol + spanCols; i++) {
+    const w = (colWidths[i] || 14) * COL_PX;
+    if (rem <= w) { colFrac = i + rem / w; break; }
+    rem -= w;
+  }
+  return { col: colFrac, row: startRow + offY / (rowHPt * ROW_PX) };
+}
+
 function loadLogoBuf() {
   return fs.existsSync(FAVICON) ? fs.readFileSync(FAVICON) : null;
 }
@@ -50,11 +71,13 @@ function applyBorderToRange(ws, range) {
 /**
  * Renders the 13-row branded metadata header on a sheet.
  * meta: { title, dcn, scope, creationDate, approvalDate, versionNumber,
- *         currentRevisionDate, scheduledRevisionDate, subtitle, dataColCount }
+ *         currentRevisionDate, scheduledRevisionDate, subtitle, dataColCount,
+ *         colWidths (optional array of column widths in chars, index 0 = col A) }
  */
 function applyPreqalHeader(ws, meta) {
   const m = meta || {};
   const dataColCount = m.dataColCount || 10;
+  const colWidths = m.colWidths || Array(dataColCount).fill(14);
 
   // Row 1: small logo (A1) + subtitle (B1:end merged)
   ws.getRow(1).height = 20;
@@ -90,9 +113,17 @@ function applyPreqalHeader(ws, meta) {
   const logoBuf = loadLogoBuf();
   if (logoBuf) {
     const smallId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
-    ws.addImage(smallId, { tl: { col: 0.15, row: 0.1 }, ext: { width: 22, height: 24 }, editAs: 'absolute' });
+    ws.addImage(smallId, {
+      tl: centerImage(22, 24, 0, 0, colWidths, 20, 1, 1),
+      ext: { width: 22, height: 24 },
+      editAs: 'absolute',
+    });
     const bigId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
-    ws.addImage(bigId, { tl: { col: 0.4, row: 2.4 }, ext: { width: 90, height: 100 }, editAs: 'absolute' });
+    ws.addImage(bigId, {
+      tl: centerImage(90, 100, 0, 2, colWidths, 22, 2, 8),
+      ext: { width: 90, height: 100 },
+      editAs: 'absolute',
+    });
   }
 
   const fields = [
