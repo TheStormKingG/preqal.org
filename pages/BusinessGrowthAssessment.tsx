@@ -325,23 +325,36 @@ const BusinessGrowthAssessment: React.FC = () => {
 
     console.warn('[Preqal Business Growth Assessment] Submission:', submission);
 
-    // ── Save to Supabase qualified_leads ──────────────────────────────────
-    const { error: dbError } = await supabase.from('qualified_leads').insert([{
-      company_name:         submission.companyName,
-      contact_person:       submission.contactPersonName,
-      email:                submission.email,
-      staff_size:           submission.staffSize,
-      num_services:         submission.numberOfServices,
-      avg_processes:        submission.avgProcessesPerService,
-      base_tier:            submission.baseTier,
-      complexity_score:     submission.complexityScore,
-      recommended_tier:     submission.recommendedTier,
-      business_description: submission.businessDescription,
-      selected_steps:       selectedSteps,
-      status:               'new',
-    }]);
-    if (dbError) console.error('[BusinessGrowthAssessment] DB error:', dbError.message);
+    // ── Save to Supabase qualified_leads ─────────────────────────────────
+    // Wrapped independently so a DB outage never blocks the EmailJS notification.
+    let dbOk = false;
+    try {
+      const { error: dbError } = await supabase.from('qualified_leads').insert([{
+        company_name:         submission.companyName,
+        contact_person:       submission.contactPersonName,
+        email:                submission.email,
+        staff_size:           submission.staffSize,
+        num_services:         submission.numberOfServices,
+        avg_processes:        submission.avgProcessesPerService,
+        base_tier:            submission.baseTier,
+        complexity_score:     submission.complexityScore,
+        recommended_tier:     submission.recommendedTier,
+        business_description: submission.businessDescription,
+        selected_steps:       selectedSteps,
+        status:               'new',
+      }]);
+      if (dbError) {
+        console.error('[BusinessGrowthAssessment] DB error:', dbError.message);
+      } else {
+        dbOk = true;
+      }
+    } catch (dbErr) {
+      console.error('[BusinessGrowthAssessment] DB network error (Supabase unreachable):', dbErr);
+    }
 
+    // ── Send EmailJS notification ─────────────────────────────────────────
+    // Always fires, even if Supabase is down — lead is never silently lost.
+    let emailOk = false;
     try {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_qziw5dg',
@@ -376,14 +389,22 @@ const BusinessGrowthAssessment: React.FC = () => {
             `Recommended Tier:      Tier ${submission.recommendedTier} — ${submission.recommendedTierName}`,
             `Selected Steps:        ${selectedSteps ? `Steps 1–${selectedSteps} (${STEP_NAMES[selectedSteps - 1]})` : 'Not selected'}`,
             '',
+            `Supabase saved:        ${dbOk ? 'Yes' : 'NO — Supabase was unreachable; add manually to qualified_leads'}`,
             `Submitted:             ${new Date(submission.timestamp).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}`,
           ].join('\n'),
         },
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq',
       );
-      setSubmitStatus('success');
+      emailOk = true;
     } catch (err) {
-      console.error('[BusinessGrowthAssessment] Submission error:', err);
+      console.error('[BusinessGrowthAssessment] EmailJS error:', err);
+    }
+
+    // ── Result ────────────────────────────────────────────────────────────
+    // Success if either channel worked. Only error if both failed.
+    if (dbOk || emailOk) {
+      setSubmitStatus('success');
+    } else {
       setSubmitError('Something went wrong. Please try again or contact us directly.');
       setSubmitStatus('idle');
     }
