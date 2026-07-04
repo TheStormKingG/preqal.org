@@ -155,7 +155,21 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
   const imgFilter = useTransform(ignite, (v) => `grayscale(${Math.round((1 - v) * 85)}%) brightness(${0.96 + v * 0.04})`);
   const imgOpacity = useTransform(ignite, [0, 1], [0.45, 1]);
 
-  useMotionValueEvent(ignite, 'change', (v) => setLit(v > 0.66));
+  // Haptic tick the moment the wick reaches this node (Android/Samsung
+  // Internet support navigator.vibrate; iOS silently ignores it).
+  const wasLitRef = useRef(false);
+  useMotionValueEvent(ignite, 'change', (v) => {
+    const nowLit = v > 0.66;
+    if (nowLit && !wasLitRef.current) {
+      try {
+        navigator.vibrate?.(18);
+      } catch {
+        /* no haptics available */
+      }
+    }
+    wasLitRef.current = nowLit;
+    setLit(nowLit);
+  });
 
   return (
     <section ref={ref} id={`phase-${index + 1}`} className="relative py-14 sm:py-16">
@@ -398,7 +412,7 @@ const Home: React.FC = () => {
                   Mobile: hugs the left screen edge. Desktop: centered. */}
               <div
                 aria-hidden="true"
-                className="absolute top-0 bottom-0 w-[3px] -left-4 sm:-left-6 lg:left-1/2 lg:-translate-x-1/2"
+                className="absolute top-0 bottom-0 w-[6px] lg:w-[3px] -left-4 sm:-left-6 lg:left-1/2 lg:-translate-x-1/2"
               >
                 <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(163,177,198,0.35)' }} />
                 <motion.div
