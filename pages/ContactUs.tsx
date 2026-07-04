@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Loader2, CheckCircle2, MapPin, Clock, Mail, ArrowRight } from 'lucide-react';
+import { Loader2, CheckCircle2, MapPin, Clock, Mail, ArrowRight, Microscope, Activity, Globe, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
@@ -8,6 +8,8 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
+import CollapsibleSection from '../components/CollapsibleSection';
+import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -16,6 +18,37 @@ const CONTACT_INFO = [
   { icon: <Clock className="h-4 w-4 text-amber-600" />, label: 'Response time', value: 'Within 1 business day' },
   { icon: <Mail className="h-4 w-4 text-amber-600" />, label: 'Email', value: 'info@preqal.org' },
 ];
+
+const PHILOSOPHY = [
+  {
+    icon: <Microscope className="text-amber-600 h-5 w-5" />,
+    title: 'Evidence-Driven',
+    desc: 'Every recommendation is grounded in data, risk assessments, and verifiable facts — so every decision you make is one you can stand behind.',
+  },
+  {
+    icon: <Activity className="text-amber-600 h-5 w-5" />,
+    title: 'Systems Thinking',
+    desc: "Your business is a living system, not a collection of separate problems. We find the root causes others miss — so solutions actually hold.",
+  },
+  {
+    icon: <Globe className="text-amber-600 h-5 w-5" />,
+    title: 'Planetary Value',
+    desc: 'The standards you build protect your people, your community, and the world your business operates in. Compliance, done right, is leadership.',
+  },
+  {
+    icon: <Heart className="text-amber-600 h-5 w-5" />,
+    title: 'Risk-Based',
+    desc: 'Your time and resources go exactly where they matter most — on the risks that could affect your product and everything you\'ve built.',
+  },
+];
+
+const glassCard = {
+  background: 'rgba(255,255,255,0.72)',
+  backdropFilter: 'blur(16px)',
+  WebkitBackdropFilter: 'blur(16px)',
+  boxShadow: '7px 8px 20px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.9)',
+  border: '1.5px solid rgba(255,255,255,0.92)',
+} as React.CSSProperties;
 
 const WHAT_NEXT = [
   'We review your message and your quality challenge',
@@ -108,7 +141,7 @@ const ContactUs: React.FC = () => {
 
   return (
     <>
-      <SEO pageKey="contact" />
+      <SEO pageKey="contact" extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]} />
       <div className="min-h-screen pb-20">
 
         {/* ── HERO ── */}
@@ -136,7 +169,7 @@ const ContactUs: React.FC = () => {
                   className="text-lg text-slate-500 leading-relaxed"
                   initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
                 >
-                  Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here.
+                  Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here. <strong className="text-slate-700">Clinic on Quality™ — we care for businesses.</strong>
                 </motion.p>
               </div>
 
@@ -379,6 +412,107 @@ const ContactUs: React.FC = () => {
               </div>
             </div>
           </ScrollReveal>
+        </div>
+
+        {/* ── ABOUT PREQAL — who you'll be talking to ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+          <ScrollReveal yFrom={14}>
+            <div className="text-center mb-12">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">About Preqal</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                Who you'll be<br className="sm:hidden" />{' '}
+                <span className="text-amber-600">talking to.</span>
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+
+            {/* Founder card */}
+            <div className="md:col-span-4">
+              <ScrollReveal yFrom={20}>
+                <div className="rounded-2xl p-8" style={glassCard}>
+                  <div
+                    className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden p-1"
+                    style={{ boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 0 3px rgba(245,158,11,0.2)' }}
+                  >
+                    <picture>
+                      <source type="image/avif" srcSet={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.avif 128w, ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-256.avif 256w`} sizes="128px" />
+                      <source type="image/webp" srcSet={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.webp 128w, ${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-256.webp 256w`} sizes="128px" />
+                      <img src={`${import.meta.env.BASE_URL}Stefan%20Signature-3%20(5)-128.webp`} alt="Preqal founder Dr. Gravesande" className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" decoding="async" width="128" height="128" />
+                    </picture>
+                  </div>
+                  <h3 className="text-2xl font-bold text-center mb-1 text-slate-900">Dr. Gravesande</h3>
+                  <p className="text-amber-600 text-center text-xs font-bold mb-6 uppercase tracking-wider whitespace-nowrap">
+                    Medical Leadership → Systems Engineer
+                  </p>
+                  <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)' }} className="pt-6">
+                    <CollapsibleSection title="Background & Experience" headingLevel="h3">
+                      <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
+                        <p>Transitioning from a strong medical foundation into industrial quality and systems engineering, Dr. Gravesande applies a diagnostic, evidence-based mindset to operational excellence.</p>
+                        <p>He currently leads the development of Integrated Management Systems (IMS) from the ground up for multiple firms, aligning operations with ISO 9001, ISO 14001, and ISO 45001.</p>
+                        <p>He is also the architect of national-scale quality frameworks across agriculture, food production, and environmental systems — building institutional infrastructure that protects businesses, communities, ecosystems, and the long-term health of an entire nation.</p>
+                      </div>
+                    </CollapsibleSection>
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
+
+            {/* Philosophy + Clinic on Quality */}
+            <div className="md:col-span-8 space-y-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {PHILOSOPHY.map((item, i) => (
+                  <ScrollReveal key={item.title} delay={i * 80} yFrom={16}>
+                    <motion.div
+                      whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                      className="flex gap-4 p-5 rounded-2xl h-full"
+                      style={glassCard}
+                    >
+                      <div
+                        className="flex-shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center"
+                        style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 7px rgba(163,177,198,0.5), inset -2px -2px 5px rgba(255,255,255,0.85), 0 0 14px rgba(245,158,11,0.12)' }}
+                      >
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-900 mb-1 text-sm">{item.title}</h4>
+                        <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                      </div>
+                    </motion.div>
+                  </ScrollReveal>
+                ))}
+              </div>
+
+              {/* Clinic on Quality — dark navy band */}
+              <ScrollReveal yFrom={16}>
+                <div
+                  className="rounded-2xl overflow-hidden relative"
+                  style={{ background: '#0f172a', boxShadow: '8px 10px 24px rgba(15,23,42,0.35), -4px -4px 14px rgba(255,255,255,0.7)' }}
+                >
+                  <div className="absolute inset-0 pointer-events-none" style={{
+                    background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
+                  }} />
+                  <div className="absolute inset-0 pointer-events-none" style={{
+                    background: 'radial-gradient(ellipse at 10% 50%, rgba(217,119,6,0.12) 0%, transparent 55%)',
+                  }} />
+                  <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: 'linear-gradient(to bottom, #f59e0b, #d97706)' }} />
+                  <div className="relative z-10 p-8">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-1">Our name explained</p>
+                    <h3 className="text-xl font-bold text-white mb-5">Why "Clinic on Quality"?</h3>
+                    <div className="space-y-4 text-white/65 leading-relaxed text-sm">
+                      <p>Just as the best doctors listen before they prescribe, Preqal examines your business before recommending a single solution. Your operational health — your processes, your patterns, your vulnerabilities — is assessed with clinical precision before anything is built.</p>
+                      <p>Most consultants hand you a template and walk away. You get a prescription written specifically for your business — targeted, restorative, and designed to make your organisation stronger from the inside out.</p>
+                    </div>
+                    <p className="font-bold italic text-amber-400 text-right mt-5 text-sm">
+                      Because at Preqal, we don't just improve systems. We care for businesses.
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
         </div>
 
       </div>

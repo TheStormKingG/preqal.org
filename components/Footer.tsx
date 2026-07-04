@@ -77,14 +77,12 @@ const FooterComplianceStandards: React.FC = () => {
 };
 
 const Footer: React.FC = () => {
-  const services = [
-    { name: 'Quality Risk Scan™', query: 'Quality Risk Scan™' },
-    { name: 'IMS Design & Setup', query: 'IMS Design & Setup' },
-    { name: 'SOP Development', query: 'SOP & Procedure Development' },
-    { name: 'Training Programs', query: 'Training & Competency' },
-    { name: 'Audit Readiness', query: 'Audit Readiness Support' },
-    { name: 'Preqal 360™ System', query: 'Preqal 360™ Transformation' },
-    { name: 'Specialized Advisory', query: 'Specialized Advisory & Crisis Support' },
+  const journey = [
+    { name: '01 · Business Plan', to: '/#phase-1' },
+    { name: '02 · Risk Scan™', to: '/#phase-2' },
+    { name: '03 · Systems Builder™', to: '/#phase-3' },
+    { name: '04 · Certified Care™', to: '/#phase-4' },
+    { name: '05 · Export-Ready™', to: '/#phase-5' },
   ];
 
   return (
@@ -158,29 +156,35 @@ const Footer: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-6 md:contents">
           <div className="md:pt-7">
-            <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">SERVICES</h3>
+            <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">THE JOURNEY</h3>
             <ul className="space-y-2 text-sm">
-              {services.map((service) => (
-                <li key={service.name}>
-                  <Link
-                    to={`/book?service=${encodeURIComponent(service.query)}`}
+              {journey.map((phase) => (
+                <li key={phase.name}>
+                  <a
+                    href={phase.to}
                     className="text-slate-500 hover:text-amber-600 transition-colors duration-200 block"
                   >
-                    {service.name}
-                  </Link>
+                    {phase.name}
+                  </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/book"
+                  className="text-amber-600 font-semibold hover:text-amber-500 transition-colors duration-200 block"
+                >
+                  Free 1hr Consult
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPANY</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">About Preqal</Link></li>
-              <li><Link to="/case-studies" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Case Studies</Link></li>
-              <li><Link to="/resources" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Resources</Link></li>
               <li><Link to="/e-courses" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">E-Course</Link></li>
-              <li><Link to="/contact" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact Us</Link></li>
+              <li><Link to="/resources" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Templates</Link></li>
+              <li><Link to="/contact" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact</Link></li>
               <li><Link to="/preqal-not-prequel" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>
           </div>

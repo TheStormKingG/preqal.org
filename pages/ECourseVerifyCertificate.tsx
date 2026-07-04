@@ -61,17 +61,30 @@ const ECourseVerifyCertificate: React.FC = () => {
     setCert(null);
     setNotFound(false);
 
-    const { data, error } = await supabase
-      .from('ecourse_certificates')
-      .select('id, cert_key, recipient_name, email, course_title, course_id, issued_at')
-      .eq('cert_key', normalised)
-      .single();
+    // Preferred path: SECURITY DEFINER function that returns only pre-masked,
+    // public-safe fields. Falls back to the legacy direct select if the RPC
+    // isn't deployed yet.
+    let record: CertRecord | null = null;
+    const { data: rpcData, error: rpcError } = await supabase.rpc('verify_certificate', {
+      p_cert_key: normalised,
+    });
+    if (!rpcError) {
+      const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+      record = (row as CertRecord | undefined) ?? null;
+    } else {
+      const { data } = await supabase
+        .from('ecourse_certificates')
+        .select('id, cert_key, recipient_name, email, course_title, course_id, issued_at')
+        .eq('cert_key', normalised)
+        .maybeSingle();
+      record = (data as CertRecord | null) ?? null;
+    }
 
-    if (error || !data) {
+    if (!record) {
       setNotFound(true);
       setCert(null);
     } else {
-      setCert(data as CertRecord);
+      setCert(record);
       setNotFound(false);
       setVerifiedAt(new Date());
     }

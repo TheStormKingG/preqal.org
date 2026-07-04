@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
-import Services from '../pages/Services';
-import CaseStudies from '../pages/CaseStudies';
 import Resources from '../pages/Resources';
-import About from '../pages/About';
 import BookScan from '../pages/BookScan';
 import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
@@ -20,13 +17,10 @@ import BusinessGrowthAssessment from '../pages/BusinessGrowthAssessment';
 
 const routeOrder = [
   '/',
-  '/services',
-  '/case-studies',
-  '/resources',
   '/e-courses',
   '/e-courses/register',
   '/e-courses/learn',
-  '/about',
+  '/resources',
   '/contact',
   '/book',
   '/business-growth-assessment',
@@ -73,16 +67,19 @@ const AnimatedRoutes: React.FC = () => {
     <div className={`page-transition ${getAnimationClass()}`}>
       <Routes location={displayLocation}>
         <Route path="/"                           element={<Home />} />
-        <Route path="/services"                   element={<Services />} />
-        <Route path="/case-studies"               element={<CaseStudies />} />
+        {/* Services & Case Studies retired — journey now lives on the home page */}
+        <Route path="/services"                   element={<Navigate to="/" replace />} />
+        <Route path="/case-studies"               element={<Navigate to="/" replace />} />
         <Route path="/resources"                  element={<Resources />} />
+        <Route path="/templates"                  element={<Navigate to="/resources" replace />} />
         <Route path="/e-courses"                  element={<ECourses />} />
         <Route path="/e-courses/register"         element={<ECourseRegister />} />
         <Route path="/e-courses/learn"            element={<ECourseLearn />} />
         {/* Certificate verification — hidden from nav, accessible via PDF link */}
         <Route path="/verify"                     element={<ECourseVerifyCertificate />} />
         <Route path="/verify/:certKey"            element={<ECourseVerifyCertificate />} />
-        <Route path="/about"                      element={<About />} />
+        {/* About merged into Contact */}
+        <Route path="/about"                      element={<Navigate to="/contact" replace />} />
         <Route path="/book"                       element={<BookScan />} />
         <Route path="/contact"                    element={<ContactUs />} />
         <Route path="/business-growth-assessment" element={<BusinessGrowthAssessment />} />

@@ -65,17 +65,18 @@ Defined in `components/AnimatedRoutes.tsx`. Transitions animate forward/backward
 
 | Path | Component | Notes |
 |---|---|---|
-| `/` | `Home` | |
-| `/services` | `Services` | |
-| `/case-studies` | `CaseStudies` | |
-| `/resources` | `Resources` | |
+| `/` | `Home` | 5-phase journey (Business Plan → Risk Scan → Systems Builder → Certified Care → Export-Ready); services live here |
+| `/services` | redirect → `/` | Services page retired 2026-07-04 |
+| `/case-studies` | redirect → `/` | Case Studies retired 2026-07-04 |
+| `/resources` | `Resources` | "Templates" in nav — direct downloads, no lead-capture form |
+| `/templates` | redirect → `/resources` | |
 | `/e-courses` | `ECourses` | |
 | `/e-courses/register` | `ECourseRegister` | |
-| `/e-courses/learn` | `ECourseLearn` | Requires auth |
+| `/e-courses/learn` | `ECourseLearn` | Requires auth (guard redirects to register) |
 | `/verify` & `/verify/:certKey` | `ECourseVerifyCertificate` | Not in nav |
-| `/about` | `About` | |
+| `/about` | redirect → `/contact` | About merged into Contact 2026-07-04 |
 | `/book` | `BookScan` | |
-| `/contact` | `ContactUs` | |
+| `/contact` | `ContactUs` | Contact form + About Preqal (founder, philosophy, Clinic on Quality) |
 | `/business-growth-assessment` | `BusinessGrowthAssessment` | Formerly `/quote-classifier` (redirects) |
 | `/tools/mdst` | `MDST` | Hidden tool, no Navbar/Footer |
 | `/preqal-not-prequel` | `PreqalNotPrequel` | |
@@ -177,7 +178,9 @@ Template variables:
 ## e-Course
 
 **Title:** "Build Systems That Actually Work"  
-**Module count:** `TOTAL_MODULES = 8` (placeholder — update in admin dashboard)
+**Module count:** 9 (`TOTAL_MODULES = 9` in admin-dashboard.html; matches the 9 real modules in `courseModules.ts`)
+
+**Progress & certificates (since 2026-07-04):** module completion is synced to `ecourse_module_progress` (best-effort upsert from `ecourseProgress.ts`) and hydrated back on sign-in for cross-device resume. Certificate claim and public verification call `issue_certificate()` / `verify_certificate(p_cert_key)` RPCs first and fall back to the legacy direct table access if the RPCs aren't deployed. The hardening migration is `supabase/migrations/20260704_ecourse_hardening.sql` — **apply it in Supabase to activate server-side cert validation, masked verify lookups, and tightened RLS.**
 
 ---
 

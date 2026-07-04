@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Award, CheckCircle2, ChevronRight, Circle, Download, Loader2, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
@@ -9,10 +9,12 @@ import GatedModuleVideo from '../components/ecourses/GatedModuleVideo';
 import ModuleQuizPanel from '../components/ecourses/ModuleQuizPanel';
 import {
   canOpenModuleIndex,
+  hydrateProgressFromDb,
   moduleGateComplete,
   quizDone,
   setSlidesAllComplete,
   slidesDone,
+  syncProgressToDb,
   videoDone,
 } from '../components/ecourses/ecourseProgress';
 import EcourseRibbonFlyover, {
@@ -24,7 +26,7 @@ import EcourseRibbonFlyover, {
 import type { CourseModule } from '../components/ecourses/types';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { certVerifyUrl, formatCertDate, generateCertKey } from '../lib/ecourseCertificateConstants';
+import { CERT_COURSE_ID, CERT_COURSE_TITLE, certVerifyUrl, formatCertDate, generateCertKey } from '../lib/ecourseCertificateConstants';
 import { downloadCertificatePdf } from '../lib/ecourseCertificatePdf';
 
 const COURSE_DISPLAY_TITLE = 'Quality Management Systems Foundations';
@@ -75,11 +77,20 @@ interface CertRecord {
 }
 
 const ECourseLearn: React.FC = () => {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // ── Auth guard: the learn environment requires a signed-in student ────────
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/e-courses/register', { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModuleIds, setExpandedModuleIds] = useState<Set<string>>(() => new Set(COURSE_MODULES.map((m) => m.id)));
-  const [, bumpGating] = useReducer((x: number) => x + 1, 0);
+  const [gateTick, bumpGating] = useReducer((x: number) => x + 1, 0);
   const [flyQueue, setFlyQueue] = useState<string[]>([]);
   const prevGateSnapRef = useRef<Record<string, { s: boolean; v: boolean; q: boolean }> | null>(null);
   const pendingSlidesFinalizeRef = useRef<{ moduleId: string; slideCount: number } | null>(null);
@@ -133,7 +144,21 @@ const ECourseLearn: React.FC = () => {
     const complete = COURSE_MODULES.every((m) => moduleGateComplete(m));
     const raf = requestAnimationFrame(() => setIsCourseComplete(complete));
     return () => cancelAnimationFrame(raf);
-  }, [bumpGating]);
+  }, [gateTick]);
+
+  // ── Sync module completion to Supabase (best-effort, server-side record) ──
+  useEffect(() => {
+    if (!user) return;
+    void syncProgressToDb(user.id);
+  }, [gateTick, user]);
+
+  // ── Hydrate local progress from Supabase on sign-in (cross-device) ────────
+  useEffect(() => {
+    if (!user) return;
+    void hydrateProgressFromDb(user.id).then((changed) => {
+      if (changed) bumpGating();
+    });
+  }, [user]);
 
   const handleClaimCert = useCallback(async () => {
     if (!user || !profile) return;
@@ -152,14 +177,33 @@ const ECourseLearn: React.FC = () => {
         setCertModalOpen(true);
         return;
       }
+      // Preferred path: server-side issuance (validates progress + generates key in the DB).
+      // Falls back to the legacy client-side insert if the RPC isn't deployed yet.
+      const { data: rpcCert, error: rpcError } = await supabase.rpc('issue_certificate');
+      if (!rpcError && rpcCert) {
+        const row = (Array.isArray(rpcCert) ? rpcCert[0] : rpcCert) as CertRecord | undefined;
+        if (row?.cert_key) {
+          const rec: CertRecord = { cert_key: row.cert_key, issued_at: row.issued_at ?? new Date().toISOString() };
+          setNewlyClaimed(rec);
+          await downloadCertificatePdf({
+            recipientName: profile.display_name,
+            recipientEmail: profile.email,
+            certKey: rec.cert_key,
+            issuedAt: rec.issued_at,
+          });
+          setCertModalOpen(true);
+          return;
+        }
+      }
+
       const certKey = generateCertKey();
       const { error } = await supabase.from('ecourse_certificates').insert({
         cert_key: certKey,
         user_id: user.id,
         recipient_name: profile.display_name,
         email: profile.email,
-        course_id: 'build-systems-that-actually-work',
-        course_title: 'E-Course: Quality Management Systems Foundations',
+        course_id: CERT_COURSE_ID,
+        course_title: CERT_COURSE_TITLE,
       });
 
       if (error) {
@@ -169,7 +213,7 @@ const ECourseLearn: React.FC = () => {
             .from('ecourse_certificates')
             .select('cert_key, issued_at')
             .eq('user_id', user.id)
-            .eq('course_id', 'build-systems-that-actually-work')
+            .eq('course_id', CERT_COURSE_ID)
             .order('issued_at', { ascending: false })
             .limit(1)
             .single();
@@ -250,7 +294,7 @@ const ECourseLearn: React.FC = () => {
       setFlyQueue((q) => [...q, ...keys]);
     });
     return () => cancelAnimationFrame(raf);
-  }, [bumpGating]);
+  }, [gateTick]);
 
   const onSlidesFinalizeAcknowledged = useCallback(
     (moduleId: string, slideCount: number, modalRibbonRect?: RibbonFlyScreenRect) => {

@@ -1,94 +1,257 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Download, Shield, Heart, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowRight, Download, CheckSquare } from 'lucide-react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 
-const PAIN_POINTS = [
-  'Documentation gaps your next auditor will find',
-  'Processes your team follows differently every day',
-  'Regulations you didn\'t know applied to you',
-];
+const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
 
-const QUALITY_CARDS = [
-  {
-    img: 'testimonial-dionne.jpg',
-    imgPos: '50% 12%',
-    icon: <Shield className="h-7 w-7" />,
-    title: 'Lead with complete confidence',
-    before: 'Right now: bracing for the next audit, inspection, or client demand.',
-    after: 'With Preqal: you walk in ready — every time, for anything.',
-  },
-  {
-    img: 'business-team.jpg',
-    imgPos: '50% 18%',
-    icon: <Heart className="h-7 w-7" />,
-    title: 'Your staff will love coming to work',
-    before: 'Right now: your team improvises because the system isn\'t clear.',
-    after: 'With Preqal: every person knows their role, feels valued, and takes pride in it.',
-  },
-  {
-    img: 'testimonial-priya.jpg',
-    imgPos: '50% 35%',
-    icon: <TrendingUp className="h-7 w-7" />,
-    title: 'Your business keeps getting better',
-    before: 'Right now: the same problems resurface, year after year.',
-    after: 'With Preqal: every gap closes. Every year you\'re stronger than the last.',
-  },
-];
+/* ─── The journey: one Guyanese entrepreneur, five phases, five services ─── */
+interface Phase {
+  number: string;
+  chapter: string;
+  headline: React.ReactNode;
+  story: string;
+  serviceName: string;
+  servicePromise: string;
+  deliverables: string[];
+  ctaLabel: string;
+  ctaTo: string;
+  img: string;
+  imgAlt: string;
+  imgPos?: string;
+}
 
-const STEPS = [
+const PHASES: Phase[] = [
   {
     number: '01',
-    title: 'Scan',
-    desc: 'In 7 days you\'ll have a Red Flag Report — every gap named, prioritised, and mapped.',
+    chapter: 'The Idea',
+    headline: <>It starts at a <em style={{ color: '#d97706' }}>kitchen table.</em></>,
+    story:
+      'One recipe. One skill. One dream. Banks say no to dreams — they say yes to plans. We put your idea on paper the way lenders need to see it, with compliance built in from day one.',
+    serviceName: 'Business Plan',
+    servicePromise: 'Your idea, turned into a bankable plan.',
+    deliverables: ['Investor-ready business plan', 'Startup cost & cash map', 'Compliance roadmap'],
+    ctaLabel: 'Get your Business Plan',
+    ctaTo: '/book?service=Business+Plan',
+    img: 'images/business-team.jpg',
+    imgAlt: 'A small Guyanese business team planning at a table',
+    imgPos: '50% 18%',
   },
   {
     number: '02',
-    title: 'Build',
-    desc: 'Preqal designs your quality, safety, and environmental system around how you actually work.',
+    chapter: 'The Look',
+    headline: <>Now, see it <em style={{ color: '#d97706' }}>clearly.</em></>,
+    story:
+      "You're too close to your own business to see the gaps. We walk in as fresh eyes. Seven days later you hold a precise map: what's working, what isn't, and what to do next.",
+    serviceName: 'Risk Scan™',
+    servicePromise: 'See your whole business clearly — in one week.',
+    deliverables: ['Red Flag Report', 'Gap check against ISO standards', 'Your action roadmap'],
+    ctaLabel: 'Book the Risk Scan',
+    ctaTo: '/book?service=Compliance+Baseline+Scan',
+    img: 'images/services/phase1-diagnose.jpg',
+    imgAlt: 'Consultant reviewing operations with a client',
   },
   {
     number: '03',
-    title: 'Lead',
-    desc: 'Your team is trained. Your audits are passed. Your story is one you\'re proud to tell.',
+    chapter: 'The Build',
+    headline: <>Then we build — <em style={{ color: '#d97706' }}>together.</em></>,
+    story:
+      'Nine months. One system. Your documents, your training, your audits — built around how your business really works. When the real auditors arrive, you\'ve already passed once.',
+    serviceName: 'Systems Builder™',
+    servicePromise: 'Walk into your certification audit already knowing how it ends.',
+    deliverables: ['Plain-language SOPs your team can use', 'Team training & internal auditors', 'Mock certification audit'],
+    ctaLabel: 'See your 9-month path',
+    ctaTo: '/business-growth-assessment',
+    img: 'images/services/phase2-train.jpg',
+    imgAlt: 'Team in a quality management training workshop',
+  },
+  {
+    number: '04',
+    chapter: 'The Standard',
+    headline: <>Pass the audit. <em style={{ color: '#d97706' }}>Keep the standard.</em></>,
+    story:
+      "Certification isn't a trophy — it's a habit. Systems drift. Staff change. Standards update. We stay beside you so every surveillance visit is just another good day.",
+    serviceName: 'Certified Care™',
+    servicePromise: 'Stay certified. Keep growing.',
+    deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support'],
+    ctaLabel: 'Stay certified',
+    ctaTo: '/book?service=Certified+Care',
+    img: 'images/services/phase3-audit.jpg',
+    imgAlt: 'Quality supervisor conducting an audit on the facility floor',
+  },
+  {
+    number: '05',
+    chapter: 'The Export',
+    headline: <>Your label. On shelves <em style={{ color: '#d97706' }}>abroad.</em></>,
+    story:
+      'Three gates stand between a small agro-processor and the world: HACCP. ISO 22000. A GFSI certificate buyers trust. Export-Ready™ takes you through all three — and you become a Caribbean export company and international supplier.',
+    serviceName: 'Export-Ready™',
+    servicePromise: 'From unregulated to export-certified. Made in Guyana, trusted everywhere.',
+    deliverables: ['Gate 1 · PRPs + HACCP', 'Gate 2 · ISO 22000 system', 'Gate 3 · GFSI readiness (FSSC 22000 · BRCGS · SQF)'],
+    ctaLabel: 'Start Export-Ready™',
+    ctaTo: '/book?service=Export-Ready',
+    img: 'images/case-studies/poultry.jpg',
+    imgAlt: 'Guyanese agro-processing operation preparing product for export',
   },
 ];
 
-const STANDARDS = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'FSSC 22000', 'GMP+', 'HACCP'];
+/* ─── Subtle scroll-parallax image frame ─── */
+const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string }> = ({ src, alt, pos }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%']);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.04, 1.1]);
 
+  return (
+    <div
+      ref={ref}
+      className="relative overflow-hidden rounded-3xl"
+      style={{
+        aspectRatio: '4 / 3',
+        boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+      }}
+    >
+      <motion.img
+        src={`${import.meta.env.BASE_URL}${src}`}
+        alt={alt}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={prefersReduced ? { objectPosition: pos } : { y, scale, objectPosition: pos }}
+        loading="lazy"
+        width="560"
+        height="420"
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.08) 0%, transparent 50%, rgba(15,23,42,0.16) 100%)' }}
+      />
+    </div>
+  );
+};
+
+/* ─── One phase of the journey ─── */
+const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index }) => {
+  const flip = index % 2 === 1;
+
+  return (
+    <section id={`phase-${index + 1}`} className="relative py-14 sm:py-16">
+      <div className={`flex flex-col lg:items-center gap-10 lg:gap-16 ${flip ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
+
+        {/* Copy */}
+        <div className="flex-1 min-w-0">
+          <ScrollReveal yFrom={0} xFrom={flip ? 18 : -18}>
+            <div className="flex items-center gap-4 mb-5">
+              <motion.div
+                initial={{ scale: 0.6, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                className="h-14 w-14 rounded-2xl flex flex-col items-center justify-center flex-shrink-0"
+                style={{ background: '#e0e5ec', boxShadow: '6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85)' }}
+              >
+                <span className="text-base font-extrabold text-amber-600 leading-none">{phase.number}</span>
+              </motion.div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                Phase {phase.number} · {phase.chapter}
+              </p>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-[1.1] mb-4">
+              {phase.headline}
+            </h2>
+            <p className="text-base text-slate-500 leading-relaxed max-w-[480px] mb-6">{phase.story}</p>
+
+            {/* Service card */}
+            <motion.div
+              whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+              className="rounded-2xl p-6 max-w-[520px]"
+              style={{
+                background: 'rgba(255,255,255,0.72)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                boxShadow: '7px 8px 20px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.9)',
+                border: '1.5px solid rgba(255,255,255,0.92)',
+              }}
+            >
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 mb-1.5">
+                The service for this phase
+              </p>
+              <h3 className="text-lg font-bold text-slate-900 mb-1">Preqal {phase.serviceName}</h3>
+              <p className="text-sm text-slate-500 italic mb-4">"{phase.servicePromise}"</p>
+              <div className="flex flex-col gap-2 mb-5">
+                {phase.deliverables.map((d) => (
+                  <div
+                    key={d}
+                    className="flex items-center gap-2.5 text-sm text-slate-600 px-3 py-2 rounded-xl"
+                    style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
+                  >
+                    <CheckSquare className="h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
+                    <span>{d}</span>
+                  </div>
+                ))}
+              </div>
+              <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn} className="inline-block">
+                <Link
+                  to={phase.ctaTo}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
+                >
+                  {phase.ctaLabel} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </ScrollReveal>
+        </div>
+
+        {/* Image */}
+        <div className="flex-1 min-w-0 w-full lg:max-w-[520px]">
+          <ScrollReveal yFrom={24} delay={120}>
+            <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} />
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const Home: React.FC = () => {
+  const journeyRef = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: journeyRef, offset: ['start 0.7', 'end 0.75'] });
+
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroImgY = useTransform(heroProgress, [0, 1], ['0%', '12%']);
+
   return (
     <>
       <SEO pageKey="home" />
       <div className="w-full overflow-x-hidden">
 
-        {/* ── Section 1: Hero ── */}
-        <section className="px-4 sm:px-6 lg:px-8 pt-10 pb-14 lg:pt-16 lg:pb-20">
+        {/* ── Hero ── */}
+        <section ref={heroRef} className="px-4 sm:px-6 lg:px-8 pt-10 pb-14 lg:pt-16 lg:pb-20">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
-              {/* ── Left: text ── */}
               <div className="flex-1 lg:max-w-[580px] mb-10 lg:mb-0">
-                {/* Breadcrumb badge */}
                 <motion.div
                   className="inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-8"
                   style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 >
                   <span className="text-amber-500">◆</span>
-                  <span>Home · Systems That Protect</span>
+                  <span>From idea to export · The Preqal journey</span>
                 </motion.div>
 
-                {/* H1 */}
                 <motion.h1
                   className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-slate-900 leading-[1.05] mb-3"
                   initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  The leaders who<br />sleep soundly...
+                  Every big brand<br />started small.
                 </motion.h1>
                 <motion.p
                   className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black leading-[1.05] mb-7"
@@ -96,46 +259,45 @@ const Home: React.FC = () => {
                   initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  ...build things right.
+                  Yours is next.
                 </motion.p>
 
-                {/* Body */}
                 <motion.p
                   className="text-base text-slate-600 leading-relaxed mb-9 max-w-[480px]"
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: 0.3 }}
                 >
-                  Preqal gives businesses the quality, safety, and compliance systems that protect everything you've built — and make your team proud to show up.
+                  We take Guyanese businesses from one good idea to Caribbean export brand —
+                  five phases, one service for each, step by step. Scroll and watch the journey.
                 </motion.p>
 
-                {/* CTAs */}
                 <motion.div
                   className="flex flex-wrap gap-3"
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: 0.4 }}
                 >
-                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
-                    <Link
-                      to="/book"
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
+                    <a
+                      href="#phase-1"
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
                       style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
                     >
-                      Free 1hr Consult
-                    </Link>
+                      Start the journey ↓
+                    </a>
                   </motion.div>
-                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
                     <Link
                       to="/book"
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-amber-600 font-bold text-sm"
                       style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
                     >
-                      Get a Quote
+                      Free 1hr Consult
                     </Link>
                   </motion.div>
                 </motion.div>
               </div>
 
-              {/* ── Right: hero image ── */}
+              {/* Hero image — gentle parallax on scroll */}
               <motion.div
                 className="flex-shrink-0 w-full lg:w-[520px]"
                 initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
@@ -148,11 +310,11 @@ const Home: React.FC = () => {
                     boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
                   }}
                 >
-                  <img
+                  <motion.img
                     src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
                     alt="Business leader relaxed and confident at their desk"
                     className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center top' }}
+                    style={prefersReduced ? { objectPosition: 'center top' } : { objectPosition: 'center top', y: heroImgY, scale: 1.08 }}
                     width="520"
                     height="416"
                   />
@@ -163,158 +325,46 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* ── Section 2: The Problem ── */}
-        <section className="px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="max-w-5xl mx-auto">
-            <ScrollReveal yFrom={16}>
-              <div
-                className="rounded-3xl overflow-hidden"
-                style={{
-                  background: '#d8dde6',
-                  boxShadow: '8px 8px 22px rgba(150,165,190,0.6), -6px -6px 18px rgba(255,255,255,0.7)',
-                }}
-              >
-                <div className="flex flex-col md:flex-row">
-                  {/* Left: text content */}
-                  <div className="flex-1 p-8 md:p-12">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">The honest picture</p>
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
-                      Most businesses are running on<br className="hidden md:block" />
-                      <span className="text-slate-500"> invisible risk right now.</span>
-                    </h2>
-                    <div className="grid grid-cols-1 gap-3 mb-8">
-                      {PAIN_POINTS.map((point, i) => (
-                        <motion.div
-                          key={i}
-                          whileHover={{
-                            y: -3,
-                            boxShadow: '4px 4px 12px rgba(150,165,190,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
-                            background: '#e8ecf2',
-                          }}
-                          transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-                          className="flex items-start gap-3 px-4 py-4 rounded-xl text-sm text-slate-600 leading-relaxed cursor-default"
-                          style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(150,165,190,0.5), inset -2px -2px 6px rgba(255,255,255,0.8)' }}
-                        >
-                          <span className="text-amber-500 font-bold text-base mt-0.5 flex-shrink-0">{i + 1}.</span>
-                          <span>{point}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                      <p className="text-xl font-semibold text-slate-800 leading-relaxed">
-                        You've built something real —<br />
-                        <span className="text-amber-600">you deserve to know it's protected.</span>
-                      </p>
-                      <div className="flex-shrink-0 text-center">
-                        <div className="text-5xl font-bold text-amber-600">98%</div>
-                        <div className="text-xs text-slate-500 font-medium mt-1">audit pass rate<br />across Preqal clients</div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Right: contextual image — real business, real stakes */}
-                  <div className="hidden md:block md:w-64 lg:w-80 flex-shrink-0 relative overflow-hidden">
-                    <img
-                      src={`${import.meta.env.BASE_URL}images/invisible-risk.jpg`}
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    {/* fade into the dark background on the left edge */}
-                    <div
-                      aria-hidden="true"
-                      style={{
-                        position: 'absolute', inset: 0, left: 0,
-                        background: 'linear-gradient(to right, #d8dde6 0%, rgba(216,221,230,0.6) 35%, transparent 70%)',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
-
-        {/* ── Section 3: What Quality Actually Does ── */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16">
-          <div className="max-w-7xl mx-auto">
-            <ScrollReveal yFrom={12}>
-              <div className="text-center mb-12">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Why it matters</p>
+        {/* ── The Journey ── */}
+        <section className="px-4 sm:px-6 lg:px-8 pb-6">
+          <div className="max-w-6xl mx-auto">
+            <ScrollReveal yFrom={14}>
+              <div className="text-center mb-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">One journey · Five phases</p>
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
-                  Quality isn't paperwork.<br />
-                  <span className="text-amber-600">It's the system that sets your people free.</span>
+                  Picture a Guyanese entrepreneur<br />
+                  <span className="text-amber-600">with one good idea.</span>
                 </h2>
+                <p className="text-base text-slate-500 mt-4 max-w-[520px] mx-auto leading-relaxed">
+                  Here's how that idea becomes an international supplier — and the exact service
+                  that carries it through each phase.
+                </p>
               </div>
             </ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-              {QUALITY_CARDS.map((card, i) => (
-                <ScrollReveal key={i} delay={i * 120} yFrom={20}>
-                  <div style={{ perspective: '900px', height: '100%' }}>
-                    <motion.div
-                      whileHover={{
-                        rotateX: -4,
-                        rotateY: i === 0 ? 5 : i === 2 ? -5 : 0,
-                        scale: 1.025,
-                        boxShadow: '14px 16px 32px rgba(163,177,198,0.52), -6px -6px 20px rgba(255,255,255,0.98), inset 0 1px 0 rgba(255,255,255,0.95)',
-                      }}
-                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-                      className="h-full flex flex-col overflow-hidden cursor-default"
-                      style={{
-                        background: 'rgba(255,255,255,0.68)',
-                        backdropFilter: 'blur(18px)',
-                        WebkitBackdropFilter: 'blur(18px)',
-                        borderRadius: '18px',
-                        boxShadow: '6px 6px 18px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.95), inset 0 1px 0 rgba(255,255,255,0.9)',
-                        border: '1px solid rgba(255,255,255,0.82)',
-                        transformStyle: 'preserve-3d',
-                      }}
-                    >
-                      {/* Card header image */}
-                      <div className="h-[352px] flex-shrink-0 overflow-hidden relative">
-                        <img
-                          src={`${import.meta.env.BASE_URL}images/${card.img}`}
-                          alt=""
-                          className="w-full h-full object-cover"
-                          style={{ objectPosition: card.imgPos }}
-                          loading="lazy"
-                        />
-                        {/* fade into card background at bottom */}
-                        <div
-                          aria-hidden="true"
-                          style={{
-                            position: 'absolute', bottom: 0, left: 0, right: 0, height: '64px',
-                            background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.85))',
-                          }}
-                        />
-                      </div>
-                      {/* Card body */}
-                      <div className="flex flex-col flex-1 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div
-                            className="h-12 w-12 rounded-xl flex items-center justify-center text-amber-600 flex-shrink-0"
-                            style={{
-                              background: '#e0e5ec',
-                              boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85), 0 0 20px rgba(245,158,11,0.14)',
-                            }}
-                          >
-                            {card.icon}
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-900 leading-snug">{card.title}</h3>
-                        </div>
-                        <div className="flex-1 flex flex-col gap-4">
-                          <p className="text-sm text-slate-500 leading-relaxed pl-3 border-l-2 border-slate-300">{card.before}</p>
-                          <p className="text-sm font-medium text-slate-700 leading-relaxed pl-3 border-l-2 border-amber-400">{card.after}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </div>
-                </ScrollReveal>
+
+            {/* Journey line + phases */}
+            <div ref={journeyRef} className="relative">
+              {/* progress line — draws as you scroll (desktop) */}
+              <div aria-hidden="true" className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
+                <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(163,177,198,0.35)' }} />
+                <motion.div
+                  className="absolute inset-x-0 top-0 rounded-full origin-top"
+                  style={{
+                    background: 'linear-gradient(to bottom, #f59e0b, #d97706)',
+                    height: '100%',
+                    scaleY: prefersReduced ? 1 : scrollYProgress,
+                  }}
+                />
+              </div>
+
+              {PHASES.map((phase, i) => (
+                <PhaseSection key={phase.number} phase={phase} index={i} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Dark band: proof bridge ── */}
+        {/* ── Proof band ── */}
         <div className="relative overflow-hidden py-16 sm:py-20" style={{ background: '#0f172a' }}>
           <div className="absolute inset-0 pointer-events-none" style={{
             background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
@@ -324,18 +374,17 @@ const Home: React.FC = () => {
           }} />
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <ScrollReveal yFrom={16}>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">The Preqal result</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">This road has been walked before</p>
               <div className="flex flex-col md:flex-row md:items-end gap-10 md:gap-20">
                 <div className="flex-1">
-                  <h2
-                    className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5"
-                  >
-                    The businesses that succeed<br />
+                  <h2 className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5">
+                    The businesses that made it<br />
                     <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
                   </h2>
                   <p className="text-white/55 text-base leading-relaxed max-w-[480px]">
-                    They stopped guessing and started leading — with a system built for their
-                    business, trained into their team, and tested against the standards that matter.
+                    They took the journey one phase at a time — with a system built for their
+                    business, trained into their team, and tested against ISO 9001, ISO 14001,
+                    ISO 45001, FSSC 22000, GMP+, and HACCP.
                   </p>
                 </div>
                 <div className="flex gap-12 flex-shrink-0">
@@ -353,73 +402,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Section 4: How Preqal Works ── */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16">
-          <div className="max-w-5xl mx-auto">
-            <ScrollReveal yFrom={12}>
-              <div className="text-center mb-16">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">The process</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
-                  Three steps to a business<br />
-                  <span className="text-amber-600">that runs right.</span>
-                </h2>
-              </div>
-
-              <div className="relative">
-                {/* Connecting line — desktop */}
-                <div
-                  aria-hidden="true"
-                  className="hidden md:block absolute top-9 left-[calc(16.67%+28px)] right-[calc(16.67%+28px)] h-px"
-                  style={{ background: 'linear-gradient(to right, rgba(245,158,11,0.25), rgba(245,158,11,0.55), rgba(245,158,11,0.25))' }}
-                />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {STEPS.map((step, i) => (
-                    <div key={i} className="flex flex-col items-center text-center">
-                      <motion.div
-                        whileHover={{
-                          scale: 1.12,
-                          y: -8,
-                          boxShadow: '10px 12px 24px rgba(163,177,198,0.6), -8px -8px 20px rgba(255,255,255,0.9), 0 0 22px rgba(245,158,11,0.18)',
-                        }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                        className="relative z-10 h-[72px] w-[72px] rounded-full flex flex-col items-center justify-center mb-6 flex-shrink-0 cursor-default"
-                        style={{
-                          background: '#e0e5ec',
-                          boxShadow: '6px 6px 16px rgba(163,177,198,0.55), -6px -6px 16px rgba(255,255,255,0.85)',
-                        }}
-                      >
-                        <span className="text-[10px] font-bold text-amber-500 tracking-widest leading-none">{step.number}</span>
-                        <span className="text-lg font-bold text-slate-800 leading-tight">{step.title}</span>
-                      </motion.div>
-                      <p className="text-slate-600 leading-relaxed text-sm max-w-[220px]">{step.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Standards strip */}
-              <div
-                className="mt-16 rounded-2xl px-6 py-5"
-                style={{ background: '#e0e5ec', boxShadow: 'inset 4px 4px 12px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.8)' }}
-              >
-                <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Aligned with global standards</p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {STANDARDS.map((std) => (
-                    <span
-                      key={std}
-                      className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600"
-                      style={{ background: '#e0e5ec', boxShadow: '3px 3px 8px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.85)' }}
-                    >
-                      {std}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
-
-        {/* ── Section 5: CTA ── */}
+        {/* ── Final CTA ── */}
         <section className="px-4 sm:px-6 lg:px-8 py-16 pb-24">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -436,73 +419,51 @@ const Home: React.FC = () => {
               <div className="p-8 md:p-14 text-center">
                 <motion.p
                   className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-4"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.15 }}
                 >
-                  Your next chapter starts here
+                  Your Phase 01 starts here
                 </motion.p>
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.25 }}
                 >
-                  This is where your<br />story changes.
+                  Wherever you are on the journey,<br />there's one next step.
                 </motion.h2>
                 <motion.p
                   className="text-amber-100 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.35 }}
                 >
-                  In seven days you'll know exactly where you stand — every gap, every risk, every opportunity. No jargon. No pressure. Just the clarity you've been looking for.
+                  One free hour with Dr. Gravesande. No pressure. No jargon. You leave knowing
+                  your phase, your risks, and your next move — whatever you decide.
                 </motion.p>
                 <motion.div
                   className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.45 }}
                 >
-                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
                     <Link
                       to="/book"
                       className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
-                      style={{
-                        background: 'rgba(255,255,255,0.95)',
-                        boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)',
-                      }}
+                      style={{ background: 'rgba(255,255,255,0.95)', boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)' }}
                     >
-                      Book Your Risk Scan <ArrowRight className="ml-2 h-5 w-5" />
+                      Book Your Free Consult <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </motion.div>
-                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 340, damping: 22 }}>
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
                     <Link
                       to="/resources"
                       className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
-                      style={{
-                        background: 'rgba(255,255,255,0.12)',
-                        border: '1px solid rgba(255,255,255,0.3)',
-                      }}
+                      style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)' }}
                     >
                       <Download className="mr-2 h-5 w-5" />
-                      Download Free Templates
+                      Free Templates
                     </Link>
                   </motion.div>
                 </motion.div>
-                <motion.p
-                  className="text-amber-200 text-sm mt-6 opacity-75"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.75 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.55 }}
-                >
-                  5 ready-to-use compliance templates — no commitment required
-                </motion.p>
               </div>
             </motion.div>
           </div>

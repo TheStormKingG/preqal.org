@@ -12,9 +12,6 @@ const { PuppeteerRenderer } = require('vite-plugin-prerender');
 
 const PRERENDER_ROUTES = [
   '/',
-  '/services',
-  '/about',
-  '/case-studies',
   '/resources',
   '/e-courses',
   '/book',

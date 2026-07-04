@@ -10,13 +10,10 @@ const TODAY = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
 const routes = [
   { url: '/',                            changefreq: 'weekly',  priority: 1.0,  lastmod: TODAY },
-  { url: '/services',                    changefreq: 'monthly', priority: 0.9,  lastmod: TODAY },
-  { url: '/about',                       changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
   { url: '/contact',                     changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
   { url: '/book',                        changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
   { url: '/business-growth-assessment',  changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
   { url: '/e-courses',                   changefreq: 'monthly', priority: 0.75, lastmod: TODAY },
-  { url: '/case-studies',                changefreq: 'monthly', priority: 0.7,  lastmod: TODAY },
   { url: '/resources',                   changefreq: 'monthly', priority: 0.7,  lastmod: TODAY },
   { url: '/preqal-not-prequel',          changefreq: 'yearly',  priority: 0.75, lastmod: TODAY },
   { url: '/privacy-policy',              changefreq: 'yearly',  priority: 0.3,  lastmod: TODAY },

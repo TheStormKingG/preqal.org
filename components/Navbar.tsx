@@ -27,14 +27,10 @@ const Navbar: React.FC = () => {
   }, [isOpen]);
 
   const navLinks = [
-    { name: 'Home',         path: '/' },
-    { name: 'Services',     path: '/services' },
-    { name: 'Case Studies', path: '/case-studies' },
-    { name: 'Resources',    path: '/resources' },
-    { name: 'E-Course',     path: '/e-courses' },
-    { name: 'About',        path: '/about' },
-    { name: 'Contact',      path: '/contact' },
-    { name: 'Get a Quote',  path: '/business-growth-assessment' },
+    { name: 'Home',      path: '/' },
+    { name: 'E-Course',  path: '/e-courses' },
+    { name: 'Templates', path: '/resources' },
+    { name: 'Contact',   path: '/contact' },
   ];
 
   const isActive = (path: string) => {
@@ -78,22 +74,6 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-[30px]">
             {navLinks.map((link) => {
               const active = isActive(link.path);
-              const isQuote = link.path === '/business-growth-assessment';
-              if (isQuote) {
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all neu-raised-sm ${
-                      active
-                        ? 'bg-amber-500 text-white'
-                        : 'text-amber-600 hover:bg-amber-500 hover:text-white border border-amber-400'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              }
               return (
                 <Link
                   key={link.name}
@@ -198,23 +178,6 @@ const Navbar: React.FC = () => {
           <div className="px-4 pt-3 pb-4 space-y-2">
             {navLinks.map((link) => {
               const active = isActive(link.path);
-              const isQuote = link.path === '/business-growth-assessment';
-              if (isQuote) {
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-4 py-3 rounded-xl text-base font-bold transition-all text-center ${
-                      active
-                        ? 'bg-amber-500 text-white neu-pressed-sm'
-                        : 'bg-amber-500/10 text-amber-600 border border-amber-300 neu-raised-sm'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              }
               return (
                 <Link
                   key={link.name}

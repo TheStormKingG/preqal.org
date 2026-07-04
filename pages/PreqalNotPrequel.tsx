@@ -144,7 +144,7 @@ const PreqalNotPrequel: React.FC = () => {
                   <p className="text-slate-700 leading-relaxed">Preqal operates primarily in Guyana and serves clients across the Caribbean region. We work with businesses of all sizes, from small shops to large corporations.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title="How do I contact Preqal?" headingLevel="h3">
-                  <p className="text-slate-700 leading-relaxed">You can contact Preqal through our <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">contact page</Link>, or learn more about our services on our <Link to="/services" className="text-amber-600 hover:text-amber-500 font-semibold underline">services page</Link>.</p>
+                  <p className="text-slate-700 leading-relaxed">You can contact Preqal through our <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">contact page</Link>, or explore the five-phase journey on our <Link to="/" className="text-amber-600 hover:text-amber-500 font-semibold underline">home page</Link>.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title='Is Preqal the same as "prequel"?' headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">No. Preqal is a brand name and company name, while "prequel" is a common English word referring to a narrative work that precedes another. They are completely unrelated concepts.</p>
@@ -159,8 +159,8 @@ const PreqalNotPrequel: React.FC = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-4">Learn More About Preqal</h2>
               <div className="flex flex-wrap gap-3">
                 <Link to="/" className="inline-flex items-center px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-semibold rounded-xl transition-colors neu-raised-sm">Home</Link>
-                <Link to="/about" className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">About Preqal</Link>
-                <Link to="/services" className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">Our Services</Link>
+                <Link to="/contact" className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">About Preqal</Link>
+                <Link to="/resources" className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">Templates</Link>
                 <Link to="/contact" className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">Contact Us</Link>
               </div>
             </section>

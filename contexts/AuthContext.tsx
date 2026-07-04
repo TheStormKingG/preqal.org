@@ -52,13 +52,15 @@ async function dbUpsertProfile(
   email: string,
   avatarUrl?: string | null,
 ): Promise<void> {
-  await supabase.from('ecourse_profiles').upsert({
+  const { error } = await supabase.from('ecourse_profiles').upsert({
     id,
     display_name: displayName,
     email,
     avatar_url: avatarUrl ?? null,
     updated_at: new Date().toISOString(),
   });
+  // supabase-js never throws — surface write failures so callers can react
+  if (error) throw error;
 }
 
 async function dbFetchProfile(userId: string): Promise<EcourseProfile | null> {
@@ -66,7 +68,7 @@ async function dbFetchProfile(userId: string): Promise<EcourseProfile | null> {
     .from('ecourse_profiles')
     .select('*')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
   return (data as EcourseProfile | null) ?? null;
 }
 

@@ -1,4 +1,6 @@
 import type { CourseModule } from './types';
+import { supabase } from '../../lib/supabaseClient';
+import { COURSE_MODULES } from './courseModules';
 
 /** At least 70% correct answers required to mark the module quiz passed (integer-safe for any N). */
 export const QUIZ_PASS_NUMERATOR = 7;
@@ -88,4 +90,57 @@ export function canOpenModuleIndex(modules: CourseModule[], targetIndex: number)
     if (!moduleGateComplete(modules[i])) return false;
   }
   return true;
+}
+
+// ---------------------------------------------------------------------------
+// Server-side progress sync (ecourse_module_progress)
+//
+// localStorage remains the fast source of truth for gating; Supabase is the
+// durable record — it powers the admin dashboard, cross-device resume, and
+// server-side certificate validation. All calls are best-effort: a failed
+// sync must never block the learner.
+// ---------------------------------------------------------------------------
+
+/** Push every locally-completed module up to Supabase (idempotent upsert). */
+export async function syncProgressToDb(userId: string): Promise<void> {
+  try {
+    const rows = COURSE_MODULES.filter((m) => moduleGateComplete(m)).map((m) => ({
+      user_id: userId,
+      module_id: m.id,
+      completed_at: new Date().toISOString(),
+    }));
+    if (rows.length === 0) return;
+    await supabase
+      .from('ecourse_module_progress')
+      .upsert(rows, { onConflict: 'user_id,module_id', ignoreDuplicates: true });
+  } catch {
+    /* best-effort — never block the learner on a sync failure */
+  }
+}
+
+/**
+ * Pull completed modules from Supabase and mark them complete locally.
+ * Returns true if any local gate changed (caller should re-render gating).
+ */
+export async function hydrateProgressFromDb(userId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('ecourse_module_progress')
+      .select('module_id')
+      .eq('user_id', userId);
+    if (error || !data) return false;
+    const completedIds = new Set((data as { module_id: string }[]).map((r) => r.module_id));
+    let changed = false;
+    for (const m of COURSE_MODULES) {
+      if (!completedIds.has(m.id) || moduleGateComplete(m)) continue;
+      // Mark all three gates complete locally ([true] satisfies the slides check)
+      setSlidesAllComplete(m.id, 1);
+      setVideoComplete(m.id);
+      setQuizAck(m.id);
+      changed = true;
+    }
+    return changed;
+  } catch {
+    return false;
+  }
 }

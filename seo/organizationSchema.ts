@@ -20,7 +20,7 @@ export const getOrganizationSchema = () => {
       '@type': 'Person',
       name: 'Dr. Stefan Gravesande',
       jobTitle: 'Founder & CEO',
-      url: 'https://preqal.org/about'
+      url: 'https://preqal.org/contact'
     },
     address: {
       '@type': 'PostalAddress',

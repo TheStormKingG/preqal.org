@@ -32,8 +32,8 @@ export const getFounderPersonSchema = () => ({
 export const getAboutPageSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
-  '@id': `${BASE_URL}/about#webpage`,
-  url: `${BASE_URL}/about`,
+  '@id': `${BASE_URL}/contact#about`,
+  url: `${BASE_URL}/contact`,
   name: 'About Preqal | Quality & Compliance Systems',
   description:
     'Learn about Preqal Inc., a quality, safety, and ESG management systems company founded by Dr. Stefan Gravesande and serving businesses across Guyana and the Caribbean.',

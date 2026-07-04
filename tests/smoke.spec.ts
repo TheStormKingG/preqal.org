@@ -40,28 +40,23 @@ test('homepage loads', async ({ page }) => {
   check();
 });
 
-test('services page loads', async ({ page }) => {
-  const check = watchForErrors(page);
+// Retired routes now redirect — services & case studies live on the home journey
+test('/services redirects to home', async ({ page }) => {
   await page.goto('/services');
-  await expect(page).toHaveTitle(/Preqal/i);
+  await expect(page).toHaveURL(/\/(\?.*)?$/);
   await expect(page.locator('h1').first()).toBeVisible();
-  check();
 });
 
-test('about page loads', async ({ page }) => {
-  const check = watchForErrors(page);
-  await page.goto('/about');
-  await expect(page).toHaveTitle(/Preqal/i);
-  await expect(page.locator('h1').first()).toBeVisible();
-  check();
-});
-
-test('case studies page loads', async ({ page }) => {
-  const check = watchForErrors(page);
+test('/case-studies redirects to home', async ({ page }) => {
   await page.goto('/case-studies');
-  await expect(page).toHaveTitle(/Preqal/i);
+  await expect(page).toHaveURL(/\/(\?.*)?$/);
   await expect(page.locator('h1').first()).toBeVisible();
-  check();
+});
+
+test('/about redirects to contact', async ({ page }) => {
+  await page.goto('/about');
+  await expect(page).toHaveURL(/contact/);
+  await expect(page.locator('h1').first()).toBeVisible();
 });
 
 test('resources page loads', async ({ page }) => {
