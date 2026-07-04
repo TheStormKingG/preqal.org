@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
               onClick={openWhatsApp}
               className="whitespace-nowrap inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
             >
-              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Dr. G
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Us
             </button>
 
             {/* Auth */}
@@ -202,7 +202,7 @@ const Navbar: React.FC = () => {
               onClick={() => { setIsOpen(false); openWhatsApp(); }}
               className="w-full flex items-center justify-center gap-2 text-center mt-3 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-400 transition-colors neu-raised-sm"
             >
-              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Dr. G
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Us
             </button>
 
             {/* Auth — mobile */}
