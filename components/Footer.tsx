@@ -174,9 +174,9 @@ const Footer: React.FC = () => {
                 <button
                   type="button"
                   onClick={openWhatsApp}
-                  className="inline-flex items-center gap-1.5 text-amber-600 font-semibold hover:text-amber-500 transition-colors duration-200"
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap text-amber-600 font-semibold hover:text-amber-500 transition-colors duration-200"
                 >
-                  <WhatsAppIcon className="h-3.5 w-3.5" /> WhatsApp Dr. Gravesande
+                  <WhatsAppIcon className="h-3.5 w-3.5 shrink-0" /> WhatsApp Dr. Gravesande
                 </button>
               </li>
             </ul>
