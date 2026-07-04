@@ -161,13 +161,15 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
     <section ref={ref} id={`phase-${index + 1}`} className="relative py-14 sm:py-16">
       <div className={`flex flex-col lg:items-center gap-10 lg:gap-16 ${flip ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
 
-        {/* Copy — scroll-scrubbed ignition */}
+        {/* Copy — scroll-scrubbed ignition.
+            Desktop: both columns hug the centre line (left column right-aligned,
+            right column left-aligned). Mobile: everything left-aligned. */}
         <motion.div
-          className="flex-1 min-w-0"
+          className={`flex-1 min-w-0 ${flip ? '' : 'lg:text-right'}`}
           style={prefersReduced ? { opacity: contentOpacity } : { opacity: contentOpacity, y: contentY }}
         >
           <div>
-            <div className="flex items-center gap-4 mb-5">
+            <div className={`flex items-center gap-4 mb-5 ${flip ? '' : 'lg:flex-row-reverse'}`}>
               <motion.div
                 animate={lit ? { scale: [1, 1.14, 1] } : { scale: 1 }}
                 transition={{ duration: 0.45, ease: 'easeOut' }}
@@ -204,13 +206,13 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-[1.1] mb-4">
               {phase.headline}
             </h2>
-            <p className="text-base text-slate-500 leading-relaxed max-w-[480px] mb-6">{phase.story}</p>
+            <p className={`text-base text-slate-500 leading-relaxed max-w-[480px] mb-6 ${flip ? '' : 'lg:ml-auto'}`}>{phase.story}</p>
 
-            {/* Service card */}
+            {/* Service card — interior stays left-aligned for readability */}
             <motion.div
               whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              className="rounded-2xl p-6 max-w-[520px]"
+              className={`rounded-2xl p-6 max-w-[520px] text-left ${flip ? '' : 'lg:ml-auto'}`}
               style={{
                 background: 'rgba(255,255,255,0.72)',
                 backdropFilter: 'blur(16px)',
@@ -392,8 +394,12 @@ const Home: React.FC = () => {
 
             {/* Journey line + phases */}
             <div ref={journeyRef} className="relative">
-              {/* progress line — draws as you scroll (desktop) */}
-              <div aria-hidden="true" className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
+              {/* progress line — draws as you scroll.
+                  Mobile: hugs the left screen edge. Desktop: centered. */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 bottom-0 w-[3px] -left-4 sm:-left-6 lg:left-1/2 lg:-translate-x-1/2"
+              >
                 <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(163,177,198,0.35)' }} />
                 <motion.div
                   className="absolute inset-x-0 top-0 rounded-full origin-top"
