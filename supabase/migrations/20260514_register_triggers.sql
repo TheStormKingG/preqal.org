@@ -15,9 +15,10 @@ CREATE EXTENSION IF NOT EXISTS pg_net;
 
 -- Fire-and-forget POST to the sync-register-excel function.
 -- ⚠ SECURITY (2026-07-04): the bearer token is NO LONGER hardcoded here — a live
--- service_role JWT in a public repo bypasses all RLS. The token now comes from
--- the app.regen_auth_token database GUC. Set it (and re-set after rotation) with:
---   ALTER DATABASE postgres SET app.regen_auth_token TO '<service_role key>';
+-- service_role JWT in a public repo bypasses all RLS. The token now lives in
+-- Supabase Vault under the name 'regen_auth_token'. Set it (and re-set after
+-- every key rotation) with:
+--   SELECT vault.create_secret('<secret API key>', 'regen_auth_token');
 -- Superseded by supabase/migrations/20260704_security_lockdown.sql (same body).
 CREATE OR REPLACE FUNCTION regen_register_async(p_register_key text)
 RETURNS void
@@ -29,9 +30,16 @@ DECLARE
   url        constant text := 'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/sync-register-excel';
   auth_token text;
 BEGIN
-  auth_token := current_setting('app.regen_auth_token', true);
+  BEGIN
+    SELECT decrypted_secret INTO auth_token
+    FROM vault.decrypted_secrets
+    WHERE name = 'regen_auth_token'
+    LIMIT 1;
+  EXCEPTION WHEN OTHERS THEN
+    auth_token := NULL;
+  END;
   IF auth_token IS NULL OR auth_token = '' THEN
-    RAISE WARNING 'app.regen_auth_token is not set — register regen skipped';
+    RAISE WARNING 'vault secret regen_auth_token is not set — register regen skipped';
     RETURN;
   END IF;
   PERFORM net.http_post(

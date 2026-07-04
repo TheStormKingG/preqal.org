@@ -206,11 +206,14 @@ GRANT EXECUTE ON FUNCTION complete_client_onboarding(uuid, jsonb) TO anon, authe
 
 -- ---------------------------------------------------------------------------
 -- 6. regen_register_async — no hardcoded service_role JWT
---    The bearer token now comes from a database-level GUC. Set it once (and
---    again after every key rotation) with:
---      ALTER DATABASE postgres SET app.regen_auth_token TO '<service_role key>';
---    (Sessions started before the ALTER pick it up on reconnect; pg_net calls
---    run in fresh backends so triggers see it immediately.)
+--    The bearer token is stored in Supabase Vault (ALTER DATABASE ... SET is
+--    not permitted on Supabase managed Postgres — error 42501). Set it once
+--    (and again after every key rotation) with:
+--      SELECT vault.create_secret('<secret API key>', 'regen_auth_token');
+--    To rotate an existing secret:
+--      SELECT vault.update_secret(
+--        (SELECT id FROM vault.secrets WHERE name = 'regen_auth_token'),
+--        '<new secret API key>');
 -- ---------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION regen_register_async(p_register_key text)
 RETURNS void
@@ -222,9 +225,17 @@ DECLARE
   url        constant text := 'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/sync-register-excel';
   auth_token text;
 BEGIN
-  auth_token := current_setting('app.regen_auth_token', true);
+  BEGIN
+    SELECT decrypted_secret INTO auth_token
+    FROM vault.decrypted_secrets
+    WHERE name = 'regen_auth_token'
+    LIMIT 1;
+  EXCEPTION WHEN OTHERS THEN
+    auth_token := NULL;
+  END;
+
   IF auth_token IS NULL OR auth_token = '' THEN
-    RAISE WARNING 'app.regen_auth_token is not set — register regen skipped';
+    RAISE WARNING 'vault secret regen_auth_token is not set — register regen skipped';
     RETURN;
   END IF;
 
