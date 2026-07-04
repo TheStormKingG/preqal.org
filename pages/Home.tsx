@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Download, CheckSquare } from 'lucide-react';
+import { Download, CheckSquare } from 'lucide-react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
+import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 
 const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
 
@@ -17,7 +18,7 @@ interface Phase {
   servicePromise: string;
   deliverables: string[];
   ctaLabel: string;
-  ctaTo: string;
+  waKey: WhatsAppServiceKey;
   img: string;
   imgAlt: string;
   imgPos?: string;
@@ -34,7 +35,7 @@ const PHASES: Phase[] = [
     servicePromise: 'Your idea, turned into a bankable plan.',
     deliverables: ['Investor-ready business plan', 'Startup cost & cash map', 'Compliance roadmap'],
     ctaLabel: 'Get your Business Plan',
-    ctaTo: '/book?service=Business+Plan',
+    waKey: 'business-plan',
     img: 'images/business-team.jpg',
     imgAlt: 'A small Guyanese business team planning at a table',
     imgPos: '50% 18%',
@@ -49,7 +50,7 @@ const PHASES: Phase[] = [
     servicePromise: 'See your whole business clearly — in one week.',
     deliverables: ['Red Flag Report', 'Gap check against ISO standards', 'Your action roadmap'],
     ctaLabel: 'Book the Risk Scan',
-    ctaTo: '/book?service=Compliance+Baseline+Scan',
+    waKey: 'risk-scan',
     img: 'images/services/phase1-diagnose.jpg',
     imgAlt: 'Consultant reviewing operations with a client',
   },
@@ -62,8 +63,8 @@ const PHASES: Phase[] = [
     serviceName: 'Systems Builder™',
     servicePromise: 'Walk into your certification audit already knowing how it ends.',
     deliverables: ['Plain-language SOPs your team can use', 'Team training & internal auditors', 'Mock certification audit'],
-    ctaLabel: 'See your 9-month path',
-    ctaTo: '/business-growth-assessment',
+    ctaLabel: 'Start the 9-month build',
+    waKey: 'systems-builder',
     img: 'images/services/phase2-train.jpg',
     imgAlt: 'Team in a quality management training workshop',
   },
@@ -77,7 +78,7 @@ const PHASES: Phase[] = [
     servicePromise: 'Stay certified. Keep growing.',
     deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support'],
     ctaLabel: 'Stay certified',
-    ctaTo: '/book?service=Certified+Care',
+    waKey: 'certified-care',
     img: 'images/services/phase3-audit.jpg',
     imgAlt: 'Quality supervisor conducting an audit on the facility floor',
   },
@@ -91,7 +92,7 @@ const PHASES: Phase[] = [
     servicePromise: 'From unregulated to export-certified. Made in Guyana, trusted everywhere.',
     deliverables: ['Gate 1 · PRPs + HACCP', 'Gate 2 · ISO 22000 system', 'Gate 3 · GFSI readiness (FSSC 22000 · BRCGS · SQF)'],
     ctaLabel: 'Start Export-Ready™',
-    ctaTo: '/book?service=Export-Ready',
+    waKey: 'export-ready',
     img: 'images/case-studies/poultry.jpg',
     imgAlt: 'Guyanese agro-processing operation preparing product for export',
   },
@@ -194,13 +195,15 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
                 ))}
               </div>
               <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn} className="inline-block">
-                <Link
-                  to={phase.ctaTo}
+                <a
+                  href={whatsAppLink(phase.waKey)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
                   style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
                 >
-                  {phase.ctaLabel} <ArrowRight className="h-4 w-4" />
-                </Link>
+                  <WhatsAppIcon className="h-4 w-4" /> {phase.ctaLabel}
+                </a>
               </motion.div>
             </motion.div>
           </ScrollReveal>
@@ -218,6 +221,7 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
 };
 
 const Home: React.FC = () => {
+  const { openWhatsApp } = useWhatsApp();
   const journeyRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: journeyRef, offset: ['start 0.7', 'end 0.75'] });
@@ -286,13 +290,14 @@ const Home: React.FC = () => {
                     </a>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
-                    <Link
-                      to="/book"
+                    <button
+                      type="button"
+                      onClick={openWhatsApp}
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-amber-600 font-bold text-sm"
                       style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
                     >
-                      Free 1hr Consult
-                    </Link>
+                      <WhatsAppIcon className="h-4 w-4 text-[#25D366]" /> WhatsApp Dr. Gravesande
+                    </button>
                   </motion.div>
                 </motion.div>
               </div>
@@ -436,8 +441,8 @@ const Home: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.35 }}
                 >
-                  One free hour with Dr. Gravesande. No pressure. No jargon. You leave knowing
-                  your phase, your risks, and your next move — whatever you decide.
+                  Message Dr. Gravesande on WhatsApp. No pressure. No jargon. Tell him where
+                  you are — he'll tell you your next move, whatever you decide.
                 </motion.p>
                 <motion.div
                   className="flex flex-col sm:flex-row gap-4 justify-center items-center"
@@ -445,13 +450,14 @@ const Home: React.FC = () => {
                   transition={{ duration: 0.5, delay: 0.45 }}
                 >
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
-                    <Link
-                      to="/book"
+                    <button
+                      type="button"
+                      onClick={openWhatsApp}
                       className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
                       style={{ background: 'rgba(255,255,255,0.95)', boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)' }}
                     >
-                      Book Your Free Consult <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
+                      <WhatsAppIcon className="mr-2 h-5 w-5 text-[#25D366]" /> Message Dr. Gravesande
+                    </button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
                     <Link

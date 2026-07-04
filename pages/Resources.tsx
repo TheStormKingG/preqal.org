@@ -1,9 +1,9 @@
 import React from 'react';
 import { Download, FileText, ShieldCheck, ClipboardList, AlertTriangle, GraduationCap, FolderDown, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
+import { useWhatsApp } from '../components/WhatsAppContact';
 
 /* ─── Free template library — direct downloads, no form ─── */
 interface TemplateDoc {
@@ -66,6 +66,7 @@ const TEMPLATES: TemplateDoc[] = [
 
 const Resources: React.FC = () => {
   const base = import.meta.env.BASE_URL;
+  const { openWhatsApp } = useWhatsApp();
 
   return (
     <>
@@ -187,12 +188,13 @@ const Resources: React.FC = () => {
                 Templates are the starting point. A system built around <em className="text-amber-600 not-italic font-semibold">your</em> business
                 is the destination.
               </p>
-              <Link
-                to="/book"
+              <button
+                type="button"
+                onClick={openWhatsApp}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
               >
-                Talk to Dr. Gravesande — free, 1 hour <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+                Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
+              </button>
             </div>
           </ScrollReveal>
         </div>

@@ -10,6 +10,7 @@ import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
+import { useWhatsApp } from '../components/WhatsAppContact';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -57,6 +58,7 @@ const WHAT_NEXT = [
 ];
 
 const ContactUs: React.FC = () => {
+  const { openWhatsApp } = useWhatsApp();
   const jobTitles = ['Quality Manager','Quality Assurance Manager','Quality Control Manager','Compliance Manager','QHSE Manager','HSE Manager','Operations Manager','Production Manager','Quality Engineer','Quality Assurance Engineer','Compliance Officer','Quality Analyst','Quality Specialist','Regulatory Affairs Manager','Director of Quality','VP of Quality','Chief Quality Officer','Other'];
   const qualityProblems = ['Inconsistent process execution','Poor document & change control','Unsafe behaviors + weak supervision','Inadequate risk assessments/controls','Training/competency gaps','Cash flow instability','Weak financial controls','Inventory and material flow issues','Lack of strategic alignment','Other'];
 
@@ -269,12 +271,13 @@ const ContactUs: React.FC = () => {
                   {/* Alt CTA */}
                   <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem', marginTop: 'auto' }}>
                     <p className="text-xs text-slate-400 leading-relaxed mb-3">Prefer to jump straight in?</p>
-                    <Link
-                      to="/book"
+                    <button
+                      type="button"
+                      onClick={openWhatsApp}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors"
                     >
-                      Book a free Risk Scan <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                      Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
 

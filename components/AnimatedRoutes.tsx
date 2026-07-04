@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
 import Resources from '../pages/Resources';
-import BookScan from '../pages/BookScan';
 import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
 import SEOHealth from '../pages/SEOHealth';
@@ -22,7 +21,6 @@ const routeOrder = [
   '/e-courses/learn',
   '/resources',
   '/contact',
-  '/book',
   '/business-growth-assessment',
   '/preqal-not-prequel',
   '/privacy-policy',
@@ -80,7 +78,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/verify/:certKey"            element={<ECourseVerifyCertificate />} />
         {/* About merged into Contact */}
         <Route path="/about"                      element={<Navigate to="/contact" replace />} />
-        <Route path="/book"                       element={<BookScan />} />
+        {/* Booking retired 2026-07-04 — contact is via WhatsApp popup */}
+        <Route path="/book"                       element={<Navigate to="/" replace />} />
         <Route path="/contact"                    element={<ContactUs />} />
         <Route path="/business-growth-assessment" element={<BusinessGrowthAssessment />} />
         {/* Redirect old slug to new one */}

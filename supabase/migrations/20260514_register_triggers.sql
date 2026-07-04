@@ -14,9 +14,11 @@
 CREATE EXTENSION IF NOT EXISTS pg_net;
 
 -- Fire-and-forget POST to the sync-register-excel function.
--- URL and token are hardcoded (ALTER DATABASE requires superuser unavailable via Supabase API).
--- To rotate the service-role token: update the constant below and re-run this function via
--- apply_migration or Supabase SQL editor.
+-- ⚠ SECURITY (2026-07-04): the bearer token is NO LONGER hardcoded here — a live
+-- service_role JWT in a public repo bypasses all RLS. The token now comes from
+-- the app.regen_auth_token database GUC. Set it (and re-set after rotation) with:
+--   ALTER DATABASE postgres SET app.regen_auth_token TO '<service_role key>';
+-- Superseded by supabase/migrations/20260704_security_lockdown.sql (same body).
 CREATE OR REPLACE FUNCTION regen_register_async(p_register_key text)
 RETURNS void
 LANGUAGE plpgsql
@@ -25,8 +27,13 @@ SET search_path = public, pg_temp
 AS $$
 DECLARE
   url        constant text := 'https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/sync-register-excel';
-  auth_token constant text := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjE0Njk2NiwiZXhwIjoyMDgxNzIyOTY2fQ.C_qlYYgJXtXN4TocJHr4K93IyU5Zm6FRsgmCofm38Z0';
+  auth_token text;
 BEGIN
+  auth_token := current_setting('app.regen_auth_token', true);
+  IF auth_token IS NULL OR auth_token = '' THEN
+    RAISE WARNING 'app.regen_auth_token is not set — register regen skipped';
+    RETURN;
+  END IF;
   PERFORM net.http_post(
     url     := url,
     headers := jsonb_build_object(

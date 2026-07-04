@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LogOut, Menu, UserCircle2, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
+  const { openWhatsApp } = useWhatsApp();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,12 +94,13 @@ const Navbar: React.FC = () => {
               );
             })}
 
-            <Link
-              to="/book"
-              className="whitespace-nowrap px-5 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
+            <button
+              type="button"
+              onClick={openWhatsApp}
+              className="whitespace-nowrap inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 text-white text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
             >
-              Free 1hr Consult
-            </Link>
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Dr. G
+            </button>
 
             {/* Auth */}
             {user ? (
@@ -193,13 +196,13 @@ const Navbar: React.FC = () => {
                 </Link>
               );
             })}
-            <Link
-              to="/book"
-              onClick={() => setIsOpen(false)}
-              className="block w-full text-center mt-3 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-400 transition-colors neu-raised-sm"
+            <button
+              type="button"
+              onClick={() => { setIsOpen(false); openWhatsApp(); }}
+              className="w-full flex items-center justify-center gap-2 text-center mt-3 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-400 transition-colors neu-raised-sm"
             >
-              Free 1hr Consult
-            </Link>
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Dr. G
+            </button>
 
             {/* Auth — mobile */}
             {user ? (

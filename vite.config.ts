@@ -14,7 +14,6 @@ const PRERENDER_ROUTES = [
   '/',
   '/resources',
   '/e-courses',
-  '/book',
   '/contact',
   '/business-growth-assessment',
   '/preqal-not-prequel',

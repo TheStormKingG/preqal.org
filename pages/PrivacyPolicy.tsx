@@ -84,7 +84,8 @@ const PrivacyPolicy: React.FC = () => {
                   <ul className="list-disc list-inside space-y-2 text-slate-700">
                     <li><strong>Supabase</strong> (database hosting) — stores form submissions securely. Supabase maintains SOC 2 Type II compliance. Data may be processed in the United States under Standard Contractual Clauses</li>
                     <li><strong>EmailJS</strong> (email delivery) — transmits form data to our team email. Data processed in accordance with EmailJS privacy policy</li>
-                    <li><strong>Google Analytics 4</strong> (analytics) — collects anonymized usage data. Google is certified under the EU-US Data Privacy Framework</li>
+                    <li><strong>Google Analytics 4</strong> (analytics) — loads only if you accept analytics cookies via our consent banner; collects anonymized usage data. Google is certified under the EU-US Data Privacy Framework. You can withdraw consent at any time by clearing your browser's site data for preqal.org</li>
+                  <li><strong>WhatsApp</strong> (messaging, optional) — if you choose to contact us via the WhatsApp button, your message is handled by WhatsApp/Meta under their own privacy policy; we only receive what you send us</li>
                     <li><strong>GitHub Pages</strong> (hosting) — serves the website. GitHub/Microsoft maintains compliance with GDPR requirements</li>
                   </ul>
                 </CollapsibleSection>
@@ -103,7 +104,7 @@ const PrivacyPolicy: React.FC = () => {
                 <p className="text-slate-700 leading-relaxed mb-4">We retain personal data only for as long as necessary to fulfil the purposes for which it was collected:</p>
                 <ul className="list-disc list-inside space-y-2 text-slate-700">
                   <li><strong>Contact form and service request data:</strong> Retained for 24 months from the date of submission, then deleted unless an ongoing business relationship exists</li>
-                  <li><strong>Resource download leads:</strong> Retained for 24 months from submission</li>
+                  <li><strong>Template downloads:</strong> No personal data is collected — templates download directly with no form</li>
                   <li><strong>Analytics data:</strong> Google Analytics data is retained for 14 months (Google's default)</li>
                   <li><strong>Email records:</strong> Retained in accordance with our email provider's standard retention policies</li>
                 </ul>

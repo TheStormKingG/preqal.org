@@ -29,13 +29,6 @@ const routeMeta = {
     ogImage: `${BASE_URL}/og/e-courses.webp`,
     ogType: 'website',
   },
-  '/book': {
-    title: 'Book a Risk Scan | Preqal',
-    description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 7 days—so you know exactly where to focus first.',
-    canonical: `${BASE_URL}/book/`,
-    ogImage: `${BASE_URL}/og/book.webp`,
-    ogType: 'website',
-  },
   '/contact': {
     title: 'Contact Preqal | Get in Touch',
     description: 'Contact Preqal to discuss your quality, safety, and compliance needs. We help businesses move from chaos to compliance with evidence-driven management systems.',

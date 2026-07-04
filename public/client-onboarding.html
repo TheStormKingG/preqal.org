@@ -342,7 +342,9 @@
     submitErr.classList.add('hidden');
 
     try {
-      // 1. Upsert to crm_clients
+      // 1. Token-gated server-side onboarding: one RPC upserts crm_clients,
+      //    activates the client QMS, and marks the lead 'onboarded'.
+      //    (Direct table writes are blocked by RLS since 2026-07-04.)
       const clientPayload = {
         company_name:          fd.get('legal_name').trim(),
         legal_name:            fd.get('legal_name').trim(),
@@ -355,34 +357,14 @@
         rep_id_passport:       fd.get('rep_id_passport').trim(),
         contract_start:        fd.get('contract_start'),
         kickoff_meeting_date:  fd.get('kickoff_meeting_date'),
-        pipeline_stage:        'onboarded',
-        onboarding_stage:      'complete',
-        lead_id:               leadData.id,
       };
 
-      const { error: crmErr } = await sb
-        .from('crm_clients')
-        .upsert([clientPayload], { onConflict: 'lead_id' });
+      const { error: rpcErr } = await sb.rpc('complete_client_onboarding', {
+        p_token: token,
+        p_payload: clientPayload,
+      });
 
-      if (crmErr) throw new Error('CRM save failed: ' + crmErr.message);
-
-      // 1b. Activate client QMS (seeds doc register from Preqal templates)
-      const { data: clientRow } = await sb
-        .from('crm_clients')
-        .select('id')
-        .eq('lead_id', leadData.id)
-        .single();
-      if (clientRow?.id) {
-        await sb.rpc('activate_client_qms', { p_client_id: clientRow.id });
-      }
-
-      // 2. Update qualified_leads status to 'onboarded'
-      const { error: leadErr } = await sb
-        .from('qualified_leads')
-        .update({ status: 'onboarded' })
-        .eq('id', leadData.id);
-
-      if (leadErr) throw new Error('Lead update failed: ' + leadErr.message);
+      if (rpcErr) throw new Error('Onboarding save failed: ' + rpcErr.message);
 
       // 3. EmailJS notification to Stefan
       try {

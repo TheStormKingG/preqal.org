@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Linkedin, Facebook, Youtube, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GLOBAL_STANDARDS_DATA } from '../data/globalStandards';
+import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 
 const FOOTER_COMPLIANCE_PANEL_ID = 'footer-compliance-standards-panel';
 
@@ -77,6 +78,7 @@ const FooterComplianceStandards: React.FC = () => {
 };
 
 const Footer: React.FC = () => {
+  const { openWhatsApp } = useWhatsApp();
   const journey = [
     { name: '01 · Business Plan', to: '/#phase-1' },
     { name: '02 · Risk Scan™', to: '/#phase-2' },
@@ -169,12 +171,13 @@ const Footer: React.FC = () => {
                 </li>
               ))}
               <li>
-                <Link
-                  to="/book"
-                  className="text-amber-600 font-semibold hover:text-amber-500 transition-colors duration-200 block"
+                <button
+                  type="button"
+                  onClick={openWhatsApp}
+                  className="inline-flex items-center gap-1.5 text-amber-600 font-semibold hover:text-amber-500 transition-colors duration-200"
                 >
-                  Free 1hr Consult
-                </Link>
+                  <WhatsAppIcon className="h-3.5 w-3.5" /> WhatsApp Dr. Gravesande
+                </button>
               </li>
             </ul>
           </div>

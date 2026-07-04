@@ -5,6 +5,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { AuthProvider } from './contexts/AuthContext';
+import { WhatsAppProvider } from './components/WhatsAppContact';
+import CookieConsent from './components/CookieConsent';
 import { initGA } from './src/analytics/ga';
 
 const ConditionalNavbar: React.FC = () => {
@@ -58,6 +60,7 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // GA only loads if the visitor previously opted in (see CookieConsent)
   useEffect(() => { initGA(); }, []);
 
   useEffect(() => {
@@ -73,6 +76,7 @@ const App: React.FC = () => {
     <HelmetProvider>
       <Router>
         <AuthProvider>
+        <WhatsAppProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
 
@@ -86,6 +90,8 @@ const App: React.FC = () => {
           </main>
           <ConditionalFooter />
         </div>
+        <CookieConsent />
+        </WhatsAppProvider>
         </AuthProvider>
       </Router>
     </HelmetProvider>
