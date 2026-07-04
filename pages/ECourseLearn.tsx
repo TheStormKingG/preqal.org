@@ -9,14 +9,18 @@ import GatedModuleVideo from '../components/ecourses/GatedModuleVideo';
 import ModuleQuizPanel from '../components/ecourses/ModuleQuizPanel';
 import {
   canOpenModuleIndex,
+  completeAllProgressLocal,
+  deleteProgressFromDb,
   hydrateProgressFromDb,
   moduleGateComplete,
   quizDone,
+  resetAllProgressLocal,
   setSlidesAllComplete,
   slidesDone,
   syncProgressToDb,
   videoDone,
 } from '../components/ecourses/ecourseProgress';
+import { isAdminEmail } from '../components/AdminChoice';
 import EcourseRibbonFlyover, {
   ECOURSE_RIBBON_SRC,
   parseRibbonTargetKey,
@@ -250,6 +254,50 @@ const ECourseLearn: React.FC = () => {
   }, [user, profile, existingCert, newlyClaimed]);
 
   const certRecord = newlyClaimed ?? existingCert;
+
+  // ── Admin-only test tools ──────────────────────────────────────────────────
+  const isAdmin = isAdminEmail(user?.email);
+  const [testBusy, setTestBusy] = useState<'complete' | 'reset' | null>(null);
+
+  const handleSimulateComplete = useCallback(async () => {
+    if (!user) return;
+    setTestBusy('complete');
+    try {
+      completeAllProgressLocal();
+      // Write server-side progress synchronously so issue_certificate()'s
+      // 9-module validation passes on the very next click.
+      await syncProgressToDb(user.id);
+      bumpGating();
+    } finally {
+      setTestBusy(null);
+    }
+  }, [user]);
+
+  const handleResetCourse = useCallback(async () => {
+    if (!user) return;
+    if (!window.confirm('Reset ALL course progress and delete your test certificate? (Admin test only)')) return;
+    setTestBusy('reset');
+    try {
+      resetAllProgressLocal();
+      await deleteProgressFromDb(user.id);
+      // Delete own certificate row (allowed by admin-only RLS policy) so
+      // issuance can be tested again from scratch.
+      try {
+        await supabase.from('ecourse_certificates').delete().eq('user_id', user.id);
+      } catch {
+        /* best-effort */
+      }
+      setExistingCert(null);
+      setNewlyClaimed(null);
+      setCertError(null);
+      setIsCourseComplete(false);
+      setCertModalOpen(false);
+      setActiveIndex(0);
+      bumpGating();
+    } finally {
+      setTestBusy(null);
+    }
+  }, [user]);
 
   const toggleModule = useCallback((id: string) => {
     setExpandedModuleIds((prev) => {
@@ -788,6 +836,40 @@ const ECourseLearn: React.FC = () => {
             document.body,
           )
         : null}
+
+      {/* ── Admin-only test panel (visible only to Preqal admin accounts) ── */}
+      {isAdmin ? (
+        <div
+          className="fixed bottom-4 left-4 z-[90] flex items-center gap-2.5 pl-4 pr-2.5 py-2 rounded-2xl"
+          style={{
+            background: '#e0e5ec',
+            boxShadow: '6px 6px 16px rgba(163,177,198,0.6), -4px -4px 12px rgba(255,255,255,0.9)',
+            border: '1.5px solid rgba(245,158,11,0.45)',
+          }}
+        >
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 whitespace-nowrap">
+            Admin test
+          </span>
+          <button
+            type="button"
+            disabled={testBusy !== null}
+            onClick={() => void handleSimulateComplete()}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold text-white disabled:opacity-60"
+            style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '2px 2px 8px rgba(217,119,6,0.35)' }}
+          >
+            {testBusy === 'complete' ? 'Completing…' : 'Simulate complete'}
+          </button>
+          <button
+            type="button"
+            disabled={testBusy !== null}
+            onClick={() => void handleResetCourse()}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold text-red-700 disabled:opacity-60"
+            style={{ background: 'rgba(239,68,68,0.10)', boxShadow: '2px 2px 6px rgba(163,177,198,0.5), -2px -2px 6px rgba(255,255,255,0.85)' }}
+          >
+            {testBusy === 'reset' ? 'Resetting…' : 'Reset course'}
+          </button>
+        </div>
+      ) : null}
     </>
   );
 };

@@ -118,6 +118,42 @@ export async function syncProgressToDb(userId: string): Promise<void> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// TESTING HELPERS (used by the admin-only test panel on the Learn page)
+// ---------------------------------------------------------------------------
+
+/** TESTING: mark every module fully complete locally (slides, video, quiz). */
+export function completeAllProgressLocal(): void {
+  for (const m of COURSE_MODULES) {
+    setSlidesAllComplete(m.id, 1);
+    setVideoComplete(m.id);
+    setQuizAck(m.id);
+  }
+}
+
+/** TESTING: wipe all local module progress. */
+export function resetAllProgressLocal(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    for (const m of COURSE_MODULES) {
+      window.localStorage.removeItem(`${LS_SLIDES}${m.id}`);
+      window.localStorage.removeItem(`${LS_VIDEO_COMPLETE}${m.id}`);
+      window.localStorage.removeItem(`${LS_QUIZ_ACK}${m.id}`);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+/** TESTING: delete this user's server-side progress rows (RLS: own rows only). */
+export async function deleteProgressFromDb(userId: string): Promise<void> {
+  try {
+    await supabase.from('ecourse_module_progress').delete().eq('user_id', userId);
+  } catch {
+    /* best-effort */
+  }
+}
+
 /**
  * Pull completed modules from Supabase and mark them complete locally.
  * Returns true if any local gate changed (caller should re-render gating).
