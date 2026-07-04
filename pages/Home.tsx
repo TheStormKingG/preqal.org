@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, CheckSquare } from 'lucide-react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
@@ -132,29 +132,71 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string }> = ({ s
   );
 };
 
-/* ─── One phase of the journey ─── */
+/* ─── One phase of the journey ───
+   Skiper-style scroll ignition (vertical): each phase starts ghosted and
+   "lights up" as the amber journey line reaches it — badge ignites, image
+   saturates, copy fades to full. Scrubbed to scroll position, so it plays
+   identically on every browser (and degrades to opacity-only under
+   reduced-motion settings like Samsung's "remove animations"). */
 const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index }) => {
   const flip = index % 2 === 1;
+  const ref = useRef<HTMLElement>(null);
+  const prefersReduced = useReducedMotion();
+  const [lit, setLit] = useState(false);
+
+  // 0 → 1 as the section travels from below the fold to mid-viewport
+  const { scrollYProgress: ignite } = useScroll({
+    target: ref,
+    offset: ['start 0.92', 'start 0.42'],
+  });
+
+  const contentOpacity = useTransform(ignite, [0, 1], [0.25, 1]);
+  const contentY = useTransform(ignite, [0, 1], [36, 0]);
+  const imgFilter = useTransform(ignite, (v) => `grayscale(${Math.round((1 - v) * 85)}%) brightness(${0.96 + v * 0.04})`);
+  const imgOpacity = useTransform(ignite, [0, 1], [0.45, 1]);
+
+  useMotionValueEvent(ignite, 'change', (v) => setLit(v > 0.66));
 
   return (
-    <section id={`phase-${index + 1}`} className="relative py-14 sm:py-16">
+    <section ref={ref} id={`phase-${index + 1}`} className="relative py-14 sm:py-16">
       <div className={`flex flex-col lg:items-center gap-10 lg:gap-16 ${flip ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
 
-        {/* Copy */}
-        <div className="flex-1 min-w-0">
-          <ScrollReveal yFrom={0} xFrom={flip ? 18 : -18}>
+        {/* Copy — scroll-scrubbed ignition */}
+        <motion.div
+          className="flex-1 min-w-0"
+          style={prefersReduced ? { opacity: contentOpacity } : { opacity: contentOpacity, y: contentY }}
+        >
+          <div>
             <div className="flex items-center gap-4 mb-5">
               <motion.div
-                initial={{ scale: 0.6, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                animate={lit ? { scale: [1, 1.14, 1] } : { scale: 1 }}
+                transition={{ duration: 0.45, ease: 'easeOut' }}
                 className="h-14 w-14 rounded-2xl flex flex-col items-center justify-center flex-shrink-0"
-                style={{ background: '#e0e5ec', boxShadow: '6px 6px 14px rgba(163,177,198,0.55), -6px -6px 14px rgba(255,255,255,0.85)' }}
+                style={
+                  lit
+                    ? {
+                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                        boxShadow: '4px 4px 14px rgba(217,119,6,0.45), -3px -3px 10px rgba(255,255,255,0.7), 0 0 24px rgba(245,158,11,0.35)',
+                        transition: 'background 0.4s ease, box-shadow 0.4s ease',
+                      }
+                    : {
+                        background: '#e0e5ec',
+                        boxShadow: 'inset 3px 3px 8px rgba(163,177,198,0.55), inset -3px -3px 8px rgba(255,255,255,0.85)',
+                        transition: 'background 0.4s ease, box-shadow 0.4s ease',
+                      }
+                }
               >
-                <span className="text-base font-extrabold text-amber-600 leading-none">{phase.number}</span>
+                <span
+                  className="text-base font-extrabold leading-none"
+                  style={{ color: lit ? '#ffffff' : '#94a3b8', transition: 'color 0.4s ease' }}
+                >
+                  {phase.number}
+                </span>
               </motion.div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+              <p
+                className="text-[11px] font-bold uppercase tracking-widest"
+                style={{ color: lit ? '#d97706' : '#94a3b8', transition: 'color 0.4s ease' }}
+              >
                 Phase {phase.number} · {phase.chapter}
               </p>
             </div>
@@ -206,15 +248,16 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
                 </a>
               </motion.div>
             </motion.div>
-          </ScrollReveal>
-        </div>
+          </div>
+        </motion.div>
 
-        {/* Image */}
-        <div className="flex-1 min-w-0 w-full lg:max-w-[520px]">
-          <ScrollReveal yFrom={24} delay={120}>
-            <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} />
-          </ScrollReveal>
-        </div>
+        {/* Image — desaturated until the journey line reaches it */}
+        <motion.div
+          className="flex-1 min-w-0 w-full lg:max-w-[520px]"
+          style={{ filter: imgFilter, opacity: imgOpacity }}
+        >
+          <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} />
+        </motion.div>
       </div>
     </section>
   );

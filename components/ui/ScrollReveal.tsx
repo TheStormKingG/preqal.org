@@ -18,13 +18,16 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 }) => {
   const prefersReduced = useReducedMotion();
 
+  // Under reduced motion (incl. Samsung Internet's "remove animations"), keep a
+  // gentle opacity-only fade instead of disabling effects entirely — no
+  // movement, so it stays vestibular-safe, but the page still feels alive.
   return (
     <motion.div
-      initial={prefersReduced ? {} : { opacity: 0, y: yFrom, x: xFrom }}
-      whileInView={prefersReduced ? {} : { opacity: 1, y: 0, x: 0 }}
+      initial={prefersReduced ? { opacity: 0 } : { opacity: 0, y: yFrom, x: xFrom }}
+      whileInView={prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0, x: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{
-        duration: 0.5,
+        duration: prefersReduced ? 0.35 : 0.5,
         delay: delay / 1000,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
