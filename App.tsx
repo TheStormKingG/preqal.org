@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { AuthProvider } from './contexts/AuthContext';
 import { WhatsAppProvider } from './components/WhatsAppContact';
+import { AdminChoiceProvider } from './components/AdminChoice';
 import CookieConsent from './components/CookieConsent';
 import { initGA } from './src/analytics/ga';
 
@@ -77,6 +78,7 @@ const App: React.FC = () => {
       <Router>
         <AuthProvider>
         <WhatsAppProvider>
+        <AdminChoiceProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
 
@@ -91,6 +93,7 @@ const App: React.FC = () => {
           <ConditionalFooter />
         </div>
         <CookieConsent />
+        </AdminChoiceProvider>
         </WhatsAppProvider>
         </AuthProvider>
       </Router>

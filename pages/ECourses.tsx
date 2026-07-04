@@ -7,6 +7,7 @@ import CourseCard from '../components/ecourses/CourseCard';
 import { COURSE_MODULES } from '../components/ecourses/courseModules';
 import { useRevealOnScroll } from '../components/ecourses/useRevealOnScroll';
 import { useAuth } from '../contexts/AuthContext';
+import { useAdminChoice, isAdminEmail } from '../components/AdminChoice';
 
 const CourseCardReveal: React.FC<{
   module: (typeof COURSE_MODULES)[number];
@@ -42,11 +43,11 @@ const ECourses: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { openAdminChoice } = useAdminChoice();
 
-  const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
   const handleStartCourse = () => {
-    if (user && ADMIN_EMAILS.includes((user.email ?? '').toLowerCase())) {
-      window.location.href = '/admin-dashboard.html';
+    if (user && isAdminEmail(user.email)) {
+      openAdminChoice();
     } else {
       navigate(user ? '/e-courses/learn' : '/e-courses/register');
     }

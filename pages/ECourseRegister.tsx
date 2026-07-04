@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import SEO from '../components/SEO';
 import { useAuth } from '../contexts/AuthContext';
+import { useAdminChoice, isAdminEmail } from '../components/AdminChoice';
 
 // ---------------------------------------------------------------------------
 // Google-coloured SVG icon (inline, no extra dep)
@@ -29,14 +30,14 @@ const GoogleIcon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 // ---------------------------------------------------------------------------
-const ADMIN_EMAILS = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
-
 // Component
 // ---------------------------------------------------------------------------
 
 const ECourseRegister: React.FC = () => {
   const { user, profile, loading, signInWithGoogle, upsertProfile } = useAuth();
   const navigate = useNavigate();
+  const { openAdminChoice } = useAdminChoice();
+  const adminPromptShownRef = useRef(false);
 
   // Name-edit step (shown after OAuth if profile needs setting up)
   const [editName, setEditName] = useState('');
@@ -45,15 +46,20 @@ const ECourseRegister: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   // ── Redirect if already fully registered ──────────────────────────────────
+  // Admins get a destination popup (audit the course vs admin dashboard)
+  // instead of a hard redirect.
   useEffect(() => {
     if (!loading && user && profile) {
-      if (ADMIN_EMAILS.includes((user.email ?? '').toLowerCase())) {
-        window.location.href = '/admin-dashboard.html';
+      if (isAdminEmail(user.email)) {
+        if (!adminPromptShownRef.current) {
+          adminPromptShownRef.current = true;
+          openAdminChoice();
+        }
       } else {
         navigate('/e-courses/learn', { replace: true });
       }
     }
-  }, [loading, user, profile, navigate]);
+  }, [loading, user, profile, navigate, openAdminChoice]);
 
   // ── Pre-fill name from Google metadata when user is ready ─────────────────
   useEffect(() => {
@@ -91,8 +97,8 @@ const ECourseRegister: React.FC = () => {
     setError(null);
     try {
       await upsertProfile(trimmed);
-      if (ADMIN_EMAILS.includes((user?.email ?? '').toLowerCase())) {
-        window.location.href = '/admin-dashboard.html';
+      if (isAdminEmail(user?.email)) {
+        openAdminChoice();
       } else {
         navigate('/e-courses/learn', { replace: true });
       }

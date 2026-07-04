@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { LogOut, Menu, UserCircle2, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
+import { useAdminChoice, isAdminEmail } from './AdminChoice';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const { openWhatsApp } = useWhatsApp();
+  const { openAdminChoice } = useAdminChoice();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -134,16 +136,15 @@ const Navbar: React.FC = () => {
                       type="button"
                       onClick={() => {
                         setUserMenuOpen(false);
-                        const adminEmails = ['stefan.gravesande@gmail.com', 'stefan.gravesande@preqal.org'];
-                        if (adminEmails.includes((user.email ?? '').toLowerCase())) {
-                          window.location.href = '/admin-dashboard.html';
+                        if (isAdminEmail(user.email)) {
+                          openAdminChoice();
                         } else {
                           window.location.href = '/e-courses/learn';
                         }
                       }}
                       className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-white/60 transition-colors"
                     >
-                      My course
+                      {isAdminEmail(user.email) ? 'Course / Dashboard' : 'My course'}
                     </button>
                     <button
                       type="button"
