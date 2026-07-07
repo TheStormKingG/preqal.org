@@ -9,8 +9,8 @@ const DEFAULT_OG = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
 
 const routeMeta = {
   '/': {
-    title: 'Preqal | ISO Quality, Safety & ESG Management Systems',
-    description: 'Preqal delivers quality, safety & ESG management systems—audits, SOPs, risk tools and training—so teams stay compliant, capable, and always ready now.',
+    title: 'Preqal | ISO Certification & Food Safety Consultants Guyana',
+    description: 'ISO certification, HACCP and food safety consultants in Georgetown, Guyana. Preqal takes businesses from first plan to export-ready certification.',
     canonical: `${BASE_URL}/`,
     ogImage: `${BASE_URL}/og/home.webp`,
     ogType: 'website',
