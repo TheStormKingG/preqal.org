@@ -28,12 +28,12 @@ const PHASES: Phase[] = [
   {
     number: '01',
     chapter: 'The Idea',
-    headline: <>It starts at a <em style={{ color: '#d97706' }}>kitchen table.</em></>,
+    headline: <>It starts at your <em style={{ color: '#d97706' }}>kitchen table.</em></>,
     story:
-      'One recipe. One skill. One dream. Banks say no to dreams — they say yes to plans. We put your idea on paper the way lenders need to see it, with compliance built in from day one.',
+      'Great businesses begin with a skill nobody can copy. Everything changes when a banker reads your plan and nods.',
     serviceName: 'Business Plan',
-    servicePromise: 'Your idea, turned into a bankable plan.',
-    deliverables: ['Investor-ready business plan', 'Startup cost & cash map', 'Compliance roadmap'],
+    servicePromise: 'A plan your bank can say yes to.',
+    deliverables: ['Bank-ready business plan', 'Cash-flow map', 'Compliance roadmap'],
     ctaLabel: 'Get your Business Plan',
     waKey: 'business-plan',
     img: 'images/business-team.jpg',
@@ -45,10 +45,10 @@ const PHASES: Phase[] = [
     chapter: 'The Look',
     headline: <>Now, see it <em style={{ color: '#d97706' }}>clearly.</em></>,
     story:
-      "You're too close to your own business to see the gaps. We walk in as fresh eyes. Seven days later you hold a precise map: what's working, what isn't, and what to do next.",
+      'You are too close to your business to see its gaps. Seven days with us shows you everything.',
     serviceName: 'Risk Scan™',
-    servicePromise: 'See your whole business clearly — in one week.',
-    deliverables: ['Red Flag Report', 'Gap check against ISO standards', 'Your action roadmap'],
+    servicePromise: 'See everything in one week.',
+    deliverables: ['Red Flag Report', 'ISO gap check', 'Action roadmap'],
     ctaLabel: 'Book the Risk Scan',
     waKey: 'risk-scan',
     img: 'images/services/phase1-diagnose.jpg',
@@ -57,12 +57,12 @@ const PHASES: Phase[] = [
   {
     number: '03',
     chapter: 'The Build',
-    headline: <>Then we build — <em style={{ color: '#d97706' }}>together.</em></>,
+    headline: <>Then we build it <em style={{ color: '#d97706' }}>together.</em></>,
     story:
-      'Nine months. One system. Your documents, your training, your audits — built around how your business really works. When the real auditors arrive, you\'ve already passed once.',
+      'Imagine greeting your auditors calmly because you already passed a practice run.',
     serviceName: 'Systems Builder™',
-    servicePromise: 'Walk into your certification audit already knowing how it ends.',
-    deliverables: ['Plain-language SOPs your team can use', 'Team training & internal auditors', 'Mock certification audit'],
+    servicePromise: 'Walk in knowing how your audit ends.',
+    deliverables: ['Plain-language SOPs', 'Internal auditor training', 'Mock certification audit'],
     ctaLabel: 'Start the 9-month build',
     waKey: 'systems-builder',
     img: 'images/services/phase2-train.jpg',
@@ -73,9 +73,9 @@ const PHASES: Phase[] = [
     chapter: 'The Standard',
     headline: <>Pass the audit. <em style={{ color: '#d97706' }}>Keep the standard.</em></>,
     story:
-      "Certification isn't a trophy — it's a habit. Systems drift. Staff change. Standards update. We stay beside you so every surveillance visit is just another good day.",
+      'Systems drift and standards change. We stay beside you so every audit feels ordinary.',
     serviceName: 'Certified Care™',
-    servicePromise: 'Stay certified. Keep growing.',
+    servicePromise: 'Stay certified and keep growing.',
     deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support'],
     ctaLabel: 'Stay certified',
     waKey: 'certified-care',
@@ -85,12 +85,12 @@ const PHASES: Phase[] = [
   {
     number: '05',
     chapter: 'The Export',
-    headline: <>Your label. On shelves <em style={{ color: '#d97706' }}>abroad.</em></>,
+    headline: <>Your label <em style={{ color: '#d97706' }}>crosses the sea.</em></>,
     story:
-      'Three gates stand between a small agro-processor and the world: HACCP. ISO 22000. A GFSI certificate buyers trust. Export-Ready™ takes you through all three — and you become a Caribbean export company and international supplier.',
+      'Three gates stand between you and the world. Beyond them, buyers trust a label that says Made in Guyana.',
     serviceName: 'Export-Ready™',
-    servicePromise: 'From unregulated to export-certified. Made in Guyana, trusted everywhere.',
-    deliverables: ['Gate 1 · PRPs + HACCP', 'Gate 2 · ISO 22000 system', 'Gate 3 · GFSI readiness (FSSC 22000 · BRCGS · SQF)'],
+    servicePromise: 'From unregulated to export certified.',
+    deliverables: ['HACCP foundation', 'ISO 22000 system', 'GFSI certificate'],
     ctaLabel: 'Start Export-Ready™',
     waKey: 'export-ready',
     img: 'images/case-studies/poultry.jpg',
@@ -235,9 +235,6 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
                 border: '1.5px solid rgba(255,255,255,0.92)',
               }}
             >
-              <p className="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 mb-1.5">
-                The service for this phase
-              </p>
               <h3 className="text-lg font-bold text-slate-900 mb-1">Preqal {phase.serviceName}</h3>
               <p className="text-sm text-slate-500 italic mb-4">"{phase.servicePromise}"</p>
               <div className="flex flex-col gap-2 mb-5">
@@ -330,8 +327,8 @@ const Home: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: 0.3 }}
                 >
-                  We take Guyanese businesses from one good idea to Caribbean export brand —
-                  five phases, one service for each, step by step. Scroll and watch the journey.
+                  Picture your product on a shelf across the sea, your name on the label.
+                  Five phases take you there.
                 </motion.p>
 
                 <motion.div
@@ -396,12 +393,11 @@ const Home: React.FC = () => {
               <div className="text-center mb-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">One journey · Five phases</p>
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
-                  Picture a Guyanese entrepreneur<br />
-                  <span className="text-amber-600">with one good idea.</span>
+                  This story is<br />
+                  <span className="text-amber-600">about you.</span>
                 </h2>
                 <p className="text-base text-slate-500 mt-4 max-w-[520px] mx-auto leading-relaxed">
-                  Here's how that idea becomes an international supplier — and the exact service
-                  that carries it through each phase.
+                  You have one good idea. Here is the help that takes it abroad.
                 </p>
               </div>
             </ScrollReveal>
@@ -442,7 +438,7 @@ const Home: React.FC = () => {
           }} />
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <ScrollReveal yFrom={16}>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">This road has been walked before</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">Others have walked this road</p>
               <div className="flex flex-col md:flex-row md:items-end gap-10 md:gap-20">
                 <div className="flex-1">
                   <h2 className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5">
@@ -450,19 +446,18 @@ const Home: React.FC = () => {
                     <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
                   </h2>
                   <p className="text-white/55 text-base leading-relaxed max-w-[480px]">
-                    They took the journey one phase at a time — with a system built for their
-                    business, trained into their team, and tested against ISO 9001, ISO 14001,
-                    ISO 45001, FSSC 22000, GMP+, and HACCP.
+                    Each one walked these five phases and passed audits against ISO 9001 and
+                    FSSC 22000.
                   </p>
                 </div>
                 <div className="flex gap-12 flex-shrink-0">
                   <div className="text-center">
                     <div className="text-5xl font-bold text-amber-400">98%</div>
-                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">audit pass rate<br />across Preqal clients</div>
+                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">pass rate</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-5xl font-bold text-amber-400">9mo</div>
-                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">average time to<br />full certification</div>
+                    <div className="text-5xl font-bold text-amber-400">9</div>
+                    <div className="text-xs text-white/40 font-medium mt-1 leading-snug">months to<br />certification</div>
                   </div>
                 </div>
               </div>
@@ -497,15 +492,15 @@ const Home: React.FC = () => {
                   initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.25 }}
                 >
-                  Wherever you are on the journey,<br />there's one next step.
+                  One message starts everything.
                 </motion.h2>
                 <motion.p
                   className="text-amber-100 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
                   initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.35 }}
                 >
-                  Message Dr. Gravesande on WhatsApp. No pressure. No jargon. Tell him where
-                  you are — he'll tell you your next move, whatever you decide.
+                  Expect no pressure and no jargon. Tell him where you are and he will show
+                  you your next move.
                 </motion.p>
                 <motion.div
                   className="flex flex-col sm:flex-row gap-4 justify-center items-center"
