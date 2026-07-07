@@ -31,9 +31,11 @@ export const getOrganizationSchema = () => {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
+      telephone: '+5926335874',
       url: 'https://preqal.org/contact',
       availableLanguage: 'English'
     },
+    telephone: '+5926335874',
     numberOfEmployees: {
       '@type': 'QuantitativeValue',
       minValue: 2,
@@ -66,7 +68,9 @@ export const getOrganizationSchema = () => {
     sameAs: [
       'https://www.linkedin.com/company/preqal',
       'https://www.facebook.com/preqal',
-      'https://www.youtube.com/@Preqal'
+      'https://www.youtube.com/@Preqal',
+      'https://g.page/r/CfdKTnSDkdYGEBM',
+      'https://maps.google.com/maps?cid=492741203021679351'
     ]
   };
 };
@@ -84,7 +88,8 @@ export const getBrandSchema = () => {
     sameAs: [
       'https://www.linkedin.com/company/preqal',
       'https://www.facebook.com/preqal',
-      'https://www.youtube.com/@Preqal'
+      'https://www.youtube.com/@Preqal',
+      'https://g.page/r/CfdKTnSDkdYGEBM'
     ]
   };
 };
