@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
 import Resources from '../pages/Resources';
 import ServiceLanding, { ServicesIndex } from '../pages/ServiceLanding';
+import GuideArticle, { GuidesIndex } from '../pages/GuideArticle';
 import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
 import SEOHealth from '../pages/SEOHealth';
@@ -69,6 +70,9 @@ const AnimatedRoutes: React.FC = () => {
         {/* SEO landing pages — one per productized service */}
         <Route path="/services"                   element={<ServicesIndex />} />
         <Route path="/services/:slug"             element={<ServiceLanding />} />
+        {/* Cornerstone guides */}
+        <Route path="/guides"                     element={<GuidesIndex />} />
+        <Route path="/guides/:slug"               element={<GuideArticle />} />
         <Route path="/case-studies"               element={<Navigate to="/" replace />} />
         <Route path="/resources"                  element={<Resources />} />
         <Route path="/templates"                  element={<Navigate to="/resources" replace />} />
