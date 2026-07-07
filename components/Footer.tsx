@@ -80,11 +80,11 @@ const FooterComplianceStandards: React.FC = () => {
 const Footer: React.FC = () => {
   const { openWhatsApp } = useWhatsApp();
   const journey = [
-    { name: '01 · Business Plan', to: '/#phase-1' },
-    { name: '02 · Risk Scan™', to: '/#phase-2' },
-    { name: '03 · Systems Builder™', to: '/#phase-3' },
-    { name: '04 · Certified Care™', to: '/#phase-4' },
-    { name: '05 · Export-Ready™', to: '/#phase-5' },
+    { name: '01 · Business Plan', to: '/services/business-plan' },
+    { name: '02 · Risk Scan™', to: '/services/risk-scan' },
+    { name: '03 · Systems Builder™', to: '/services/systems-builder' },
+    { name: '04 · Certified Care™', to: '/services/certified-care' },
+    { name: '05 · Export-Ready™', to: '/services/export-ready' },
   ];
 
   return (
@@ -162,12 +162,12 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm">
               {journey.map((phase) => (
                 <li key={phase.name}>
-                  <a
-                    href={phase.to}
+                  <Link
+                    to={phase.to}
                     className="text-slate-500 hover:text-amber-600 transition-colors duration-200 block"
                   >
                     {phase.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li>

@@ -1,4 +1,43 @@
+# preqal.org — all welcome, including AI crawlers.
 User-agent: *
+Allow: /
+Disallow: /admin-dashboard.html
+Disallow: /qms/
+Disallow: /client-onboarding.html
+Disallow: /employee-onboarding.html
+
+# AI assistants and their search crawlers (explicitly welcomed)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://preqal.org/sitemap.xml

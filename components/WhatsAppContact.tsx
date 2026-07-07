@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight } from 'lucide-react';
+import { trackEvent } from '../src/analytics/ga';
 
 /* ────────────────────────────────────────────────────────────────────────────
    WhatsApp contact — replaces the retired "Free 1hr Consult" / booking funnel.
@@ -66,6 +67,11 @@ export const WHATSAPP_OPTIONS: WaOption[] = [
 export function whatsAppLink(key: WhatsAppServiceKey): string {
   const opt = WHATSAPP_OPTIONS.find((o) => o.key === key) ?? WHATSAPP_OPTIONS[0];
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(opt.message)}`;
+}
+
+/** Fire a GA4 conversion event for a direct WhatsApp link click */
+export function trackWhatsAppClick(key: WhatsAppServiceKey, source: string): void {
+  trackEvent('whatsapp_click', { service: key, source });
 }
 
 /* WhatsApp glyph (lucide has no brand icons) */
@@ -172,7 +178,10 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(opt.message)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={close}
+                        onClick={() => {
+                          trackEvent('whatsapp_click', { service: opt.key, source: 'popup' });
+                          close();
+                        }}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: 0.08 + i * 0.05 }}

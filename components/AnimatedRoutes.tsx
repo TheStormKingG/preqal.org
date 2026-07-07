@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
 import Resources from '../pages/Resources';
+import ServiceLanding, { ServicesIndex } from '../pages/ServiceLanding';
 import ContactUs from '../pages/ContactUs';
 import PreqalNotPrequel from '../pages/PreqalNotPrequel';
 import SEOHealth from '../pages/SEOHealth';
@@ -65,8 +66,9 @@ const AnimatedRoutes: React.FC = () => {
     <div className={`page-transition ${getAnimationClass()}`}>
       <Routes location={displayLocation}>
         <Route path="/"                           element={<Home />} />
-        {/* Services & Case Studies retired — journey now lives on the home page */}
-        <Route path="/services"                   element={<Navigate to="/" replace />} />
+        {/* SEO landing pages — one per productized service */}
+        <Route path="/services"                   element={<ServicesIndex />} />
+        <Route path="/services/:slug"             element={<ServiceLanding />} />
         <Route path="/case-studies"               element={<Navigate to="/" replace />} />
         <Route path="/resources"                  element={<Resources />} />
         <Route path="/templates"                  element={<Navigate to="/resources" replace />} />

@@ -249,17 +249,25 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
                   </div>
                 ))}
               </div>
-              <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn} className="inline-block">
-                <a
-                  href={whatsAppLink(phase.waKey)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
-                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
+              <div className="flex items-center gap-4 flex-wrap">
+                <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn} className="inline-block">
+                  <a
+                    href={whatsAppLink(phase.waKey)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
+                    style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
+                  >
+                    <WhatsAppIcon className="h-4 w-4" /> {phase.ctaLabel}
+                  </a>
+                </motion.div>
+                <Link
+                  to={`/services/${phase.waKey}`}
+                  className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
                 >
-                  <WhatsAppIcon className="h-4 w-4" /> {phase.ctaLabel}
-                </a>
-              </motion.div>
+                  Learn more
+                </Link>
+              </div>
             </motion.div>
           </div>
         </motion.div>
