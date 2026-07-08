@@ -144,13 +144,13 @@ const Footer: React.FC = () => {
               </div>
             </div>
             <div className="flex space-x-3">
-              <a href="https://linkedin.com/company/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+              <a href="https://linkedin.com/company/preqal" target="_blank" rel="noopener noreferrer" aria-label="Preqal on LinkedIn" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="https://www.facebook.com/preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+              <a href="https://www.facebook.com/preqal" target="_blank" rel="noopener noreferrer" aria-label="Preqal on Facebook" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="https://www.youtube.com/@Preqal" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
+              <a href="https://www.youtube.com/@Preqal" target="_blank" rel="noopener noreferrer" aria-label="Preqal on YouTube" className="w-10 h-10 rounded-xl flex items-center justify-center neu-raised-sm text-slate-500 hover:text-amber-600 transition-colors">
                 <Youtube className="h-5 w-5" />
               </a>
             </div>

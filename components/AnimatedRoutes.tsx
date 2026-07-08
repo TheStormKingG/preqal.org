@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
-import Resources from '../pages/Resources';
-import ServiceLanding, { ServicesIndex } from '../pages/ServiceLanding';
-import GuideArticle, { GuidesIndex } from '../pages/GuideArticle';
-import ContactUs from '../pages/ContactUs';
-import PreqalNotPrequel from '../pages/PreqalNotPrequel';
-import SEOHealth from '../pages/SEOHealth';
-import MDST from '../pages/MDST';
-import PrivacyPolicy from '../pages/PrivacyPolicy';
-import TermsOfService from '../pages/TermsOfService';
-import ECourses from '../pages/ECourses';
-import ECourseLearn from '../pages/ECourseLearn';
-import ECourseRegister from '../pages/ECourseRegister';
-import ECourseVerifyCertificate from '../pages/ECourseVerifyCertificate';
-import BusinessGrowthAssessment from '../pages/BusinessGrowthAssessment';
+
+// Route-level code splitting: only Home ships in the main bundle (it's the LCP page).
+// Every other page loads its own chunk on demand — no visual or behavioural change.
+const Resources = lazy(() => import('../pages/Resources'));
+const ServiceLanding = lazy(() => import('../pages/ServiceLanding'));
+const ServicesIndex = lazy(() => import('../pages/ServiceLanding').then(m => ({ default: m.ServicesIndex })));
+const GuideArticle = lazy(() => import('../pages/GuideArticle'));
+const GuidesIndex = lazy(() => import('../pages/GuideArticle').then(m => ({ default: m.GuidesIndex })));
+const ContactUs = lazy(() => import('../pages/ContactUs'));
+const PreqalNotPrequel = lazy(() => import('../pages/PreqalNotPrequel'));
+const SEOHealth = lazy(() => import('../pages/SEOHealth'));
+const MDST = lazy(() => import('../pages/MDST'));
+const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('../pages/TermsOfService'));
+const ECourses = lazy(() => import('../pages/ECourses'));
+const ECourseLearn = lazy(() => import('../pages/ECourseLearn'));
+const ECourseRegister = lazy(() => import('../pages/ECourseRegister'));
+const ECourseVerifyCertificate = lazy(() => import('../pages/ECourseVerifyCertificate'));
+const BusinessGrowthAssessment = lazy(() => import('../pages/BusinessGrowthAssessment'));
 
 const routeOrder = [
   '/',
@@ -65,6 +70,7 @@ const AnimatedRoutes: React.FC = () => {
 
   return (
     <div className={`page-transition ${getAnimationClass()}`}>
+      <Suspense fallback={null}>
       <Routes location={displayLocation}>
         <Route path="/"                           element={<Home />} />
         {/* SEO landing pages — one per productized service */}
@@ -97,6 +103,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/tools/mdst"                 element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
       </Routes>
+      </Suspense>
     </div>
   );
 };

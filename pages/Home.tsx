@@ -263,6 +263,7 @@ const PhaseSection: React.FC<{ phase: Phase; index: number }> = ({ phase, index 
                 </motion.div>
                 <Link
                   to={`/services/${phase.waKey}`}
+                  aria-label={`Learn more about Preqal ${phase.serviceName}`}
                   className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
                 >
                   Learn more
