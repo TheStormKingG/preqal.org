@@ -502,7 +502,7 @@ Replace the entire file with:
 
   // ── Config ──────────────────────────────────────────────────────────────────
   const SUPABASE_URL  = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0MDczOTMsImV4cCI6MjA2MTk4MzM5M30.Wc6qp01ibrVsquOVyqfQPLSzHVvvt4Yy5qdKfGBpFGI';
+  const SUPABASE_ANON = '<REVOKED-LEGACY-KEY>';
   const EJS_PUBLIC    = 'mijyAm1ocwE6qYCiq';
   const EJS_SERVICE   = 'service_qziw5dg';
   const EJS_TMPL      = 'template_clonbrd';
@@ -714,7 +714,7 @@ Replace the entire file with:
 
 The SUPABASE_ANON key used in the file is:
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0MDczOTMsImV4cCI6MjA2MTk4MzM5M30.Wc6qp01ibrVsquOVyqfQPLSzHVvvt4Yy5qdKfGBpFGI
+<REVOKED-LEGACY-KEY>
 ```
 
 Verify this matches `public/admin-dashboard.html`:

@@ -31,7 +31,9 @@ export const setAnalyticsConsent = (value: 'granted' | 'denied') => {
 let gaLoaded = false;
 
 export const initGA = () => {
-  const gaId = import.meta.env.VITE_GA_ID;
+  // Measurement IDs are public identifiers (they were previously inline in index.html).
+  // Fallback keeps analytics working even when the VITE_GA_ID build secret is unset.
+  const gaId = import.meta.env.VITE_GA_ID || 'G-NCFNGZR285';
 
   // Don't load GA in development, without an ID, without opt-in, or twice
   if (!gaId || import.meta.env.DEV || gaLoaded || getAnalyticsConsent() !== 'granted') {
@@ -52,11 +54,12 @@ export const initGA = () => {
   script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
   document.head.appendChild(script);
 
-  // Initialize GA4
+  // Initialize GA4 + Google Ads (both consent-gated — nothing loads before opt-in)
   gtag('js', new Date());
   gtag('config', gaId, {
     send_page_view: true
   });
+  gtag('config', 'AW-693698781');
 };
 
 export const trackEvent = (eventName: string, eventParams?: Record<string, unknown>) => {
@@ -67,7 +70,7 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, unkno
 
 export const trackPageView = (path: string) => {
   if (window.gtag) {
-    window.gtag('config', import.meta.env.VITE_GA_ID, {
+    window.gtag('config', import.meta.env.VITE_GA_ID || 'G-NCFNGZR285', {
       page_path: path
     });
   }

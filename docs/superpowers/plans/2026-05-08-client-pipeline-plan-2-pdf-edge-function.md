@@ -571,7 +571,7 @@ Use Supabase MCP `get_edge_function` or check the Supabase dashboard → Edge Fu
 
 ```bash
 curl -X POST https://gndcjmxxgtnoidxgcdnx.supabase.co/functions/v1/generate-pdf \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZGNqbXh4Z3Rub2lkeGdjZG54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNDY5NjYsImV4cCI6MjA4MTcyMjk2Nn0.hPhVHtHzp67Upukemoo8ZTwDcOCVHLrKfOwaITnbBLY" \
+  -H "Authorization: Bearer <REVOKED-LEGACY-KEY>" \
   -H "Content-Type: application/json" \
   -d '{
     "type": "quote",
