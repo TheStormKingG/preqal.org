@@ -10,7 +10,7 @@ const DEFAULT_OG = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
 const routeMeta = {
   '/': {
     title: 'Preqal | ISO Certification & Food Safety Consultants Guyana',
-    description: 'ISO certification, HACCP and food safety consultants in Georgetown, Guyana. Preqal takes businesses from first plan to export-ready certification.',
+    description: 'Preqal gets Guyanese businesses ISO 9001 and HACCP certified and export ready. Quality, safety and compliance consultants in Georgetown, Guyana.',
     canonical: `${BASE_URL}/`,
     ogImage: `${BASE_URL}/og/home.webp`,
     ogType: 'website',
@@ -138,8 +138,21 @@ const routeMeta = {
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
+// Remove react-helmet's runtime copies of tags we set statically — otherwise every
+// prerendered page ships duplicate meta descriptions / og / twitter / canonical tags.
+function stripHelmetDuplicates(html) {
+  const kill = [
+    /<meta(?=[^>]*data-rh="true")(?=[^>]*name="description")[^>]*>/g,
+    /<meta(?=[^>]*data-rh="true")(?=[^>]*property="og:(?:type|url|title|description|image)")[^>]*>/g,
+    /<meta(?=[^>]*data-rh="true")(?=[^>]*name="twitter:(?:url|title|description|image)")[^>]*>/g,
+    /<link(?=[^>]*data-rh="true")(?=[^>]*rel="canonical")[^>]*>/g,
+  ];
+  return kill.reduce((h, re) => h.replace(re, ''), html);
+}
+
 function injectMeta(html, { title, description, canonical, ogImage, ogType }) {
   const t = esc(title), d = esc(description), img = esc(ogImage), c = esc(canonical), type = esc(ogType);
+  html = stripHelmetDuplicates(html);
   return html
     .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/,         `$1${d}$2`)
