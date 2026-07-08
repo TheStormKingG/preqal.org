@@ -36,7 +36,7 @@ const PHASES: Phase[] = [
     deliverables: ['Bank-ready business plan', 'Cash-flow map', 'Compliance roadmap'],
     ctaLabel: 'Get your Business Plan',
     waKey: 'business-plan',
-    img: 'images/business-team.jpg',
+    img: 'images/business-team.webp',
     imgAlt: 'A small Guyanese business team planning at a table',
     imgPos: '50% 18%',
   },
@@ -51,7 +51,7 @@ const PHASES: Phase[] = [
     deliverables: ['Red Flag Report', 'ISO gap check', 'Action roadmap'],
     ctaLabel: 'Book the Risk Scan',
     waKey: 'risk-scan',
-    img: 'images/services/phase1-diagnose.jpg',
+    img: 'images/services/phase1-diagnose.webp',
     imgAlt: 'Consultant reviewing operations with a client',
   },
   {
@@ -65,7 +65,7 @@ const PHASES: Phase[] = [
     deliverables: ['Plain-language SOPs', 'Internal auditor training', 'Mock certification audit'],
     ctaLabel: 'Start the 9-month build',
     waKey: 'systems-builder',
-    img: 'images/services/phase2-train.jpg',
+    img: 'images/services/phase2-train.webp',
     imgAlt: 'Team in a quality management training workshop',
   },
   {
@@ -79,7 +79,7 @@ const PHASES: Phase[] = [
     deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support'],
     ctaLabel: 'Stay certified',
     waKey: 'certified-care',
-    img: 'images/services/phase3-audit.jpg',
+    img: 'images/services/phase3-audit.webp',
     imgAlt: 'Quality supervisor conducting an audit on the facility floor',
   },
   {
@@ -93,7 +93,7 @@ const PHASES: Phase[] = [
     deliverables: ['HACCP foundation', 'ISO 22000 system', 'GFSI certificate'],
     ctaLabel: 'Start Export-Ready™',
     waKey: 'export-ready',
-    img: 'images/case-studies/poultry.jpg',
+    img: 'images/case-studies/poultry.webp',
     imgAlt: 'Guyanese agro-processing operation preparing product for export',
   },
 ];
@@ -380,12 +380,14 @@ const Home: React.FC = () => {
                   }}
                 >
                   <motion.img
-                    src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
+                    src={`${import.meta.env.BASE_URL}images/hero-bg-1040.webp`}
                     alt="Business leader relaxed and confident at their desk"
                     className="w-full h-full object-cover"
                     style={prefersReduced ? { objectPosition: 'center top' } : { objectPosition: 'center top', y: heroImgY, scale: 1.08 }}
                     width="520"
                     height="416"
+                    decoding="async"
+                    {...({ fetchpriority: 'high' } as Record<string, string>)}
                   />
                 </div>
               </motion.div>
