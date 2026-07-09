@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, FileText, ShieldCheck, ClipboardList, AlertTriangle, GraduationCap, FolderDown, ArrowRight } from 'lucide-react';
+import { Download, FileText, ShieldCheck, ClipboardList, AlertTriangle, GraduationCap, FolderDown, ArrowRight, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
@@ -17,6 +17,15 @@ interface TemplateDoc {
 }
 
 const TEMPLATES: TemplateDoc[] = [
+  {
+    icon: <BookOpen className="h-5 w-5 text-amber-600" />,
+    docId: 'BPW-01',
+    title: 'Business Plan Workbook',
+    desc: 'A fill-in workbook that walks you through a complete business plan — your offer, market, the money, and a built-in quality system. Built for our Sunday training sessions.',
+    file: 'Business-Plan-Workbook.docx',
+    type: 'Word',
+    size: '443 KB',
+  },
   {
     icon: <ShieldCheck className="h-5 w-5 text-amber-600" />,
     docId: 'POL-01',
@@ -98,8 +107,8 @@ const Resources: React.FC = () => {
               className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto"
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
             >
-              Five professional templates — the same foundation our consultants install on
-              day one. Click, download, use. That's it.
+              Six professional templates — including our Business Plan Workbook and the same
+              foundation our consultants install on day one. Click, download, use. That's it.
             </motion.p>
           </div>
         </section>
@@ -166,7 +175,7 @@ const Resources: React.FC = () => {
               </div>
               <div className="flex-grow">
                 <p className="text-base font-bold text-slate-900">Want everything at once?</p>
-                <p className="text-sm text-slate-500">All five templates in one ZIP — 2.2 MB.</p>
+                <p className="text-sm text-slate-500">All six templates in one ZIP — 2.5 MB.</p>
               </div>
               <motion.a
                 whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}
