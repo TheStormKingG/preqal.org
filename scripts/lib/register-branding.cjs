@@ -114,14 +114,14 @@ function applyPreqalHeader(ws, meta) {
   if (logoBuf) {
     const smallId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
     ws.addImage(smallId, {
-      tl: centerImage(22, 24, 0, 0, colWidths, 20, 1, 1),
-      ext: { width: 22, height: 24 },
+      tl: centerImage(22, 22, 0, 0, colWidths, 20, 1, 1),
+      ext: { width: 22, height: 22 },
       editAs: 'absolute',
     });
     const bigId = ws.workbook.addImage({ buffer: logoBuf, extension: 'png' });
     ws.addImage(bigId, {
-      tl: centerImage(90, 100, 0, 2, colWidths, 22, 2, 8),
-      ext: { width: 90, height: 100 },
+      tl: centerImage(96, 96, 0, 2, colWidths, 22, 2, 8),
+      ext: { width: 96, height: 96 },
       editAs: 'absolute',
     });
   }

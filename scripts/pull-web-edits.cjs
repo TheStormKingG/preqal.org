@@ -55,14 +55,14 @@ function escXml(s) {
 }
 
 // ─── Logo assets ──────────────────────────────────────────────────────────────
-// Cover page: favicon (hexagon mark) above, wordmark (PREQAL text) below.
+// Cover page: favicon (Q-star mark) above, wordmark (PREQAL text) below.
 // Page header: small favicon in the top-left.
 const FAVICON_PATH  = path.resolve(__dirname, '../public/favicon.png');
 const WORDMARK_PATH = path.resolve(__dirname, '../public/ims/assets/preqal-wordmark.png');
 const FAVICON_BUF   = fs.existsSync(FAVICON_PATH)  ? fs.readFileSync(FAVICON_PATH)  : null;
 const WORDMARK_BUF  = fs.existsSync(WORDMARK_PATH) ? fs.readFileSync(WORDMARK_PATH) : null;
-const FAVICON_PX    = { w: 254, h: 286 };  // public/favicon.png intrinsic size
-const WORDMARK_PX   = { w: 240, h: 105 };  // cropped PREQAL wordmark intrinsic size
+const FAVICON_PX    = { w: 512, h: 512 };  // public/favicon.png intrinsic size
+const WORDMARK_PX   = { w: 240, h: 42 };   // cropped PREQAL wordmark intrinsic size
 const COVER_FAVICON_W  = 130;  // pixel width of favicon on cover page
 const COVER_WORDMARK_W = 220;  // pixel width of wordmark on cover page
 const HEADER_FAVICON_W = 22;   // pixel width of favicon in page header

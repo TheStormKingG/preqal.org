@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
-            <div className="mb-4 overflow-hidden" style={{ height: '3.25rem' }}>
+            <div className="mb-4">
               <picture>
                 <source
                   type="image/avif"
@@ -113,9 +113,9 @@ const Footer: React.FC = () => {
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
                   className="w-auto object-contain"
-                  style={{ height: '7.5rem', marginTop: '-1.75rem', marginLeft: '-0.75rem' }}
-                  width="400"
-                  height="160"
+                  style={{ height: '2.5rem' }}
+                  width="230"
+                  height="40"
                   loading="lazy"
                   decoding="async"
                 />

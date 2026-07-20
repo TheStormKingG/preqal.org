@@ -307,10 +307,10 @@ Every POL and PRO document published to `public/ims/` follows the same branded c
 ### Logo assets
 | Asset | File | Used for |
 |---|---|---|
-| Favicon (hexagon-with-star) | `public/favicon.png` (254×286 px) | Cover page large mark + small mark in page header |
-| Wordmark (`PREQAL` text) | `public/ims/assets/preqal-wordmark.png` (240×105 px) | Below the favicon on the cover page |
+| Favicon (orange Q-with-star speech-bubble mark) | `public/favicon.png` (512×512 px) | Cover page large mark + small mark in page header |
+| Wordmark (`PREQAL` text, star in the Q) | `public/ims/assets/preqal-wordmark.png` (240×42 px) | Below the favicon on the cover page |
 
-The wordmark is cropped from `public/Preqal Logo Sep25-9.png`. **Never** stretch — `noChangeAspect="1"` is set on every inline drawing.
+The wordmark is a downscale of `public/Preqal Logo Sep25-9.png` (954×166 px master; same art also serves the site navbar/footer via the `-200`/`-400` webp/avif variants). **Never** stretch — `noChangeAspect="1"` is set on every inline drawing. Logos refreshed 2026-07-20 (rebrand: orange Q-star mark + horizontal wordmark, replacing the hexagon mark and square 500×500 canvases).
 
 ### Page header (recurring on every page)
 Single paragraph, bottom-border `#E2E8F0`:
