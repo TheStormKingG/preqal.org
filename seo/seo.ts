@@ -13,7 +13,7 @@ const DEFAULT_OG_IMAGE = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
 export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
     home: {
-      title: 'Preqal | ISO Certification & Food Safety Consultants Guyana',
+      title: 'Preqal | ISO Certification & Quality Experts Guyana',
       description: 'Preqal gets Guyanese businesses ISO 9001 and HACCP certified and export ready. Quality, safety and compliance consultants in Georgetown, Guyana.',
       canonical: `${BASE_URL}/`,
       ogImage: `${BASE_URL}/og/home.webp`,
