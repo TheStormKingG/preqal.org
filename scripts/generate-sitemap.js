@@ -34,7 +34,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${routes
   .map(
     (route) => `  <url>
-    <loc>${BASE_URL}${route.url}</loc>
+    <loc>${BASE_URL}${route.url === '/' ? '/' : route.url + '/'}</loc>
     <lastmod>${route.lastmod}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
