@@ -217,7 +217,7 @@ export const GUIDES: Guide[] = [
       },
       {
         q: 'I cook from home. Where do I start?',
-        a: 'Start with business registration and the food safety basics for your space, then a gap assessment so you know exactly what stands between you and certification. Preqal\'s Risk Scan does that in seven days.',
+        a: 'Start with business registration and the food safety basics for your space, then a gap assessment so you know exactly what stands between you and certification. Preqal\'s Risk Scan does that in five days, fully online.',
       },
       {
         q: 'How does the Made in Guyana mark fit in?',

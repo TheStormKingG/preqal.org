@@ -38,7 +38,7 @@ export const WHATSAPP_OPTIONS: WaOption[] = [
     phase: '02',
     service: 'Risk Scan™',
     message:
-      "Hi Dr. Gravesande 👋 I want the 7-day Risk Scan for my business. I want to see exactly where I stand. What's the next step?",
+      "Hi Dr. Gravesande 👋 I want the 5-day virtual Risk Scan for my business. I want to see exactly where I stand. What's the next step?",
   },
   {
     key: 'systems-builder',

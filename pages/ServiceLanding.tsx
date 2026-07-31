@@ -20,6 +20,21 @@ interface Faq {
   a: string;
 }
 
+interface ScheduleDay {
+  day: string;
+  title: string;
+  desc: string;
+}
+
+interface PricingBlock {
+  amount: string;
+  unit: string;
+  priceValue: string;
+  priceCurrency: string;
+  terms: { label: string; desc: string }[];
+  note: string;
+}
+
 interface ServicePage {
   slug: string;
   waKey: WhatsAppServiceKey;
@@ -35,6 +50,9 @@ interface ServicePage {
   cta: string;
   img: string;
   imgAlt: string;
+  schedule?: ScheduleDay[];
+  pricing?: PricingBlock;
+  onePagerHref?: string;
   faqs: Faq[];
 }
 
@@ -79,33 +97,83 @@ export const SERVICE_PAGES: ServicePage[] = [
     waKey: 'risk-scan',
     name: 'Preqal Risk Scan™',
     metaKey: 'servicesRiskScan',
-    title: 'Quality & Compliance Risk Scan Guyana | Preqal Risk Scan',
+    title: 'Virtual Quality Audit in Guyana | Preqal Risk Scan™',
     description:
-      'A 7-day quality, safety and compliance diagnostic for Guyanese businesses. Red Flag Report, ISO gap check and a plain-language action roadmap.',
-    h1: <>Find every quality and compliance gap <em style={{ color: '#d97706' }}>in seven days.</em></>,
+      'A 5-day virtual quality audit for small businesses in Guyana and the Caribbean. ISO 9001 gap analysis, quality policy and document plan — GY$100,000 flat.',
+    h1: <>Every gap in your business, found <em style={{ color: '#d97706' }}>in five days — online.</em></>,
     intro:
-      'You are too close to your own business to see its gaps. The Preqal Risk Scan puts fresh professional eyes on your operation and hands you a precise map of what is working, what is not and what to do next.',
+      'You are too close to your own business to see its gaps. The Risk Scan is a five-day audit delivered fully online: we study your documents, talk with your people and hand you a clear picture of where you stand — for one flat fee of GY$100,000.',
     body: [
-      'Over seven days we walk your site, review your records and check your processes against the ISO standards and Guyanese regulations that apply to you. You get every finding in plain language, ranked by what can hurt your business first.',
-      'The Risk Scan is the mandatory first step before our larger programmes because we never prescribe before we diagnose. It also stands alone, and many clients use it before an audit, a big contract bid or a certification push.',
+      'Everything happens over video calls and shared files, so there is no site visit to host and no travel cost hidden in the price. Your team keeps working while we audit around them. We need about one hour of your time on the first day, one hour on the last, and access to your documents in between.',
+      'We measure what we find against ISO 9001, the international standard for how well-run businesses operate. You do not need any system in place before we start — most of our clients begin with almost nothing written down. The audit shows what you already do well, what is missing and what to fix first, ranked by what can hurt your business soonest.',
+      'The Risk Scan is the first step before our larger programmes because we never prescribe before we diagnose. It also stands alone: many businesses book it before a tender, a big contract or a certification push, or simply to know where they stand.',
     ],
-    deliverables: ['Red Flag Report', 'ISO gap check', 'Action roadmap', 'Findings review with Dr. Gravesande'],
-    audience: 'Any operating business in Guyana or the Caribbean that wants clarity before an audit, a tender or a certification project.',
+    deliverables: [
+      'Organisation chart',
+      'Quality policy — written for you, or revised',
+      'ISO 9001 gap analysis',
+      'Plain-language compliance recommendations',
+      'Proposed document master list',
+    ],
+    audience: 'Small and medium businesses in Guyana and the Caribbean — from a one-person operation to about fifty staff — that want clarity before an audit, a tender or a certification project.',
     cta: 'Book the Risk Scan',
     img: 'images/services/phase1-diagnose.jpg',
-    imgAlt: 'Consultant reviewing operations with a client in Guyana',
+    imgAlt: 'Consultant reviewing business documents with a client in Guyana',
+    schedule: [
+      {
+        day: 'Day 1',
+        title: 'Opening meeting',
+        desc: 'A one-hour video call to meet your team, walk through the week and agree what documents we need. You get a checklist and a secure way to share files.',
+      },
+      {
+        day: 'Day 2',
+        title: 'Document review',
+        desc: 'We read everything you shared — licences, records and any policies you have — and measure it all against ISO 9001.',
+      },
+      {
+        day: 'Day 3',
+        title: 'Staff interviews',
+        desc: 'Short video calls with a few staff members, picked at random. Not a test — honest conversations about how the work really gets done.',
+      },
+      {
+        day: 'Day 4',
+        title: 'Report writing',
+        desc: 'We write your report: every finding, every gap and every recommendation in plain language, ranked by what matters most.',
+      },
+      {
+        day: 'Day 5',
+        title: 'Closing meeting',
+        desc: 'A one-hour video call to present the full report, hand over your five deliverables and answer every question.',
+      },
+    ],
+    pricing: {
+      amount: 'GY$100,000',
+      unit: 'flat — everything included',
+      priceValue: '100000',
+      priceCurrency: 'GYD',
+      terms: [
+        { label: '50% books your week', desc: 'GY$50,000 confirms your audit dates and starts your document checklist.' },
+        { label: '50% on delivery', desc: 'GY$50,000 is due on Day 5, when your report and all five deliverables are handed over.' },
+      ],
+      note: 'No travel costs. No hidden extras. Delivered fully online.',
+    },
+    onePagerHref: '/risk-scan-one-pager.pdf',
     faqs: [
       {
-        q: 'What does the Risk Scan check?',
-        a: 'We review your processes, documentation, workplace conditions and records against the ISO standards and local regulations relevant to your sector, from food safety to occupational health and safety.',
+        q: 'How much does the Risk Scan cost?',
+        a: 'GY$100,000 flat, paid in two equal parts: GY$50,000 books your audit week and GY$50,000 is due on Day 5 when your report and documents are delivered. Because the audit is virtual, there are no travel costs on top.',
       },
       {
-        q: 'Do I need to be pursuing certification to benefit?',
-        a: 'No. Many clients use the scan simply to know where they stand. The Red Flag Report is valuable on its own for insurance, tenders and peace of mind.',
+        q: 'How can you audit my business without visiting it?',
+        a: 'The whole audit runs on video calls and shared documents. We assess your operation through your records, your paperwork and your people — the same evidence a certification auditor examines first. If you want an on-site walk-through as well, we can add one as a separate service.',
       },
       {
-        q: 'What happens after the scan?',
-        a: 'You keep the report and the roadmap with no obligation. If you want help closing the gaps, the scan flows directly into our Systems Builder programme.',
+        q: 'Is this a certification audit?',
+        a: 'No. Certificates only come from independent certification bodies. The Risk Scan tells you how ready you are and what to fix first, so nothing surprises you when you go for certification or face a customer audit.',
+      },
+      {
+        q: 'What if I have no documents or system at all?',
+        a: 'Then this was built for you. Most clients start with little or nothing written down. You still walk away with a quality policy, an organisation chart and a clear list of the documents your business needs — that is your starting system.',
       },
     ],
   },
@@ -262,7 +330,11 @@ const serviceSchema = (p: ServicePage) => ({
     { '@type': 'Country', name: 'Guyana' },
     { '@type': 'Place', name: 'Caribbean' },
   ],
-  offers: { '@type': 'Offer', url: `${BASE_URL}/services/${p.slug}` },
+  offers: {
+    '@type': 'Offer',
+    url: `${BASE_URL}/services/${p.slug}`,
+    ...(p.pricing ? { price: p.pricing.priceValue, priceCurrency: p.pricing.priceCurrency } : {}),
+  },
 });
 
 const faqSchema = (p: ServicePage) => ({
@@ -398,6 +470,84 @@ const ServiceLanding: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* 5-day schedule (services that define one) */}
+        {page.schedule && (
+          <section className="px-4 sm:px-6 lg:px-8 py-10">
+            <div className="max-w-6xl mx-auto">
+              <ScrollReveal yFrom={14}>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">How the week runs</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
+                  Five days, <em style={{ color: '#d97706' }}>start to finish.</em>
+                </h2>
+              </ScrollReveal>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {page.schedule.map((s, i) => (
+                  <ScrollReveal key={s.day} yFrom={18} delay={i * 80}>
+                    <div className="rounded-2xl p-5 h-full" style={glassCard}>
+                      <span
+                        className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[11px] font-extrabold uppercase tracking-wider text-amber-600 mb-3"
+                        style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
+                      >
+                        {s.day}
+                      </span>
+                      <h3 className="text-sm font-bold text-slate-900 mb-1.5">{s.title}</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">{s.desc}</p>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Transparent pricing (services that publish one) */}
+        {page.pricing && (
+          <div className="relative overflow-hidden py-14 sm:py-16 my-10" style={{ background: '#0f172a' }}>
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)' }}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%)' }}
+            />
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <ScrollReveal yFrom={16}>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-5">One flat fee</p>
+                <div className="flex flex-col md:flex-row md:items-center gap-10 md:gap-16">
+                  <div className="flex-shrink-0">
+                    <div className="text-5xl sm:text-6xl font-bold text-amber-400 leading-none">{page.pricing.amount}</div>
+                    <div className="text-sm text-white/55 font-medium mt-3">{page.pricing.unit}</div>
+                  </div>
+                  <div className="flex-1 flex flex-col gap-4">
+                    {page.pricing.terms.map((t) => (
+                      <div
+                        key={t.label}
+                        className="rounded-2xl px-5 py-4"
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}
+                      >
+                        <p className="text-sm font-bold text-white mb-0.5">{t.label}</p>
+                        <p className="text-sm text-white/55 leading-relaxed">{t.desc}</p>
+                      </div>
+                    ))}
+                    <p className="text-xs text-white/40">{page.pricing.note}</p>
+                    {page.onePagerHref && (
+                      <a
+                        href={page.onePagerHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="self-start text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors border-b border-amber-400/40 hover:border-amber-300 pb-0.5"
+                      >
+                        Download this as a one-page PDF
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        )}
 
         {/* FAQs */}
         <section className="px-4 sm:px-6 lg:px-8 py-10">

@@ -7,7 +7,7 @@ Preqal serves poultry and hatchery operations, agro-processors, eco-tourism, log
 ## Services
 
 - [Preqal Business Plan](https://preqal.org/services/business-plan): bank-ready business plans for Guyanese entrepreneurs with compliance built in.
-- [Preqal Risk Scan](https://preqal.org/services/risk-scan): a 7-day quality, safety and compliance diagnostic with a Red Flag Report and action roadmap.
+- [Preqal Risk Scan](https://preqal.org/services/risk-scan): a 5-day virtual quality audit for SMEs (GY$100,000 flat) delivering an ISO 9001 gap analysis, quality policy, organisation chart, compliance recommendations and a proposed document master list.
 - [Preqal Systems Builder](https://preqal.org/services/systems-builder): ISO 9001, ISO 14001 and ISO 45001 management systems built with the client's team in 9 months, ending in a mock certification audit.
 - [Preqal Certified Care](https://preqal.org/services/certified-care): monthly retainer that keeps certifications valid, including annual internal audits and surveillance-visit support.
 - [Preqal Export-Ready](https://preqal.org/services/export-ready): takes small agro-processors from unregulated to export certified through three gates, HACCP, ISO 22000 and GFSI scheme readiness (FSSC 22000, BRCGS or SQF).

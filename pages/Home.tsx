@@ -45,10 +45,10 @@ const PHASES: Phase[] = [
     chapter: 'The Look',
     headline: <>Now, see it <em style={{ color: '#d97706' }}>clearly.</em></>,
     story:
-      'You are too close to your business to see its gaps. Seven days with us shows you everything.',
+      'You are too close to your business to see its gaps. Five days with us — fully online — shows you everything.',
     serviceName: 'Risk Scan™',
-    servicePromise: 'See everything in one week.',
-    deliverables: ['Red Flag Report', 'ISO gap check', 'Action roadmap'],
+    servicePromise: 'A full virtual audit in five days. GY$100,000 flat.',
+    deliverables: ['ISO 9001 gap analysis', 'Quality policy + organisation chart', 'Plain-language recommendations'],
     ctaLabel: 'Book the Risk Scan',
     waKey: 'risk-scan',
     img: 'images/services/phase1-diagnose.webp',
