@@ -55,17 +55,15 @@ function escXml(s) {
 }
 
 // ─── Logo assets ──────────────────────────────────────────────────────────────
-// Cover page: favicon (Q-star mark) above, wordmark (PREQAL text) below.
-// Page header: small favicon in the top-left.
-const FAVICON_PATH  = path.resolve(__dirname, '../public/favicon.png');
-const WORDMARK_PATH = path.resolve(__dirname, '../public/ims/assets/preqal-wordmark.png');
-const FAVICON_BUF   = fs.existsSync(FAVICON_PATH)  ? fs.readFileSync(FAVICON_PATH)  : null;
-const WORDMARK_BUF  = fs.existsSync(WORDMARK_PATH) ? fs.readFileSync(WORDMARK_PATH) : null;
-const FAVICON_PX    = { w: 512, h: 512 };  // public/favicon.png intrinsic size
-const WORDMARK_PX   = { w: 240, h: 42 };   // cropped PREQAL wordmark intrinsic size
-const COVER_FAVICON_W  = 130;  // pixel width of favicon on cover page
-const COVER_WORDMARK_W = 220;  // pixel width of wordmark on cover page
-const HEADER_FAVICON_W = 22;   // pixel width of favicon in page header
+// Cover page + page header both use the big-Q lockup: the PREQAL wordmark
+// with the Q-star mark at 1.5× the height of the other letters (2026-07-31,
+// replacing the stacked favicon-above-wordmark cover and the favicon+amber
+// "PREQAL" text header). Vector master: public/preqal-logo-bigq.svg.
+const LOCKUP_PATH = path.resolve(__dirname, '../public/ims/assets/preqal-lockup.png');
+const LOCKUP_BUF  = fs.existsSync(LOCKUP_PATH) ? fs.readFileSync(LOCKUP_PATH) : null;
+const LOCKUP_PX   = { w: 1600, h: 372 };  // preqal-lockup.png intrinsic size
+const COVER_LOCKUP_W  = 420;  // pixel width of lockup on cover page
+const HEADER_LOCKUP_H = 30;   // pixel height of lockup in page header
 
 // EMU = English Metric Units. 1 inch = 914400; 1 pixel @ 96 DPI = 9525.
 const px2emu = (px) => Math.round(px * 9525);
@@ -147,18 +145,16 @@ async function embedImage(zip, imageBuf, mediaFilename, scope) {
 // ─── Cover page builder ───────────────────────────────────────────────────────
 // Builds the OOXML for the cover page:
 //   1. Dark navy band: "PREQAL INTEGRATED MANAGEMENT SYSTEM · Controlled Document …"
-//   2. Centered favicon (hexagon mark)
-//   3. Centered PREQAL wordmark
-//   4. Centered title "<DOC-ID>: <Title>"
-//   5. Centered subtitle ("Policy" for POL, "Standard Operating Procedure" for PRO)
+//   2. Centered big-Q lockup (wordmark with the Q-star mark at 1.5× letter height)
+//   3. Centered title "<DOC-ID>: <Title>"
+//   4. Centered subtitle ("Policy" for POL, "Standard Operating Procedure" for PRO)
 // The caller appends the metadata table (extracted from the existing file)
 // so per-document values (Version, Effective Date, Owner, …) are preserved.
-function buildCoverPage(docId, title, faviconRId, wordmarkRId) {
+function buildCoverPage(docId, title, lockupRId) {
   const ARIAL = '<w:rFonts w:ascii="Arial" w:cs="Arial" w:eastAsia="Arial" w:hAnsi="Arial"/>';
   const isPol = docId.startsWith('POL-');
   const subtitle = isPol ? 'Policy' : 'Standard Operating Procedure';
-  const fH = imageHeight(FAVICON_PX,  COVER_FAVICON_W);
-  const wH = imageHeight(WORDMARK_PX, COVER_WORDMARK_W);
+  const lH = imageHeight(LOCKUP_PX, COVER_LOCKUP_W);
 
   const band = `<w:p><w:pPr><w:shd w:fill="0F172A" w:val="clear"/>`
              + `<w:spacing w:after="140" w:before="140"/><w:ind w:left="200"/></w:pPr>`
@@ -167,15 +163,9 @@ function buildCoverPage(docId, title, faviconRId, wordmarkRId) {
              + `<w:t xml:space="preserve">PREQAL INTEGRATED MANAGEMENT SYSTEM  ·  Controlled Document — Internal Use Only</w:t>`
              + `</w:r></w:p>`;
 
-  const spacer = `<w:p><w:pPr><w:spacing w:after="0" w:before="480"/></w:pPr></w:p>`;
-
-  const faviconPara  = `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="100" w:before="0"/></w:pPr>`
-                     + inlineImageXml(faviconRId, COVER_FAVICON_W, fH, 'favicon')
-                     + `</w:p>`;
-
-  const wordmarkPara = `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="400" w:before="0"/></w:pPr>`
-                     + inlineImageXml(wordmarkRId, COVER_WORDMARK_W, wH, 'wordmark')
-                     + `</w:p>`;
+  const lockupPara = `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="460" w:before="600"/></w:pPr>`
+                   + inlineImageXml(lockupRId, COVER_LOCKUP_W, lH, 'lockup')
+                   + `</w:p>`;
 
   const titlePara = `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="60" w:before="0"/></w:pPr>`
                   + `<w:r><w:rPr>${ARIAL}<w:b/><w:bCs/><w:color w:val="0F172A"/>`
@@ -187,7 +177,7 @@ function buildCoverPage(docId, title, faviconRId, wordmarkRId) {
                 + `<w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>`
                 + `<w:t xml:space="preserve">${escXml(subtitle)}</w:t></w:r></w:p>`;
 
-  return band + spacer + faviconPara + wordmarkPara + titlePara + subPara;
+  return band + lockupPara + titlePara + subPara;
 }
 
 // Extracts the metadata table (Document No / Version / Effective Date / …)
@@ -202,9 +192,9 @@ function extractMetadataTable(bodyXml) {
   return '';
 }
 
-// Builds a fresh page-header XML with the favicon at top-left followed by
-// "PREQAL · — <Doc Title>" and a right-aligned "Confidential — Internal Use Only".
-function buildHeaderXml(docTitle, headerFaviconRId) {
+// Builds a fresh page-header XML with the big-Q lockup at top-left followed by
+// "— <Doc Title>" and a right-aligned "Confidential — Internal Use Only".
+function buildHeaderXml(docTitle, headerLockupRId) {
   const NS = 'xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '
            + 'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
            + 'xmlns:o="urn:schemas-microsoft-com:office:office" '
@@ -219,18 +209,14 @@ function buildHeaderXml(docTitle, headerFaviconRId) {
            + 'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '
            + 'xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex"';
   const ARIAL = '<w:rFonts w:ascii="Arial" w:cs="Arial" w:eastAsia="Arial" w:hAnsi="Arial"/>';
-  const fH = imageHeight(FAVICON_PX, HEADER_FAVICON_W);
+  const lockupW = Math.round(HEADER_LOCKUP_H * LOCKUP_PX.w / LOCKUP_PX.h);
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
        + `<w:hdr ${NS}>`
        + `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:color="E2E8F0" w:sz="1"/></w:pBdr>`
        + `<w:tabs><w:tab w:val="right" w:pos="9880"/></w:tabs>`
        + `<w:spacing w:after="80" w:before="80"/></w:pPr>`
-       + inlineImageXml(headerFaviconRId, HEADER_FAVICON_W, fH, 'header-favicon')
-       + `<w:r><w:rPr>${ARIAL}<w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">  </w:t></w:r>`
-       + `<w:r><w:rPr>${ARIAL}<w:b/><w:bCs/><w:color w:val="D97706"/>`
-       + `<w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr><w:t xml:space="preserve">PREQAL</w:t></w:r>`
-       + `<w:r><w:rPr>${ARIAL}<w:color w:val="475569"/>`
-       + `<w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr><w:t xml:space="preserve">  ·  </w:t></w:r>`
+       + inlineImageXml(headerLockupRId, lockupW, HEADER_LOCKUP_H, 'header-lockup')
+       + `<w:r><w:rPr>${ARIAL}<w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">   </w:t></w:r>`
        + `<w:r><w:rPr>${ARIAL}<w:color w:val="64748B"/>`
        + `<w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t xml:space="preserve">— ${escXml(docTitle)}</w:t></w:r>`
        + `<w:r><w:rPr>${ARIAL}<w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">\t</w:t></w:r>`
@@ -719,26 +705,25 @@ async function main() {
     try {
       await resetImageAssets(zip);
 
-      if (!FAVICON_BUF || !WORDMARK_BUF) {
-        throw new Error('Missing logo assets — check public/favicon.png and public/ims/assets/preqal-wordmark.png');
+      if (!LOCKUP_BUF) {
+        throw new Error('Missing logo asset — check public/ims/assets/preqal-lockup.png');
       }
 
-      // Embed images into the document body and header (separate rels scopes).
-      const docFaviconRId    = await embedImage(zip, FAVICON_BUF,  'favicon.png',   'document');
-      const docWordmarkRId   = await embedImage(zip, WORDMARK_BUF, 'wordmark.png',  'document');
-      const hdrFaviconRId    = await embedImage(zip, FAVICON_BUF,  'favicon.png',   'header');
+      // Embed the lockup into the document body and header (separate rels scopes).
+      const docLockupRId = await embedImage(zip, LOCKUP_BUF, 'lockup.png', 'document');
+      const hdrLockupRId = await embedImage(zip, LOCKUP_BUF, 'lockup.png', 'header');
 
-      // Build the cover page (band + logos + title + subtitle) and append the
+      // Build the cover page (band + lockup + title + subtitle) and append the
       // preserved metadata table.
-      const coverPage = buildCoverPage(docId, title, docFaviconRId, docWordmarkRId)
+      const coverPage = buildCoverPage(docId, title, docLockupRId)
                      + (metadataTable || '');
 
       // Convert the editor HTML body to OOXML and assemble the new body.
       const newBodyContent = htmlToOoxml(doc.content_html, { proLayout: docId.startsWith('PRO-') });
       patchedXml = patchDocxBody(originalXml, newBodyContent, coverPage);
 
-      // Replace the recurring page header with the favicon-bearing version.
-      newHeaderXml = buildHeaderXml(title, hdrFaviconRId);
+      // Replace the recurring page header with the lockup-bearing version.
+      newHeaderXml = buildHeaderXml(title, hdrLockupRId);
     } catch (e) {
       results.push({ doc_id: docId, title, status: 'FAIL', detail: `Conversion failed: ${e.message}` });
       continue;
