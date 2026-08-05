@@ -307,25 +307,27 @@ Every POL and PRO document published to `public/ims/` follows the same branded c
 ### Logo assets
 | Asset | File | Used for |
 |---|---|---|
-| **Big-Q lockup** (`PREQAL` wordmark with the Q-star mark at 1.5× letter height) | `public/ims/assets/preqal-lockup.png` (1600×372 px) | THE doc-branding mark: cover page + page header (one asset for both) |
-| Favicon (red Q-with-star speech-bubble mark) | `public/favicon.png` (512×512 px) | Browser favicon; pre-2026-07-31 doc branding (retired from docs) |
-| Wordmark (`PREQAL` text, star in the Q) | `public/ims/assets/preqal-wordmark.png` (240×42 px) | Legacy cover asset (retired from docs); site navbar/footer uses the Sep25-9 variants |
+| Favicon (orange Q-with-star speech-bubble mark) | `public/favicon.png` (512×512 px) | Cover page large mark + small mark in page header |
+| Wordmark (`PREQAL` text, star in the Q) | `public/ims/assets/preqal-wordmark.png` (240×42 px) | Below the favicon on the cover page |
 
-**Big-Q lockup introduced 2026-07-31:** one mark replaces the two old variations (stacked favicon-above-wordmark on covers; favicon + amber `PREQAL` text in headers). Built from `public/preqal-logo.svg` by scaling the Q+star subpath group to 1.5× the letter height (Stefan tried 2.5× first — "ridiculous"), baseline-anchored, with A/L reflowed right. Vector master: `public/preqal-logo-bigq.svg`; 4800px raster: `public/preqal-logo-bigq-hd.png`. **Never** stretch — `noChangeAspect="1"` is set on every inline drawing. (History: logos rebranded 2026-07-20; wordmark corners softened + Q recolored red `#DD1D21` 2026-07-27, regenerated from vector master `public/preqal-logo.svg` with 4800px raster `public/preqal-logo-hd.png`; favicon Q recolored red the same day.)
+The wordmark is a downscale of `public/Preqal Logo Sep25-9.png` (954×166 px master; same art also serves the site navbar/footer via the `-200`/`-400` webp/avif variants). **Never** stretch — `noChangeAspect="1"` is set on every inline drawing. Logos refreshed 2026-07-20 (rebrand: orange Q-star mark + horizontal wordmark, replacing the hexagon mark and square 500×500 canvases). Wordmark refreshed again 2026-07-27: letter corners softened (rounded) and the Q recolored red `#DD1D21`; all Sep25-9 raster variants + `ims/assets/preqal-wordmark.png` were regenerated from the new vector master `public/preqal-logo.svg` (a 4800px raster of the same art lives at `public/preqal-logo-hd.png`). Favicon refreshed 2026-07-27: Q-star mark recolored red `#DD1D21` to match the wordmark Q (same 512×512 canvas, composition unchanged). Star recolored golden yellow `#FBBF24` on 2026-08-05 in every mark (wordmark Q, big-Q lockup `public/preqal-logo-bigq.svg` + `public/ims/assets/preqal-lockup.png`, favicon) — all rasters regenerated from the vector masters; white is no longer used for the star anywhere.
 
 ### Page header (recurring on every page)
 Single paragraph, bottom-border `#E2E8F0`:
-- **Top-left:** big-Q lockup image, ~30 px tall / ~129 px wide (no separate `PREQAL` text — the lockup carries the name)
-- Three spaces, then `— [Doc Title]` (Arial 10pt, color `#64748B`)
+- **Top-left:** favicon image, ~22 px wide (~0.23")
+- Two spaces, then `PREQAL` (Arial 12pt bold, color `#D97706`)
+- Two spaces, dot separator, two spaces, then `— [Doc Title]` (Arial 10pt, color `#64748B`)
 - Right-aligned tab + `Confidential — Internal Use Only` (Arial 8pt italic, color `#94A3B8`)
 
 ### Cover page (page 1)
 In order, all paragraphs in Arial:
 1. **Dark navy band** — full-width `#0F172A` paragraph, white bold 11pt: `PREQAL INTEGRATED MANAGEMENT SYSTEM  ·  Controlled Document — Internal Use Only`
-2. **Big-Q lockup image** — centered, ~420 px wide × ~98 px tall (~4.4"), 30pt space before / 23pt after
-3. **Title** — centered, 22pt Arial bold, color `#0F172A`, format: `<DOC-ID>: <Title>` (e.g. `PRO-06: Client Onboarding`, `POL-01: Quality Policy`)
-4. **Subtitle** — centered, 12pt Arial, color `#64748B`. Use `Policy` for POL docs, `Standard Operating Procedure` for PRO docs.
-5. **Metadata table** (two columns, dark-navy label cells, white value cells): Document No · Version · Effective Date · Document Owner · ISO Reference · Related Documents · Classification
+2. **Spacer** (24pt)
+3. **Favicon image** — centered, ~130 px wide (~1.35")
+4. **Wordmark image** — centered, ~220 px wide (~2.29"), 20pt space after
+5. **Title** — centered, 22pt Arial bold, color `#0F172A`, format: `<DOC-ID>: <Title>` (e.g. `PRO-06: Client Onboarding`, `POL-01: Quality Policy`)
+6. **Subtitle** — centered, 12pt Arial, color `#64748B`. Use `Policy` for POL docs, `Standard Operating Procedure` for PRO docs.
+7. **Metadata table** (two columns, dark-navy label cells, white value cells): Document No · Version · Effective Date · Document Owner · ISO Reference · Related Documents · Classification
 
 **Doc ID** on the cover must match the filename prefix (`PRO-XX:` / `POL-XX:`) — **never** `SOP-XX`.
 
