@@ -52,7 +52,7 @@ const QUIET_GAP = 160; // ms of wheel silence required after a slide change
 const SWIPE_THRESHOLD = 60; // px of touch travel that counts as a swipe
 const UNLOCK_DELAY = 200; // ms cooldown after the transition settles
 
-const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
+const SlideDeck: React.FC<{ slides: DeckSlide[]; overlay?: React.ReactNode }> = ({ slides, overlay }) => {
   const prefersReduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const [slideH, setSlideH] = useState(0);
@@ -63,7 +63,14 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const lastWheelRef = useRef(0);
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const unlockTimerRef = useRef(0);
   const count = slides.length;
+
+  const releaseLock = useCallback(() => {
+    lockedRef.current = false;
+    waitQuietRef.current = true;
+    accRef.current = 0;
+  }, []);
 
   /* Track the wrapper's own height, not just window resizes — mobile URL-bar
      show/hide and browser-chrome changes move 100dvh without a resize event,
@@ -89,8 +96,13 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       lockedRef.current = true;
       indexRef.current = target;
       setIndex(target);
+      // onAnimationComplete is the normal way out of the lock, but it never
+      // fires if the transition is interrupted or the tab is hidden mid-slide.
+      // Without this fallback the deck would stay locked and stop responding.
+      window.clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = window.setTimeout(releaseLock, 1600);
     },
-    [count],
+    [count, releaseLock],
   );
 
   const step = useCallback((dir: 1 | -1) => goTo(indexRef.current + dir), [goTo]);
@@ -182,12 +194,11 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   }, [step, goTo, count]);
 
   const unlock = useCallback(() => {
-    window.setTimeout(() => {
-      lockedRef.current = false;
-      waitQuietRef.current = true;
-      accRef.current = 0;
-    }, UNLOCK_DELAY);
-  }, []);
+    window.clearTimeout(unlockTimerRef.current);
+    unlockTimerRef.current = window.setTimeout(releaseLock, UNLOCK_DELAY);
+  }, [releaseLock]);
+
+  useEffect(() => () => window.clearTimeout(unlockTimerRef.current), []);
 
   return (
     <DeckContext.Provider value={{ goTo, index, count }}>
@@ -219,6 +230,10 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
             </section>
           ))}
         </motion.div>
+
+        {/* Deck-level overlay (rendered inside the provider, so it can read
+            the current slide) — e.g. the journey wick. */}
+        {overlay}
 
         {/* Dot navigation */}
         <div className="fixed right-4 lg:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3">

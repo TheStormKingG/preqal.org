@@ -313,6 +313,94 @@ const PhaseSection: React.FC<{ phase: Phase; index: number; deck?: boolean }> = 
   );
 };
 
+/* ─── Journey wick (deck mode) ───
+   The scroll version draws an amber line down the page as you travel through
+   the phases. A deck has no scroll to scrub, so the line lives as a fixed rail
+   beside the slides: the wick burns from one numbered phase node to the next
+   each time the slide changes, and the nodes it has passed stay lit. */
+const PHASE_SLIDE_OFFSET = 1; // slide 0 is the hero; Phase 01 is slide 1
+
+const JourneyRail: React.FC = () => {
+  const deck = useDeck();
+  const prefersReduced = useReducedMotion();
+  if (!deck) return null;
+
+  const last = PHASE_SLIDE_OFFSET + PHASES.length - 1;
+  const onPhase = deck.index >= PHASE_SLIDE_OFFSET && deck.index <= last;
+  const active = Math.min(PHASES.length - 1, Math.max(0, deck.index - PHASE_SLIDE_OFFSET));
+  const RAIL = 264;
+  const gap = RAIL / (PHASES.length - 1);
+  const AXIS = 17; // px from the rail's left edge to the centre of the line
+
+  /* Driven by CSS transitions rather than a JS animation loop: the wick keeps
+     burning smoothly even while the main thread is busy loading a slide. */
+  const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+  return (
+    <div
+      className="hidden xl:block fixed left-3 2xl:left-6 top-1/2 z-40"
+      style={{
+        marginTop: -RAIL / 2,
+        pointerEvents: onPhase ? 'auto' : 'none',
+        opacity: onPhase ? 1 : 0,
+        transition: prefersReduced ? 'none' : `opacity .35s ${ease}`,
+      }}
+      aria-hidden={!onPhase}
+    >
+      <div className="relative" style={{ height: RAIL, width: AXIS * 2 }}>
+        {/* unburnt track */}
+        <div
+          className="absolute rounded-full"
+          style={{ left: AXIS, top: 0, bottom: 0, width: 3, transform: 'translateX(-50%)', background: 'rgba(163,177,198,0.5)' }}
+        />
+        {/* the wick — burns from one phase node to the next */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            left: AXIS,
+            top: 0,
+            width: 3,
+            height: (active / (PHASES.length - 1)) * RAIL,
+            transform: 'translateX(-50%)',
+            background: 'linear-gradient(to bottom, #f59e0b, #d97706)',
+            boxShadow: '0 0 12px rgba(245,158,11,0.55)',
+            transition: prefersReduced ? 'none' : `height .75s ${ease}`,
+          }}
+        />
+        {PHASES.map((p, i) => {
+          const lit = i <= active;
+          return (
+            <button
+              key={p.number}
+              type="button"
+              onClick={() => deck.goTo(PHASE_SLIDE_OFFSET + i)}
+              title={`Phase ${p.number} · ${p.chapter}`}
+              aria-label={`Go to phase ${p.number}, ${p.chapter}`}
+              aria-current={i === active && onPhase ? 'true' : undefined}
+              className="absolute rounded-full flex items-center justify-center text-[9px] font-extrabold"
+              style={{
+                left: AXIS,
+                top: i * gap,
+                transform: 'translate(-50%, -50%)',
+                width: lit ? 26 : 20,
+                height: lit ? 26 : 20,
+                background: lit ? 'linear-gradient(135deg, #f59e0b, #d97706)' : '#e0e5ec',
+                color: lit ? '#ffffff' : '#94a3b8',
+                boxShadow: lit
+                  ? '0 0 16px rgba(245,158,11,0.45), 3px 3px 8px rgba(163,177,198,0.45)'
+                  : 'inset 2px 2px 4px rgba(163,177,198,0.6), inset -2px -2px 4px rgba(255,255,255,0.9)',
+                transition: 'width .35s ease, height .35s ease, background .35s ease, color .35s ease, box-shadow .35s ease',
+              }}
+            >
+              {p.number}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Hero ─── */
 const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ deck, openWhatsApp }) => {
   const prefersReduced = useReducedMotion();
@@ -686,7 +774,7 @@ const Home: React.FC = () => {
     return (
       <>
         <SEO pageKey="home" />
-        <SlideDeck slides={slides} />
+        <SlideDeck slides={slides} overlay={<JourneyRail />} />
       </>
     );
   }
