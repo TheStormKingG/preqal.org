@@ -19,6 +19,9 @@ const ConditionalNavbar: React.FC = () => {
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
   if (location.pathname.startsWith('/tools/')) return null;
+  // Home renders its own Footer — as the last slide of the desktop slide
+  // deck, or at the end of the scroll flow on smaller screens.
+  if (location.pathname === '/') return null;
   return <Footer />;
 };
 
