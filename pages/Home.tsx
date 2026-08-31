@@ -368,16 +368,21 @@ const WICK_AMPLITUDE = 22; // px either side of the badge's axis — stays in th
 const BURN_IN_MS = 780;    // flame travelling towards a badge
 const BURN_OUT_MS = 900;   // flame leaving Phase 01 towards Phase 02
 
-/** A vertical wavy line between two heights on the badge's axis. */
-const wavy = (x: number, y0: number, y1: number, humps: number) => {
-  const span = y1 - y0;
-  if (span <= 1) return '';
-  const seg = span / humps;
-  let d = `M ${x} ${y0}`;
-  for (let i = 0; i < humps; i++) {
-    const a = i % 2 === 0 ? WICK_AMPLITUDE : -WICK_AMPLITUDE;
-    const ys = y0 + seg * i;
-    d += ` C ${x + a} ${ys + seg * 0.3}, ${x - a} ${ys + seg * 0.7}, ${x} ${ys + seg}`;
+/** A smooth hand-drawn line running through every anchor point. */
+const spline = (pts: [number, number][]) => {
+  if (pts.length < 2) return '';
+  const n = (v: number) => v.toFixed(1);
+  let d = `M ${n(pts[0][0])} ${n(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C ${n(c1x)} ${n(c1y)}, ${n(c2x)} ${n(c2y)}, ${n(p2[0])} ${n(p2[1])}`;
   }
   return d;
 };
@@ -451,8 +456,29 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
   const burst = seq.bursting;
 
   const gradId = `wick-flame-${index}`;
-  const above = geom ? wavy(geom.bx, 0, geom.by, 2) : '';
-  const below = geom ? wavy(geom.bx, geom.by, geom.h, 2) : '';
+  /* The wick runs down the middle of the slide — the gutter between the copy
+     on one side and the image on the other — and bows across to meet that
+     slide's numbered badge on the way past. */
+  let above = '';
+  let below = '';
+  if (geom) {
+    const cx = geom.w / 2;
+    const A = WICK_AMPLITUDE;
+    const lean = geom.bx < cx ? -1 : 1; // which side of the gutter the badge is on
+    above = spline([
+      [cx, 0],
+      [cx + A * lean, geom.by * 0.34],
+      [cx - A * 0.55 * lean, geom.by * 0.68],
+      [geom.bx, geom.by],
+    ]);
+    const drop = geom.h - geom.by;
+    below = spline([
+      [geom.bx, geom.by],
+      [cx - A * 0.55 * lean, geom.by + drop * 0.26],
+      [cx + A * lean, geom.by + drop * 0.62],
+      [cx, geom.h],
+    ]);
+  }
   const unburnt = isOrigin ? below : `${above} ${below}`;
   const burning = isOrigin ? below : above;
 
