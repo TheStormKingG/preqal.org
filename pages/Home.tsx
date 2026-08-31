@@ -199,6 +199,7 @@ const PhaseSection: React.FC<{
             Desktop: both columns hug the centre line (left column right-aligned,
             right column left-aligned). Mobile: everything left-aligned. */}
         <motion.div
+          data-phase-col="copy"
           className={`flex-1 min-w-0 ${flip ? '' : 'lg:text-right'}`}
           style={copyStyle}
           {...(deck
@@ -332,6 +333,7 @@ const PhaseSection: React.FC<{
 
         {/* Image — desaturated until the journey line reaches it */}
         <motion.div
+          data-phase-col="media"
           className="flex-1 min-w-0 w-full lg:max-w-[520px]"
           style={imgStyle}
           {...(deck
@@ -387,7 +389,7 @@ const spline = (pts: [number, number][]) => {
   return d;
 };
 
-interface Geom { w: number; h: number; bx: number; by: number }
+interface Geom { w: number; h: number; gx: number; bx: number; by: number }
 
 const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index }) => {
   const deck = useDeck();
@@ -400,7 +402,11 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
   const isOrigin = index === 0;
   const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
 
-  /* Where the badge actually sits, in slide pixels. */
+  /* Where the badge sits and where the gutter runs, in slide pixels.
+     The gutter is measured from the two columns rather than assumed to be the
+     slide's midpoint: the copy and media columns are different widths, so the
+     gap between them sits off-centre and the wick would otherwise hug the edge
+     of the service card instead of running down the middle of the space. */
   useLayoutEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -409,10 +415,18 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
       if (!b) return;
       const er = el.getBoundingClientRect();
       const br = b.getBoundingClientRect();
-      if (er.height === 0) return;
+      if (er.height === 0 || er.width === 0) return;
+      const cols = Array.from(el.querySelectorAll('[data-phase-col]'))
+        .map((c) => c.getBoundingClientRect())
+        .sort((p, q) => p.left - q.left);
+      const gutter =
+        cols.length === 2 && cols[1].left > cols[0].right
+          ? (cols[0].right + cols[1].left) / 2 - er.left
+          : er.width / 2;
       setGeom({
         w: er.width,
         h: er.height,
+        gx: gutter,
         bx: br.left + br.width / 2 - er.left,
         by: br.top + br.height / 2 - er.top,
       });
@@ -420,10 +434,16 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
+    el.querySelectorAll('[data-phase-col]').forEach((c) => ro.observe(c));
     window.addEventListener('resize', measure);
+    // Web fonts and images land after first paint and move the badge — the
+    // wick has to follow it, so re-measure once things have settled.
+    const late = [window.setTimeout(measure, 200), window.setTimeout(measure, 900)];
+    document.fonts?.ready.then(measure).catch(() => {});
     return () => {
       ro.disconnect();
       window.removeEventListener('resize', measure);
+      late.forEach(clearTimeout);
     };
   }, []);
 
@@ -462,7 +482,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
   let above = '';
   let below = '';
   if (geom) {
-    const cx = geom.w / 2;
+    const cx = geom.gx;
     const A = WICK_AMPLITUDE;
     const lean = geom.bx < cx ? -1 : 1; // which side of the gutter the badge is on
     above = spline([
