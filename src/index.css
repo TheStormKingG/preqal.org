@@ -295,9 +295,12 @@ body {
 
 /* ── Home slide deck — shrink slide content on short viewports so nothing
       is ever cut off (each slide owns exactly one screen) ── */
-@media (max-height: 800px) {
-  .deck-fit { transform: scale(0.9); }
+@media (max-height: 780px) {
+  .deck-fit { transform: scale(0.90); }
 }
 @media (max-height: 700px) {
   .deck-fit { transform: scale(0.78); }
+}
+@media (max-height: 640px) {
+  .deck-fit { transform: scale(0.68); }
 }

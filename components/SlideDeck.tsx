@@ -65,11 +65,21 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const touchYRef = useRef<number | null>(null);
   const count = slides.length;
 
+  /* Track the wrapper's own height, not just window resizes — mobile URL-bar
+     show/hide and browser-chrome changes move 100dvh without a resize event,
+     and a stale slide height would let content spill past a slide edge. */
   useLayoutEffect(() => {
-    const measure = () => setSlideH(wrapRef.current?.clientHeight ?? 0);
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setSlideH(el.clientHeight);
     measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
     window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
   }, []);
 
   const goTo = useCallback(

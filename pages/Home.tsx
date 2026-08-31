@@ -324,7 +324,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
   const startJourney = deck ? (
     <button
       type="button"
-      onClick={() => deckApi?.goTo(2)}
+      onClick={() => deckApi?.goTo(1)}
       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
       style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
     >
@@ -343,14 +343,14 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
   return (
     <section
       ref={heroRef}
-      className={`px-4 sm:px-6 lg:px-8 ${deck ? 'h-full flex items-center' : 'pt-10 pb-14 lg:pt-16 lg:pb-20'}`}
+      className={deck ? '' : 'px-4 sm:px-6 lg:px-8 pt-10 pb-14 lg:pt-16 lg:pb-20'}
     >
-      <div className={`max-w-6xl mx-auto w-full ${deck ? 'deck-fit' : ''}`}>
+      <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
-          <div className="flex-1 lg:max-w-[580px] mb-10 lg:mb-0">
+          <div className={`flex-1 lg:max-w-[580px] lg:mb-0 ${deck ? 'mb-6' : 'mb-10'}`}>
             <motion.div
-              className="inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full mb-8"
+              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'mb-5' : 'mb-8'}`}
               style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
             >
@@ -359,14 +359,14 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.div>
 
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-slate-900 leading-[1.05] mb-3"
+              className={`text-4xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
               Every big brand<br />started small.
             </motion.h1>
             <motion.p
-              className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black leading-[1.05] mb-7"
+              className={`text-4xl sm:text-5xl font-black leading-[1.05] ${deck ? 'lg:text-[3.1rem] mb-5' : 'lg:text-[3.6rem] mb-7'}`}
               style={{ fontStyle: 'italic', color: '#f59e0b' }}
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -375,7 +375,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.p>
 
             <motion.p
-              className="text-base text-slate-600 leading-relaxed mb-9 max-w-[480px]"
+              className={`text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-6' : 'mb-9'}`}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.3 }}
             >
@@ -406,7 +406,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
 
           {/* Hero image — gentle parallax on scroll */}
           <motion.div
-            className="flex-shrink-0 w-full lg:w-[520px]"
+            className={`flex-shrink-0 w-full ${deck ? 'lg:w-[460px]' : 'lg:w-[520px]'}`}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -437,17 +437,19 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
 };
 
 /* ─── "This story is about you" — journey intro ───
-   Scroll mode: compact header above the phases. Deck mode: its own title-card
-   slide between the hero and Phase 01. */
+   Scroll mode: header above the phases. Deck mode: sits at the foot of the
+   hero slide, so the welcome and the promise read as one screen. */
 const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
   const heading = (
     <div className="text-center">
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">One journey · Five phases</p>
-      <h2 className={`font-bold text-slate-900 leading-tight ${deck ? 'text-4xl md:text-5xl' : 'text-3xl md:text-4xl'}`}>
+      <p className={`text-xs font-semibold text-slate-400 uppercase tracking-widest ${deck ? 'mb-2' : 'mb-3'}`}>
+        One journey · Five phases
+      </p>
+      <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
         This story is<br />
         <span className="text-amber-600">about you.</span>
       </h2>
-      <p className="text-base text-slate-500 mt-4 max-w-[520px] mx-auto leading-relaxed">
+      <p className={`text-base text-slate-500 max-w-[520px] mx-auto leading-relaxed ${deck ? 'mt-3' : 'mt-4'}`}>
         You have one good idea. Here is the help that takes it abroad.
       </p>
     </div>
@@ -462,35 +464,25 @@ const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
   }
 
   return (
-    <div className="h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <motion.div
-        className="deck-fit"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {heading}
-        <div className="flex justify-center gap-3 mt-10">
-          {PHASES.map((p) => (
-            <span
-              key={p.number}
-              className="h-9 w-9 rounded-xl flex items-center justify-center text-[11px] font-extrabold text-amber-700"
-              style={{ background: '#e0e5ec', boxShadow: '3px 3px 7px #a3b1c6, -3px -3px 7px #ffffff' }}
-            >
-              {p.number}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-    </div>
+    <motion.div
+      className="mt-8 lg:mt-10"
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {heading}
+    </motion.div>
   );
 };
 
 /* ─── Proof band ─── */
 const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
   <div
-    className={`relative overflow-hidden ${deck ? 'h-full flex items-center' : 'py-16 sm:py-20'}`}
+    /* Deck: the band claims a fixed share of the slide and centres its copy,
+       so the band + CTA always add up to exactly one screen. (A transform
+       scale can't do this — it shrinks the paint, not the reserved height.) */
+    className={`relative overflow-hidden ${deck ? 'h-[40%] flex-shrink-0 flex items-center' : 'py-16 sm:py-20'}`}
     style={{ background: '#0f172a' }}
   >
     <div className="absolute inset-0 pointer-events-none" style={{
@@ -531,7 +523,7 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
 
 /* ─── Final CTA ─── */
 const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ deck, openWhatsApp }) => (
-  <section className={`px-4 sm:px-6 lg:px-8 ${deck ? 'h-full flex flex-col items-center justify-center' : 'py-16 pb-24'}`}>
+  <section className={`px-4 sm:px-6 lg:px-8 ${deck ? 'flex-1 min-h-0 flex flex-col justify-center py-[clamp(0.5rem,2vh,1.5rem)]' : 'py-16 pb-24'}`}>
     <div className={`max-w-4xl mx-auto w-full ${deck ? 'deck-fit' : ''}`}>
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
@@ -544,7 +536,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
           boxShadow: '10px 10px 28px rgba(180,83,9,0.3), -6px -6px 20px rgba(255,200,80,0.18)',
         }}
       >
-        <div className="p-8 md:p-14 text-center">
+        <div className={`text-center ${deck ? 'p-8 md:p-10' : 'p-8 md:p-14'}`}>
           <motion.p
             className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-4"
             initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -560,7 +552,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             One message starts everything.
           </motion.h2>
           <motion.p
-            className="text-amber-100 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
+            className={`text-amber-100 text-lg max-w-xl mx-auto leading-relaxed ${deck ? 'mb-8' : 'mb-10'}`}
             initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.35 }}
           >
@@ -597,7 +589,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
       </motion.div>
 
       {/* Disambiguation */}
-      <p className={`text-xs text-slate-400 text-center ${deck ? 'mt-8' : 'mt-10'}`}>
+      <p className={`text-xs text-slate-400 text-center ${deck ? 'mt-6' : 'mt-10'}`}>
         Preqal is a brand name and not the word "prequel".
       </p>
     </div>
@@ -649,8 +641,17 @@ const Home: React.FC = () => {
 
   if (deck) {
     const slides: DeckSlide[] = [
-      { label: 'Welcome', node: <HeroSection deck openWhatsApp={openWhatsApp} /> },
-      { label: 'The story', node: <StoryIntro deck /> },
+      {
+        label: 'Welcome',
+        node: (
+          <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto w-full deck-fit">
+              <HeroSection deck openWhatsApp={openWhatsApp} />
+              <StoryIntro deck />
+            </div>
+          </div>
+        ),
+      },
       ...PHASES.map((phase, i) => ({
         label: `Phase ${phase.number} · ${phase.chapter}`,
         node: (
@@ -661,8 +662,15 @@ const Home: React.FC = () => {
           </div>
         ),
       })),
-      { label: 'The proof', node: <ProofSection deck /> },
-      { label: 'Start today', node: <CTASection deck openWhatsApp={openWhatsApp} /> },
+      {
+        label: 'Proof & next step',
+        node: (
+          <div className="h-full flex flex-col">
+            <ProofSection deck />
+            <CTASection deck openWhatsApp={openWhatsApp} />
+          </div>
+        ),
+      },
       {
         label: 'Contact & info',
         node: (
