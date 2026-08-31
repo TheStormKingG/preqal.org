@@ -313,12 +313,74 @@ const PhaseSection: React.FC<{ phase: Phase; index: number; deck?: boolean }> = 
   );
 };
 
-/* ─── Journey wick (deck mode) ───
-   The scroll version draws an amber line down the page as you travel through
-   the phases. A deck has no scroll to scrub, so the line lives as a fixed rail
-   beside the slides: the wick burns from one numbered phase node to the next
-   each time the slide changes, and the nodes it has passed stay lit. */
 const PHASE_SLIDE_OFFSET = 1; // slide 0 is the hero; Phase 01 is slide 1
+
+/* ─── The wick ───
+   A hand-drawn amber thread that runs down the gutter between the two columns,
+   passing the phase's numbered badge. It draws itself top-to-bottom each time
+   its slide arrives, so the line reads as one continuous wick burning from one
+   numbered phase into the next. Mirrored on flipped slides so the curve always
+   leans towards that slide's badge.
+
+   The viewBox is 120 units wide and the element is 120px wide, so path units
+   are pixels horizontally: the curve stays within ±22px of centre, inside the
+   64px column gutter, and never runs under a card. */
+const WICK_PATH =
+  'M60 0 C 38 130, 82 250, 60 370 C 38 490, 82 610, 60 730 C 38 850, 82 950, 60 1000';
+
+const PhaseWick: React.FC<{ id: string; active: boolean; flip: boolean }> = ({ id, active, flip }) => {
+  const prefersReduced = useReducedMotion();
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-y-0 left-1/2 z-0 hidden lg:block"
+      width={120}
+      height="100%"
+      viewBox="0 0 120 1000"
+      preserveAspectRatio="none"
+      style={{ transform: `translateX(-50%)${flip ? ' scaleX(-1)' : ''}` }}
+    >
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f59e0b" />
+          <stop offset="100%" stopColor="#d97706" />
+        </linearGradient>
+      </defs>
+      <path
+        d={WICK_PATH}
+        fill="none"
+        stroke={`url(#${id})`}
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+        pathLength={1}
+        style={{
+          strokeDasharray: 1,
+          strokeDashoffset: active ? 0 : 1,
+          transition: prefersReduced ? 'none' : 'stroke-dashoffset .95s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+      />
+    </svg>
+  );
+};
+
+/* One phase slide: the wick in the gutter, the phase content above it. */
+const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index }) => {
+  const deck = useDeck();
+  const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
+  return (
+    <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-8">
+      <PhaseWick id={`wick-${index}`} active={active} flip={index % 2 === 1} />
+      <div className="relative z-10 max-w-6xl mx-auto w-full deck-fit">
+        <PhaseSection phase={phase} index={index} deck />
+      </div>
+    </div>
+  );
+};
+
+/* ─── Journey rail (deck mode) ───
+   The phase index alongside the slides: the amber line advances from one
+   numbered node to the next as the deck moves, and passed nodes stay lit. */
 
 const JourneyRail: React.FC = () => {
   const deck = useDeck();
@@ -742,13 +804,7 @@ const Home: React.FC = () => {
       },
       ...PHASES.map((phase, i) => ({
         label: `Phase ${phase.number} · ${phase.chapter}`,
-        node: (
-          <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto w-full deck-fit">
-              <PhaseSection phase={phase} index={i} deck />
-            </div>
-          </div>
-        ),
+        node: <PhaseSlide phase={phase} index={i} />,
       })),
       {
         label: 'Proof & next step',
