@@ -307,10 +307,19 @@ Every POL and PRO document published to `public/ims/` follows the same branded c
 ### Logo assets
 | Asset | File | Used for |
 |---|---|---|
-| Favicon (white Q speech-bubble mark, red star) | `public/favicon.png` (512×512 px) | Cover page large mark + small mark in page header |
+| Favicon (orange Q-star roundel with underlines) | `public/favicon.png` (512×512 px) | Cover page large mark + small mark in page header |
 | Wordmark (`PREQAL` text, star in the Q) | `public/ims/assets/preqal-wordmark.png` (240×42 px) | Below the favicon on the cover page |
 
-The wordmark is a downscale of `public/Preqal Logo Sep25-9.png` (954×166 px master; same art also serves the site navbar/footer via the `-200`/`-400` webp/avif variants). **Never** stretch — `noChangeAspect="1"` is set on every inline drawing. Logos refreshed 2026-07-20 (rebrand: orange Q-star mark + horizontal wordmark, replacing the hexagon mark and square 500×500 canvases). Wordmark refreshed again 2026-07-27: letter corners softened (rounded) and the Q recolored red `#DD1D21`; all Sep25-9 raster variants + `ims/assets/preqal-wordmark.png` were regenerated from the new vector master `public/preqal-logo.svg` (a 4800px raster of the same art lives at `public/preqal-logo-hd.png`). Favicon refreshed 2026-07-27: Q-star mark recolored red `#DD1D21` to match the wordmark Q (same 512×512 canvas, composition unchanged). Gold/yellow star variants were trialled and reverted on 2026-08-05. **Inverted on 2026-09-01 and current:** in both marks the Q is **white with a black outline** and the star is **red `#DD1D21`** (previously a red Q with a white star). The other wordmark letters stay orange `#F67700`. The swap was applied to every raster (favicon, all Sep25-9 variants, `ims/assets/preqal-wordmark.png`, both `-hd` masters) and mirrored in the vector masters `public/preqal-logo.svg` and `public/preqal-logo-bigq.svg`.
+The wordmark is a downscale of `public/Preqal Logo Sep25-9.png` (936×227 px master, aspect 4.12; same art serves the site navbar/footer via the `-200`/`-400` webp/avif variants). **Never** stretch — `noChangeAspect="1"` is set on every inline drawing.
+
+**Current marks (2026-09-01) — supersede every earlier variant.** The brand is now:
+- **Wordmark:** `PREQAL` in amber `#FFB700` with a black outline; the Q is an orange `#F67702` roundel holding a **white** star, with two short rules beneath it.
+- **Q-mark / favicon:** the same orange roundel + white star + underlines, standalone.
+- **Stacked lockup:** `public/preqal-logo-stacked.png` (mark above a small wordmark) — supplied by the brand owner and available, not yet used anywhere.
+
+Earlier states (for history only, all replaced): orange Q + white star (2026-07-20), red `#DD1D21` Q + white star (2026-07-27), white Q + red star (2026-09-01, inverted then superseded same day).
+
+⚠️ The vector masters `public/preqal-logo.svg`, `public/preqal-logo-bigq.svg` and their `-hd` rasters still hold the **pre-2026-09-01** art and no longer match the live marks. The PNGs above are the source of truth until new vectors are supplied.
 
 ### Page header (recurring on every page)
 Single paragraph, bottom-border `#E2E8F0`:

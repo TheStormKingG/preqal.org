@@ -61,7 +61,7 @@ function escXml(s) {
 // "PREQAL" text header). Vector master: public/preqal-logo-bigq.svg.
 const LOCKUP_PATH = path.resolve(__dirname, '../public/ims/assets/preqal-lockup.png');
 const LOCKUP_BUF  = fs.existsSync(LOCKUP_PATH) ? fs.readFileSync(LOCKUP_PATH) : null;
-const LOCKUP_PX   = { w: 1600, h: 372 };  // preqal-lockup.png intrinsic size
+const LOCKUP_PX   = { w: 1600, h: 388 };  // preqal-lockup.png intrinsic size
 const COVER_LOCKUP_W  = 420;  // pixel width of lockup on cover page
 const HEADER_LOCKUP_H = 30;   // pixel height of lockup in page header
 
