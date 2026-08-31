@@ -304,3 +304,17 @@ body {
 @media (max-height: 640px) {
   .deck-fit { transform: scale(0.68); }
 }
+
+/* ── Home slide deck — the wick's balloon-pop burst behind a phase badge ── */
+@keyframes wickBurst {
+  0%   { transform: scale(0.4); opacity: 0.9; }
+  60%  { opacity: 0.35; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.wick-burst {
+  opacity: 0;
+  animation: wickBurst 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .wick-burst { animation: none; }
+}

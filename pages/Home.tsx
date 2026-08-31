@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, CheckSquare } from 'lucide-react';
 import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
@@ -141,7 +141,15 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
    scrubbed to scroll position.
    Deck mode (desktop slides): there is no page scroll to scrub, so the phase
    renders lit and plays a simple entrance when its slide arrives. */
-const PhaseSection: React.FC<{ phase: Phase; index: number; deck?: boolean }> = ({ phase, index, deck }) => {
+const PhaseSection: React.FC<{
+  phase: Phase;
+  index: number;
+  deck?: boolean;
+  /* Deck only — the wick measures the badge and pops it on arrival. */
+  badgeRef?: React.Ref<HTMLDivElement>;
+  pop?: 'hidden' | 'shown';
+  burst?: boolean;
+}> = ({ phase, index, deck, badgeRef, pop = 'shown', burst }) => {
   const flip = index % 2 === 1;
   const ref = useRef<HTMLElement>(null);
   const prefersReduced = useReducedMotion();
@@ -204,31 +212,60 @@ const PhaseSection: React.FC<{ phase: Phase; index: number; deck?: boolean }> = 
         >
           <div>
             <div className={`flex items-center gap-4 mb-5 ${flip ? '' : 'lg:flex-row-reverse'}`}>
-              <motion.div
-                animate={isLit ? { scale: [1, 1.14, 1] } : { scale: 1 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
-                className="h-14 w-14 rounded-2xl flex flex-col items-center justify-center flex-shrink-0"
-                style={
-                  isLit
-                    ? {
-                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                        boxShadow: '4px 4px 14px rgba(217,119,6,0.45), -3px -3px 10px rgba(255,255,255,0.7), 0 0 24px rgba(245,158,11,0.35)',
-                        transition: 'background 0.4s ease, box-shadow 0.4s ease',
-                      }
-                    : {
-                        background: '#e0e5ec',
-                        boxShadow: 'inset 3px 3px 8px rgba(163,177,198,0.55), inset -3px -3px 8px rgba(255,255,255,0.85)',
-                        transition: 'background 0.4s ease, box-shadow 0.4s ease',
-                      }
-                }
-              >
-                <span
-                  className="text-base font-extrabold leading-none"
-                  style={{ color: isLit ? '#ffffff' : '#94a3b8', transition: 'color 0.4s ease' }}
+              {deck ? (
+                /* Deck: the badge is popped into place by the wick when the
+                   burn reaches it (see PhaseSlide). Its resting style is the
+                   visible one, so it still shows if the pop never plays. */
+                <div ref={badgeRef} className="relative h-14 w-14 flex-shrink-0">
+                  {burst && (
+                    <span
+                      aria-hidden="true"
+                      className="wick-burst absolute rounded-2xl"
+                      style={{ inset: -4, border: '2px solid rgba(245,158,11,0.8)' }}
+                    />
+                  )}
+                  <div
+                    className="h-14 w-14 rounded-2xl flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                      boxShadow: '4px 4px 14px rgba(217,119,6,0.45), -3px -3px 10px rgba(255,255,255,0.7), 0 0 24px rgba(245,158,11,0.35)',
+                      transform: pop === 'hidden' ? 'scale(0.18)' : 'scale(1)',
+                      opacity: pop === 'hidden' ? 0 : 1,
+                      transition: prefersReduced
+                        ? 'none'
+                        : 'transform .5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity .22s ease-out',
+                    }}
+                  >
+                    <span className="text-base font-extrabold leading-none text-white">{phase.number}</span>
+                  </div>
+                </div>
+              ) : (
+                <motion.div
+                  animate={isLit ? { scale: [1, 1.14, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.45, ease: 'easeOut' }}
+                  className="h-14 w-14 rounded-2xl flex flex-col items-center justify-center flex-shrink-0"
+                  style={
+                    isLit
+                      ? {
+                          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                          boxShadow: '4px 4px 14px rgba(217,119,6,0.45), -3px -3px 10px rgba(255,255,255,0.7), 0 0 24px rgba(245,158,11,0.35)',
+                          transition: 'background 0.4s ease, box-shadow 0.4s ease',
+                        }
+                      : {
+                          background: '#e0e5ec',
+                          boxShadow: 'inset 3px 3px 8px rgba(163,177,198,0.55), inset -3px -3px 8px rgba(255,255,255,0.85)',
+                          transition: 'background 0.4s ease, box-shadow 0.4s ease',
+                        }
+                  }
                 >
-                  {phase.number}
-                </span>
-              </motion.div>
+                  <span
+                    className="text-base font-extrabold leading-none"
+                    style={{ color: isLit ? '#ffffff' : '#94a3b8', transition: 'color 0.4s ease' }}
+                  >
+                    {phase.number}
+                  </span>
+                </motion.div>
+              )}
               <p
                 className="text-[11px] font-bold uppercase tracking-widest"
                 style={{ color: isLit ? '#d97706' : '#94a3b8', transition: 'color 0.4s ease' }}
@@ -316,63 +353,153 @@ const PhaseSection: React.FC<{ phase: Phase; index: number; deck?: boolean }> = 
 const PHASE_SLIDE_OFFSET = 1; // slide 0 is the hero; Phase 01 is slide 1
 
 /* ─── The wick ───
-   A hand-drawn amber thread that runs down the gutter between the two columns,
-   passing the phase's numbered badge. It draws itself top-to-bottom each time
-   its slide arrives, so the line reads as one continuous wick burning from one
-   numbered phase into the next. Mirrored on flipped slides so the curve always
-   leans towards that slide's badge.
+   One continuous fuse threaded through the numbered badges. On every phase
+   slide the whole line is laid down in grey — the unburnt wick — and when the
+   slide arrives a lit length runs along it, turning it amber, until it reaches
+   the number block, which pops into place as the flame hits it.
 
-   The viewBox is 120 units wide and the element is 120px wide, so path units
-   are pixels horizontally: the curve stays within ±22px of centre, inside the
-   64px column gutter, and never runs under a card. */
-const WICK_PATH =
-  'M60 0 C 38 130, 82 250, 60 370 C 38 490, 82 610, 60 730 C 38 850, 82 950, 60 1000';
+   Phase 01 is where the wick originates, so its badge lights first and the
+   burn then runs downward out of it, towards 02. Every later phase is the
+   other half of that move: the burn arrives from above and sets off the badge.
 
-const PhaseWick: React.FC<{ id: string; active: boolean; flip: boolean }> = ({ id, active, flip }) => {
-  const prefersReduced = useReducedMotion();
-  return (
-    <svg
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-1/2 z-0 hidden lg:block"
-      width={120}
-      height="100%"
-      viewBox="0 0 120 1000"
-      preserveAspectRatio="none"
-      style={{ transform: `translateX(-50%)${flip ? ' scaleX(-1)' : ''}` }}
-    >
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f59e0b" />
-          <stop offset="100%" stopColor="#d97706" />
-        </linearGradient>
-      </defs>
-      <path
-        d={WICK_PATH}
-        fill="none"
-        stroke={`url(#${id})`}
-        strokeWidth={2.5}
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-        pathLength={1}
-        style={{
-          strokeDasharray: 1,
-          strokeDashoffset: active ? 0 : 1,
-          transition: prefersReduced ? 'none' : 'stroke-dashoffset .95s cubic-bezier(0.22, 1, 0.36, 1)',
-        }}
-      />
-    </svg>
-  );
+   The path is built in device pixels from the badge's measured position, so
+   the line genuinely passes through the number rather than near it. */
+const WICK_AMPLITUDE = 22; // px either side of the badge's axis — stays in the column gutter
+const BURN_IN_MS = 780;    // flame travelling towards a badge
+const BURN_OUT_MS = 900;   // flame leaving Phase 01 towards Phase 02
+
+/** A vertical wavy line between two heights on the badge's axis. */
+const wavy = (x: number, y0: number, y1: number, humps: number) => {
+  const span = y1 - y0;
+  if (span <= 1) return '';
+  const seg = span / humps;
+  let d = `M ${x} ${y0}`;
+  for (let i = 0; i < humps; i++) {
+    const a = i % 2 === 0 ? WICK_AMPLITUDE : -WICK_AMPLITUDE;
+    const ys = y0 + seg * i;
+    d += ` C ${x + a} ${ys + seg * 0.3}, ${x - a} ${ys + seg * 0.7}, ${x} ${ys + seg}`;
+  }
+  return d;
 };
 
-/* One phase slide: the wick in the gutter, the phase content above it. */
+interface Geom { w: number; h: number; bx: number; by: number }
+
 const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index }) => {
   const deck = useDeck();
+  const prefersReduced = useReducedMotion();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const [geom, setGeom] = useState<Geom | null>(null);
+  const [seq, setSeq] = useState({ burning: false, popped: false, bursting: false });
+
+  const isOrigin = index === 0;
   const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
+
+  /* Where the badge actually sits, in slide pixels. */
+  useLayoutEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => {
+      const b = badgeRef.current;
+      if (!b) return;
+      const er = el.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      if (er.height === 0) return;
+      setGeom({
+        w: er.width,
+        h: er.height,
+        bx: br.left + br.width / 2 - er.left,
+        by: br.top + br.height / 2 - er.top,
+      });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  /* Run the fuse whenever this slide becomes the current one. Timers rather
+     than animation callbacks, so the sequence still completes if the browser
+     throttles animations mid-transition. */
+  useEffect(() => {
+    if (!active || prefersReduced) return;
+    const t: number[] = [];
+    if (isOrigin) {
+      // 01 lights first, then the wick runs out of it towards 02.
+      t.push(window.setTimeout(() => setSeq({ burning: false, popped: true, bursting: true }), 160));
+      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 460));
+      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 900));
+    } else {
+      // The flame arrives from above and sets the number block off.
+      t.push(window.setTimeout(() => setSeq({ burning: true, popped: false, bursting: false }), 150));
+      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 150 + BURN_IN_MS));
+      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 150 + BURN_IN_MS + 700));
+    }
+    // Rewind when the slide is left, so the fuse runs again on the way back.
+    return () => {
+      t.forEach(clearTimeout);
+      setSeq({ burning: false, popped: false, bursting: false });
+    };
+  }, [active, isOrigin, prefersReduced]);
+
+  const burnt = prefersReduced || seq.burning;
+  const pop: 'hidden' | 'shown' = prefersReduced || seq.popped ? 'shown' : 'hidden';
+  const burst = seq.bursting;
+
+  const gradId = `wick-flame-${index}`;
+  const above = geom ? wavy(geom.bx, 0, geom.by, 2) : '';
+  const below = geom ? wavy(geom.bx, geom.by, geom.h, 2) : '';
+  const unburnt = isOrigin ? below : `${above} ${below}`;
+  const burning = isOrigin ? below : above;
+
   return (
-    <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-8">
-      <PhaseWick id={`wick-${index}`} active={active} flip={index % 2 === 1} />
+    <div ref={wrapRef} className="relative h-full flex items-center px-4 sm:px-6 lg:px-8">
+      {geom && (
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 hidden lg:block"
+          width={geom.w}
+          height={geom.h}
+        >
+          <defs>
+            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#d97706" />
+            </linearGradient>
+          </defs>
+          {/* the unburnt wick */}
+          <path
+            d={unburnt}
+            fill="none"
+            stroke="rgba(148,163,184,0.5)"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+          />
+          {/* the lit length running along it */}
+          <path
+            d={burning}
+            fill="none"
+            stroke={`url(#${gradId})`}
+            strokeWidth={3}
+            strokeLinecap="round"
+            pathLength={1}
+            style={{
+              strokeDasharray: 1,
+              strokeDashoffset: burnt ? 0 : 1,
+              filter: 'drop-shadow(0 0 5px rgba(245,158,11,0.65))',
+              transition: prefersReduced
+                ? 'none'
+                : `stroke-dashoffset ${isOrigin ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+            }}
+          />
+        </svg>
+      )}
       <div className="relative z-10 max-w-6xl mx-auto w-full deck-fit">
-        <PhaseSection phase={phase} index={index} deck />
+        <PhaseSection phase={phase} index={index} deck badgeRef={badgeRef} pop={pop} burst={burst} />
       </div>
     </div>
   );
