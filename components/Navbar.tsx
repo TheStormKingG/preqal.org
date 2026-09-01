@@ -54,19 +54,19 @@ const Navbar: React.FC = () => {
                 <source
                   type="image/avif"
                   srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w`}
-                  sizes="124px"
+                  sizes="165px"
                 />
                 <source
                   type="image/webp"
                   srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w`}
-                  sizes="124px"
+                  sizes="165px"
                 />
                 <img
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
-                  width="124"
-                  height="30"
-                  className="h-[30px] w-auto transition-transform duration-300 hover:scale-105"
+                  width="165"
+                  height="40"
+                  className="h-10 w-auto transition-transform duration-300 hover:scale-105"
                   loading="eager"
                   decoding="async"
                 />

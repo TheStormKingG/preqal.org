@@ -102,20 +102,20 @@ const Footer: React.FC = () => {
                 <source
                   type="image/avif"
                   srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.avif 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.avif 400w`}
-                  sizes="124px"
+                  sizes="165px"
                 />
                 <source
                   type="image/webp"
                   srcSet={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-200.webp 200w, ${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp 400w`}
-                  sizes="124px"
+                  sizes="165px"
                 />
                 <img
                   src={`${import.meta.env.BASE_URL}Preqal%20Logo%20Sep25-9-400.webp`}
                   alt="Preqal logo"
                   className="w-auto object-contain"
-                  style={{ height: '1.875rem' }}
-                  width="124"
-                  height="30"
+                  style={{ height: '2.5rem' }}
+                  width="165"
+                  height="40"
                   loading="lazy"
                   decoding="async"
                 />
