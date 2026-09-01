@@ -639,9 +639,9 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
-          <div className={`flex-1 lg:max-w-[580px] lg:mb-0 ${deck ? 'mb-6' : 'mb-10'}`}>
+          <div className={`flex-1 lg:max-w-[580px] lg:mb-0 ${deck ? 'mb-4' : 'mb-10'}`}>
             <motion.div
-              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'mb-3 lg:mb-5' : 'mb-8'}`}
+              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'py-1.5 mb-2 lg:mb-5' : 'mb-8'}`}
               style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
             >
@@ -650,14 +650,14 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.div>
 
             <motion.h1
-              className={`text-3xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-2 lg:mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
+              className={`text-3xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-1 lg:mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
               Every big brand<br />started small.
             </motion.h1>
             <motion.p
-              className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-4 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
+              className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-2.5 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
               style={{ fontStyle: 'italic', color: '#f59e0b' }}
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -666,7 +666,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.p>
 
             <motion.p
-              className={`text-sm lg:text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-4 lg:mb-6' : 'mb-9'}`}
+              className={`text-sm lg:text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-3 lg:mb-6' : 'mb-9'}`}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.3 }}
             >
@@ -735,14 +735,14 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
 const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
   const heading = (
     <div className="text-center">
-      <p className={`text-xs font-semibold text-slate-400 uppercase tracking-widest ${deck ? 'mb-2' : 'mb-3'}`}>
+      <p className={`text-xs font-semibold text-slate-400 uppercase tracking-widest ${deck ? 'mb-1' : 'mb-3'}`}>
         One journey · Five phases
       </p>
       <h2 className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
         This story is<br />
         <span className="text-amber-600">about you.</span>
       </h2>
-      <p className={`text-base text-slate-500 max-w-[520px] mx-auto leading-relaxed ${deck ? 'mt-3' : 'mt-4'}`}>
+      <p className={`text-base text-slate-500 max-w-[520px] mx-auto leading-relaxed ${deck ? 'mt-2' : 'mt-4'}`}>
         You have one good idea. Here is the help that takes it abroad.
       </p>
     </div>
@@ -758,7 +758,7 @@ const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
 
   return (
     <motion.div
-      className="mt-5 lg:mt-10"
+      className="mt-2 lg:mt-10"
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}

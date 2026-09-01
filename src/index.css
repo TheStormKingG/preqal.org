@@ -305,32 +305,20 @@ body {
 @media (min-width: 1024px) and (max-height: 700px) {
   .deck-fit { transform: scale(0.74); }
 }
+/* One ladder for every deck page, so text reads at the same size site-wide.
+   Each step is the largest scale the densest slide on any page can carry at
+   that height — measured, not guessed. Raising a step spills a slide. */
 @media (max-width: 1023px) {
-  .deck-fit { transform: scale(0.92); }
+  .deck-fit { transform: scale(0.96); }
 }
 @media (max-width: 1023px) and (max-height: 780px) {
-  .deck-fit { transform: scale(0.84); }
+  .deck-fit { transform: scale(0.89); }
 }
 @media (max-width: 1023px) and (max-height: 700px) {
   .deck-fit { transform: scale(0.74); }
 }
 @media (max-height: 640px) {
-  .deck-fit { transform: scale(0.68); }
-}
-
-/* Contact carries less per slide than the home journey does, so it can afford
-   to read a step larger on a phone without any slide spilling. */
-@media (max-width: 1023px) {
-  .deck-fit-roomy { transform: scale(1); }
-}
-@media (max-width: 1023px) and (max-height: 780px) {
-  .deck-fit-roomy { transform: scale(0.95); }
-}
-@media (max-width: 1023px) and (max-height: 700px) {
-  .deck-fit-roomy { transform: scale(0.78); }
-}
-@media (max-height: 640px) {
-  .deck-fit-roomy { transform: scale(0.80); }
+  .deck-fit { transform: scale(0.63); }
 }
 
 
@@ -340,7 +328,7 @@ body {
 @media (min-width: 1024px) { .phase-media { aspect-ratio: 4 / 3; } }
 
 /* ── Hero media — shallow banner on phones, tall editorial frame from lg up ── */
-.hero-media { aspect-ratio: 16 / 9; max-height: 220px; }
+.hero-media { aspect-ratio: 16 / 9; max-height: 196px; }
 .hero-media img { object-position: center 32%; }
 @media (min-width: 1024px) {
   .hero-media { aspect-ratio: 4 / 3.2; max-height: none; }

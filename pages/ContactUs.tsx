@@ -225,7 +225,7 @@ const FormHalf: React.FC<{ halved: boolean; last?: boolean; children: React.Reac
       style={{ height: 'var(--deck-slide)' }}
       data-deck-break={last ? '' : undefined}
     >
-      <div className="w-full max-w-5xl mx-auto deck-fit deck-fit-roomy">
+      <div className="w-full max-w-5xl mx-auto deck-fit">
         <MainPanel>
           <div className="p-6 sm:p-8 space-y-4">{children}</div>
         </MainPanel>
@@ -528,7 +528,7 @@ const ContactUs: React.FC = () => {
         label: 'Get in touch',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit deck-fit-roomy"><Hero /></div>
+            <div className="w-full deck-fit"><Hero /></div>
           </div>
         ),
       },
@@ -536,7 +536,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact details',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full max-w-5xl mx-auto deck-fit deck-fit-roomy">
+            <div className="w-full max-w-5xl mx-auto deck-fit">
               <MainPanel><InfoPanel openWhatsApp={openWhatsApp} /></MainPanel>
             </div>
           </div>
@@ -555,7 +555,7 @@ const ContactUs: React.FC = () => {
         label: "Who you'll be talking to",
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit deck-fit-roomy"><AboutFounder compact /></div>
+            <div className="w-full deck-fit"><AboutFounder compact /></div>
           </div>
         ),
       },
@@ -563,7 +563,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <div className="w-full deck-fit deck-fit-roomy"><Footer compact /></div>
+            <div className="w-full deck-fit"><Footer compact /></div>
           </div>
         ),
       },

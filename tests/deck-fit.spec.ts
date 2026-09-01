@@ -7,6 +7,9 @@ const SIZES = [
   { name: 'phone 375x667', w: 375, h: 667 },
   { name: 'phone 390x844', w: 390, h: 844 },
   { name: 'phone 375x812', w: 375, h: 812 },
+  /* The short bands the scale ladder steps down for — untested, they drifted. */
+  { name: 'short phone 390x760', w: 390, h: 760 },
+  { name: 'small phone 375x620', w: 375, h: 620 },
   { name: 'tablet 768x1024', w: 768, h: 1024 },
   { name: 'laptop 1280x800', w: 1280, h: 800 },
   { name: 'desktop 1440x900', w: 1440, h: 900 },
@@ -26,6 +29,10 @@ const overflows = (page: Page) =>
       sec.querySelectorAll('*').forEach((el) => {
         const b = el.getBoundingClientRect();
         if (b.height === 0 && b.width === 0) return;
+        /* Decorative washes (radial glows, texture overlays) are pointer-events-none
+           and clipped by their section's overflow-hidden, so running past the slide
+           edge is by design — only content the reader must see counts here. */
+        if (getComputedStyle(el).pointerEvents === 'none') return;
         min = Math.min(min, b.top - sr.top);
         max = Math.max(max, b.bottom - sr.top);
       });
