@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AnimatedRoutes from './components/AnimatedRoutes';
+import { useBelowWidth } from './components/SlideDeck';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
 import { initGA } from './src/analytics/ga';
@@ -14,12 +15,18 @@ const ConditionalNavbar: React.FC = () => {
   return <Navbar />;
 };
 
+/* Pages that run as a slide deck carry the footer as their last slide, so the
+   global one would be a second copy below the deck — and would make the page
+   itself scroll, which is exactly what a deck replaces. Home is a deck at every
+   width; Templates and Contact only below lg. */
+const DECK_ON_PHONES = ['/resources', '/contact'];
+
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
+  const phone = useBelowWidth();
   if (location.pathname.startsWith('/tools/')) return null;
-  // Home renders its own Footer — as the last slide of the desktop slide
-  // deck, or at the end of the scroll flow on smaller screens.
   if (location.pathname === '/') return null;
+  if (phone && DECK_ON_PHONES.includes(location.pathname)) return null;
   return <Footer />;
 };
 

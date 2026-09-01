@@ -12,8 +12,8 @@ const activeSlide = (page: Page) =>
 
 const settle = (page: Page) => page.waitForTimeout(1500);
 
-async function openDeck(page: Page) {
-  await page.goto(URL, { waitUntil: 'networkidle' });
+async function openDeck(page: Page, path = URL) {
+  await page.goto(path, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1200);
   const decline = page.getByRole('button', { name: /Decline/i });
   await decline.click({ timeout: 3000 }).catch(() => {});
@@ -109,3 +109,44 @@ test('Apple (WebKit engine) swipes the deck slide by slide', async () => {
     await browser.close();
   }
 });
+
+/* The same gesture handling has to work on the pages that are decks only on
+   phones, including the one with a slide that scrolls inside itself. */
+for (const path of ['/resources', '/contact']) {
+  test(`Android touch drives the ${path} deck`, async () => {
+    test.setTimeout(90_000);
+    const browser = await chromium.launch();
+    try {
+      const ctx = await browser.newContext({ ...devices['Galaxy S9+'] });
+      const page = await ctx.newPage();
+      const cdp: CDPSession = await ctx.newCDPSession(page);
+      const { width, height } = devices['Galaxy S9+'].viewport;
+      const swipe = async (fromFrac: number, toFrac: number) => {
+        const x = width / 2;
+        const from = height * fromFrac;
+        const to = height * toFrac;
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: from, id: 1 }] });
+        for (let i = 1; i <= 8; i++) {
+          await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: from + ((to - from) * i) / 8, id: 1 }] });
+          await page.waitForTimeout(16);
+        }
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      };
+
+      await openDeck(page, 'http://localhost:3000' + path);
+      const first = await activeSlide(page);
+      await swipe(0.7, 0.3);
+      await settle(page);
+      const second = await activeSlide(page);
+      expect(second, `${path} should advance on swipe`).not.toBe(first);
+
+      await swipe(0.3, 0.7);
+      await settle(page);
+      expect(await activeSlide(page), `${path} should go back`).toBe(first);
+
+      expect(await page.evaluate(() => document.documentElement.scrollHeight > innerHeight + 1)).toBe(false);
+    } finally {
+      await browser.close();
+    }
+  });
+}

@@ -329,3 +329,7 @@ body {
   .hero-media { aspect-ratio: 4 / 3.2; max-height: none; }
   .hero-media img { object-position: center top; }
 }
+
+/* ── Contact founder portrait — a banner on phones, 4:5 from md up ── */
+.founder-portrait { aspect-ratio: 16 / 9; }
+@media (min-width: 768px) { .founder-portrait { aspect-ratio: 4 / 5; } }

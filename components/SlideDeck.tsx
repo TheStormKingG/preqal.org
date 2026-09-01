@@ -18,6 +18,10 @@ import { motion, useReducedMotion } from 'framer-motion';
 export interface DeckSlide {
   label: string;
   node: React.ReactNode;
+  /* A slide whose content genuinely cannot fit one screen — a long form, say.
+     It scrolls inside itself, and the deck only takes over once that inner
+     scroll has run out in the direction of travel. */
+  scrollable?: boolean;
 }
 
 interface DeckApi {
@@ -32,6 +36,21 @@ const DeckContext = createContext<DeckApi | null>(null);
 
 /** Slide components can call this to jump the deck (null outside a deck). */
 export const useDeck = () => useContext(DeckContext);
+
+/** True below `maxWidth` — for pages that only run as a deck on phones. */
+export const useBelowWidth = (maxWidth = 1024): boolean => {
+  const query = `(max-width: ${maxWidth - 1}px)`;
+  const [below, setBelow] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = (e: MediaQueryListEvent) => setBelow(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [query]);
+  return below;
+};
 
 const WHEEL_THRESHOLD = 48; // accumulated deltaY that counts as a gesture
 const WHEEL_GESTURE_GAP = 120; // ms between events that still belong to one gesture
@@ -51,8 +70,25 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const lastWheelRef = useRef(0);
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const scrollerRef = useRef<HTMLElement | null>(null);
   const unlockTimerRef = useRef(0);
   const count = slides.length;
+
+  /* The scrollable slide under an event, if any, and whether it still has
+     room to scroll the way the reader is going. */
+  const innerScroller = useCallback((target: EventTarget | null): HTMLElement | null => {
+    let el = target as HTMLElement | null;
+    while (el && el !== wrapRef.current) {
+      if (el.dataset && el.dataset.deckScrollable === 'true') return el;
+      el = el.parentElement;
+    }
+    return null;
+  }, []);
+
+  const hasRoom = (el: HTMLElement, direction: 1 | -1) =>
+    direction > 0
+      ? Math.ceil(el.scrollTop + el.clientHeight) < el.scrollHeight - 1
+      : el.scrollTop > 1;
 
   const releaseLock = useCallback(() => {
     lockedRef.current = false;
@@ -103,6 +139,8 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const el = wrapRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      const scroller = innerScroller(e.target);
+      if (scroller && hasRoom(scroller, e.deltaY > 0 ? 1 : -1)) return; // its scroll, not ours
       e.preventDefault();
       const now = performance.now();
       const gap = now - lastWheelRef.current;
@@ -121,7 +159,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [step]);
+  }, [step, innerScroller]);
 
   /* Touch / pen swipe, via Pointer Events.
      The old touchstart/touchend pair silently did nothing on Android: with the
@@ -135,6 +173,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       touchYRef.current = e.clientY;
+      scrollerRef.current = innerScroller(e.target);
     };
     const onUp = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
@@ -143,8 +182,13 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
         return;
       }
       const dy = touchYRef.current - e.clientY;
+      const scroller = scrollerRef.current;
       touchYRef.current = null;
-      if (Math.abs(dy) >= SWIPE_THRESHOLD) step(dy > 0 ? 1 : -1);
+      scrollerRef.current = null;
+      if (Math.abs(dy) < SWIPE_THRESHOLD) return;
+      const direction: 1 | -1 = dy > 0 ? 1 : -1;
+      if (scroller && hasRoom(scroller, direction)) return; // it scrolled instead
+      step(direction);
     };
     const onCancel = () => {
       touchYRef.current = null;
@@ -152,6 +196,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     // Belt and braces for engines that still try to pan or rubber-band the
     // page from inside the deck (old iOS Safari quirks, pull-to-refresh).
     const onTouchMove = (e: TouchEvent) => {
+      if (innerScroller(e.target)) return; // let a scrollable slide pan itself
       if (e.cancelable) e.preventDefault();
     };
     el.addEventListener('pointerdown', onDown);
@@ -164,7 +209,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       el.removeEventListener('pointercancel', onCancel);
       el.removeEventListener('touchmove', onTouchMove);
     };
-  }, [step]);
+  }, [step, innerScroller]);
 
   /* Keyboard. */
   useEffect(() => {
@@ -234,8 +279,12 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
               key={s.label}
               aria-label={s.label}
               aria-hidden={i !== index}
-              className="w-full overflow-hidden"
-              style={{ height: slideH || '100%' }}
+              data-deck-scrollable={s.scrollable ? 'true' : undefined}
+              className={`w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
+              style={{
+                height: slideH || '100%',
+                ...(s.scrollable ? { touchAction: 'pan-y', overscrollBehavior: 'contain' } : null),
+              }}
             >
               {s.node}
             </section>

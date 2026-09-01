@@ -8,6 +8,8 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
+import Footer from '../components/Footer';
+import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import { useWhatsApp } from '../components/WhatsAppContact';
 
@@ -27,8 +29,223 @@ const WHAT_NEXT = [
   'You receive a clear recommendation — no obligation',
 ];
 
+
+/* ─── Page blocks, shared by the scrolling layout and the mobile deck ─── */
+
+const Hero: React.FC = () => (
+  <>
+  {/* ── HERO ── */}
+  <section className="pt-20 pb-14 relative overflow-hidden">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
+
+        {/* Left: text */}
+        <div className="flex-1 lg:max-w-[560px] mb-10 lg:mb-0">
+          <motion.p
+            className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+          >
+            Get in touch
+          </motion.p>
+          <motion.h1
+            className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
+            initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          >
+            Let's write the next<br />
+            <em style={{ color: '#d97706' }}>chapter together.</em>
+          </motion.h1>
+          <motion.p
+            className="text-lg text-slate-500 leading-relaxed"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
+          >
+            Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here. <strong className="text-slate-700">Clinic on Quality™ — we care for businesses.</strong>
+          </motion.p>
+        </div>
+
+        {/* Right: hero image — desktop only */}
+        <motion.div
+          className="hidden lg:block flex-shrink-0 w-[400px]"
+          initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div
+            className="overflow-hidden rounded-3xl relative"
+            style={{
+              aspectRatio: '4 / 5',
+              boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+            }}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}images/contact-hero.png`}
+              alt="Preqal — ready to help your business"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: 'center top' }}
+              width="400"
+              height="500"
+            />
+            {/* Amber + dark gradient wash */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.15) 0%, transparent 45%, rgba(15,23,42,0.28) 100%)' }}
+            />
+          </div>
+        </motion.div>
+
+      </div>
+    </div>
+  </section>
+  </>
+);
+
+const MainPanel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div
+    className="rounded-3xl overflow-hidden"
+    style={{
+      background: 'rgba(255,255,255,0.72)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      boxShadow: '10px 12px 28px rgba(163,177,198,0.50), -6px -6px 20px rgba(255,255,255,0.92)',
+      border: '1.5px solid rgba(255,255,255,0.92)',
+    }}
+  >
+    <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)' }} />
+    {children}
+  </div>
+);
+
+const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
+  <>
+  {/* ── ABOUT PREQAL — who you'll be talking to ── */}
+  <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'mt-0' : 'mt-20'}`}>
+    <ScrollReveal yFrom={14}>
+      <div className={`text-center ${compact ? 'mb-5 lg:mb-12' : 'mb-12'}`}>
+        <p className={`text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+          Who you'll be<br className="sm:hidden" />{' '}
+          <span className="text-amber-600">talking to.</span>
+        </h2>
+      </div>
+    </ScrollReveal>
+
+    {/* Founder — portrait and a short bio, nothing else */}
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-12 md:items-center">
+
+      <div className="md:col-span-5">
+        <ScrollReveal yFrom={20}>
+          <div
+            className="founder-portrait relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none"
+            style={{
+              boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
+            }}
+          >
+            <picture>
+              <source
+                type="image/avif"
+                srcSet={`${import.meta.env.BASE_URL}images/dr-gravesande-560.avif 560w, ${import.meta.env.BASE_URL}images/dr-gravesande-1120.avif 1120w`}
+                sizes="(max-width: 768px) 380px, 460px"
+              />
+              <source
+                type="image/webp"
+                srcSet={`${import.meta.env.BASE_URL}images/dr-gravesande-560.webp 560w, ${import.meta.env.BASE_URL}images/dr-gravesande-1120.webp 1120w`}
+                sizes="(max-width: 768px) 380px, 460px"
+              />
+              <img
+                src={`${import.meta.env.BASE_URL}images/dr-gravesande-560.webp`}
+                alt="Dr. Stefan Gravesande, founder of Preqal"
+                className="absolute inset-0 w-full h-full object-cover"
+                width="560"
+                height="700"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.06) 0%, transparent 55%, rgba(15,23,42,0.10) 100%)' }}
+            />
+          </div>
+        </ScrollReveal>
+      </div>
+
+      <div className="md:col-span-7">
+        <ScrollReveal yFrom={20} delay={80}>
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-1">Dr. Stefan Gravesande</h3>
+          <p className="text-amber-600 text-xs font-bold mb-3 sm:mb-6 uppercase tracking-wider">
+            Medical Leadership &rarr; Systems Engineer
+          </p>
+          <p className="text-sm sm:text-base text-slate-600 leading-normal sm:leading-relaxed">
+            Dr. Stefan Gravesande trained in medicine before turning that diagnostic discipline on businesses. Where most consultants hand over a template, he examines an operation first: its processes, its patterns, its vulnerabilities. Then he prescribes. He builds Integrated Management Systems from the ground up for firms across Guyana, aligning them with ISO 9001, ISO 14001, and ISO 45001, and has architected national-scale quality frameworks spanning agriculture, food production, and environmental systems. His work is evidence-led and risk-based: your time goes where it matters, and the standards you build protect your people, your community, and the world your business operates in.
+          </p>
+        </ScrollReveal>
+      </div>
+
+    </div>
+
+  </div>
+  </>
+);
+
+/* Left panel: contact details, what happens next, and the WhatsApp alternative */
+const InfoPanel: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
+  <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8">
+
+    {/* Contact details */}
+    <div>
+      <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Contact details</p>
+      <div className="flex flex-col gap-3">
+        {CONTACT_INFO.map((item) => (
+          <div key={item.label} className="flex items-start gap-3">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
+            >
+              {item.icon}
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-none mb-0.5">{item.label}</p>
+              <p className="text-sm text-slate-700 font-medium leading-snug">{item.value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* What happens next */}
+    <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem' }}>
+      <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">What happens next</p>
+      <div className="flex flex-col gap-3">
+        {WHAT_NEXT.map((step, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <div
+              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '2px 2px 6px rgba(217,119,6,0.3)' }}
+            >
+              <span className="text-white text-[10px] font-bold">{i + 1}</span>
+            </div>
+            <p className="text-sm text-slate-600 leading-relaxed">{step}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Alt CTA */}
+    <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem', marginTop: 'auto' }}>
+      <p className="text-xs text-slate-400 leading-relaxed mb-3">Prefer to jump straight in?</p>
+      <button
+        type="button"
+        onClick={openWhatsApp}
+        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors"
+      >
+        Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  </div>
+);
+
 const ContactUs: React.FC = () => {
   const { openWhatsApp } = useWhatsApp();
+  const deck = useBelowWidth(); // sectioned like slides on phones, a page from lg up
   const jobTitles = ['Quality Manager','Quality Assurance Manager','Quality Control Manager','Compliance Manager','QHSE Manager','HSE Manager','Operations Manager','Production Manager','Quality Engineer','Quality Assurance Engineer','Compliance Officer','Quality Analyst','Quality Specialist','Regulatory Affairs Manager','Director of Quality','VP of Quality','Chief Quality Officer','Other'];
   const qualityProblems = ['Inconsistent process execution','Poor document & change control','Unsafe behaviors + weak supervision','Inadequate risk assessments/controls','Training/competency gaps','Cash flow instability','Weak financial controls','Inventory and material flow issues','Lack of strategic alignment','Other'];
 
@@ -111,350 +328,218 @@ const ContactUs: React.FC = () => {
     + " bg-[#e0e5ec] shadow-[inset_3px_3px_6px_#a3b1c6,inset_-3px_-3px_6px_#ffffff]"
     + " focus:shadow-[inset_4px_4px_8px_#a3b1c6,inset_-4px_-4px_8px_#ffffff]";
 
+  /* The form needs this component's state, so it stays here and is handed
+     to whichever layout is rendering. */
+  const formPanel = (
+    <div className="lg:col-span-3 p-8 lg:p-10">
+    {status === 'success' ? (
+      <motion.div
+        className="flex flex-col items-center justify-center h-full text-center py-12"
+        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+          style={{ background: '#e0e5ec', boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85)' }}
+        >
+          <CheckCircle2 className="h-8 w-8 text-green-600" />
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 mb-2">Message Sent!</h3>
+        <p className="text-slate-600 mb-6 text-sm leading-relaxed max-w-xs">
+          Thank you for reaching out. We'll review your message and get back to you within 1 business day.
+        </p>
+        <button
+          onClick={() => setStatus('idle')}
+          className="text-sm text-amber-600 font-semibold hover:text-amber-500 transition-colors"
+        >
+          Send another message
+        </button>
+      </motion.div>
+    ) : (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
+            <input type="text" name="first_name" required className={inputClass} placeholder="John" value={formData.first_name} onChange={handleChange} />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Last Name *</label>
+            <input type="text" name="last_name" required className={inputClass} placeholder="Doe" value={formData.last_name} onChange={handleChange} />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Email *</label>
+          <input type="email" name="email" required className={inputClass} placeholder="name@company.com" value={formData.email} onChange={handleChange} />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Company *</label>
+          <input type="text" name="company" required className={inputClass} placeholder="Company Name" value={formData.company} onChange={handleChange} />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Job Title *</label>
+          <select name="job_title" required value={formData.job_title} onChange={handleChange} className={inputClass}>
+            <option value="">Select a job title</option>
+            {jobTitles.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+          {showCustomJobTitle && (
+            <input type="text" name="custom_job_title" required value={formData.custom_job_title} onChange={handleChange} className={`${inputClass} mt-3`} placeholder="Enter your job title" />
+          )}
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number *</label>
+          <PhoneInput
+            defaultCountry="gy"
+            value={formData.phone}
+            onChange={(phone, { country, dialCode }) => setFormData({ ...formData, phone, country_iso: country?.iso2?.toLowerCase() || 'gy', dial_code: dialCode || '+592' })}
+            className="w-full"
+            inputClassName={inputClass}
+            countrySelectorStyleProps={{ buttonClassName: "px-3 py-3 rounded-l-xl bg-[#e0e5ec] shadow-[inset_2px_2px_5px_#a3b1c6,inset_-2px_-2px_5px_#ffffff]" }}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
+          <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass}>
+            <option value="">Select a quality problem</option>
+            {qualityProblems.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>
+          {showCustomQualityProblem && (
+            <textarea name="custom_quality_problem" required rows={3} value={formData.custom_quality_problem} onChange={handleChange} className={`${inputClass} mt-3 resize-none`} placeholder="Describe your most pressing quality or compliance challenge..." />
+          )}
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Message <span className="normal-case font-normal text-slate-400">(optional)</span></label>
+          <textarea name="message" rows={3} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
+        </div>
+
+        <div className="space-y-3 pt-1">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+            <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+              I have read and accept the{' '}
+              <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
+            </span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+            <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+              I have read and accept the{' '}
+              <Link to="/terms-of-service" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
+            </span>
+          </label>
+        </div>
+
+        {RECAPTCHA_SITE_KEY && (
+          <div className="flex justify-center pt-1">
+            <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setRecaptchaToken(token)} onExpired={() => setRecaptchaToken(null)} />
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="px-4 py-3 rounded-xl text-red-600 text-sm"
+            style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 6px rgba(163,177,198,0.5), inset -3px -3px 6px rgba(255,255,255,0.8)' }}
+          >
+            {error}
+          </div>
+        )}
+
+        <motion.button
+          type="submit"
+          disabled={status === 'submitting'}
+          whileHover={{ scale: status === 'submitting' ? 1 : 1.02, y: status === 'submitting' ? 0 : -2 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold text-base disabled:opacity-70 disabled:cursor-not-allowed"
+          style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
+        >
+          {status === 'submitting'
+            ? <><Loader2 className="h-5 w-5 animate-spin" />Sending...</>
+            : <>Send Message <ArrowRight className="h-5 w-5" /></>
+          }
+        </motion.button>
+      </form>
+    )}
+  </div>
+  );
+
+  if (deck) {
+    const slides: DeckSlide[] = [
+      {
+        label: 'Get in touch',
+        node: (
+          <div className="h-full flex items-center px-4 sm:px-6">
+            <div className="w-full deck-fit"><Hero /></div>
+          </div>
+        ),
+      },
+      {
+        label: 'Contact details',
+        node: (
+          <div className="h-full flex items-center px-4 sm:px-6">
+            <div className="w-full max-w-5xl mx-auto deck-fit">
+              <MainPanel><InfoPanel openWhatsApp={openWhatsApp} /></MainPanel>
+            </div>
+          </div>
+        ),
+      },
+      {
+        // The form is longer than a phone screen and must not be squeezed, so
+        // this slide scrolls inside itself; the deck takes over at either end.
+        label: 'Send a message',
+        scrollable: true,
+        node: (
+          <div className="min-h-full flex items-center px-4 sm:px-6 py-4">
+            <div className="w-full max-w-5xl mx-auto">
+              <MainPanel>{formPanel}</MainPanel>
+            </div>
+          </div>
+        ),
+      },
+      {
+        label: "Who you'll be talking to",
+        node: (
+          <div className="h-full flex items-center px-4 sm:px-6">
+            <div className="w-full deck-fit"><AboutFounder compact /></div>
+          </div>
+        ),
+      },
+      {
+        label: 'Contact & info',
+        node: (
+          <div className="h-full flex items-center overflow-hidden">
+            <div className="w-full deck-fit"><Footer compact /></div>
+          </div>
+        ),
+      },
+    ];
+    return (
+      <>
+        <SEO pageKey="contact" extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]} />
+        <SlideDeck slides={slides} />
+      </>
+    );
+  }
+
   return (
     <>
       <SEO pageKey="contact" extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]} />
       <div className="min-h-screen pb-20">
 
-        {/* ── HERO ── */}
-        <section className="pt-20 pb-14 relative overflow-hidden">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
-
-              {/* Left: text */}
-              <div className="flex-1 lg:max-w-[560px] mb-10 lg:mb-0">
-                <motion.p
-                  className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
-                >
-                  Get in touch
-                </motion.p>
-                <motion.h1
-                  className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
-                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  Let's write the next<br />
-                  <em style={{ color: '#d97706' }}>chapter together.</em>
-                </motion.h1>
-                <motion.p
-                  className="text-lg text-slate-500 leading-relaxed"
-                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.28 }}
-                >
-                  Whether you're curious about where to start, exploring a partnership, or ready to talk about something built specifically for your business — Preqal is here. <strong className="text-slate-700">Clinic on Quality™ — we care for businesses.</strong>
-                </motion.p>
-              </div>
-
-              {/* Right: hero image — desktop only */}
-              <motion.div
-                className="hidden lg:block flex-shrink-0 w-[400px]"
-                initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div
-                  className="overflow-hidden rounded-3xl relative"
-                  style={{
-                    aspectRatio: '4 / 5',
-                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
-                  }}
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/contact-hero.png`}
-                    alt="Preqal — ready to help your business"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center top' }}
-                    width="400"
-                    height="500"
-                  />
-                  {/* Amber + dark gradient wash */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.15) 0%, transparent 45%, rgba(15,23,42,0.28) 100%)' }}
-                  />
-                </div>
-              </motion.div>
-
-            </div>
-          </div>
-        </section>
+        <Hero />
 
         {/* ── MAIN CONTENT ── */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal yFrom={20}>
-            <div
-              className="rounded-3xl overflow-hidden"
-              style={{
-                background: 'rgba(255,255,255,0.72)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                boxShadow: '10px 12px 28px rgba(163,177,198,0.50), -6px -6px 20px rgba(255,255,255,0.92)',
-                border: '1.5px solid rgba(255,255,255,0.92)',
-              }}
-            >
-              {/* Amber top bar */}
-              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)' }} />
-
+            <MainPanel>
               <div className="grid grid-cols-1 lg:grid-cols-5 divide-y lg:divide-y-0 lg:divide-x divide-white/50">
-
-                {/* ── Left panel: info ── */}
-                <div className="lg:col-span-2 p-8 lg:p-10 flex flex-col gap-8">
-
-                  {/* Contact details */}
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Contact details</p>
-                    <div className="flex flex-col gap-3">
-                      {CONTACT_INFO.map((item) => (
-                        <div key={item.label} className="flex items-start gap-3">
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                            style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
-                          >
-                            {item.icon}
-                          </div>
-                          <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-none mb-0.5">{item.label}</p>
-                            <p className="text-sm text-slate-700 font-medium leading-snug">{item.value}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* What happens next */}
-                  <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem' }}>
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">What happens next</p>
-                    <div className="flex flex-col gap-3">
-                      {WHAT_NEXT.map((step, i) => (
-                        <div key={i} className="flex items-start gap-3">
-                          <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                            style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '2px 2px 6px rgba(217,119,6,0.3)' }}
-                          >
-                            <span className="text-white text-[10px] font-bold">{i + 1}</span>
-                          </div>
-                          <p className="text-sm text-slate-600 leading-relaxed">{step}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Alt CTA */}
-                  <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem', marginTop: 'auto' }}>
-                    <p className="text-xs text-slate-400 leading-relaxed mb-3">Prefer to jump straight in?</p>
-                    <button
-                      type="button"
-                      onClick={openWhatsApp}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors"
-                    >
-                      Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* ── Right panel: form ── */}
-                <div className="lg:col-span-3 p-8 lg:p-10">
-                  {status === 'success' ? (
-                    <motion.div
-                      className="flex flex-col items-center justify-center h-full text-center py-12"
-                      initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4 }}
-                    >
-                      <div
-                        className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
-                        style={{ background: '#e0e5ec', boxShadow: 'inset 4px 4px 10px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85)' }}
-                      >
-                        <CheckCircle2 className="h-8 w-8 text-green-600" />
-                      </div>
-                      <h3 className="text-xl font-bold text-slate-900 mb-2">Message Sent!</h3>
-                      <p className="text-slate-600 mb-6 text-sm leading-relaxed max-w-xs">
-                        Thank you for reaching out. We'll review your message and get back to you within 1 business day.
-                      </p>
-                      <button
-                        onClick={() => setStatus('idle')}
-                        className="text-sm text-amber-600 font-semibold hover:text-amber-500 transition-colors"
-                      >
-                        Send another message
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
-                          <input type="text" name="first_name" required className={inputClass} placeholder="John" value={formData.first_name} onChange={handleChange} />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Last Name *</label>
-                          <input type="text" name="last_name" required className={inputClass} placeholder="Doe" value={formData.last_name} onChange={handleChange} />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Email *</label>
-                        <input type="email" name="email" required className={inputClass} placeholder="name@company.com" value={formData.email} onChange={handleChange} />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Company *</label>
-                        <input type="text" name="company" required className={inputClass} placeholder="Company Name" value={formData.company} onChange={handleChange} />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Job Title *</label>
-                        <select name="job_title" required value={formData.job_title} onChange={handleChange} className={inputClass}>
-                          <option value="">Select a job title</option>
-                          {jobTitles.map((t) => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                        {showCustomJobTitle && (
-                          <input type="text" name="custom_job_title" required value={formData.custom_job_title} onChange={handleChange} className={`${inputClass} mt-3`} placeholder="Enter your job title" />
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number *</label>
-                        <PhoneInput
-                          defaultCountry="gy"
-                          value={formData.phone}
-                          onChange={(phone, { country, dialCode }) => setFormData({ ...formData, phone, country_iso: country?.iso2?.toLowerCase() || 'gy', dial_code: dialCode || '+592' })}
-                          className="w-full"
-                          inputClassName={inputClass}
-                          countrySelectorStyleProps={{ buttonClassName: "px-3 py-3 rounded-l-xl bg-[#e0e5ec] shadow-[inset_2px_2px_5px_#a3b1c6,inset_-2px_-2px_5px_#ffffff]" }}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
-                        <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass}>
-                          <option value="">Select a quality problem</option>
-                          {qualityProblems.map((p) => <option key={p} value={p}>{p}</option>)}
-                        </select>
-                        {showCustomQualityProblem && (
-                          <textarea name="custom_quality_problem" required rows={3} value={formData.custom_quality_problem} onChange={handleChange} className={`${inputClass} mt-3 resize-none`} placeholder="Describe your most pressing quality or compliance challenge..." />
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Message <span className="normal-case font-normal text-slate-400">(optional)</span></label>
-                        <textarea name="message" rows={3} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
-                      </div>
-
-                      <div className="space-y-3 pt-1">
-                        <label className="flex items-start gap-3 cursor-pointer group">
-                          <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
-                          <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
-                            I have read and accept the{' '}
-                            <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
-                          </span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer group">
-                          <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
-                          <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
-                            I have read and accept the{' '}
-                            <Link to="/terms-of-service" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
-                          </span>
-                        </label>
-                      </div>
-
-                      {RECAPTCHA_SITE_KEY && (
-                        <div className="flex justify-center pt-1">
-                          <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setRecaptchaToken(token)} onExpired={() => setRecaptchaToken(null)} />
-                        </div>
-                      )}
-
-                      {error && (
-                        <div
-                          className="px-4 py-3 rounded-xl text-red-600 text-sm"
-                          style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 6px rgba(163,177,198,0.5), inset -3px -3px 6px rgba(255,255,255,0.8)' }}
-                        >
-                          {error}
-                        </div>
-                      )}
-
-                      <motion.button
-                        type="submit"
-                        disabled={status === 'submitting'}
-                        whileHover={{ scale: status === 'submitting' ? 1 : 1.02, y: status === 'submitting' ? 0 : -2 }}
-                        whileTap={{ scale: 0.98 }}
-                        transition={{ type: 'spring', stiffness: 340, damping: 22 }}
-                        className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold text-base disabled:opacity-70 disabled:cursor-not-allowed"
-                        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
-                      >
-                        {status === 'submitting'
-                          ? <><Loader2 className="h-5 w-5 animate-spin" />Sending...</>
-                          : <>Send Message <ArrowRight className="h-5 w-5" /></>
-                        }
-                      </motion.button>
-                    </form>
-                  )}
-                </div>
-
+                <InfoPanel openWhatsApp={openWhatsApp} />
+                {formPanel}
               </div>
-            </div>
+            </MainPanel>
           </ScrollReveal>
         </div>
 
-        {/* ── ABOUT PREQAL — who you'll be talking to ── */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-          <ScrollReveal yFrom={14}>
-            <div className="text-center mb-12">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">About Preqal</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
-                Who you'll be<br className="sm:hidden" />{' '}
-                <span className="text-amber-600">talking to.</span>
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          {/* Founder — portrait and a short bio, nothing else */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 md:items-center">
-
-            <div className="md:col-span-5">
-              <ScrollReveal yFrom={20}>
-                <div
-                  className="relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none"
-                  style={{
-                    aspectRatio: '4 / 5',
-                    boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
-                  }}
-                >
-                  <picture>
-                    <source
-                      type="image/avif"
-                      srcSet={`${import.meta.env.BASE_URL}images/dr-gravesande-560.avif 560w, ${import.meta.env.BASE_URL}images/dr-gravesande-1120.avif 1120w`}
-                      sizes="(max-width: 768px) 380px, 460px"
-                    />
-                    <source
-                      type="image/webp"
-                      srcSet={`${import.meta.env.BASE_URL}images/dr-gravesande-560.webp 560w, ${import.meta.env.BASE_URL}images/dr-gravesande-1120.webp 1120w`}
-                      sizes="(max-width: 768px) 380px, 460px"
-                    />
-                    <img
-                      src={`${import.meta.env.BASE_URL}images/dr-gravesande-560.webp`}
-                      alt="Dr. Stefan Gravesande, founder of Preqal"
-                      className="absolute inset-0 w-full h-full object-cover"
-                      width="560"
-                      height="700"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </picture>
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.06) 0%, transparent 55%, rgba(15,23,42,0.10) 100%)' }}
-                  />
-                </div>
-              </ScrollReveal>
-            </div>
-
-            <div className="md:col-span-7">
-              <ScrollReveal yFrom={20} delay={80}>
-                <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">Dr. Stefan Gravesande</h3>
-                <p className="text-amber-600 text-xs font-bold mb-6 uppercase tracking-wider">
-                  Medical Leadership &rarr; Systems Engineer
-                </p>
-                <p className="text-base text-slate-600 leading-relaxed">
-                  Dr. Stefan Gravesande trained in medicine before turning that diagnostic discipline on businesses. Where most consultants hand over a template, he examines an operation first: its processes, its patterns, its vulnerabilities. Then he prescribes. He builds Integrated Management Systems from the ground up for firms across Guyana, aligning them with ISO 9001, ISO 14001, and ISO 45001, and has architected national-scale quality frameworks spanning agriculture, food production, and environmental systems. His work is evidence-led and risk-based: your time goes where it matters, and the standards you build protect your people, your community, and the world your business operates in.
-                </p>
-              </ScrollReveal>
-            </div>
-
-          </div>
-
-        </div>
+        <AboutFounder />
 
       </div>
     </>
