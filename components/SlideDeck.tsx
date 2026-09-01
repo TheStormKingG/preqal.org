@@ -123,24 +123,46 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     return () => el.removeEventListener('wheel', onWheel);
   }, [step]);
 
-  /* Touch swipe (touch laptops / wide tablets). */
+  /* Touch / pen swipe, via Pointer Events.
+     The old touchstart/touchend pair silently did nothing on Android: with the
+     default touch-action the browser claims a vertical drag as an attempted
+     scroll and ends the sequence with touchcancel, so touchend never fired.
+     Pointer events + touch-action: none on the wrapper keep the gesture ours
+     on both engines. Mouse drags stay excluded — the wheel handles desktop. */
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onStart = (e: TouchEvent) => {
-      touchYRef.current = e.touches[0].clientY;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse') return;
+      touchYRef.current = e.clientY;
     };
-    const onEnd = (e: TouchEvent) => {
-      if (touchYRef.current === null || lockedRef.current) return;
-      const dy = touchYRef.current - e.changedTouches[0].clientY;
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse') return;
+      if (touchYRef.current === null || lockedRef.current) {
+        touchYRef.current = null;
+        return;
+      }
+      const dy = touchYRef.current - e.clientY;
       touchYRef.current = null;
       if (Math.abs(dy) >= SWIPE_THRESHOLD) step(dy > 0 ? 1 : -1);
     };
-    el.addEventListener('touchstart', onStart, { passive: true });
-    el.addEventListener('touchend', onEnd, { passive: true });
+    const onCancel = () => {
+      touchYRef.current = null;
+    };
+    // Belt and braces for engines that still try to pan or rubber-band the
+    // page from inside the deck (old iOS Safari quirks, pull-to-refresh).
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.cancelable) e.preventDefault();
+    };
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onCancel);
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
-      el.removeEventListener('touchstart', onStart);
-      el.removeEventListener('touchend', onEnd);
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onCancel);
+      el.removeEventListener('touchmove', onTouchMove);
     };
   }, [step]);
 
@@ -194,7 +216,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden"
-        style={{ height: 'calc(100dvh - 5rem)' }}
+        style={{ height: 'calc(100dvh - 5rem)', touchAction: 'none', overscrollBehavior: 'none' }}
         /* Focus-triggered auto-scroll would silently offset the hidden-overflow
            wrapper and desync it from the transform — pin it back. */
         onScroll={(e) => {
