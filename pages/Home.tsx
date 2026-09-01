@@ -545,9 +545,12 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
               strokeDasharray: 1,
               strokeDashoffset: burnt ? 0 : hiddenOffset,
               filter: 'drop-shadow(0 0 5px rgba(245,158,11,0.65))',
-              // Only the arriving slide animates; a slide that has been left
-              // rewinds instantly, off-screen, where it cannot be seen.
-              transition: prefersReduced || !active
+              /* Only the run towards 0 animates. Everything else — arming the
+                 wick at the end the flame will start from, and rewinding a
+                 slide that has been left — happens instantly. Without that the
+                 transition would animate away from whichever end the last
+                 visit finished on, and a return visit would draw backwards. */
+              transition: prefersReduced || !active || !seq.burning
                 ? 'none'
                 : `stroke-dashoffset ${originEntry ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
             }}

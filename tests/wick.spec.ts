@@ -110,4 +110,33 @@ test.describe('phase wick', () => {
     expect(back.phases[0].startY).toBeGreaterThan(ABOVE); // same half, arriving from below
     expect(back.phases[0].offset).toBe('0px');
   });
+
+  test('repeat visits draw from the same end as the first visit', async ({ page }) => {
+    /* The offset's sign says which end the flame starts from: positive reveals
+       from the path's start, negative from its far end. Toggling 01 <-> 02 has
+       to give the same signs every time — before, a return visit inherited the
+       end the last visit finished on and drew backwards. */
+    const midFlightOffset = async (key: 'ArrowDown' | 'ArrowUp', phase: number) => {
+      await page.keyboard.press(key);
+      await page.waitForTimeout(400);
+      const snap = await readWicks(page);
+      return parseFloat(snap.phases[phase].offset);
+    };
+
+    await page.keyboard.press('ArrowDown'); // Phase 01
+    await page.waitForTimeout(1800);
+
+    const downFirst = await midFlightOffset('ArrowDown', 1); // -> 02
+    await page.waitForTimeout(1500);
+    const upFirst = await midFlightOffset('ArrowUp', 0); // -> 01
+    await page.waitForTimeout(1500);
+    const downAgain = await midFlightOffset('ArrowDown', 1); // -> 02 again
+    await page.waitForTimeout(1500);
+    const upAgain = await midFlightOffset('ArrowUp', 0); // -> 01 again
+
+    expect(downFirst).toBeGreaterThan(0);
+    expect(downAgain).toBeGreaterThan(0);
+    expect(upFirst).toBeLessThan(0);
+    expect(upAgain).toBeLessThan(0);
+  });
 });
