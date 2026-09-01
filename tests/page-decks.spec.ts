@@ -66,8 +66,12 @@ for (const path of ['/resources', '/contact']) {
   });
 }
 
-test('the contact form slide scrolls itself before the deck moves on', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+/* 375x667 is the case that bites: the second half is taller than that screen,
+   so unless each half is pinned to exactly one slide the form becomes three
+   views and costs a dead gesture. */
+for (const [w, h] of [[390, 844], [375, 667]] as const) {
+test(`the contact form reads as two exact halves before the deck moves on — ${w}x${h}`, async ({ page }) => {
+  await page.setViewportSize({ width: w, height: h });
   await open(page, '/contact');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
@@ -78,24 +82,40 @@ test('the contact form slide scrolls itself before the deck moves on', async ({ 
   expect(await label()).toContain('Send a message');
 
   const slide = page.locator('main section[data-deck-scrollable="true"]');
-  const before = await slide.evaluate((e) => e.scrollTop);
-  await page.mouse.move(195, 500);
+  const geom = await slide.evaluate((e) => {
+    const b = e.querySelector('[data-deck-break]') as HTMLElement;
+    return {
+      top: e.scrollTop,
+      client: e.clientHeight,
+      scroll: e.scrollHeight,
+      breakAt: Math.round(b.getBoundingClientRect().top - e.getBoundingClientRect().top + e.scrollTop),
+    };
+  });
+
+  expect(geom.top, 'the form opens on its first half').toBe(0);
+  expect(
+    Math.abs(geom.scroll - geom.client * 2),
+    `the form is exactly two screenfuls (${geom.scroll} vs ${geom.client * 2})`,
+  ).toBeLessThanOrEqual(2);
+  expect(Math.abs(geom.breakAt - geom.client), 'the second half starts one screenful down').toBeLessThanOrEqual(2);
+
+  await page.mouse.move(w / 2, h / 2);
   await page.mouse.wheel(0, 300);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(900);
 
-  expect(await slide.evaluate((e) => e.scrollTop), 'the form scrolls inside its slide').toBeGreaterThan(before);
-  expect(await label(), 'the deck holds while the form still has room').toContain('Send a message');
+  const after = await slide.evaluate((e) => e.scrollTop);
+  expect(Math.abs(after - geom.client), 'one gesture lands exactly on the second half').toBeLessThanOrEqual(2);
+  expect(await label(), 'the deck holds while the form has a half left').toContain('Send a message');
 
-  await slide.evaluate((e) => { e.scrollTop = e.scrollHeight; });
-  await page.waitForTimeout(400);
   await page.mouse.wheel(0, 300);
   await page.waitForTimeout(1600);
-  expect(await label(), 'once the form is read out, the deck moves on').not.toContain('Send a message');
+  expect(await label(), 'once both halves are read, the deck moves on').not.toContain('Send a message');
 });
+}
 
 test('the form slide is escapable even where the reCAPTCHA swallows swipes', async ({ page }) => {
   /* The reCAPTCHA is a cross-origin iframe, so a swipe starting on it never
-     reaches this page and the deck cannot read it. The Continue control is the
+     reaches this page and the deck cannot read it. The cue button below it is the
      guaranteed way onward from that slide. */
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, '/contact');
@@ -107,10 +127,10 @@ test('the form slide is escapable even where the reCAPTCHA swallows swipes', asy
     page.evaluate(() => document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '');
   expect(await label()).toContain('Send a message');
 
-  const cue = page.getByRole('button', { name: /Continue/i });
+  const cue = page.getByRole('button', { name: /Who you.ll be talking to/i });
   await cue.scrollIntoViewIfNeeded();
   await expect(cue).toBeVisible();
   await cue.click();
   await page.waitForTimeout(1600);
-  expect(await label(), 'Continue must leave the form slide').toContain("Who you'll be talking to");
+  expect(await label(), 'the cue must leave the form slide').toContain("Who you'll be talking to");
 });

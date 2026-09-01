@@ -71,8 +71,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
-  const lastYRef = useRef(0);
-  const consumedRef = useRef(false);
+
   const unlockTimerRef = useRef(0);
   const count = slides.length;
 
@@ -91,6 +90,43 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     direction > 0
       ? Math.ceil(el.scrollTop + el.clientHeight) < el.scrollHeight - 1
       : el.scrollTop > 1;
+
+  /* The stops a scrollable slide can rest at: the top, the end, and any
+     [data-deck-break] the content declares. A break marks a real boundary in
+     the content — the start of a form's second half, say — so a gesture never
+     leaves the reader mid-field. Content that declares none is divided into
+     even screenfuls instead. */
+  const scrollStops = (el: HTMLElement): number[] => {
+    const max = el.scrollHeight - el.clientHeight;
+    const declared = Array.from(el.querySelectorAll<HTMLElement>('[data-deck-break]')).map(
+      (b) => b.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop,
+    );
+    const pages = Math.max(1, Math.ceil(el.scrollHeight / el.clientHeight) - 1);
+    const raw = declared.length
+      ? declared
+      : Array.from({ length: pages }, (_, i) => ((i + 1) * max) / pages);
+    const stops = [0, ...raw.map((v) => Math.max(0, Math.min(max, Math.round(v)))), max];
+    return Array.from(new Set(stops)).sort((a, b) => a - b);
+  };
+
+  /* A slide that scrolls inside itself moves one stop per gesture rather than
+     dragging freely, so a long panel reads as a small run of full views
+     instead of an unbounded scroll. */
+  const pageScroll = useCallback(
+    (el: HTMLElement, direction: 1 | -1) => {
+      const stops = scrollStops(el);
+      const here = el.scrollTop;
+      const target =
+        direction > 0
+          ? (stops.find((v) => v > here + 4) ?? stops[stops.length - 1])
+          : ([...stops].reverse().find((v) => v < here - 4) ?? 0);
+      el.scrollTo({ top: target, behavior: prefersReduced ? 'auto' : 'smooth' });
+      lockedRef.current = true; // ignore the tail of the same gesture
+      window.clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = window.setTimeout(() => { lockedRef.current = false; }, 600);
+    },
+    [prefersReduced],
+  );
 
   const releaseLock = useCallback(() => {
     lockedRef.current = false;
@@ -141,8 +177,6 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const el = wrapRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
-      const scroller = innerScroller(e.target);
-      if (scroller && hasRoom(scroller, e.deltaY > 0 ? 1 : -1)) return; // its scroll, not ours
       e.preventDefault();
       const now = performance.now();
       const gap = now - lastWheelRef.current;
@@ -156,12 +190,17 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       if (Math.abs(accRef.current) >= WHEEL_THRESHOLD) {
         const dir: 1 | -1 = accRef.current > 0 ? 1 : -1;
         accRef.current = 0;
+        const scroller = innerScroller(e.target);
+        if (scroller && hasRoom(scroller, dir)) {
+          pageScroll(scroller, dir);
+          return;
+        }
         step(dir);
       }
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [step, innerScroller]);
+  }, [step, innerScroller, pageScroll]);
 
   /* Touch / pen swipe, via Pointer Events.
      The old touchstart/touchend pair silently did nothing on Android: with the
@@ -175,45 +214,31 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       touchYRef.current = e.clientY;
-      lastYRef.current = e.clientY;
-      consumedRef.current = false;
       scrollerRef.current = innerScroller(e.target);
     };
 
-    /* A scrollable slide is scrolled by us, not by the browser. Letting the
-       browser pan it (touch-action: pan-y) meant it owned the gesture and
-       cancelled our pointer stream, so once the inner scroll hit the end the
-       deck never saw a swipe and the reader was stranded on that slide. */
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === 'mouse' || touchYRef.current === null) return;
-      const scroller = scrollerRef.current;
-      if (!scroller) return;
-      const dy = lastYRef.current - e.clientY;
-      lastYRef.current = e.clientY;
-      if (dy === 0) return;
-      if (hasRoom(scroller, dy > 0 ? 1 : -1)) {
-        scroller.scrollTop += dy;
-        consumedRef.current = true; // this drag was a scroll, not a slide change
-      }
-    };
     const onUp = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
-      if (touchYRef.current === null || lockedRef.current) {
-        touchYRef.current = null;
-        return;
-      }
-      const dy = touchYRef.current - e.clientY;
-      const consumed = consumedRef.current;
+      const startY = touchYRef.current;
+      const scroller = scrollerRef.current;
       touchYRef.current = null;
       scrollerRef.current = null;
-      consumedRef.current = false;
-      if (consumed) return; // the drag scrolled the slide's own content
-      if (Math.abs(dy) >= SWIPE_THRESHOLD) step(dy > 0 ? 1 : -1);
+      if (startY === null || lockedRef.current) return;
+      const dy = startY - e.clientY;
+      if (Math.abs(dy) < SWIPE_THRESHOLD) return;
+      const direction: 1 | -1 = dy > 0 ? 1 : -1;
+      // Inside a scrollable slide, a swipe turns its next screenful before it
+      // is allowed to leave the slide at all.
+      if (scroller && hasRoom(scroller, direction)) {
+        pageScroll(scroller, direction);
+        return;
+      }
+      step(direction);
     };
+
     const onCancel = () => {
       touchYRef.current = null;
       scrollerRef.current = null;
-      consumedRef.current = false;
     };
     // Belt and braces for engines that still try to pan or rubber-band the
     // page from inside the deck (old iOS Safari quirks, pull-to-refresh).
@@ -221,18 +246,16 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       if (e.cancelable) e.preventDefault(); // we drive every pan ourselves
     };
     el.addEventListener('pointerdown', onDown);
-    el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerup', onUp);
     el.addEventListener('pointercancel', onCancel);
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
       el.removeEventListener('pointerdown', onDown);
-      el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onCancel);
       el.removeEventListener('touchmove', onTouchMove);
     };
-  }, [step, innerScroller]);
+  }, [step, innerScroller, pageScroll]);
 
   /* Keyboard. */
   useEffect(() => {
@@ -284,7 +307,15 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden"
-        style={{ height: 'calc(100dvh - 5rem)', touchAction: 'none', overscrollBehavior: 'none' }}
+        /* --deck-slide is the measured height of one slide. Content inside a
+           scrollable slide uses it to size itself in whole screenfuls, so the
+           slide reads as an exact run of full views rather than a free scroll. */
+        style={{
+          height: 'calc(100dvh - 5rem)',
+          touchAction: 'none',
+          overscrollBehavior: 'none',
+          ...({ '--deck-slide': slideH ? `${slideH}px` : '100%' } as React.CSSProperties),
+        }}
         /* Focus-triggered auto-scroll would silently offset the hidden-overflow
            wrapper and desync it from the transform — pin it back. */
         onScroll={(e) => {
@@ -303,7 +334,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
               aria-label={s.label}
               aria-hidden={i !== index}
               data-deck-scrollable={s.scrollable ? 'true' : undefined}
-              className={`w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
+              className={`deck-slide w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
               style={{
                 height: slideH || '100%',
                 /* touch-action does not inherit: without this the browser

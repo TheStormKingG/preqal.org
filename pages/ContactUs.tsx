@@ -200,8 +200,37 @@ const ContinueCue: React.FC = () => {
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-amber-600 font-bold text-sm"
         style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
       >
-        Continue <span aria-hidden="true">&darr;</span>
+        Who you&apos;ll be talking to. <span aria-hidden="true">&darr;</span>
       </button>
+    </div>
+  );
+};
+
+/* One screenful of the contact form on the phone deck: a card sized to exactly
+   one slide, so the form reads as two full views instead of a free scroll and
+   neither view cuts a field. Off the deck it is a plain group and the page's
+   own card supplies the frame. */
+const FormHalf: React.FC<{ halved: boolean; last?: boolean; children: React.ReactNode }> = ({
+  halved,
+  last = false,
+  children,
+}) => {
+  if (!halved) return <div className="space-y-4">{children}</div>;
+  return (
+    <div
+      /* Pinned to exactly one slide, so the form is a whole number of views on
+         every phone; a card too tall for a short screen scales instead of
+         pushing the count to three. */
+      className="flex items-center px-4 sm:px-6 py-4"
+      style={{ height: 'var(--deck-slide)' }}
+      data-deck-break={last ? '' : undefined}
+    >
+      <div className="w-full max-w-5xl mx-auto deck-fit deck-fit-roomy">
+        <MainPanel>
+          <div className="p-6 sm:p-8 space-y-4">{children}</div>
+        </MainPanel>
+        {last ? <ContinueCue /> : null}
+      </div>
     </div>
   );
 };
@@ -349,9 +378,11 @@ const ContactUs: React.FC = () => {
 
   /* The form needs this component's state, so it stays here and is handed
      to whichever layout is rendering. */
-  const formPanel = (
-    <div className="lg:col-span-3 p-8 lg:p-10">
+  /* `halved` lays the form out as two exact screenfuls for the phone deck. */
+  const buildForm = (halved: boolean) => (
+    <div className={halved ? '' : 'lg:col-span-3 p-8 lg:p-10'}>
     {status === 'success' ? (
+      <FormHalf halved={halved}>
       <motion.div
         className="flex flex-col items-center justify-center h-full text-center py-12"
         initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
@@ -374,8 +405,13 @@ const ContactUs: React.FC = () => {
           Send another message
         </button>
       </motion.div>
+      </FormHalf>
     ) : (
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className={halved ? '' : 'space-y-4'}>
+        {/* On a phone the deck reads this form as two views. Each half is sized
+            to exactly one slide so neither one cuts a field, and the break tells
+            the deck where the second view starts. */}
+        <FormHalf halved={halved}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
@@ -415,6 +451,9 @@ const ContactUs: React.FC = () => {
             countrySelectorStyleProps={{ buttonClassName: "px-3 py-3 rounded-l-xl bg-[#e0e5ec] shadow-[inset_2px_2px_5px_#a3b1c6,inset_-2px_-2px_5px_#ffffff]" }}
           />
         </div>
+        </FormHalf>
+
+        <FormHalf halved={halved} last>
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
           <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass}>
@@ -476,10 +515,12 @@ const ContactUs: React.FC = () => {
             : <>Send Message <ArrowRight className="h-5 w-5" /></>
           }
         </motion.button>
+        </FormHalf>
       </form>
     )}
   </div>
   );
+  const formPanel = buildForm(false);
 
   if (deck) {
     const slides: DeckSlide[] = [
@@ -487,7 +528,7 @@ const ContactUs: React.FC = () => {
         label: 'Get in touch',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit"><Hero /></div>
+            <div className="w-full deck-fit deck-fit-roomy"><Hero /></div>
           </div>
         ),
       },
@@ -495,7 +536,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact details',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full max-w-5xl mx-auto deck-fit">
+            <div className="w-full max-w-5xl mx-auto deck-fit deck-fit-roomy">
               <MainPanel><InfoPanel openWhatsApp={openWhatsApp} /></MainPanel>
             </div>
           </div>
@@ -507,19 +548,14 @@ const ContactUs: React.FC = () => {
         label: 'Send a message',
         scrollable: true,
         node: (
-          <div className="min-h-full flex items-center px-4 sm:px-6 py-4">
-            <div className="w-full max-w-5xl mx-auto">
-              <MainPanel>{formPanel}</MainPanel>
-              <ContinueCue />
-            </div>
-          </div>
+          <div className="min-h-full">{buildForm(true)}</div>
         ),
       },
       {
         label: "Who you'll be talking to",
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit"><AboutFounder compact /></div>
+            <div className="w-full deck-fit deck-fit-roomy"><AboutFounder compact /></div>
           </div>
         ),
       },
@@ -527,7 +563,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <div className="w-full deck-fit"><Footer compact /></div>
+            <div className="w-full deck-fit deck-fit-roomy"><Footer compact /></div>
           </div>
         ),
       },
