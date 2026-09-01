@@ -22,7 +22,6 @@ const routes = [
   { url: '/guides/export-food-from-guyana', changefreq: 'monthly', priority: 0.8, lastmod: TODAY },
   { url: '/contact',                     changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
   { url: '/business-growth-assessment',  changefreq: 'monthly', priority: 0.8,  lastmod: TODAY },
-  { url: '/e-courses',                   changefreq: 'monthly', priority: 0.75, lastmod: TODAY },
   { url: '/resources',                   changefreq: 'monthly', priority: 0.7,  lastmod: TODAY },
   { url: '/preqal-not-prequel',          changefreq: 'yearly',  priority: 0.75, lastmod: TODAY },
   { url: '/privacy-policy',              changefreq: 'yearly',  priority: 0.3,  lastmod: TODAY },
