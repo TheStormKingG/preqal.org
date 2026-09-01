@@ -646,7 +646,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
             >
               <span className="text-amber-500">◆</span>
-              <span>From idea to export · The Preqal journey</span>
+              <span>From Idea to Bank</span>
             </motion.div>
 
             <motion.h1
