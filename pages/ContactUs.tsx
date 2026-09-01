@@ -454,31 +454,6 @@ const ContactUs: React.FC = () => {
 
           </div>
 
-            <ScrollReveal yFrom={16}>
-              <div
-                className="rounded-2xl overflow-hidden relative"
-                style={{ background: '#0f172a', boxShadow: '8px 10px 24px rgba(15,23,42,0.35), -4px -4px 14px rgba(255,255,255,0.7)' }}
-              >
-                <div className="absolute inset-0 pointer-events-none" style={{
-                  background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
-                }} />
-                <div className="absolute inset-0 pointer-events-none" style={{
-                  background: 'radial-gradient(ellipse at 10% 50%, rgba(217,119,6,0.12) 0%, transparent 55%)',
-                }} />
-                <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: 'linear-gradient(to bottom, #f59e0b, #d97706)' }} />
-                <div className="relative z-10 p-8">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-1">Our name explained</p>
-                  <h3 className="text-xl font-bold text-white mb-5">Why "Clinic on Quality"?</h3>
-                  <div className="space-y-4 text-white/65 leading-relaxed text-sm">
-                    <p>Just as the best doctors listen before they prescribe, Preqal examines your business before recommending a single solution. Your operational health — your processes, your patterns, your vulnerabilities — is assessed with clinical precision before anything is built.</p>
-                    <p>Most consultants hand you a template and walk away. You get a prescription written specifically for your business — targeted, restorative, and designed to make your organisation stronger from the inside out.</p>
-                  </div>
-                  <p className="font-bold italic text-amber-400 text-right mt-5 text-sm">
-                    Because at Preqal, we don't just improve systems. We care for businesses.
-                  </p>
-                </div>
-              </div>
-            </ScrollReveal>
         </div>
 
       </div>
