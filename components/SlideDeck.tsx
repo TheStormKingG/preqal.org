@@ -71,6 +71,8 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
+  const lastYRef = useRef(0);
+  const consumedRef = useRef(false);
   const unlockTimerRef = useRef(0);
   const count = slides.length;
 
@@ -173,7 +175,26 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       touchYRef.current = e.clientY;
+      lastYRef.current = e.clientY;
+      consumedRef.current = false;
       scrollerRef.current = innerScroller(e.target);
+    };
+
+    /* A scrollable slide is scrolled by us, not by the browser. Letting the
+       browser pan it (touch-action: pan-y) meant it owned the gesture and
+       cancelled our pointer stream, so once the inner scroll hit the end the
+       deck never saw a swipe and the reader was stranded on that slide. */
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' || touchYRef.current === null) return;
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      const dy = lastYRef.current - e.clientY;
+      lastYRef.current = e.clientY;
+      if (dy === 0) return;
+      if (hasRoom(scroller, dy > 0 ? 1 : -1)) {
+        scroller.scrollTop += dy;
+        consumedRef.current = true; // this drag was a scroll, not a slide change
+      }
     };
     const onUp = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
@@ -182,29 +203,31 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
         return;
       }
       const dy = touchYRef.current - e.clientY;
-      const scroller = scrollerRef.current;
+      const consumed = consumedRef.current;
       touchYRef.current = null;
       scrollerRef.current = null;
-      if (Math.abs(dy) < SWIPE_THRESHOLD) return;
-      const direction: 1 | -1 = dy > 0 ? 1 : -1;
-      if (scroller && hasRoom(scroller, direction)) return; // it scrolled instead
-      step(direction);
+      consumedRef.current = false;
+      if (consumed) return; // the drag scrolled the slide's own content
+      if (Math.abs(dy) >= SWIPE_THRESHOLD) step(dy > 0 ? 1 : -1);
     };
     const onCancel = () => {
       touchYRef.current = null;
+      scrollerRef.current = null;
+      consumedRef.current = false;
     };
     // Belt and braces for engines that still try to pan or rubber-band the
     // page from inside the deck (old iOS Safari quirks, pull-to-refresh).
     const onTouchMove = (e: TouchEvent) => {
-      if (innerScroller(e.target)) return; // let a scrollable slide pan itself
-      if (e.cancelable) e.preventDefault();
+      if (e.cancelable) e.preventDefault(); // we drive every pan ourselves
     };
     el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerup', onUp);
     el.addEventListener('pointercancel', onCancel);
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
       el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onCancel);
       el.removeEventListener('touchmove', onTouchMove);
@@ -283,7 +306,10 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
               className={`w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
               style={{
                 height: slideH || '100%',
-                ...(s.scrollable ? { touchAction: 'pan-y', overscrollBehavior: 'contain' } : null),
+                /* touch-action does not inherit: without this the browser
+                   pans the slide itself, swallows the gesture at either end,
+                   and the deck never sees the swipe that should leave it. */
+                ...(s.scrollable ? { touchAction: 'none', overscrollBehavior: 'contain' } : null),
               }}
             >
               {s.node}

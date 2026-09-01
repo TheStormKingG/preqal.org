@@ -120,7 +120,7 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
           <motion.div
             whileHover={{ y: -3, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            className="rounded-2xl p-4 sm:p-6 flex items-center gap-3 sm:gap-4 flex-row"
+            className="rounded-2xl p-5 sm:p-6 flex items-start sm:items-center gap-4 flex-col sm:flex-row"
             style={{
               background: 'rgba(255,255,255,0.72)',
               backdropFilter: 'blur(16px)',
@@ -142,7 +142,7 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
                 </span>
                 <h2 className="text-base font-bold text-slate-900">{t.title}</h2>
               </div>
-              <p className="hidden sm:block text-sm text-slate-500 leading-relaxed">{t.desc}</p>
+              <p className="text-sm text-slate-500 leading-relaxed line-clamp-3 sm:line-clamp-none">{t.desc}</p>
               <p className="text-[11px] text-slate-400 mt-1">{t.type} · {t.size}</p>
             </div>
             <motion.a
@@ -150,10 +150,10 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
               transition={{ type: 'spring', stiffness: 340, damping: 22 }}
               href={`${base}templates/${encodeURIComponent(t.file)}`}
               download
-              className="inline-flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl text-white font-bold text-sm flex-shrink-0"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl text-white font-bold text-sm flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
             >
-              <Download className="h-4 w-4" /><span className="hidden sm:inline">Download</span>
+              <Download className="h-4 w-4" /> Download
             </motion.a>
           </motion.div>
         </ScrollReveal>
@@ -230,26 +230,16 @@ const Resources: React.FC = () => {
           </div>
         ),
       },
-      {
-        label: 'Templates 1 to 3',
+      ...[0, 2, 4].map((from) => ({
+        label: `Templates ${from + 1} and ${from + 2}`,
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
             <div className="w-full max-w-3xl mx-auto deck-fit">
-              <TemplateCards items={TEMPLATES.slice(0, 3)} base={base} />
+              <TemplateCards items={TEMPLATES.slice(from, from + 2)} base={base} />
             </div>
           </div>
         ),
-      },
-      {
-        label: 'Templates 4 to 6',
-        node: (
-          <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full max-w-3xl mx-auto deck-fit">
-              <TemplateCards items={TEMPLATES.slice(3)} base={base} />
-            </div>
-          </div>
-        ),
-      },
+      })),
       {
         label: 'Take it further',
         node: (

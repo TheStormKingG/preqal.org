@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import { useWhatsApp } from '../components/WhatsAppContact';
 
@@ -63,16 +63,15 @@ const Hero: React.FC = () => (
           </motion.p>
         </div>
 
-        {/* Right: hero image — desktop only */}
+        {/* Right: hero image — a banner on phones, the tall frame from lg up */}
         <motion.div
-          className="hidden lg:block flex-shrink-0 w-[400px]"
+          className="flex-shrink-0 w-full lg:w-[400px] mt-5 lg:mt-0"
           initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
-            className="overflow-hidden rounded-3xl relative"
+            className="contact-hero-media overflow-hidden rounded-3xl relative"
             style={{
-              aspectRatio: '4 / 5',
               boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
             }}
           >
@@ -80,7 +79,6 @@ const Hero: React.FC = () => (
               src={`${import.meta.env.BASE_URL}images/contact-hero.png`}
               alt="Preqal — ready to help your business"
               className="w-full h-full object-cover"
-              style={{ objectPosition: 'center top' }}
               width="400"
               height="500"
             />
@@ -187,6 +185,27 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
 );
 
 /* Left panel: contact details, what happens next, and the WhatsApp alternative */
+/* The reCAPTCHA is a cross-origin iframe: a swipe that starts on it is
+   swallowed before this page ever sees it, so the deck cannot read it. That
+   band sits exactly where a thumb rests at the foot of the form, which left
+   readers stranded on this slide. This is the guaranteed way onward. */
+const ContinueCue: React.FC = () => {
+  const deck = useDeck();
+  if (!deck || deck.index >= deck.count - 1) return null;
+  return (
+    <div className="mt-5 flex justify-center lg:hidden">
+      <button
+        type="button"
+        onClick={() => deck.goTo(deck.index + 1)}
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-amber-600 font-bold text-sm"
+        style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
+      >
+        Continue <span aria-hidden="true">&darr;</span>
+      </button>
+    </div>
+  );
+};
+
 const InfoPanel: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
   <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8">
 
@@ -491,6 +510,7 @@ const ContactUs: React.FC = () => {
           <div className="min-h-full flex items-center px-4 sm:px-6 py-4">
             <div className="w-full max-w-5xl mx-auto">
               <MainPanel>{formPanel}</MainPanel>
+              <ContinueCue />
             </div>
           </div>
         ),

@@ -92,3 +92,25 @@ test('the contact form slide scrolls itself before the deck moves on', async ({ 
   await page.waitForTimeout(1600);
   expect(await label(), 'once the form is read out, the deck moves on').not.toContain('Send a message');
 });
+
+test('the form slide is escapable even where the reCAPTCHA swallows swipes', async ({ page }) => {
+  /* The reCAPTCHA is a cross-origin iframe, so a swipe starting on it never
+     reaches this page and the deck cannot read it. The Continue control is the
+     guaranteed way onward from that slide. */
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, '/contact');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(1800);
+
+  const label = () =>
+    page.evaluate(() => document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '');
+  expect(await label()).toContain('Send a message');
+
+  const cue = page.getByRole('button', { name: /Continue/i });
+  await cue.scrollIntoViewIfNeeded();
+  await expect(cue).toBeVisible();
+  await cue.click();
+  await page.waitForTimeout(1600);
+  expect(await label(), 'Continue must leave the form slide').toContain("Who you'll be talking to");
+});
