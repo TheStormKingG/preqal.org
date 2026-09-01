@@ -137,11 +137,12 @@ body {
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
-  border-radius: 1.5rem;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(12px);
-  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+  /* Purely an animation wrapper. It used to also paint every route as a
+     rounded translucent card — a 55% white wash over the page background,
+     blurred and neumorphically shadowed. That lightened the true #e0e5ec and,
+     wherever the content did not cover the wrapper (a deck slide scaled by
+     deck-fit, for one), left a lighter rounded frame around the content. */
 }
 
 @keyframes slideInRight {
