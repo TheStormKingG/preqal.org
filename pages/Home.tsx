@@ -355,9 +355,8 @@ const PhaseSection: React.FC<{
 const PHASE_SLIDE_OFFSET = 1; // slide 0 is the hero; Phase 01 is slide 1
 
 /* ─── The wick ───
-   One continuous fuse threaded through the numbered badges. On every phase
-   slide the whole line is laid down in grey — the unburnt wick — and when the
-   slide arrives a lit length runs along it, turning it amber, until it reaches
+   One continuous fuse threaded through the numbered badges. Nothing is drawn
+   until the slide arrives; then the lit wick runs in, amber, until it reaches
    the number block, which pops into place as the flame hits it.
 
    Phase 01 is where the wick originates, so its badge lights first and the
@@ -499,7 +498,6 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
       [cx, geom.h],
     ]);
   }
-  const unburnt = isOrigin ? below : `${above} ${below}`;
   const burning = isOrigin ? below : above;
 
   return (
@@ -517,15 +515,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
               <stop offset="100%" stopColor="#d97706" />
             </linearGradient>
           </defs>
-          {/* the unburnt wick */}
-          <path
-            d={unburnt}
-            fill="none"
-            stroke="rgba(148,163,184,0.5)"
-            strokeWidth={2.5}
-            strokeLinecap="round"
-          />
-          {/* the lit length running along it */}
+          {/* the lit wick — nothing is drawn until the flame runs */}
           <path
             d={burning}
             fill="none"
