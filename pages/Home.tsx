@@ -397,7 +397,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
   const wrapRef = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const [geom, setGeom] = useState<Geom | null>(null);
-  const [seq, setSeq] = useState({ burning: false, popped: false, bursting: false });
+  const [seq, setSeq] = useState({ burning: false, popped: false, bursting: false, down: true });
 
   const isOrigin = index === 0;
   const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
@@ -405,7 +405,11 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
      from above, back up the deck it arrives from below. Phase 01 keeps its
      origin behaviour only when it is reached going forward. */
   const goingDown = deck ? deck.dir === 1 : true;
-  const { segment, hiddenOffset, originEntry } = wickRun(isOrigin, goingDown);
+  const { originEntry } = wickRun(isOrigin, goingDown);
+  /* While the wick is lit, draw it with the direction it was lit in — a later
+     direction change must not swap the half being shown on a slide that is
+     already on its way out. */
+  const { segment, hiddenOffset } = wickRun(isOrigin, seq.burning ? seq.down : goingDown);
 
   /* Where the badge sits and where the gutter runs, in slide pixels.
      The gutter is measured from the two columns rather than assumed to be the
@@ -456,26 +460,33 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
      than animation callbacks, so the sequence still completes if the browser
      throttles animations mid-transition. */
   useEffect(() => {
-    if (!active || prefersReduced) return;
+    if (prefersReduced) return;
     const t: number[] = [];
-    if (originEntry) {
-      // 01 lights first, then the wick runs out of it towards 02.
-      t.push(window.setTimeout(() => setSeq({ burning: false, popped: true, bursting: true }), 160));
-      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 460));
-      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 900));
+    const down = goingDown; // the direction this slide was entered with
+    if (active) {
+      // Clear anything held over from the last visit before the fuse re-runs.
+      t.push(window.setTimeout(() => setSeq({ burning: false, popped: false, bursting: false, down }), 0));
+      if (originEntry) {
+        // 01 lights first, then the wick runs out of it towards 02.
+        t.push(window.setTimeout(() => setSeq({ burning: false, popped: true, bursting: true, down }), 160));
+        t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true, down }), 460));
+        t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false, down }), 900));
+      } else {
+        // The flame arrives — from above going down, from below coming back up —
+        // and sets the number block off when it lands.
+        t.push(window.setTimeout(() => setSeq({ burning: true, popped: false, bursting: false, down }), 150));
+        t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true, down }), 150 + BURN_IN_MS));
+        t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false, down }), 150 + BURN_IN_MS + 700));
+      }
     } else {
-      // The flame arrives — from above going down, from below coming back up —
-      // and sets the number block off when it lands.
-      t.push(window.setTimeout(() => setSeq({ burning: true, popped: false, bursting: false }), 150));
-      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 150 + BURN_IN_MS));
-      t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 150 + BURN_IN_MS + 700));
+      // Leaving: hold the burnt wick exactly as it is while the slide travels
+      // off-screen, then rewind so the fuse runs again on the way back. Reset
+      // any earlier lets the outgoing slide visibly un-draw — and if the
+      // direction just flipped, un-draw the wrong half.
+      t.push(window.setTimeout(() => setSeq({ burning: false, popped: false, bursting: false, down }), 950));
     }
-    // Rewind when the slide is left, so the fuse runs again on the way back.
-    return () => {
-      t.forEach(clearTimeout);
-      setSeq({ burning: false, popped: false, bursting: false });
-    };
-  }, [active, originEntry, prefersReduced]);
+    return () => t.forEach(clearTimeout);
+  }, [active, originEntry, goingDown, prefersReduced]);
 
   const burnt = prefersReduced || seq.burning;
   const pop: 'hidden' | 'shown' = prefersReduced || seq.popped ? 'shown' : 'hidden';
@@ -534,7 +545,9 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
               strokeDasharray: 1,
               strokeDashoffset: burnt ? 0 : hiddenOffset,
               filter: 'drop-shadow(0 0 5px rgba(245,158,11,0.65))',
-              transition: prefersReduced
+              // Only the arriving slide animates; a slide that has been left
+              // rewinds instantly, off-screen, where it cannot be seen.
+              transition: prefersReduced || !active
                 ? 'none'
                 : `stroke-dashoffset ${originEntry ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
             }}
