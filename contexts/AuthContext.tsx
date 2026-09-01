@@ -2,6 +2,37 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 
+/** Thrown when the auth host cannot be reached, so the UI can say so plainly. */
+export const AUTH_UNREACHABLE = 'auth-unreachable';
+
+const REACHABILITY_TIMEOUT_MS = 6000;
+
+/* signInWithOAuth hands the whole tab to the auth host with a full-page
+   redirect. If that host is unreachable the browser lands on its own error
+   page and the reader is stranded there with no way back into the site — so
+   check it answers before giving the tab away.
+   A no-cors request resolves for any reachable host whatever it replies, and
+   rejects only on a genuine network failure, which is exactly the signal we
+   want. A timeout is not proof of anything, so that case fails open. */
+async function authHostReachable(): Promise<boolean> {
+  const base = import.meta.env.VITE_SUPABASE_URL;
+  if (!base) return true;
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), REACHABILITY_TIMEOUT_MS);
+  try {
+    await fetch(`${base}/auth/v1/health`, {
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: controller.signal,
+    });
+    return true;
+  } catch {
+    return controller.signal.aborted; // timed out — let the normal flow proceed
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -139,12 +170,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [loadAndSetProfile]);
 
   const signInWithGoogle = useCallback(async () => {
-    await supabase.auth.signInWithOAuth({
+    if (!(await authHostReachable())) throw new Error(AUTH_UNREACHABLE);
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/e-courses/register`,
       },
     });
+    if (error) throw error; // was silently discarded, so failures showed nothing
   }, []);
 
   const handleSignOut = useCallback(async () => {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import SEO from '../components/SEO';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth, AUTH_UNREACHABLE } from '../contexts/AuthContext';
 import { useAdminChoice, isAdminEmail } from '../components/AdminChoice';
 
 // ---------------------------------------------------------------------------
@@ -42,6 +42,7 @@ const ECourseRegister: React.FC = () => {
   // Name-edit step (shown after OAuth if profile needs setting up)
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
 
@@ -79,10 +80,16 @@ const ECourseRegister: React.FC = () => {
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleSignIn = async () => {
     setError(null);
+    setSigningIn(true);
     try {
       await signInWithGoogle();
-    } catch {
-      setError('Could not start Google sign-in. Please try again.');
+    } catch (e) {
+      setError(
+        (e as Error)?.message === AUTH_UNREACHABLE
+          ? 'Sign-in is unavailable right now — we could not reach the authentication service. Please try again in a few minutes.'
+          : 'Could not start Google sign-in. Please try again.',
+      );
+      setSigningIn(false);
     }
   };
 
@@ -238,10 +245,11 @@ const ECourseRegister: React.FC = () => {
           <button
             type="button"
             onClick={handleSignIn}
-            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 neu-raised-sm border border-slate-200/80 transition-all shadow-sm"
+            disabled={signingIn}
+            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 neu-raised-sm border border-slate-200/80 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <GoogleIcon className="h-5 w-5 shrink-0" />
-            Continue with Google
+            {signingIn ? 'Connecting…' : 'Continue with Google'}
           </button>
 
           <p className="text-[11px] text-center text-slate-500 leading-relaxed">
