@@ -77,7 +77,11 @@ const FooterComplianceStandards: React.FC = () => {
   );
 };
 
-const Footer: React.FC = () => {
+/* `compact` is for the home deck's last slide, where the footer has to fit a
+   single phone screen. It trims the rhythm and drops the three link columns
+   below lg — those links live in the nav and in the phase slides above. Every
+   other page renders the full footer. */
+const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { openWhatsApp } = useWhatsApp();
   const journey = [
     { name: '01 · Business Plan', to: '/services/business-plan' },
@@ -88,14 +92,14 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[#e0e5ec] pt-16 pb-12 relative">
+    <footer className={`bg-[#e0e5ec] relative ${compact ? 'pt-6 pb-5 lg:pt-16 lg:pb-12' : 'pt-16 pb-12'}`}>
       {/* Top divider */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'mb-5 lg:mb-12' : 'mb-12'}`}>
         <div className="h-px neu-pressed-sm rounded-full" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className={`grid grid-cols-1 md:grid-cols-4 ${compact ? 'gap-5 lg:gap-8' : 'gap-8'}`}>
           <div className="col-span-1 md:col-span-1">
             <div className="mb-4">
               <picture>
@@ -121,7 +125,7 @@ const Footer: React.FC = () => {
                 />
               </picture>
             </div>
-            <div className="space-y-3 mb-5">
+            <div className={`mb-5 ${compact ? 'space-y-2 lg:space-y-3' : 'space-y-3'}`}>
               <div className="flex items-center gap-2.5">
                 <User className="h-4 w-4 text-amber-600 flex-shrink-0" />
                 <p className="text-sm text-slate-500 italic">
@@ -156,7 +160,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 md:contents">
+          <div className={compact ? 'hidden md:contents' : 'grid grid-cols-2 gap-6 md:contents'}>
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">THE JOURNEY</h3>
             <ul className="space-y-2 text-sm">
@@ -202,7 +206,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
+        <div className={`flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 ${compact ? 'mt-5 pt-4 lg:mt-12 lg:pt-8' : 'mt-12 pt-8'}`}>
           <div className="h-px w-full neu-pressed-sm rounded-full mb-8" />
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">

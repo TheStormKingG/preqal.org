@@ -299,7 +299,7 @@ body {
   .deck-fit { transform: scale(0.90); }
 }
 @media (max-height: 700px) {
-  .deck-fit { transform: scale(0.78); }
+  .deck-fit { transform: scale(0.74); }
 }
 @media (max-height: 640px) {
   .deck-fit { transform: scale(0.68); }
@@ -318,3 +318,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .wick-burst { animation: none; }
 }
+
+/* ── Home deck — phase media is a shallow banner on phones, 4:3 from lg up ── */
+.phase-media { aspect-ratio: 2 / 1; }
+@media (min-width: 640px) { .phase-media { aspect-ratio: 16 / 9; } }
+@media (min-width: 1024px) { .phase-media { aspect-ratio: 4 / 3; } }

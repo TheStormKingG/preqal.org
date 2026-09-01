@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent 
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useDeck, useDeckMode, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 
@@ -113,9 +113,8 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
   return (
     <div
       ref={ref}
-      className="relative overflow-hidden rounded-3xl"
+      className="phase-media relative overflow-hidden rounded-3xl"
       style={{
-        aspectRatio: '4 / 3',
         boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
       }}
     >
@@ -194,7 +193,7 @@ const PhaseSection: React.FC<{
 
   return (
     <section ref={ref} id={`phase-${index + 1}`} className={`relative ${deck ? '' : 'py-14 sm:py-16'}`}>
-      <div className={`flex flex-col lg:items-center gap-10 lg:gap-16 ${flip ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
+      <div className={`flex flex-col lg:items-center gap-4 lg:gap-16 ${flip ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
 
         {/* Copy — scroll-scrubbed ignition.
             Desktop: both columns hug the centre line (left column right-aligned,
@@ -213,12 +212,12 @@ const PhaseSection: React.FC<{
             : {})}
         >
           <div>
-            <div className={`flex items-center gap-4 mb-5 ${flip ? '' : 'lg:flex-row-reverse'}`}>
+            <div className={`flex items-center gap-3 mb-3 lg:gap-4 lg:mb-5 ${flip ? '' : 'lg:flex-row-reverse'}`}>
               {deck ? (
                 /* Deck: the badge is popped into place by the wick when the
                    burn reaches it (see PhaseSlide). Its resting style is the
                    visible one, so it still shows if the pop never plays. */
-                <div ref={badgeRef} className="relative h-14 w-14 flex-shrink-0">
+                <div ref={badgeRef} data-phase-badge className="relative h-12 w-12 lg:h-14 lg:w-14 flex-shrink-0">
                   {burst && (
                     <span
                       aria-hidden="true"
@@ -227,7 +226,7 @@ const PhaseSection: React.FC<{
                     />
                   )}
                   <div
-                    className="h-14 w-14 rounded-2xl flex items-center justify-center"
+                    className="h-12 w-12 lg:h-14 lg:w-14 rounded-2xl flex items-center justify-center"
                     style={{
                       background: 'linear-gradient(135deg, #f59e0b, #d97706)',
                       boxShadow: '4px 4px 14px rgba(217,119,6,0.45), -3px -3px 10px rgba(255,255,255,0.7), 0 0 24px rgba(245,158,11,0.35)',
@@ -276,16 +275,16 @@ const PhaseSection: React.FC<{
               </p>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-[1.1] mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-[1.15] lg:leading-[1.1] mb-2 lg:mb-4">
               {phase.headline}
             </h2>
-            <p className={`text-base text-slate-500 leading-relaxed max-w-[480px] mb-6 ${flip ? '' : 'lg:ml-auto'}`}>{phase.story}</p>
+            <p className={`text-sm lg:text-base text-slate-500 leading-relaxed max-w-[480px] mb-4 lg:mb-6 ${flip ? '' : 'lg:ml-auto'}`}>{phase.story}</p>
 
             {/* Service card — interior stays left-aligned for readability */}
             <motion.div
               whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              className={`rounded-2xl p-6 max-w-[520px] text-left ${flip ? '' : 'lg:ml-auto'}`}
+              className={`rounded-2xl p-4 lg:p-6 max-w-[520px] text-left ${flip ? '' : 'lg:ml-auto'}`}
               style={{
                 background: 'rgba(255,255,255,0.72)',
                 backdropFilter: 'blur(16px)',
@@ -295,12 +294,12 @@ const PhaseSection: React.FC<{
               }}
             >
               <h3 className="text-lg font-bold text-slate-900 mb-1">Preqal {phase.serviceName}</h3>
-              <p className="text-sm text-slate-500 italic mb-4">"{phase.servicePromise}"</p>
-              <div className="flex flex-col gap-2 mb-5">
+              <p className="text-sm text-slate-500 italic mb-3 lg:mb-4">"{phase.servicePromise}"</p>
+              <div className="flex flex-col gap-1.5 lg:gap-2 mb-4 lg:mb-5">
                 {phase.deliverables.map((d) => (
                   <div
                     key={d}
-                    className="flex items-center gap-2.5 text-sm text-slate-600 px-3 py-2 rounded-xl"
+                    className="flex items-center gap-2.5 text-sm text-slate-600 px-3 py-1.5 lg:py-2 rounded-xl"
                     style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
                   >
                     <CheckSquare className="h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
@@ -367,6 +366,7 @@ const PHASE_SLIDE_OFFSET = 1; // slide 0 is the hero; Phase 01 is slide 1
    The path is built in device pixels from the badge's measured position, so
    the line genuinely passes through the number rather than near it. */
 const WICK_AMPLITUDE = 22; // px either side of the badge's axis — stays in the column gutter
+const MOBILE_WICK_X = 10;  // px from the left edge — where the phone's wick has always run
 const BURN_IN_MS = 780;    // flame travelling towards a badge
 const BURN_OUT_MS = 900;   // flame leaving Phase 01 towards Phase 02
 
@@ -516,6 +516,15 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
       [cx, geom.h],
     ]);
   }
+  /* Phones keep the wick the phone already had: a straight amber line hugging
+     the left edge rather than the desktop curve through the middle gutter. It
+     burns with the same direction and timing, so only the shape differs. */
+  /* On a phone the badge sits at the top of the slide, so splitting the line at
+     it would leave a stub. The phone keeps the continuous edge-to-edge line it
+     has always had; only the end it fills from follows the direction. */
+  const mobileLine = geom
+    ? `M ${MOBILE_WICK_X} 0 L ${MOBILE_WICK_X} ${geom.h.toFixed(1)}`
+    : '';
   const burning = segment === 'above' ? above : below;
 
   return (
@@ -550,6 +559,37 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
                  slide that has been left — happens instantly. Without that the
                  transition would animate away from whichever end the last
                  visit finished on, and a return visit would draw backwards. */
+              transition: prefersReduced || !active || !seq.burning
+                ? 'none'
+                : `stroke-dashoffset ${originEntry ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+            }}
+          />
+        </svg>
+      )}
+      {geom && (
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 lg:hidden"
+          width={geom.w}
+          height={geom.h}
+        >
+          <defs>
+            <linearGradient id={`${gradId}-m`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#d97706" />
+            </linearGradient>
+          </defs>
+          <path
+            d={mobileLine}
+            fill="none"
+            stroke={`url(#${gradId}-m)`}
+            strokeWidth={3}
+            strokeLinecap="round"
+            pathLength={1}
+            style={{
+              strokeDasharray: 1,
+              strokeDashoffset: burnt ? 0 : hiddenOffset,
+              filter: 'drop-shadow(0 0 5px rgba(245,158,11,0.65))',
               transition: prefersReduced || !active || !seq.burning
                 ? 'none'
                 : `stroke-dashoffset ${originEntry ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
@@ -601,7 +641,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
 
           <div className={`flex-1 lg:max-w-[580px] lg:mb-0 ${deck ? 'mb-6' : 'mb-10'}`}>
             <motion.div
-              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'mb-5' : 'mb-8'}`}
+              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'mb-3 lg:mb-5' : 'mb-8'}`}
               style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
             >
@@ -610,14 +650,14 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.div>
 
             <motion.h1
-              className={`text-4xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
+              className={`text-3xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-2 lg:mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
               Every big brand<br />started small.
             </motion.h1>
             <motion.p
-              className={`text-4xl sm:text-5xl font-black leading-[1.05] ${deck ? 'lg:text-[3.1rem] mb-5' : 'lg:text-[3.6rem] mb-7'}`}
+              className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-4 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
               style={{ fontStyle: 'italic', color: '#f59e0b' }}
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -626,7 +666,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.p>
 
             <motion.p
-              className={`text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-6' : 'mb-9'}`}
+              className={`text-sm lg:text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-4 lg:mb-6' : 'mb-9'}`}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.3 }}
             >
@@ -657,7 +697,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
 
           {/* Hero image — gentle parallax on scroll */}
           <motion.div
-            className={`flex-shrink-0 w-full ${deck ? 'lg:w-[460px]' : 'lg:w-[520px]'}`}
+            className={`flex-shrink-0 w-full ${deck ? 'hidden lg:block lg:w-[460px]' : 'lg:w-[520px]'}`}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -696,7 +736,7 @@ const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
       <p className={`text-xs font-semibold text-slate-400 uppercase tracking-widest ${deck ? 'mb-2' : 'mb-3'}`}>
         One journey · Five phases
       </p>
-      <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+      <h2 className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
         This story is<br />
         <span className="text-amber-600">about you.</span>
       </h2>
@@ -716,7 +756,7 @@ const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
 
   return (
     <motion.div
-      className="mt-8 lg:mt-10"
+      className="mt-5 lg:mt-10"
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -733,7 +773,7 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
     /* Deck: the band claims a fixed share of the slide and centres its copy,
        so the band + CTA always add up to exactly one screen. (A transform
        scale can't do this — it shrinks the paint, not the reserved height.) */
-    className={`relative overflow-hidden ${deck ? 'h-[40%] flex-shrink-0 flex items-center' : 'py-16 sm:py-20'}`}
+    className={`relative overflow-hidden ${deck ? 'py-3 sm:py-5 flex-shrink-0 flex items-center lg:py-0 lg:h-[40%]' : 'py-16 sm:py-20'}`}
     style={{ background: '#0f172a' }}
   >
     <div className="absolute inset-0 pointer-events-none" style={{
@@ -745,24 +785,24 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
     <div className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full ${deck ? 'deck-fit' : ''}`}>
       <ScrollReveal yFrom={16}>
         <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">Others have walked this road</p>
-        <div className="flex flex-col md:flex-row md:items-end gap-10 md:gap-20">
+        <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-20">
           <div className="flex-1">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-snug mb-5">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug mb-3 lg:mb-5">
               The businesses that made it<br />
               <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
             </h2>
-            <p className="text-white/55 text-base leading-relaxed max-w-[480px]">
+            <p className="text-white/55 text-sm lg:text-base leading-relaxed max-w-[480px]">
               Each one walked these five phases and passed audits against ISO 9001 and
               FSSC 22000.
             </p>
           </div>
-          <div className="flex gap-12 flex-shrink-0">
+          <div className="flex gap-8 lg:gap-12 flex-shrink-0">
             <div className="text-center">
-              <div className="text-5xl font-bold text-amber-400">98%</div>
+              <div className="text-3xl lg:text-5xl font-bold text-amber-400">98%</div>
               <div className="text-xs text-white/40 font-medium mt-1 leading-snug">pass rate</div>
             </div>
             <div className="text-center">
-              <div className="text-5xl font-bold text-amber-400">9</div>
+              <div className="text-3xl lg:text-5xl font-bold text-amber-400">9</div>
               <div className="text-xs text-white/40 font-medium mt-1 leading-snug">months to<br />certification</div>
             </div>
           </div>
@@ -787,9 +827,9 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
           boxShadow: '10px 10px 28px rgba(180,83,9,0.3), -6px -6px 20px rgba(255,200,80,0.18)',
         }}
       >
-        <div className={`text-center ${deck ? 'p-8 md:p-10' : 'p-8 md:p-14'}`}>
+        <div className={`text-center ${deck ? 'p-4 sm:p-8 md:p-10' : 'p-8 md:p-14'}`}>
           <motion.p
-            className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-4"
+            className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-2 lg:mb-4"
             initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
@@ -803,7 +843,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             One message starts everything.
           </motion.h2>
           <motion.p
-            className={`text-amber-100 text-lg max-w-xl mx-auto leading-relaxed ${deck ? 'mb-8' : 'mb-10'}`}
+            className={`text-amber-100 text-base lg:text-lg max-w-xl mx-auto leading-relaxed ${deck ? 'mb-5 lg:mb-8' : 'mb-10'}`}
             initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.35 }}
           >
@@ -819,7 +859,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
               <button
                 type="button"
                 onClick={openWhatsApp}
-                className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
                 style={{ background: 'rgba(255,255,255,0.95)', boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)' }}
               >
                 <WhatsAppIcon className="mr-2 h-5 w-5 text-[#25D366]" /> Message Dr. Gravesande
@@ -828,7 +868,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
               <Link
                 to="/resources"
-                className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
                 style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)' }}
               >
                 <Download className="mr-2 h-5 w-5" />
@@ -840,60 +880,18 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
       </motion.div>
 
       {/* Disambiguation */}
-      <p className={`text-xs text-slate-400 text-center ${deck ? 'mt-6' : 'mt-10'}`}>
+      <p className={`text-xs text-slate-400 text-center ${deck ? 'mt-3 lg:mt-6' : 'mt-10'}`}>
         Preqal is a brand name and not the word "prequel".
       </p>
     </div>
   </section>
 );
 
-/* ─── The journey in scroll mode: intro + amber progress line + phases ─── */
-const JourneyScroll: React.FC = () => {
-  const journeyRef = useRef<HTMLDivElement>(null);
-  const prefersReduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: journeyRef, offset: ['start 0.7', 'end 0.75'] });
-
-  return (
-    <section className="px-4 sm:px-6 lg:px-8 pb-6">
-      <div className="max-w-6xl mx-auto">
-        <StoryIntro />
-
-        {/* Journey line + phases */}
-        <div ref={journeyRef} className="relative">
-          {/* progress line — draws as you scroll.
-              Mobile: hugs the left screen edge. Desktop: centered. */}
-          <div
-            aria-hidden="true"
-            className="absolute top-0 bottom-0 w-[6px] lg:w-[3px] -left-4 sm:-left-6 lg:left-1/2 lg:-translate-x-1/2"
-          >
-            <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(163,177,198,0.35)' }} />
-            <motion.div
-              className="absolute inset-x-0 top-0 rounded-full origin-top"
-              style={{
-                background: 'linear-gradient(to bottom, #f59e0b, #d97706)',
-                height: '100%',
-                scaleY: prefersReduced ? 1 : scrollYProgress,
-              }}
-            />
-          </div>
-
-          {PHASES.map((phase, i) => (
-            <PhaseSection key={phase.number} phase={phase} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const Home: React.FC = () => {
   const { openWhatsApp } = useWhatsApp();
-  const deck = useDeckMode();
-
-  if (deck) {
-    const slides: DeckSlide[] = [
-      {
-        label: 'Welcome',
+  const slides: DeckSlide[] = [
+    {
+      label: 'Welcome',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto w-full deck-fit">
@@ -907,8 +905,8 @@ const Home: React.FC = () => {
         label: `Phase ${phase.number} · ${phase.chapter}`,
         node: <PhaseSlide phase={phase} index={i} />,
       })),
-      {
-        label: 'Proof & next step',
+    {
+      label: 'Proof & next step',
         node: (
           <div className="h-full flex flex-col">
             <ProofSection deck />
@@ -916,36 +914,22 @@ const Home: React.FC = () => {
           </div>
         ),
       },
-      {
-        label: 'Contact & info',
+    {
+      label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
             <div className="w-full deck-fit">
-              <Footer />
+              <Footer compact />
             </div>
           </div>
         ),
       },
     ];
 
-    return (
-      <>
-        <SEO pageKey="home" />
-        <SlideDeck slides={slides} />
-      </>
-    );
-  }
-
   return (
     <>
       <SEO pageKey="home" />
-      <div className="w-full overflow-x-hidden">
-        <HeroSection openWhatsApp={openWhatsApp} />
-        <JourneyScroll />
-        <ProofSection />
-        <CTASection openWhatsApp={openWhatsApp} />
-      </div>
-      <Footer />
+      <SlideDeck slides={slides} />
     </>
   );
 };

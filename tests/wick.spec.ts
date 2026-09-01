@@ -27,7 +27,7 @@ const readWicks = (page: Page): Promise<Snap> =>
       phases: slides.map((s, i) => {
         const p = s.querySelector('path[stroke^="url(#wick"]');
         const d = p?.getAttribute('d') ?? '';
-        const badge = s.querySelector('.relative.h-14.w-14 > div') as HTMLElement | null;
+        const badge = s.querySelector('[data-phase-badge] > div') as HTMLElement | null;
         return {
           phase: i + 1,
           startY: Math.round(parseFloat(d.split(' ')[2] ?? '-1')),

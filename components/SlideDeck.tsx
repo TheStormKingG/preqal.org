@@ -33,21 +33,6 @@ const DeckContext = createContext<DeckApi | null>(null);
 /** Slide components can call this to jump the deck (null outside a deck). */
 export const useDeck = () => useContext(DeckContext);
 
-/** True when the viewport is wide enough for the slide experience. */
-export const useDeckMode = (minWidth = 1024): boolean => {
-  const query = `(min-width: ${minWidth}px)`;
-  const [deck, setDeck] = useState<boolean>(
-    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia(query);
-    const onChange = (e: MediaQueryListEvent) => setDeck(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [query]);
-  return deck;
-};
-
 const WHEEL_THRESHOLD = 48; // accumulated deltaY that counts as a gesture
 const WHEEL_GESTURE_GAP = 120; // ms between events that still belong to one gesture
 const QUIET_GAP = 160; // ms of wheel silence required after a slide change
