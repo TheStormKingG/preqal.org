@@ -23,7 +23,6 @@ const PRERENDER_ROUTES = [
   '/guides/iso-9001-cost-guyana',
   '/guides/export-food-from-guyana',
   '/resources',
-  '/e-courses',
   '/contact',
   '/business-growth-assessment',
   '/preqal-not-prequel',

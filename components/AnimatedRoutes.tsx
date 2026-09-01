@@ -15,17 +15,10 @@ const SEOHealth = lazy(() => import('../pages/SEOHealth'));
 const MDST = lazy(() => import('../pages/MDST'));
 const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('../pages/TermsOfService'));
-const ECourses = lazy(() => import('../pages/ECourses'));
-const ECourseLearn = lazy(() => import('../pages/ECourseLearn'));
-const ECourseRegister = lazy(() => import('../pages/ECourseRegister'));
-const ECourseVerifyCertificate = lazy(() => import('../pages/ECourseVerifyCertificate'));
 const BusinessGrowthAssessment = lazy(() => import('../pages/BusinessGrowthAssessment'));
 
 const routeOrder = [
   '/',
-  '/e-courses',
-  '/e-courses/register',
-  '/e-courses/learn',
   '/resources',
   '/contact',
   '/business-growth-assessment',
@@ -82,12 +75,13 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/case-studies"               element={<Navigate to="/" replace />} />
         <Route path="/resources"                  element={<Resources />} />
         <Route path="/templates"                  element={<Navigate to="/resources" replace />} />
-        <Route path="/e-courses"                  element={<ECourses />} />
-        <Route path="/e-courses/register"         element={<ECourseRegister />} />
-        <Route path="/e-courses/learn"            element={<ECourseLearn />} />
+        {/* E-Course retired 2026-09-01 — keep inbound links working */}
+        <Route path="/e-courses"                  element={<Navigate to="/" replace />} />
+        <Route path="/e-courses/register"         element={<Navigate to="/" replace />} />
+        <Route path="/e-courses/learn"            element={<Navigate to="/" replace />} />
         {/* Certificate verification — hidden from nav, accessible via PDF link */}
-        <Route path="/verify"                     element={<ECourseVerifyCertificate />} />
-        <Route path="/verify/:certKey"            element={<ECourseVerifyCertificate />} />
+        <Route path="/verify"                     element={<Navigate to="/" replace />} />
+        <Route path="/verify/:certKey"            element={<Navigate to="/" replace />} />
         {/* About merged into Contact */}
         <Route path="/about"                      element={<Navigate to="/contact" replace />} />
         {/* Booking retired 2026-07-04 — contact is via WhatsApp popup */}

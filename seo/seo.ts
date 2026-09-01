@@ -54,21 +54,6 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       ogImage: `${BASE_URL}/og/resources.webp`,
       ogType: 'website'
     },
-    eCourses: {
-      title: 'E-Course | Preqal — Practical QMS Learning',
-      description: 'Nine-module QMS e-course covering process thinking, risk, documentation, audits, CAPA, and improvement—practical and built for real operations.',
-      canonical: `${BASE_URL}/e-courses/`,
-      ogImage: `${BASE_URL}/og/e-courses.webp`,
-      ogType: 'website'
-    },
-    eCourseLearn: {
-      title: 'E-Course Player | Preqal — QMS Modules',
-      description: "Work through Preqal's practical QMS e-course: nine modules with clear outcomes, pacing, and navigation—built for real operations.",
-      canonical: `${BASE_URL}/e-courses/learn/`,
-      ogImage: DEFAULT_OG_IMAGE,
-      ogType: 'website',
-      noindex: true
-    },
     book: {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 7 days—so you know exactly where to focus first.',
@@ -90,21 +75,6 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       canonical: `${BASE_URL}/business-growth-assessment/`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: 'website'
-    },
-    eCourseRegister: {
-      title: 'Register for QMS E-Course | Preqal',
-      description: "Register for Preqal's practical QMS e-course — Build Systems That Actually Work. Nine modules, real operations focus, and a certificate on completion.",
-      canonical: `${BASE_URL}/e-courses/register/`,
-      ogImage: `${BASE_URL}/og/e-courses-register.webp`,
-      ogType: 'website'
-    },
-    verifyCertificate: {
-      title: 'Verify Certificate | Preqal',
-      description: 'Verify the authenticity of a Preqal course certificate. Enter your certificate key to confirm completion of a Preqal QMS e-course.',
-      canonical: `${BASE_URL}/verify/`,
-      ogImage: DEFAULT_OG_IMAGE,
-      ogType: 'website',
-      noindex: true
     },
     preqalNotPrequel: {
       title: 'Preqal (Not Prequel) | Brand Clarification',

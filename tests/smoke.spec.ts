@@ -97,25 +97,18 @@ test('/quote-classifier redirects to /business-growth-assessment', async ({ page
 });
 
 // ─────────────────────────────────────────────
-// Course platform
+// Retired routes (E-Course removed 2026-09-01)
 // ─────────────────────────────────────────────
 
-test('e-courses listing page loads', async ({ page }) => {
-  const check = watchForErrors(page);
-  await page.goto('/e-courses');
-  await expect(page).toHaveTitle(/Preqal/i);
-  await expect(page.locator('h1').first()).toBeVisible();
-  check();
-});
-
-test('certificate verification page loads', async ({ page }) => {
-  const check = watchForErrors(page);
-  await page.goto('/verify');
-  await expect(page).toHaveTitle(/Preqal/i);
-  // Should show an input for the cert key
-  await expect(page.locator('input').first()).toBeVisible({ timeout: 10_000 });
-  check();
-});
+for (const path of ['/e-courses', '/e-courses/register', '/e-courses/learn', '/verify']) {
+  test(`retired route ${path} sends the reader home`, async ({ page }) => {
+    const check = watchForErrors(page);
+    await page.goto(path);
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveTitle(/Preqal/i);
+    check();
+  });
+}
 
 // ─────────────────────────────────────────────
 // Navigation

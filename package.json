@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --max-warnings 0",
-    "build": "node scripts/generate-og-images.mjs && node scripts/sync-qms-media.mjs && node scripts/generate-module-quiz-bank.mjs && node scripts/generate-sitemap.js && vite build && node scripts/inject-seo-meta.mjs",
+    "build": "node scripts/generate-og-images.mjs && node scripts/sync-qms-media.mjs && node scripts/generate-sitemap.js && vite build && node scripts/inject-seo-meta.mjs",
     "sync-module1-slides": "node scripts/sync-module1-slides.mjs",
     "sync-module2-slides": "node scripts/sync-module2-slides.mjs",
     "sync-module3-slides": "node scripts/sync-module3-slides.mjs",
