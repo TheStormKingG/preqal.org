@@ -695,16 +695,15 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.div>
           </div>
 
-          {/* Hero image — gentle parallax on scroll */}
+          {/* Hero image — a shallow banner on phones, the tall frame from lg up */}
           <motion.div
-            className={`flex-shrink-0 w-full ${deck ? 'hidden lg:block lg:w-[460px]' : 'lg:w-[520px]'}`}
+            className={`flex-shrink-0 w-full ${deck ? 'mt-4 lg:mt-0 lg:w-[460px]' : 'lg:w-[520px]'}`}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
             <div
-              className="relative overflow-hidden rounded-3xl"
+              className="hero-media relative overflow-hidden rounded-3xl"
               style={{
-                aspectRatio: '4 / 3.2',
                 boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
               }}
             >
@@ -712,7 +711,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
                 src={`${import.meta.env.BASE_URL}images/hero-bg-1040.webp`}
                 alt="Business leader relaxed and confident at their desk"
                 className="w-full h-full object-cover"
-                style={deck || prefersReduced ? { objectPosition: 'center top' } : { objectPosition: 'center top', y: heroImgY, scale: 1.08 }}
+                style={deck || prefersReduced ? undefined : { objectPosition: 'center top', y: heroImgY, scale: 1.08 }}
                 width="520"
                 height="416"
                 decoding="async"

@@ -293,33 +293,38 @@ body {
   .saturn-stage-float { animation: none !important; }
 }
 
-/* ── Home slide deck — shrink slide content on short viewports so nothing
-      is ever cut off (each slide owns exactly one screen) ── */
-@media (max-height: 780px) {
+/* ── Home slide deck — shrink slide content on tight viewports so nothing is
+      ever cut off (each slide owns exactly one screen). Below lg the slides
+      carry more stacked content, so they start from a smaller base. ── */
+@media (min-width: 1024px) and (max-height: 780px) {
   .deck-fit { transform: scale(0.90); }
 }
-@media (max-height: 700px) {
+@media (min-width: 1024px) and (max-height: 700px) {
+  .deck-fit { transform: scale(0.74); }
+}
+@media (max-width: 1023px) {
+  .deck-fit { transform: scale(0.92); }
+}
+@media (max-width: 1023px) and (max-height: 780px) {
+  .deck-fit { transform: scale(0.84); }
+}
+@media (max-width: 1023px) and (max-height: 700px) {
   .deck-fit { transform: scale(0.74); }
 }
 @media (max-height: 640px) {
   .deck-fit { transform: scale(0.68); }
 }
 
-/* ── Home slide deck — the wick's balloon-pop burst behind a phase badge ── */
-@keyframes wickBurst {
-  0%   { transform: scale(0.4); opacity: 0.9; }
-  60%  { opacity: 0.35; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-.wick-burst {
-  opacity: 0;
-  animation: wickBurst 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .wick-burst { animation: none; }
-}
 
 /* ── Home deck — phase media is a shallow banner on phones, 4:3 from lg up ── */
 .phase-media { aspect-ratio: 2 / 1; }
 @media (min-width: 640px) { .phase-media { aspect-ratio: 16 / 9; } }
 @media (min-width: 1024px) { .phase-media { aspect-ratio: 4 / 3; } }
+
+/* ── Hero media — shallow banner on phones, tall editorial frame from lg up ── */
+.hero-media { aspect-ratio: 5 / 2; max-height: 200px; }
+.hero-media img { object-position: center 32%; }
+@media (min-width: 1024px) {
+  .hero-media { aspect-ratio: 4 / 3.2; max-height: none; }
+  .hero-media img { object-position: center top; }
+}
