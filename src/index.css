@@ -322,7 +322,7 @@ body {
 @media (min-width: 1024px) { .phase-media { aspect-ratio: 4 / 3; } }
 
 /* ── Hero media — shallow banner on phones, tall editorial frame from lg up ── */
-.hero-media { aspect-ratio: 5 / 2; max-height: 200px; }
+.hero-media { aspect-ratio: 16 / 9; max-height: 220px; }
 .hero-media img { object-position: center 32%; }
 @media (min-width: 1024px) {
   .hero-media { aspect-ratio: 4 / 3.2; max-height: none; }

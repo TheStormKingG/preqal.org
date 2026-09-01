@@ -616,7 +616,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
     <button
       type="button"
       onClick={() => deckApi?.goTo(1)}
-      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
+      className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap"
       style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
     >
       Start the journey ↓
@@ -624,7 +624,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
   ) : (
     <a
       href="#phase-1"
-      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
+      className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap"
       style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
     >
       Start the journey ↓
@@ -675,7 +675,7 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
             </motion.p>
 
             <motion.div
-              className="flex flex-wrap gap-3"
+              className="flex flex-nowrap sm:flex-wrap items-stretch gap-2 sm:gap-3"
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.4 }}
             >
@@ -686,10 +686,13 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
                 <button
                   type="button"
                   onClick={openWhatsApp}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-amber-600 font-bold text-sm"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-amber-600 font-bold text-sm whitespace-nowrap"
                   style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
                 >
-                  <WhatsAppIcon className="h-4 w-4 text-[#25D366]" /> WhatsApp Dr. Gravesande
+                  <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
+                  {/* the full name needs room the narrowest phones do not have */}
+                  <span className="sm:hidden">WhatsApp</span>
+                  <span className="hidden sm:inline">WhatsApp Dr. Gravesande</span>
                 </button>
               </motion.div>
             </motion.div>
