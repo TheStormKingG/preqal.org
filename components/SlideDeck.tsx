@@ -24,6 +24,8 @@ interface DeckApi {
   goTo: (i: number) => void;
   index: number;
   count: number;
+  /** Direction of the move that brought the deck to `index`: 1 down, -1 up. */
+  dir: 1 | -1;
 }
 
 const DeckContext = createContext<DeckApi | null>(null);
@@ -57,6 +59,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [slideH, setSlideH] = useState(0);
   const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState<1 | -1>(1);
   const indexRef = useRef(0);
   const lockedRef = useRef(false);
   const accRef = useRef(0);
@@ -94,6 +97,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       const target = Math.max(0, Math.min(count - 1, i));
       if (target === indexRef.current) return;
       lockedRef.current = true;
+      setDir(target > indexRef.current ? 1 : -1);
       indexRef.current = target;
       setIndex(target);
       // onAnimationComplete is the normal way out of the lock, but it never
@@ -201,7 +205,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   useEffect(() => () => window.clearTimeout(unlockTimerRef.current), []);
 
   return (
-    <DeckContext.Provider value={{ goTo, index, count }}>
+    <DeckContext.Provider value={{ goTo, index, count, dir }}>
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden"

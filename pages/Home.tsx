@@ -6,6 +6,7 @@ import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
 import SlideDeck, { useDeck, useDeckMode, type DeckSlide } from '../components/SlideDeck';
+import { wickRun } from '../lib/wickRun';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 
 const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
@@ -400,6 +401,11 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
 
   const isOrigin = index === 0;
   const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
+  /* The flame travels the way the reader is moving: down the deck it arrives
+     from above, back up the deck it arrives from below. Phase 01 keeps its
+     origin behaviour only when it is reached going forward. */
+  const goingDown = deck ? deck.dir === 1 : true;
+  const { segment, hiddenOffset, originEntry } = wickRun(isOrigin, goingDown);
 
   /* Where the badge sits and where the gutter runs, in slide pixels.
      The gutter is measured from the two columns rather than assumed to be the
@@ -452,13 +458,14 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
   useEffect(() => {
     if (!active || prefersReduced) return;
     const t: number[] = [];
-    if (isOrigin) {
+    if (originEntry) {
       // 01 lights first, then the wick runs out of it towards 02.
       t.push(window.setTimeout(() => setSeq({ burning: false, popped: true, bursting: true }), 160));
       t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 460));
       t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 900));
     } else {
-      // The flame arrives from above and sets the number block off.
+      // The flame arrives — from above going down, from below coming back up —
+      // and sets the number block off when it lands.
       t.push(window.setTimeout(() => setSeq({ burning: true, popped: false, bursting: false }), 150));
       t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: true }), 150 + BURN_IN_MS));
       t.push(window.setTimeout(() => setSeq({ burning: true, popped: true, bursting: false }), 150 + BURN_IN_MS + 700));
@@ -468,7 +475,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
       t.forEach(clearTimeout);
       setSeq({ burning: false, popped: false, bursting: false });
     };
-  }, [active, isOrigin, prefersReduced]);
+  }, [active, originEntry, prefersReduced]);
 
   const burnt = prefersReduced || seq.burning;
   const pop: 'hidden' | 'shown' = prefersReduced || seq.popped ? 'shown' : 'hidden';
@@ -498,7 +505,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
       [cx, geom.h],
     ]);
   }
-  const burning = isOrigin ? below : above;
+  const burning = segment === 'above' ? above : below;
 
   return (
     <div ref={wrapRef} className="relative h-full flex items-center px-4 sm:px-6 lg:px-8">
@@ -525,11 +532,11 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
             pathLength={1}
             style={{
               strokeDasharray: 1,
-              strokeDashoffset: burnt ? 0 : 1,
+              strokeDashoffset: burnt ? 0 : hiddenOffset,
               filter: 'drop-shadow(0 0 5px rgba(245,158,11,0.65))',
               transition: prefersReduced
                 ? 'none'
-                : `stroke-dashoffset ${isOrigin ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+                : `stroke-dashoffset ${originEntry ? BURN_OUT_MS : BURN_IN_MS}ms cubic-bezier(0.45, 0, 0.55, 1)`,
             }}
           />
         </svg>
