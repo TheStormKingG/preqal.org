@@ -52,7 +52,7 @@ const QUIET_GAP = 160; // ms of wheel silence required after a slide change
 const SWIPE_THRESHOLD = 60; // px of touch travel that counts as a swipe
 const UNLOCK_DELAY = 200; // ms cooldown after the transition settles
 
-const SlideDeck: React.FC<{ slides: DeckSlide[]; overlay?: React.ReactNode }> = ({ slides, overlay }) => {
+const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const prefersReduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const [slideH, setSlideH] = useState(0);
@@ -231,42 +231,6 @@ const SlideDeck: React.FC<{ slides: DeckSlide[]; overlay?: React.ReactNode }> = 
           ))}
         </motion.div>
 
-        {/* Deck-level overlay (rendered inside the provider, so it can read
-            the current slide) — e.g. the journey wick. */}
-        {overlay}
-
-        {/* Dot navigation */}
-        <div className="fixed right-4 lg:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3">
-          {slides.map((s, i) => (
-            <button
-              key={s.label}
-              type="button"
-              aria-label={`Go to ${s.label}`}
-              aria-current={i === index ? 'true' : undefined}
-              title={s.label}
-              onClick={() => goTo(i)}
-              className="h-4 w-4 flex items-center justify-center"
-            >
-              <span
-                className="rounded-full transition-all duration-300"
-                style={
-                  i === index
-                    ? {
-                        width: 10,
-                        height: 10,
-                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                        boxShadow: '0 0 10px rgba(245,158,11,0.55)',
-                      }
-                    : {
-                        width: 7,
-                        height: 7,
-                        background: 'rgba(100,116,139,0.35)',
-                      }
-                }
-              />
-            </button>
-          ))}
-        </div>
       </div>
     </DeckContext.Provider>
   );
