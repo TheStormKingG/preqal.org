@@ -20,6 +20,12 @@ const readSlides = (page: Page) =>
     const rows: { label: string; over: number; scrollable: boolean }[] = [];
     wrap.firstElementChild.querySelectorAll(':scope > section').forEach((sec) => {
       const sr = sec.getBoundingClientRect();
+      /* Measured against the slide's content box, not its border box: the
+         gutter above and below is reserved space, and content reaching into
+         it is exactly the "jammed against the bars" look we are ruling out. */
+      const pad = getComputedStyle(sec);
+      const top = sr.top + (parseFloat(pad.paddingTop) || 0);
+      const room = sr.height - (parseFloat(pad.paddingTop) || 0) - (parseFloat(pad.paddingBottom) || 0);
       let min = Infinity;
       let max = -Infinity;
       sec.querySelectorAll('*').forEach((el) => {
@@ -29,12 +35,12 @@ const readSlides = (page: Page) =>
            and clipped by their section's overflow-hidden, so running past the slide
            edge is by design — only content the reader must see counts here. */
         if (getComputedStyle(el).pointerEvents === 'none') return;
-        min = Math.min(min, b.top - sr.top);
-        max = Math.max(max, b.bottom - sr.top);
+        min = Math.min(min, b.top - top);
+        max = Math.max(max, b.bottom - top);
       });
       rows.push({
         label: sec.getAttribute('aria-label') ?? '',
-        over: Math.round(Math.max(0, max - sr.height) + Math.max(0, -min)),
+        over: Math.round(Math.max(0, max - room) + Math.max(0, -min)),
         scrollable: sec.getAttribute('data-deck-scrollable') === 'true',
       });
     });

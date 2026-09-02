@@ -319,20 +319,32 @@ body {
 @media (min-width: 1024px) and (max-height: 700px) {
   .deck-fit { transform: scale(0.74); }
 }
+/* Every slide keeps a gutter above and below its content. Without it a slide
+   scaled to exactly its ceiling renders flush against the bars top and bottom,
+   which reads as clipped rather than as a page. Folding the gutter into the
+   slide itself means the measured ceiling already accounts for it.
+   The scrolling slide sizes its own halves from the full height, so it opts out. */
+.deck-slide:not([data-deck-scrollable]) {
+  padding-block: 0.875rem;
+}
+@media (min-width: 768px) {
+  .deck-slide:not([data-deck-scrollable]) { padding-block: 1.25rem; }
+}
+
 /* One ladder for every deck page, so text reads at the same size site-wide.
    Each step is the largest scale the densest slide on any page can carry at
    that height — measured, not guessed. Raising a step spills a slide. */
 @media (max-width: 1023px) {
-  .deck-fit { transform: scale(0.95); }
+  .deck-fit { transform: scale(0.91); }
 }
 @media (max-width: 1023px) and (max-height: 780px) {
-  .deck-fit { transform: scale(0.90); }
+  .deck-fit { transform: scale(0.86); }
 }
 @media (max-width: 1023px) and (max-height: 700px) {
-  .deck-fit { transform: scale(0.76); }
+  .deck-fit { transform: scale(0.72); }
 }
 @media (max-height: 640px) {
-  .deck-fit { transform: scale(0.69); }
+  .deck-fit { transform: scale(0.66); }
 }
 
 

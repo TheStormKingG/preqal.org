@@ -24,6 +24,12 @@ const overflows = (page: Page) =>
     const rows: { label: string; over: number }[] = [];
     wrap.firstElementChild.querySelectorAll(':scope > section').forEach((sec) => {
       const sr = sec.getBoundingClientRect();
+      /* Measured against the slide's content box, not its border box: the
+         gutter above and below is reserved space, and content reaching into
+         it is exactly the "jammed against the bars" look we are ruling out. */
+      const pad = getComputedStyle(sec);
+      const top = sr.top + (parseFloat(pad.paddingTop) || 0);
+      const room = sr.height - (parseFloat(pad.paddingTop) || 0) - (parseFloat(pad.paddingBottom) || 0);
       let min = Infinity;
       let max = -Infinity;
       sec.querySelectorAll('*').forEach((el) => {
@@ -33,12 +39,12 @@ const overflows = (page: Page) =>
            and clipped by their section's overflow-hidden, so running past the slide
            edge is by design — only content the reader must see counts here. */
         if (getComputedStyle(el).pointerEvents === 'none') return;
-        min = Math.min(min, b.top - sr.top);
-        max = Math.max(max, b.bottom - sr.top);
+        min = Math.min(min, b.top - top);
+        max = Math.max(max, b.bottom - top);
       });
       rows.push({
         label: sec.getAttribute('aria-label') ?? '',
-        over: Math.round(Math.max(0, max - sr.height) + Math.max(0, -min)),
+        over: Math.round(Math.max(0, max - room) + Math.max(0, -min)),
       });
     });
     return rows;
@@ -87,4 +93,45 @@ test('phones keep the straight edge wick, desktop keeps the gutter curve', async
     return (p?.getAttribute('d') ?? '').includes('C'); // the spline through the gutter
   });
   expect(desktopCurved).toBe(true);
+});
+
+/* The fit checks above measure against each slide's content box, so a slide
+   scaled too large fails by reaching into the gutter rather than by visibly
+   spilling. This is the gutter itself: without it those checks would pass on
+   a layout jammed against the bars top and bottom. */
+test('every slide reserves a gutter above and below its content', async ({ page }) => {
+  for (const [w, h] of [[390, 844], [375, 667]] as const) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto('http://localhost:3000/contact', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1200);
+
+    const rows = await page.evaluate(() => {
+      const wrap = document.querySelector('main .relative.w-full.overflow-hidden');
+      const out: { label: string; pad: number; slack: number; scrollable: boolean }[] = [];
+      wrap?.firstElementChild?.querySelectorAll(':scope > section').forEach((sec) => {
+        const cs = getComputedStyle(sec);
+        const fit = sec.querySelector('.deck-fit') as HTMLElement | null;
+        out.push({
+          label: sec.getAttribute('aria-label') ?? '',
+          pad: parseFloat(cs.paddingTop) || 0,
+          slack: fit ? Math.round(sec.getBoundingClientRect().height - fit.getBoundingClientRect().height) : -1,
+          scrollable: sec.getAttribute('data-deck-scrollable') === 'true',
+        });
+      });
+      return out;
+    });
+
+    for (const row of rows) {
+      if (row.scrollable) {
+        // It sizes its own halves from the full height, so a gutter would
+        // break the arithmetic that makes them exact.
+        expect(row.pad, `${row.label} opts out of the gutter`).toBe(0);
+        continue;
+      }
+      expect(row.pad, `${row.label} reserves a gutter`).toBeGreaterThan(8);
+      if (row.slack >= 0) {
+        expect(row.slack, `${row.label} is not jammed against the bars`).toBeGreaterThanOrEqual(2 * row.pad);
+      }
+    }
+  }
 });
