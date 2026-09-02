@@ -610,26 +610,6 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroImgY = useTransform(heroProgress, [0, 1], ['0%', '12%']);
-  const deckApi = useDeck();
-
-  const startJourney = deck ? (
-    <button
-      type="button"
-      onClick={() => deckApi?.goTo(1)}
-      className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap"
-      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
-    >
-      Start the journey ↓
-    </button>
-  ) : (
-    <a
-      href="#phase-1"
-      className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap"
-      style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
-    >
-      Start the journey ↓
-    </a>
-  );
 
   return (
     <section
@@ -666,7 +646,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
             </motion.p>
 
             <motion.p
-              className={`text-sm lg:text-base text-slate-600 leading-relaxed max-w-[480px] ${deck ? 'mb-3 lg:mb-6' : 'mb-9'}`}
+              className="text-sm lg:text-base text-slate-600 leading-relaxed max-w-[480px]"
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.3 }}
             >
@@ -674,17 +654,6 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
               Five phases take you there.
             </motion.p>
 
-            {/* One call to action. WhatsApp lives in the nav bar at every width,
-                so repeating it here only split the reader's attention. */}
-            <motion.div
-              className="flex items-stretch"
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.4 }}
-            >
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
-                {startJourney}
-              </motion.div>
-            </motion.div>
           </div>
 
           {/* Hero image — a shallow banner on phones, the tall frame from lg up */}
@@ -721,19 +690,40 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
 /* ─── "This story is about you" — journey intro ───
    Scroll mode: header above the phases. Deck mode: sits at the foot of the
    hero slide, so the welcome and the promise read as one screen. */
+const JOURNEY_CTA =
+  'inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap';
+const JOURNEY_CTA_STYLE: React.CSSProperties = {
+  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+  boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)',
+};
+
+/* The line that turns the pitch on the reader, and the one move it asks for.
+   The call to action sits here rather than in the hero because this is where
+   the promise is made — the button is the answer to it. */
 const StoryIntro: React.FC<{ deck?: boolean }> = ({ deck }) => {
+  const deckApi = useDeck();
   const heading = (
     <div className="text-center">
-      <p className={`text-xs font-semibold text-slate-400 uppercase tracking-widest ${deck ? 'mb-1' : 'mb-3'}`}>
-        One journey · Five phases
-      </p>
       <h2 className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
         This story is<br />
         <span className="text-amber-600">about you.</span>
       </h2>
-      <p className={`text-base text-slate-500 max-w-[520px] mx-auto leading-relaxed ${deck ? 'mt-2' : 'mt-4'}`}>
-        You have one good idea. Here is the help that takes it abroad.
-      </p>
+      <motion.div
+        className={`flex justify-center ${deck ? 'mt-4' : 'mt-6'}`}
+        whileHover={{ scale: 1.04, y: -2 }}
+        whileTap={{ scale: 0.97 }}
+        transition={springBtn}
+      >
+        {deck ? (
+          <button type="button" onClick={() => deckApi?.goTo(1)} className={JOURNEY_CTA} style={JOURNEY_CTA_STYLE}>
+            Start the journey ↓
+          </button>
+        ) : (
+          <a href="#phase-1" className={JOURNEY_CTA} style={JOURNEY_CTA_STYLE}>
+            Start the journey ↓
+          </a>
+        )}
+      </motion.div>
     </div>
   );
 
