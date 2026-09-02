@@ -605,7 +605,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
 };
 
 /* ─── Hero ─── */
-const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ deck, openWhatsApp }) => {
+const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
   const prefersReduced = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -674,26 +674,15 @@ const HeroSection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ d
               Five phases take you there.
             </motion.p>
 
+            {/* One call to action. WhatsApp lives in the nav bar at every width,
+                so repeating it here only split the reader's attention. */}
             <motion.div
-              className="flex flex-nowrap sm:flex-wrap items-stretch gap-2 sm:gap-3"
+              className="flex items-stretch"
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.4 }}
             >
               <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
                 {startJourney}
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
-                <button
-                  type="button"
-                  onClick={openWhatsApp}
-                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-amber-600 font-bold text-sm whitespace-nowrap"
-                  style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
-                >
-                  <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
-                  {/* the full name needs room the narrowest phones do not have */}
-                  <span className="sm:hidden">WhatsApp</span>
-                  <span className="hidden sm:inline">WhatsApp Dr. Gravesande</span>
-                </button>
               </motion.div>
             </motion.div>
           </div>
@@ -897,7 +886,7 @@ const Home: React.FC = () => {
         node: (
           <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto w-full deck-fit">
-              <HeroSection deck openWhatsApp={openWhatsApp} />
+              <HeroSection deck />
               <StoryIntro deck />
             </div>
           </div>

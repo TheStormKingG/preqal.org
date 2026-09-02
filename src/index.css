@@ -323,7 +323,7 @@ body {
    Each step is the largest scale the densest slide on any page can carry at
    that height — measured, not guessed. Raising a step spills a slide. */
 @media (max-width: 1023px) {
-  .deck-fit { transform: scale(0.93); }
+  .deck-fit { transform: scale(0.94); }
 }
 @media (max-width: 1023px) and (max-height: 780px) {
   .deck-fit { transform: scale(0.86); }
