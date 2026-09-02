@@ -61,6 +61,13 @@ const SWIPE_THRESHOLD = 34; // px of touch travel that counts as a swipe
 const FLICK_DISTANCE = 16; // px
 const FLICK_VELOCITY = 0.38; // px per ms
 const AXIS_DOMINANCE = 1.2; // vertical travel must beat sideways to move the deck
+const LINE_HEIGHT = 16; // px per line, for engines that report wheel deltas in lines
+/* Big enough that a coasting trackpad is past it by the time a slide lands,
+   small enough that one mouse notch clears it on every engine. */
+const PUSH_DELTA = 30;
+/* A flick is still ramping up when the slide it asked for starts moving, so
+   pushes are only counted once that ramp is over. */
+const PUSH_GRACE = 200; // ms into a slide before a further push counts as a new one
 const UNLOCK_DELAY = 80; // ms cooldown after the transition settles
 const SLIDE_MS = 520; // one slide's travel
 const PAGE_LOCK_MS = 420; // gesture cooldown while a slide pages inside itself
@@ -76,6 +83,10 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const accRef = useRef(0);
   const lastWheelRef = useRef(0);
   const waitQuietRef = useRef(false);
+  const lastSizeRef = useRef(Infinity);
+  const lockStartRef = useRef(0);
+  const queuedRef = useRef<1 | -1 | 0>(0);
+  const stepRef = useRef<((dir: 1 | -1) => void) | null>(null);
   const touchYRef = useRef<number | null>(null);
   const touchXRef = useRef(0);
   const touchTimeRef = useRef(0);
@@ -142,6 +153,10 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     lockedRef.current = false;
     waitQuietRef.current = true;
     accRef.current = 0;
+    lastSizeRef.current = Infinity; // nothing to compare the first event against
+    const queued = queuedRef.current;
+    queuedRef.current = 0;
+    if (queued) stepRef.current?.(queued);
   }, []);
 
   /* Track the wrapper's own height, not just window resizes — mobile URL-bar
@@ -166,6 +181,8 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       const target = Math.max(0, Math.min(count - 1, i));
       if (target === indexRef.current) return;
       lockedRef.current = true;
+      lockStartRef.current = performance.now();
+      lastSizeRef.current = Infinity;
       setDir(target > indexRef.current ? 1 : -1);
       indexRef.current = target;
       setIndex(target);
@@ -179,10 +196,18 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   );
 
   const step = useCallback((dir: 1 | -1) => goTo(indexRef.current + dir), [goTo]);
+  // releaseLock is defined above step and takes any queued push through this.
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
 
   /* Wheel / trackpad: swallow every event, advance once per gesture.
-     Trackpad inertia keeps firing after a flick, so after each slide change
-     we ignore events until the stream pauses (QUIET_GAP). */
+     After a slide lands, a trackpad is usually still coasting, and letting that
+     coast through would skip slides. Waiting for the stream to fall silent is
+     the wrong cure though — a held mouse wheel and a second deliberate flick
+     never go silent either, so the deck used to sit dead through both. What
+     separates them is shape, not silence: inertia only ever decays, so a large
+     event that is not smaller than the one before it is a real push. */
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -191,12 +216,33 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       const now = performance.now();
       const gap = now - lastWheelRef.current;
       lastWheelRef.current = now;
-      if (lockedRef.current) return;
-      if (waitQuietRef.current) {
-        if (gap < QUIET_GAP) return;
-        waitQuietRef.current = false;
+      // Firefox reports lines and some setups report pages; without this a
+      // notch reads as deltaY 3 and the deck needs a dozen of them to move.
+      const dy =
+        e.deltaMode === 1 ? e.deltaY * LINE_HEIGHT
+        : e.deltaMode === 2 ? e.deltaY * el.clientHeight
+        : e.deltaY;
+      const size = Math.abs(dy);
+
+      /* Asking for the next slide while this one is still travelling is a
+         deliberate act, and dropping it is what makes a deck feel deaf. Hold
+         one step and take it the moment the slide lands. */
+      if (lockedRef.current) {
+        const pushing = size >= PUSH_DELTA && size >= lastSizeRef.current;
+        lastSizeRef.current = size;
+        if (pushing && now - lockStartRef.current >= PUSH_GRACE) queuedRef.current = dy > 0 ? 1 : -1;
+        return;
       }
-      accRef.current = gap < WHEEL_GESTURE_GAP ? accRef.current + e.deltaY : e.deltaY;
+
+      if (waitQuietRef.current) {
+        const pushing = size >= PUSH_DELTA && size >= lastSizeRef.current;
+        lastSizeRef.current = size;
+        if (gap < QUIET_GAP && !pushing) return;
+        waitQuietRef.current = false;
+        accRef.current = 0;
+      }
+
+      accRef.current = gap < WHEEL_GESTURE_GAP ? accRef.current + dy : dy;
       if (Math.abs(accRef.current) >= WHEEL_THRESHOLD) {
         const dir: 1 | -1 = accRef.current > 0 ? 1 : -1;
         accRef.current = 0;
