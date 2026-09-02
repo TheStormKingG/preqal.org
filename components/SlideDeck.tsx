@@ -60,6 +60,7 @@ const SWIPE_THRESHOLD = 34; // px of touch travel that counts as a swipe
    the reader has already committed by the time a fast thumb has moved 16px. */
 const FLICK_DISTANCE = 16; // px
 const FLICK_VELOCITY = 0.38; // px per ms
+const AXIS_DOMINANCE = 1.2; // vertical travel must beat sideways to move the deck
 const UNLOCK_DELAY = 80; // ms cooldown after the transition settles
 const SLIDE_MS = 520; // one slide's travel
 const PAGE_LOCK_MS = 420; // gesture cooldown while a slide pages inside itself
@@ -76,6 +77,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const lastWheelRef = useRef(0);
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const touchXRef = useRef(0);
   const touchTimeRef = useRef(0);
   const consumedRef = useRef(false);
   const scrollerRef = useRef<HTMLElement | null>(null);
@@ -222,6 +224,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       touchYRef.current = e.clientY;
+      touchXRef.current = e.clientX;
       touchTimeRef.current = performance.now();
       consumedRef.current = false;
       scrollerRef.current = innerScroller(e.target);
@@ -237,6 +240,9 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       if (startY === null || consumedRef.current || lockedRef.current) return;
       const dy = startY - e.clientY;
       const travel = Math.abs(dy);
+      // A sideways drag belongs to the router, which moves between pages. Both
+      // gestures demand their own axis dominate, so only one can ever fire.
+      if (travel < Math.abs(touchXRef.current - e.clientX) * AXIS_DOMINANCE) return;
       const speed = travel / Math.max(1, performance.now() - touchTimeRef.current);
       if (travel < SWIPE_THRESHOLD && !(travel >= FLICK_DISTANCE && speed >= FLICK_VELOCITY)) return;
       consumedRef.current = true;
@@ -331,7 +337,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
            scrollable slide uses it to size itself in whole screenfuls, so the
            slide reads as an exact run of full views rather than a free scroll. */
         style={{
-          height: 'calc(100dvh - 5rem)',
+          height: 'calc(100dvh - var(--chrome-top) - var(--chrome-bottom))',
           touchAction: 'none',
           overscrollBehavior: 'none',
           ...({ '--deck-slide': slideH ? `${slideH}px` : '100%' } as React.CSSProperties),

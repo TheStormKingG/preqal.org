@@ -3,6 +3,8 @@ import { BrowserRouter as Router, useLocation, useNavigate } from 'react-router-
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import BottomNav from './components/BottomNav';
+import RouteSwipe from './components/RouteSwipe';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { useBelowWidth } from './components/SlideDeck';
 import { WhatsAppProvider } from './components/WhatsAppContact';
@@ -13,6 +15,12 @@ const ConditionalNavbar: React.FC = () => {
   const location = useLocation();
   if (location.pathname.startsWith('/tools/')) return null;
   return <Navbar />;
+};
+
+const ConditionalBottomNav: React.FC = () => {
+  const location = useLocation();
+  if (location.pathname.startsWith('/tools/')) return null;
+  return <BottomNav />;
 };
 
 /* Pages that run as a slide deck carry the footer as their last slide, so the
@@ -87,17 +95,21 @@ const App: React.FC = () => {
         <WhatsAppProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
+        <RouteSwipe />
 
         {/* Clean neumorphic background */}
         <div className="fixed inset-0 z-[-1] bg-[#e0e5ec] pointer-events-none" />
 
-        <div className="flex flex-col min-h-screen text-slate-800 font-sans selection:bg-amber-500/30">
+        {/* Below md the bottom bar is fixed over the page, so the shell reserves
+            its height; from md up the top bar is the only chrome. */}
+        <div className="flex flex-col min-h-screen text-slate-800 font-sans selection:bg-amber-500/30 pb-[var(--chrome-bottom)] md:pb-0">
           <ConditionalNavbar />
-          <main className="flex-grow pt-20 overflow-hidden">
+          <main className="flex-grow pt-[var(--chrome-top)] overflow-hidden">
             <AnimatedRoutes />
           </main>
           <ConditionalFooter />
         </div>
+        <ConditionalBottomNav />
         <CookieConsent />
         </WhatsAppProvider>
       </Router>

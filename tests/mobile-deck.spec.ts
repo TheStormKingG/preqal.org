@@ -45,7 +45,7 @@ async function expectJourney(page: Page, swipe: (fromFrac: number, toFrac: numbe
   /* One gesture is one slide however far the thumb travels. The deck acts as
      soon as the reader has committed, so the rest of a long drag must not
      stack up more slides behind it. */
-  await swipe(0.95, 0.05);
+  await swipe(0.85, 0.05); // starts above the tab bar, ends near the top
   await settle(page);
   expect(await activeSlide(page), 'one long drag advances exactly one').toContain('Phase 02');
 

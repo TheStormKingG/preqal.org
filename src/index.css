@@ -171,13 +171,9 @@ body {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 
-/* Glass Backdrop Overlay (mobile menu) */
+/* Glass Backdrop Overlay — modal scrims */
 .glass-backdrop {
   background: rgba(224, 229, 236, 0.85);
   backdrop-filter: blur(20px) saturate(150%);
@@ -296,6 +292,24 @@ body {
   .saturn-stage-float { animation: none !important; }
 }
 
+/* The chrome a page has to fit around. On a phone that is the mark bar on top
+   and the tab bar at the bottom; from md up the top bar alone. Every full-height
+   surface — the deck above all — sizes itself from these, so moving either bar
+   never leaves a slide spilling under it. */
+:root {
+  /* Kept lean on purpose: every pixel of chrome comes straight out of the
+     slide the deck has to fit, so the mark bar is a strip and the tab bar is
+     just tall enough for a 48px touch target. */
+  --chrome-top: 3rem;
+  --chrome-bottom: calc(3.25rem + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 768px) {
+  :root {
+    --chrome-top: 5rem;
+    --chrome-bottom: 0px;
+  }
+}
+
 /* ── Home slide deck — shrink slide content on tight viewports so nothing is
       ever cut off (each slide owns exactly one screen). Below lg the slides
       carry more stacked content, so they start from a smaller base. ── */
@@ -309,16 +323,16 @@ body {
    Each step is the largest scale the densest slide on any page can carry at
    that height — measured, not guessed. Raising a step spills a slide. */
 @media (max-width: 1023px) {
-  .deck-fit { transform: scale(0.96); }
+  .deck-fit { transform: scale(0.93); }
 }
 @media (max-width: 1023px) and (max-height: 780px) {
-  .deck-fit { transform: scale(0.89); }
+  .deck-fit { transform: scale(0.86); }
 }
 @media (max-width: 1023px) and (max-height: 700px) {
-  .deck-fit { transform: scale(0.74); }
+  .deck-fit { transform: scale(0.70); }
 }
 @media (max-height: 640px) {
-  .deck-fit { transform: scale(0.63); }
+  .deck-fit { transform: scale(0.58); }
 }
 
 
