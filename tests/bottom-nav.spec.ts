@@ -81,6 +81,63 @@ test('desktop keeps the top nav and shows no tab bar', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Templates', exact: true }).first()).toBeVisible();
 });
 
+/* The two bars are meant to be the same control in two places, so these
+   compare them against each other rather than against colours written down
+   here — the point is that they match, whatever the palette says. */
+const tabLook = async (page: Page, width: number, bar: string) => {
+  await page.setViewportSize({ width, height: 844 });
+  await open(page, '/resources');
+  const active = page.locator(bar).getByRole('link', { name: 'Templates' });
+  await expect(active).toHaveAttribute('aria-current', 'page');
+  return active.evaluate((el) => {
+    const cs = getComputedStyle(el);
+    return {
+      color: cs.color,
+      shadow: cs.boxShadow,
+      stacked: cs.flexDirection,
+      icons: el.querySelectorAll('svg').length,
+    };
+  });
+};
+
+test('desktop wears the same tabs as the phone bar', async ({ page }) => {
+  test.setTimeout(90_000);
+  const desktop = await tabLook(page, 1280, 'nav:not([aria-label="Primary"])');
+  const phone = await tabLook(page, 390, 'nav[aria-label="Primary"]');
+
+  expect(desktop.stacked, 'icon sits above the label').toBe('column');
+  expect(desktop.icons, 'each tab carries its icon').toBe(1);
+  expect(desktop.shadow, 'the active tab sits in the pressed pill').toContain('inset');
+  expect(desktop.color, 'and is the same amber the phone bar uses').toBe(phone.color);
+  expect(desktop.shadow).toBe(phone.shadow);
+  expect(desktop.stacked).toBe(phone.stacked);
+});
+
+test('both WhatsApp buttons are the same amber pill', async ({ page }) => {
+  test.setTimeout(90_000);
+  const pill = async (width: number) => {
+    await page.setViewportSize({ width, height: 844 });
+    await open(page);
+    return page
+      .locator('nav')
+      .first()
+      .getByRole('button', { name: /whatsapp/i })
+      .evaluate((el) => {
+        const target = (el.querySelector('span') ?? el) as HTMLElement;
+        const cs = getComputedStyle(target);
+        return { bg: cs.backgroundColor, color: cs.color, radius: parseFloat(cs.borderRadius) };
+      });
+  };
+  const phone = await pill(390);
+  const desktop = await pill(1280);
+
+  expect(phone.bg, 'the phone button is filled, not the neumorphic surface it was')
+    .not.toBe('rgb(224, 229, 236)');
+  expect(phone.bg, 'and is the desktop button').toBe(desktop.bg);
+  expect(phone.color).toBe(desktop.color);
+  expect(phone.radius, 'both fully rounded').toBeGreaterThan(20);
+});
+
 test('a sideways swipe moves between the three pages', async () => {
   test.setTimeout(120_000);
   const browser = await chromium.launch();

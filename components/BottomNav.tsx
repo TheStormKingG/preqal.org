@@ -7,11 +7,19 @@ import { Home, FileText, Mail } from 'lucide-react';
    visible, so nothing has to be opened to find out where the site goes. */
 export const BOTTOM_NAV_ROUTES = ['/', '/resources', '/contact'] as const;
 
-const ITEMS = [
+/* One list, one look. The top bar renders these same items from md up, so the
+   two never drift apart. */
+export const NAV_ITEMS = [
   { name: 'Home', path: '/', Icon: Home },
   { name: 'Templates', path: '/resources', Icon: FileText },
   { name: 'Contact', path: '/contact', Icon: Mail },
 ];
+
+/** The tab's own styling, shared by both bars. */
+export const navTabClass = (active: boolean) =>
+  `flex h-12 flex-col items-center justify-center gap-0.5 rounded-xl transition-colors ${
+    active ? 'text-amber-600 neu-pressed-sm font-bold' : 'text-slate-500 hover:text-slate-700'
+  }`;
 
 const BottomNav: React.FC = () => {
   const { pathname } = useLocation();
@@ -24,7 +32,7 @@ const BottomNav: React.FC = () => {
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <ul className="flex items-stretch justify-around px-2">
-        {ITEMS.map(({ name, path, Icon }) => {
+        {NAV_ITEMS.map(({ name, path, Icon }) => {
           const active = pathname === path;
           return (
             <li key={path} className="flex-1">
@@ -32,9 +40,7 @@ const BottomNav: React.FC = () => {
                 to={path}
                 aria-current={active ? 'page' : undefined}
                 /* h-12 keeps the tap target at the 48px minimum. */
-                className={`flex h-12 flex-col items-center justify-center gap-0.5 rounded-xl mx-1 my-0.5 transition-colors ${
-                  active ? 'text-amber-600 neu-pressed-sm font-bold' : 'text-slate-500'
-                }`}
+                className={`${navTabClass(active)} mx-1 my-0.5`}
               >
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
                 <span className="text-[11px] leading-none font-semibold">{name}</span>

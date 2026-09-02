@@ -1,18 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
+import { NAV_ITEMS, navTabClass } from './BottomNav';
 
 /* From md up this is the whole navigation. Below md it carries the mark only —
    the three destinations live in BottomNav, within thumb reach. */
 const Navbar: React.FC = () => {
   const location = useLocation();
   const { openWhatsApp } = useWhatsApp();
-
-  const navLinks = [
-    { name: 'Home',      path: '/' },
-    { name: 'Templates', path: '/resources' },
-    { name: 'Contact',   path: '/contact' },
-  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -56,38 +51,26 @@ const Navbar: React.FC = () => {
               aria-label="Contact us on WhatsApp"
               className="flex h-12 items-center"
             >
-              <span
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-amber-600 font-bold text-xs whitespace-nowrap"
-                style={{
-                  background: '#e0e5ec',
-                  boxShadow: '3px 3px 8px #a3b1c6, -3px -3px 8px #ffffff',
-                  border: '1.5px solid rgba(245,158,11,0.35)',
-                }}
-              >
-                <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
-                WhatsApp
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 text-white font-bold text-xs whitespace-nowrap neu-raised-sm">
+                <WhatsAppIcon className="h-4 w-4 shrink-0" />
+                WhatsApp Us
               </span>
             </button>
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center space-x-[30px]">
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
+          <div className="hidden md:flex items-center gap-2">
+            {NAV_ITEMS.map(({ name, path, Icon }) => {
+              const active = isActive(path);
               return (
                 <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`whitespace-nowrap text-sm font-medium transition-all duration-200 relative ${
-                    active
-                      ? 'text-slate-900 font-bold'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
+                  key={name}
+                  to={path}
+                  aria-current={active ? 'page' : undefined}
+                  className={`${navTabClass(active)} w-24`}
                 >
-                  {link.name}
-                  {active && (
-                    <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-amber-500 rounded-full" />
-                  )}
+                  <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
+                  <span className="text-[11px] leading-none font-semibold">{name}</span>
                 </Link>
               );
             })}

@@ -113,3 +113,57 @@ test('a slow steady drag keeps the deck moving', async ({ page }) => {
   test.setTimeout(90_000);
   expect(await slidesMovedBy(page, held(30, 60, 32))).toBeGreaterThanOrEqual(2);
 });
+
+/* Sideways on a desktop trackpad moves between the three pages, the same order
+   the tab bar lists them. */
+async function sideways(page: Page, frames: { dx: number; dy?: number }[]) {
+  return page.evaluate(async (fs) => {
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    /* Dispatch where the pointer would be — on the deck. The event bubbles from
+       there to the document, so both the deck and the router get their say and
+       the axis rule is what decides between them. */
+    const target = document.querySelector('main .relative.w-full.overflow-hidden') ?? document.body;
+    for (const f of fs) {
+      target.dispatchEvent(
+        new WheelEvent('wheel', { deltaX: f.dx, deltaY: f.dy ?? 0, bubbles: true, cancelable: true }),
+      );
+      await sleep(16);
+    }
+    await sleep(1200);
+    return window.location.pathname;
+  }, frames);
+}
+
+const sideFlick = (peak: number) => {
+  const frames = [0.1, 0.35, 0.7, 1, 1, 0.8, 0.5, 0.3, 0.2, 0.1].map((f) => ({ dx: Math.round(peak * f) }));
+  return frames;
+};
+
+test('a sideways trackpad swipe moves one page, and only one', async ({ page }) => {
+  test.setTimeout(90_000);
+  await open(page);
+  expect(await sideways(page, sideFlick(40)), 'swiping left goes to the next tab').toBe('/resources');
+  expect(await sideways(page, sideFlick(40)), 'and again').toBe('/contact');
+  expect(await sideways(page, sideFlick(40)), 'the last tab does not wrap').toBe('/contact');
+  expect(await sideways(page, sideFlick(-40)), 'swiping right goes back').toBe('/resources');
+});
+
+test('a long sideways swipe with a coast still moves only one page', async ({ page }) => {
+  test.setTimeout(90_000);
+  await open(page);
+  const long = [...sideFlick(60), ...Array.from({ length: 40 }, (_, i) => ({ dx: Math.max(1, 40 - i) }))];
+  expect(await sideways(page, long)).toBe('/resources');
+});
+
+test('a mostly vertical wheel is left to the deck, not the router', async ({ page }) => {
+  test.setTimeout(90_000);
+  await open(page);
+  const where = await sideways(page, Array.from({ length: 10 }, () => ({ dx: 12, dy: 100 })));
+  expect(where, 'the page must not change').toBe('/');
+  expect(
+    await page.evaluate(() =>
+      document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
+    ),
+    'the deck took it instead',
+  ).toContain('Phase');
+});
