@@ -35,6 +35,28 @@ test('the phone carries a bottom tab bar and no burger', async ({ page }) => {
   await expect(bar.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
 });
 
+test('the phone bar carries a working WhatsApp button beside the mark', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page);
+
+  const topBar = page.locator('nav').first();
+  const wa = topBar.getByRole('button', { name: /whatsapp/i });
+  await expect(wa).toBeVisible();
+
+  // Far right of the bar, and clear of the mark on the left.
+  const [waBox, barBox, mark] = await Promise.all([
+    wa.boundingBox(),
+    topBar.boundingBox(),
+    topBar.getByRole('img', { name: /preqal logo/i }).boundingBox(),
+  ]);
+  expect(waBox!.x, 'it sits in the right-hand half').toBeGreaterThan(barBox!.width / 2);
+  expect(waBox!.x, 'and never overlaps the mark').toBeGreaterThan(mark!.x + mark!.width);
+  expect(waBox!.height, 'the tap target clears 44px').toBeGreaterThanOrEqual(44);
+
+  await wa.click();
+  await expect(page.getByRole('dialog', { name: /whatsapp/i }), 'it opens the contact sheet').toBeVisible();
+});
+
 test('the tab bar navigates and follows the route', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page);
@@ -54,6 +76,8 @@ test('desktop keeps the top nav and shows no tab bar', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await open(page);
   await expect(page.locator('nav[aria-label="Primary"]')).toBeHidden();
+  await expect(page.locator('nav').first().getByRole('button', { name: 'Contact us on WhatsApp' }),
+    'the phone-only button stays off desktop').toBeHidden();
   await expect(page.getByRole('link', { name: 'Templates', exact: true }).first()).toBeVisible();
 });
 

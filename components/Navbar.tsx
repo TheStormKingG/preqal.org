@@ -46,6 +46,30 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
+          {/* Phone: the one action worth keeping in the chrome. The button fills
+              the bar's height so the tap target clears 44px, while the pill it
+              draws stays small enough not to crowd the mark. */}
+          <div className="flex items-center md:hidden">
+            <button
+              type="button"
+              onClick={openWhatsApp}
+              aria-label="Contact us on WhatsApp"
+              className="flex h-12 items-center"
+            >
+              <span
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-amber-600 font-bold text-xs whitespace-nowrap"
+                style={{
+                  background: '#e0e5ec',
+                  boxShadow: '3px 3px 8px #a3b1c6, -3px -3px 8px #ffffff',
+                  border: '1.5px solid rgba(245,158,11,0.35)',
+                }}
+              >
+                <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
+                WhatsApp
+              </span>
+            </button>
+          </div>
+
           {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-[30px]">
             {navLinks.map((link) => {
