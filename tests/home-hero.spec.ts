@@ -110,3 +110,40 @@ test('the proof band is down to its claim and its numbers', async ({ page }) => 
   const label = await page.getByText('pass rate').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
   expect(label, 'its caption grew with it (was 12px)').toBeCloseTo(18, 0);
 });
+
+test('the proof band stands the claim beside the numbers on a phone', async ({ page }) => {
+  test.setTimeout(120_000);
+  await open(page, 390, 844);
+  await toProof(page);
+
+  const claim = await page.getByText('Each one setup international standards.').boundingBox();
+  const stat = await page.getByText('98%').boundingBox();
+  const nine = await page.getByText('9', { exact: true }).boundingBox();
+
+  expect(stat!.x, 'the numbers sit to the right of the claim').toBeGreaterThan(claim!.x + claim!.width - 4);
+  expect(nine!.y, 'and stack, rather than sitting side by side').toBeGreaterThan(stat!.y + stat!.height - 4);
+
+  // The hairline rule between the two columns.
+  // pass rate -> its stat block -> the column that carries the rule
+  const rule = await page
+    .getByText('pass rate')
+    .evaluate((el) => parseFloat(getComputedStyle(el.parentElement!.parentElement as HTMLElement).borderLeftWidth));
+  expect(rule, 'a rule divides them').toBeGreaterThan(0);
+  expect(rule, 'and it stays a hairline').toBeLessThanOrEqual(2);
+});
+
+test('desktop keeps the numbers side by side and undivided', async ({ page }) => {
+  test.setTimeout(120_000);
+  await open(page, 1440, 900);
+  await toProof(page);
+
+  const stat = await page.getByText('98%').boundingBox();
+  const nine = await page.getByText('9', { exact: true }).boundingBox();
+  expect(nine!.x, 'side by side').toBeGreaterThan(stat!.x + stat!.width - 4);
+  expect(Math.abs(nine!.y - stat!.y), 'on the same line').toBeLessThan(8);
+
+  const rule = await page
+    .getByText('pass rate')
+    .evaluate((el) => parseFloat(getComputedStyle(el.parentElement!.parentElement as HTMLElement).borderLeftWidth));
+  expect(rule, 'no rule on desktop').toBe(0);
+});
