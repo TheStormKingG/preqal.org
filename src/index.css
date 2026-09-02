@@ -329,10 +329,10 @@ body {
   .deck-fit { transform: scale(0.90); }
 }
 @media (max-width: 1023px) and (max-height: 700px) {
-  .deck-fit { transform: scale(0.70); }
+  .deck-fit { transform: scale(0.76); }
 }
 @media (max-height: 640px) {
-  .deck-fit { transform: scale(0.58); }
+  .deck-fit { transform: scale(0.69); }
 }
 
 

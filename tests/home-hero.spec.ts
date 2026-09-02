@@ -71,3 +71,42 @@ test('the retired story heading is gone from both views', async ({ page }) => {
     await expect(page.getByText('Picture your product on a shelf')).toHaveCount(0);
   }
 });
+
+/* The proof band and the closing card were each carrying a label that only
+   announced what the reader could already see. The two numbers now do the
+   work, so they are half again as large as the body around them. */
+const toProof = async (page: Page) => {
+  for (let i = 0; i < 6; i++) {
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(650);
+  }
+  await page.waitForTimeout(900);
+  expect(
+    await page.evaluate(() =>
+      document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
+    ),
+  ).toContain('Proof');
+};
+
+test('the proof band is down to its claim and its numbers', async ({ page }) => {
+  test.setTimeout(120_000);
+  await open(page, 1440, 900);
+  await toProof(page);
+
+  await expect(page.getByText('Others have walked this road')).toHaveCount(0);
+  await expect(page.getByText('Your Phase 01 starts here')).toHaveCount(0);
+  await expect(page.getByText('Expect no pressure')).toHaveCount(0);
+  await expect(page.getByText('passed audits against ISO 9001')).toHaveCount(0);
+  await expect(page.getByText('Each one setup international standards.')).toBeVisible();
+
+  // The numbers stand half again as tall as the line they sit beside.
+  const stat = await page.getByText('98%').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  const body = await page
+    .getByText('Each one setup international standards.')
+    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(stat / body, 'the stat dwarfs the body copy').toBeGreaterThan(3);
+  expect(stat, 'and is 1.5x what it was (48px)').toBeCloseTo(72, 0);
+
+  const label = await page.getByText('pass rate').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(label, 'its caption grew with it (was 12px)').toBeCloseTo(18, 0);
+});

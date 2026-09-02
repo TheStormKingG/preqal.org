@@ -744,7 +744,6 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
     }} />
     <div className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full ${deck ? 'deck-fit' : ''}`}>
       <ScrollReveal yFrom={16}>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-4">Others have walked this road</p>
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-20">
           <div className="flex-1">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug mb-3 lg:mb-5">
@@ -752,18 +751,17 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
               <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
             </h2>
             <p className="text-white/55 text-sm lg:text-base leading-relaxed max-w-[480px]">
-              Each one walked these five phases and passed audits against ISO 9001 and
-              FSSC 22000.
+              Each one setup international standards.
             </p>
           </div>
           <div className="flex gap-8 lg:gap-12 flex-shrink-0">
             <div className="text-center">
-              <div className="text-3xl lg:text-5xl font-bold text-amber-400">98%</div>
-              <div className="text-xs text-white/40 font-medium mt-1 leading-snug">pass rate</div>
+              <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">98%</div>
+              <div className="text-lg text-white/40 font-medium mt-2 leading-snug">pass rate</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl lg:text-5xl font-bold text-amber-400">9</div>
-              <div className="text-xs text-white/40 font-medium mt-1 leading-snug">months to<br />certification</div>
+              <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">9</div>
+              <div className="text-lg text-white/40 font-medium mt-2 leading-snug">months to<br />certification</div>
             </div>
           </div>
         </div>
@@ -788,28 +786,13 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
         }}
       >
         <div className={`text-center ${deck ? 'p-4 sm:p-8 md:p-10' : 'p-8 md:p-14'}`}>
-          <motion.p
-            className="text-amber-200 text-xs font-semibold uppercase tracking-widest mb-2 lg:mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.15 }}
-          >
-            Your Phase 01 starts here
-          </motion.p>
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
+            className={`text-3xl md:text-4xl font-bold text-white leading-tight ${deck ? 'mb-5 lg:mb-8' : 'mb-10'}`}
             initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
           >
             One message starts everything.
           </motion.h2>
-          <motion.p
-            className={`text-amber-100 text-base lg:text-lg max-w-xl mx-auto leading-relaxed ${deck ? 'mb-5 lg:mb-8' : 'mb-10'}`}
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-          >
-            Expect no pressure and no jargon. Tell him where you are and he will show
-            you your next move.
-          </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
