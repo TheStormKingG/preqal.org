@@ -52,11 +52,17 @@ export const useBelowWidth = (maxWidth = 1024): boolean => {
   return below;
 };
 
-const WHEEL_THRESHOLD = 48; // accumulated deltaY that counts as a gesture
+const WHEEL_THRESHOLD = 26; // accumulated deltaY that counts as a gesture
 const WHEEL_GESTURE_GAP = 120; // ms between events that still belong to one gesture
 const QUIET_GAP = 160; // ms of wheel silence required after a slide change
-const SWIPE_THRESHOLD = 60; // px of touch travel that counts as a swipe
-const UNLOCK_DELAY = 200; // ms cooldown after the transition settles
+const SWIPE_THRESHOLD = 34; // px of touch travel that counts as a swipe
+/* A flick is short but quick. Distance alone would make the deck feel heavy —
+   the reader has already committed by the time a fast thumb has moved 16px. */
+const FLICK_DISTANCE = 16; // px
+const FLICK_VELOCITY = 0.38; // px per ms
+const UNLOCK_DELAY = 80; // ms cooldown after the transition settles
+const SLIDE_MS = 520; // one slide's travel
+const PAGE_LOCK_MS = 420; // gesture cooldown while a slide pages inside itself
 
 const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const prefersReduced = useReducedMotion();
@@ -70,6 +76,8 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   const lastWheelRef = useRef(0);
   const waitQuietRef = useRef(false);
   const touchYRef = useRef<number | null>(null);
+  const touchTimeRef = useRef(0);
+  const consumedRef = useRef(false);
   const scrollerRef = useRef<HTMLElement | null>(null);
 
   const unlockTimerRef = useRef(0);
@@ -123,7 +131,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       el.scrollTo({ top: target, behavior: prefersReduced ? 'auto' : 'smooth' });
       lockedRef.current = true; // ignore the tail of the same gesture
       window.clearTimeout(unlockTimerRef.current);
-      unlockTimerRef.current = window.setTimeout(() => { lockedRef.current = false; }, 600);
+      unlockTimerRef.current = window.setTimeout(() => { lockedRef.current = false; }, PAGE_LOCK_MS);
     },
     [prefersReduced],
   );
@@ -214,21 +222,28 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       touchYRef.current = e.clientY;
+      touchTimeRef.current = performance.now();
+      consumedRef.current = false;
       scrollerRef.current = innerScroller(e.target);
     };
 
-    const onUp = (e: PointerEvent) => {
+    /* Acting here rather than on pointerup is most of what makes the deck feel
+       quick: the slide is already moving under the reader's thumb instead of
+       waiting for them to lift it. One move per gesture — `consumed` keeps the
+       rest of the drag from stacking up more. */
+    const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
       const startY = touchYRef.current;
-      const scroller = scrollerRef.current;
-      touchYRef.current = null;
-      scrollerRef.current = null;
-      if (startY === null || lockedRef.current) return;
+      if (startY === null || consumedRef.current || lockedRef.current) return;
       const dy = startY - e.clientY;
-      if (Math.abs(dy) < SWIPE_THRESHOLD) return;
+      const travel = Math.abs(dy);
+      const speed = travel / Math.max(1, performance.now() - touchTimeRef.current);
+      if (travel < SWIPE_THRESHOLD && !(travel >= FLICK_DISTANCE && speed >= FLICK_VELOCITY)) return;
+      consumedRef.current = true;
       const direction: 1 | -1 = dy > 0 ? 1 : -1;
       // Inside a scrollable slide, a swipe turns its next screenful before it
       // is allowed to leave the slide at all.
+      const scroller = scrollerRef.current;
       if (scroller && hasRoom(scroller, direction)) {
         pageScroll(scroller, direction);
         return;
@@ -236,21 +251,26 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
       step(direction);
     };
 
-    const onCancel = () => {
+    const onUp = () => {
       touchYRef.current = null;
       scrollerRef.current = null;
+      consumedRef.current = false;
     };
+
+    const onCancel = onUp;
     // Belt and braces for engines that still try to pan or rubber-band the
     // page from inside the deck (old iOS Safari quirks, pull-to-refresh).
     const onTouchMove = (e: TouchEvent) => {
       if (e.cancelable) e.preventDefault(); // we drive every pan ourselves
     };
     el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerup', onUp);
     el.addEventListener('pointercancel', onCancel);
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
       el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onCancel);
       el.removeEventListener('touchmove', onTouchMove);
@@ -325,16 +345,29 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
         <motion.div
           className="w-full"
           animate={{ y: slideH ? -index * slideH : 0 }}
-          transition={prefersReduced ? { duration: 0 } : { duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          /* Expo-out: nearly all of the travel happens in the first third, so
+             the slide answers the gesture instantly and then settles. */
+          transition={
+            prefersReduced ? { duration: 0 } : { duration: SLIDE_MS / 1000, ease: [0.16, 1, 0.3, 1] }
+          }
           onAnimationComplete={unlock}
         >
           {slides.map((s, i) => (
-            <section
+            <motion.section
               key={s.label}
               aria-label={s.label}
               aria-hidden={i !== index}
               data-deck-scrollable={s.scrollable ? 'true' : undefined}
               className={`deck-slide w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
+              /* Only the slide in focus is at full strength. Its neighbours are
+                 seen for a few hundred ms as they pass, and dimming them reads
+                 as depth — it is the one accent a deck can afford, since a
+                 transform here would move the geometry the wick is measured on. */
+              animate={{ opacity: i === index ? 1 : 0.45 }}
+              /* Faster than the travel on purpose: an expo-out slide is nearly
+                 home in a third of its duration, and a fade still climbing at
+                 that point reads as washed out rather than as arriving. */
+              transition={prefersReduced ? { duration: 0 } : { duration: 0.22, ease: 'easeOut' }}
               style={{
                 height: slideH || '100%',
                 /* touch-action does not inherit: without this the browser
@@ -344,7 +377,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
               }}
             >
               {s.node}
-            </section>
+            </motion.section>
           ))}
         </motion.div>
 

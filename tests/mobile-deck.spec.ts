@@ -42,10 +42,12 @@ async function expectJourney(page: Page, swipe: (fromFrac: number, toFrac: numbe
   await settle(page);
   expect(await activeSlide(page), 'swipe down goes back one slide').toContain('Phase 01');
 
-  await swipe(0.7, 0.3);
-  await swipe(0.7, 0.3); // rapid second swipe inside the lock window
-  await page.waitForTimeout(1800);
-  expect(await activeSlide(page), 'a rapid double swipe advances exactly one').toContain('Phase 02');
+  /* One gesture is one slide however far the thumb travels. The deck acts as
+     soon as the reader has committed, so the rest of a long drag must not
+     stack up more slides behind it. */
+  await swipe(0.95, 0.05);
+  await settle(page);
+  expect(await activeSlide(page), 'one long drag advances exactly one').toContain('Phase 02');
 
   expect(await page.evaluate(() => document.documentElement.scrollHeight > innerHeight + 1),
     'the page itself must not scroll').toBe(false);
@@ -77,6 +79,35 @@ test('Samsung (Android Chrome engine) swipes the deck slide by slide', async () 
 
     await openDeck(page);
     await expectJourney(page, swipe);
+  } finally {
+    await browser.close();
+  }
+});
+
+test('the deck answers a short swipe, and answers it before the finger lifts', async () => {
+  test.setTimeout(90_000);
+  const browser = await chromium.launch();
+  try {
+    const ctx = await browser.newContext({ ...devices['Galaxy S9+'] });
+    const page = await ctx.newPage();
+    const cdp: CDPSession = await ctx.newCDPSession(page);
+    const { width, height } = devices['Galaxy S9+'].viewport;
+    await openDeck(page);
+
+    // 44px — under the 60px the deck used to insist on before it would move.
+    const x = width / 2;
+    const from = height * 0.7;
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: from, id: 1 }] });
+    for (const dy of [16, 30, 44]) {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: from - dy, id: 1 }] });
+    }
+    await page.waitForTimeout(900);
+    // Still holding — the slide has to have moved already.
+    expect(await activeSlide(page), 'the deck moves while the finger is still down').toContain('Phase 01');
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+
+    await settle(page);
+    expect(await activeSlide(page), 'lifting the finger adds nothing').toContain('Phase 01');
   } finally {
     await browser.close();
   }
