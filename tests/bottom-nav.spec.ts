@@ -83,34 +83,40 @@ test('desktop keeps the top nav and shows no tab bar', async ({ page }) => {
 
 /* The two bars are meant to be the same control in two places, so these
    compare them against each other rather than against colours written down
-   here — the point is that they match, whatever the palette says. */
+   here — the point is that they match, whatever the palette says. The phone
+   bar wears the top bar's treatment: a plain label, underlined in amber where
+   you are. */
 const tabLook = async (page: Page, width: number, bar: string) => {
   await page.setViewportSize({ width, height: 844 });
   await open(page, '/resources');
   const active = page.locator(bar).getByRole('link', { name: 'Templates' });
   await expect(active).toHaveAttribute('aria-current', 'page');
   return active.evaluate((el) => {
-    const cs = getComputedStyle(el);
+    const label = (el.querySelector('span:not([data-nav-underline])') ?? el) as HTMLElement;
+    const cs = getComputedStyle(label);
+    const rule = el.querySelector('[data-nav-underline]');
     return {
       color: cs.color,
-      shadow: cs.boxShadow,
-      stacked: cs.flexDirection,
+      weight: cs.fontWeight,
+      size: cs.fontSize,
       icons: el.querySelectorAll('svg').length,
+      underline: rule ? getComputedStyle(rule).backgroundColor : null,
     };
   });
 };
 
-test('desktop wears the same tabs as the phone bar', async ({ page }) => {
+test('the phone bar wears the top bar treatment', async ({ page }) => {
   test.setTimeout(90_000);
   const desktop = await tabLook(page, 1280, 'nav:not([aria-label="Primary"])');
   const phone = await tabLook(page, 390, 'nav[aria-label="Primary"]');
 
-  expect(desktop.stacked, 'icon sits above the label').toBe('column');
-  expect(desktop.icons, 'each tab carries its icon').toBe(1);
-  expect(desktop.shadow, 'the active tab sits in the pressed pill').toContain('inset');
-  expect(desktop.color, 'and is the same amber the phone bar uses').toBe(phone.color);
-  expect(desktop.shadow).toBe(phone.shadow);
-  expect(desktop.stacked).toBe(phone.stacked);
+  expect(phone.icons, 'labels only, no icons').toBe(0);
+  expect(phone.underline, 'the active label is underlined').not.toBeNull();
+  expect(phone.underline, 'in the same amber the top bar uses').toBe(desktop.underline);
+  expect(phone.color, 'same colour').toBe(desktop.color);
+  expect(phone.weight, 'same weight').toBe(desktop.weight);
+  expect(phone.size, 'same size').toBe(desktop.size);
+  expect(desktop.icons, 'and the top bar is unchanged — still labels only').toBe(0);
 });
 
 test('both WhatsApp buttons are the same amber pill', async ({ page }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
-import { NAV_ITEMS, navTabClass } from './BottomNav';
+import { NAV_ITEMS, navLinkClass, NavUnderline } from './BottomNav';
 
 /* From md up this is the whole navigation. Below md it carries the mark only —
    the three destinations live in BottomNav, within thumb reach. */
@@ -59,18 +59,13 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-2">
-            {NAV_ITEMS.map(({ name, path, Icon }) => {
+          <div className="hidden md:flex items-center space-x-[30px]">
+            {NAV_ITEMS.map(({ name, path }) => {
               const active = isActive(path);
               return (
-                <Link
-                  key={name}
-                  to={path}
-                  aria-current={active ? 'page' : undefined}
-                  className={`${navTabClass(active)} w-24`}
-                >
-                  <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
-                  <span className="text-[11px] leading-none font-semibold">{name}</span>
+                <Link key={name} to={path} aria-current={active ? 'page' : undefined} className={navLinkClass(active)}>
+                  {name}
+                  {active && <NavUnderline />}
                 </Link>
               );
             })}
