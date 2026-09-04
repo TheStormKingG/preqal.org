@@ -9,6 +9,14 @@ const TikTokIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
+/* Substack has no Lucide mark either. This one is three bars, the last of them
+   notched — geometric enough to draw exactly. */
+const SubstackIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+  </svg>
+);
+
 /* Dr. Gravesande's own accounts, not Preqal's — the footer carries the
    company's. */
 const ACCOUNTS = [
@@ -20,6 +28,7 @@ const ACCOUNTS = [
   { name: 'TikTok', href: 'https://www.tiktok.com/@stefan.gravesande', Icon: TikTokIcon },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/drgravesande/', Icon: Linkedin },
   { name: 'Instagram', href: 'https://www.instagram.com/stefangravesande/', Icon: Instagram },
+  { name: 'Substack', href: 'https://substack.com/@drstefang', Icon: SubstackIcon },
 ];
 
 /** The founder's socials, as a row of marks under his bio. */
@@ -27,7 +36,7 @@ const FounderSocials: React.FC<{ className?: string; compact?: boolean }> = ({
   className = '',
   compact = false,
 }) => (
-  <ul className={`flex flex-wrap gap-3 ${className}`}>
+  <ul className={`flex flex-wrap ${compact ? 'gap-2' : 'gap-3'} ${className}`}>
     {ACCOUNTS.map(({ name, href, Icon }) => (
       <li key={name}>
         <a

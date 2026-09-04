@@ -8,6 +8,7 @@ const ACCOUNTS = [
   { name: 'TikTok', href: 'https://www.tiktok.com/@stefan.gravesande' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/drgravesande/' },
   { name: 'Instagram', href: 'https://www.instagram.com/stefangravesande/' },
+  { name: 'Substack', href: 'https://substack.com/@drstefang' },
 ];
 
 async function openContact(page: Page, width: number, height: number) {
@@ -49,6 +50,20 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]] as cons
   });
 }
 
+test('all five marks stay on one row, even on the narrowest phone', async ({ page }) => {
+  test.setTimeout(90_000);
+  for (const [w, h] of [[1440, 900], [390, 844], [375, 620]] as const) {
+    await openContact(page, w, h);
+    const tops = await page.evaluate(() => {
+      const sec = document.querySelector('main section[aria-hidden="false"]')!;
+      return Array.from(sec.querySelectorAll('ul li')).map((li) => Math.round(li.getBoundingClientRect().top));
+    });
+    expect(tops.length, `five accounts at ${w}px`).toBe(5);
+    // A second row would push the slide past the screen it has to fit.
+    expect(new Set(tops).size, `one row at ${w}px`).toBe(1);
+  }
+});
+
 test('the row sits under the bio, not beside it', async ({ page }) => {
   test.setTimeout(90_000);
   await openContact(page, 1440, 900);
@@ -64,8 +79,8 @@ test('the row sits under the bio, not beside it', async ({ page }) => {
 test('each mark actually draws something', async ({ page }) => {
   test.setTimeout(90_000);
   await openContact(page, 1440, 900);
-  // The TikTok glyph is hand-drawn here rather than taken from the icon set,
-  // so this guards against it silently rendering as an empty box.
+  // The TikTok and Substack glyphs are hand-drawn here rather than taken from
+  // the icon set, so this guards against one rendering as an empty box.
   for (const account of ACCOUNTS) {
     const box = await page
       .getByRole('link', { name: `Dr. Stefan Gravesande on ${account.name}` })
