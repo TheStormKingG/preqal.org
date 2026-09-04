@@ -104,22 +104,23 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
   <>
   {/* ── ABOUT PREQAL — who you'll be talking to ── */}
   <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'mt-0' : 'mt-20'}`}>
-    <ScrollReveal yFrom={14}>
-      <div className={`text-center ${compact ? 'mb-2 lg:mb-12' : 'mb-12'}`}>
-        <p className={`text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
-        {/* The deck slide carries the socials under the bio as well, so its
-            heading gives up a step to make room. */}
-        <h2 className={`md:text-4xl font-bold text-slate-900 leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
-          Who you'll be<br className="sm:hidden" />{' '}
-          <span className="text-amber-600">talking to.</span>
-        </h2>
-      </div>
-    </ScrollReveal>
-
     {/* Founder — portrait and a short bio, nothing else */}
     <div className={`grid grid-cols-1 md:grid-cols-12 md:gap-12 md:items-center ${compact ? 'gap-4' : 'gap-5'}`}>
 
       <div className="md:col-span-5">
+        {/* The heading introduces the man, so it sits with his portrait rather
+            than centred over the pair of columns. */}
+        <ScrollReveal yFrom={14}>
+          <div className={`text-center ${compact ? 'mb-3' : 'mb-5'}`}>
+            <p className={`text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
+            {/* The deck slide carries the socials under the bio as well, so its
+                heading gives up a step to make room. */}
+            <h2 className={`md:text-4xl font-bold text-slate-900 leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
+              Who you'll be<br className="sm:hidden" />{' '}
+              <span className="text-amber-600">talking to.</span>
+            </h2>
+          </div>
+        </ScrollReveal>
         <ScrollReveal yFrom={20}>
           <div
             className={`founder-portrait relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none ${

@@ -75,3 +75,34 @@ test('each mark actually draws something', async ({ page }) => {
     expect(box!.height, `${account.name} mark has height`).toBeGreaterThan(8);
   }
 });
+
+/* The heading introduces the man, so it belongs with his portrait rather than
+   centred over both columns. On desktop that means it shares the portrait's
+   column; on a phone the two stack the same way either side of the change, so
+   the column test is what actually pins it. */
+for (const [name, w, h] of [['desktop', 1440, 900], ['phone', 390, 844]] as const) {
+  test(`the heading sits directly above the portrait — ${name}`, async ({ page }) => {
+    test.setTimeout(90_000);
+    await openContact(page, w, h);
+
+    const [heading, portrait, bio] = await Promise.all([
+      page.getByRole('heading', { name: /Who you'll be/ }).boundingBox(),
+      page.getByRole('img', { name: /Dr. Stefan Gravesande, founder/ }).boundingBox(),
+      page.getByRole('heading', { name: 'Dr. Stefan Gravesande' }).boundingBox(),
+    ]);
+
+    expect(portrait!.y, 'the portrait follows the heading').toBeGreaterThanOrEqual(
+      heading!.y + heading!.height - 2,
+    );
+    expect(portrait!.y - (heading!.y + heading!.height), 'and directly, not adrift').toBeLessThan(40);
+
+    // Centred on the portrait's column, never spilling past its edges.
+    const headingMid = heading!.x + heading!.width / 2;
+    const portraitMid = portrait!.x + portrait!.width / 2;
+    expect(Math.abs(headingMid - portraitMid), 'centred over the portrait').toBeLessThan(30);
+
+    if (w >= 1024) {
+      expect(heading!.x, 'and left of the bio, in the portrait column').toBeLessThan(bio!.x);
+    }
+  });
+}
