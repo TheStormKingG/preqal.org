@@ -296,7 +296,7 @@ test('the footer slide is the same on all three pages', async ({ page }) => {
     await page.setViewportSize({ width, height: width > 1024 ? 900 : 844 });
     const home = await readFooter('/', 7);
     const templates = await readFooter('/resources', 5);
-    const contact = await readFooter('/contact', 4);
+    const contact = await readFooter('/contact', 3);
 
     for (const [name, got] of [['templates', templates], ['contact', contact]] as const) {
       expect(got.label, `${name} ends on the footer at ${width}px`).toBe('Contact & info');
@@ -356,7 +356,6 @@ test('the arrow keys walk between the three pages', async ({ page }) => {
 test('arrow keys inside a field are left to the field', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page, '/contact');
-  await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(1500);
 

@@ -88,15 +88,14 @@ for (const path of ['/resources', '/contact']) {
   });
 }
 
-/* 375x667 is the case that bites: the second half is taller than that screen,
-   so unless each half is pinned to exactly one slide the form becomes three
-   views and costs a dead gesture. 1440x900 is here because the form reads the
-   same way on a desktop deck. */
-for (const [w, h] of [[390, 844], [375, 667], [1440, 900]] as const) {
+/* Phones only: from lg up the two halves stand side by side as columns on one
+   slide, so there is nothing to scroll. 375x667 is the case that bites — the
+   second half is taller than that screen, so unless each half is pinned to
+   exactly one slide the form becomes three views and costs a dead gesture. */
+for (const [w, h] of [[390, 844], [375, 667]] as const) {
 test(`the contact form reads as two exact halves before the deck moves on — ${w}x${h}`, async ({ page }) => {
   await page.setViewportSize({ width: w, height: h });
   await open(page, '/contact');
-  await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(1800);
 
@@ -142,7 +141,6 @@ test('the form slide is escapable even where the reCAPTCHA swallows swipes', asy
      guaranteed way onward from that slide. */
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, '/contact');
-  await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(1800);
 
@@ -206,4 +204,48 @@ test('a phone still takes the templates two at a time', async ({ page }) => {
   ]);
   expect(slides[0].downloads, 'the phone hero carries no card').toBe(0);
   for (const i of [1, 2, 3]) expect(slides[i].downloads, `slide ${i} holds two`).toBe(2);
+});
+
+test('from lg up the form stands as two columns on one slide', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, '/contact');
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(1500);
+
+  const label = await page.evaluate(
+    () => document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
+  );
+  expect(label).toContain('Send a message');
+  await expect(
+    page.locator('main section[data-deck-scrollable="true"]'),
+    'nothing to scroll — it all fits',
+  ).toHaveCount(0);
+
+  // The half that was the first view is now the left column, the second the right.
+  const [name, problem, send] = await Promise.all([
+    page.locator('input[name="first_name"]').boundingBox(),
+    page.locator('select[name="most_pressing_quality_problem"]').boundingBox(),
+    page.getByRole('button', { name: /Send Message/i }).boundingBox(),
+  ]);
+  expect(problem!.x, 'the enquiry sits right of the details').toBeGreaterThan(name!.x + name!.width - 4);
+  expect(Math.abs(problem!.y - name!.y), 'both columns start on the same line').toBeLessThan(40);
+  expect(send!.y, 'and the whole form is on one screen').toBeLessThan(900);
+});
+
+test('the contact details panel is gone from the page', async ({ page }) => {
+  for (const [w, h] of [[1440, 900], [390, 844]] as const) {
+    await page.setViewportSize({ width: w, height: h });
+    await open(page, '/contact');
+    const text = await page.evaluate(() => document.querySelector('main')?.textContent ?? '');
+    expect(text, `no details panel at ${w}px`).not.toContain('What happens next');
+    expect(text).not.toContain('info@preqal.org');
+    expect(text).not.toContain('Prefer to jump straight in');
+    const labels = await page.evaluate(() => {
+      const wrap = document.querySelector('main .relative.w-full.overflow-hidden')!;
+      return Array.from(wrap.firstElementChild!.querySelectorAll(':scope > section')).map((s) =>
+        s.getAttribute('aria-label'),
+      );
+    });
+    expect(labels).toEqual(['Get in touch', 'Send a message', "Who you'll be talking to", 'Contact & info']);
+  }
 });

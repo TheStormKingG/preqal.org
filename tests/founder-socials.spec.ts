@@ -20,7 +20,7 @@ async function openContact(page: Page, width: number, height: number) {
 
   /* The page is a deck at every width and every slide but the open one is
      aria-hidden, so the founder has to be brought on screen first. */
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(700);
   }

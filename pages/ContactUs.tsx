@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Loader2, CheckCircle2, MapPin, Clock, Mail, ArrowRight } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { PhoneInput } from 'react-international-phone';
@@ -9,29 +9,16 @@ import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
-import { useWhatsApp } from '../components/WhatsAppContact';
 import FounderSocials from '../components/FounderSocials';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
-const CONTACT_INFO = [
-  { icon: <MapPin className="h-4 w-4 text-amber-600" />, label: 'Location', value: 'Georgetown, Guyana · Caribbean region' },
-  { icon: <Clock className="h-4 w-4 text-amber-600" />, label: 'Response time', value: 'Within 1 business day' },
-  { icon: <Mail className="h-4 w-4 text-amber-600" />, label: 'Email', value: 'info@preqal.org' },
-];
 
 
 
-const WHAT_NEXT = [
-  'We review your message and your quality challenge',
-  'A brief discovery call is scheduled at your convenience',
-  'You receive a clear recommendation — no obligation',
-];
-
-
-/* ─── Page blocks, shared by the scrolling layout and the mobile deck ─── */
+/* ─── Page blocks ─── */
 
 const Hero: React.FC = () => (
   <>
@@ -243,64 +230,11 @@ const FormHalf: React.FC<{ halved: boolean; last?: boolean; children: React.Reac
   );
 };
 
-const InfoPanel: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
-  <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8">
-
-    {/* Contact details */}
-    <div>
-      <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Contact details</p>
-      <div className="flex flex-col gap-3">
-        {CONTACT_INFO.map((item) => (
-          <div key={item.label} className="flex items-start gap-3">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
-            >
-              {item.icon}
-            </div>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-none mb-0.5">{item.label}</p>
-              <p className="text-sm text-slate-700 font-medium leading-snug">{item.value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* What happens next */}
-    <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem' }}>
-      <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">What happens next</p>
-      <div className="flex flex-col gap-3">
-        {WHAT_NEXT.map((step, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '2px 2px 6px rgba(217,119,6,0.3)' }}
-            >
-              <span className="text-white text-[10px] font-bold">{i + 1}</span>
-            </div>
-            <p className="text-sm text-slate-600 leading-relaxed">{step}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* Alt CTA */}
-    <div style={{ borderTop: '1px solid rgba(163,177,198,0.25)', paddingTop: '1.5rem', marginTop: 'auto' }}>
-      <p className="text-xs text-slate-400 leading-relaxed mb-3">Prefer to jump straight in?</p>
-      <button
-        type="button"
-        onClick={openWhatsApp}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors"
-      >
-        Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
-      </button>
-    </div>
-  </div>
-);
 
 const ContactUs: React.FC = () => {
-  const { openWhatsApp } = useWhatsApp();
+  /* Only the form cares about width: below lg it is taller than the screen and
+     reads in two halves, from lg up those halves are two columns. */
+  const phone = useBelowWidth();
   const jobTitles = ['Quality Manager','Quality Assurance Manager','Quality Control Manager','Compliance Manager','QHSE Manager','HSE Manager','Operations Manager','Production Manager','Quality Engineer','Quality Assurance Engineer','Compliance Officer','Quality Analyst','Quality Specialist','Regulatory Affairs Manager','Director of Quality','VP of Quality','Chief Quality Officer','Other'];
   const qualityProblems = ['Inconsistent process execution','Poor document & change control','Unsafe behaviors + weak supervision','Inadequate risk assessments/controls','Training/competency gaps','Cash flow instability','Weak financial controls','Inventory and material flow issues','Lack of strategic alignment','Other'];
 
@@ -414,7 +348,10 @@ const ContactUs: React.FC = () => {
       </motion.div>
       </FormHalf>
     ) : (
-      <form onSubmit={handleSubmit} className={halved ? '' : 'space-y-4'}>
+      <form
+        onSubmit={handleSubmit}
+        className={halved ? '' : 'grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10 items-start'}
+      >
         {/* On a phone the deck reads this form as two views. Each half is sized
             to exactly one slide so neither one cuts a field, and the break tells
             the deck where the second view starts. */}
@@ -537,22 +474,20 @@ const ContactUs: React.FC = () => {
         ),
       },
       {
-        label: 'Contact details',
-        node: (
+        /* A phone cannot hold the form on one screen, so there it reads as two
+           exact halves that scroll inside the slide. From lg up those same two
+           halves stand side by side and the whole form is one slide. */
+        label: 'Send a message',
+        scrollable: phone,
+        node: phone ? (
+          <div className="min-h-full">{buildForm(true)}</div>
+        ) : (
           <div className="h-full flex items-center px-4 sm:px-6">
             <div className="w-full max-w-5xl mx-auto deck-fit">
-              <MainPanel><InfoPanel openWhatsApp={openWhatsApp} /></MainPanel>
+              <MainPanel>{buildForm(false)}</MainPanel>
             </div>
           </div>
         ),
-      },
-      {
-        /* The form is longer than a screen at any width and must not be
-           squeezed, so this slide scrolls itself in two exact halves and the
-           deck takes over at either end. */
-        label: 'Send a message',
-        scrollable: true,
-        node: <div className="min-h-full">{buildForm(true)}</div>,
       },
       {
         label: "Who you'll be talking to",
