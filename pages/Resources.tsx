@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
 import { useWhatsApp } from '../components/WhatsAppContact';
 
 /* ─── Free template library — direct downloads, no form ─── */
@@ -215,48 +215,80 @@ const NextStep: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
   </>
 );
 
+/** A slide holding a run of cards, and whatever the page wants under them. */
+const cardSlide = (label: string, body: React.ReactNode): DeckSlide => ({
+  label,
+  node: (
+    <div className="h-full flex items-center px-4 sm:px-6">
+      <div className="w-full max-w-3xl mx-auto deck-fit">{body}</div>
+    </div>
+  ),
+});
+
 const Resources: React.FC = () => {
   const base = import.meta.env.BASE_URL;
   const { openWhatsApp } = useWhatsApp();
-  const slides: DeckSlide[] = [
-      {
-        label: 'Free templates',
-        node: (
-          <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit"><Hero /></div>
-          </div>
-        ),
-      },
-      ...[0, 2, 4].map((from) => ({
-        label: `Templates ${from + 1} and ${from + 2}`,
-        node: (
-          <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full max-w-3xl mx-auto deck-fit">
-              <TemplateCards items={TEMPLATES.slice(from, from + 2)} base={base} />
+  /* A desktop slide holds more, so the six templates fall 1 / 3 / 2 there with
+     the hero carrying the first and the ZIP closing the last. A phone takes
+     them two at a time and gives the closing note its own slide. */
+  const phone = useBelowWidth();
+
+  const footerSlide: DeckSlide = {
+    label: 'Contact & info',
+    node: (
+      <div className="h-full flex items-center overflow-hidden">
+        <div className="w-full deck-fit"><Footer compact /></div>
+      </div>
+    ),
+  };
+
+  const slides: DeckSlide[] = phone
+    ? [
+        {
+          label: 'Free templates',
+          node: (
+            <div className="h-full flex items-center px-4 sm:px-6">
+              <div className="w-full deck-fit"><Hero /></div>
             </div>
-          </div>
+          ),
+        },
+        ...[0, 2, 4].map((from) =>
+          cardSlide(
+            `Templates ${from + 1} and ${from + 2}`,
+            <TemplateCards items={TEMPLATES.slice(from, from + 2)} base={base} />,
+          ),
         ),
-      })),
-      {
-        label: 'Take it further',
-        node: (
-          <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full max-w-3xl mx-auto deck-fit">
-              <DownloadAll base={base} />
-              <NextStep openWhatsApp={openWhatsApp} />
+        cardSlide(
+          'Take it further',
+          <>
+            <DownloadAll base={base} />
+            <NextStep openWhatsApp={openWhatsApp} />
+          </>,
+        ),
+        footerSlide,
+      ]
+    : [
+        {
+          label: 'Free templates',
+          node: (
+            <div className="h-full flex items-center px-4 sm:px-6">
+              <div className="w-full max-w-3xl mx-auto deck-fit">
+                <Hero />
+                <TemplateCards items={TEMPLATES.slice(0, 1)} base={base} />
+              </div>
             </div>
-          </div>
+          ),
+        },
+        cardSlide('Templates 2 to 4', <TemplateCards items={TEMPLATES.slice(1, 4)} base={base} />),
+        cardSlide(
+          'Templates 5 and 6',
+          <>
+            <TemplateCards items={TEMPLATES.slice(4, 6)} base={base} />
+            <DownloadAll base={base} />
+          </>,
         ),
-      },
-      {
-        label: 'Contact & info',
-        node: (
-          <div className="h-full flex items-center overflow-hidden">
-            <div className="w-full deck-fit"><Footer compact /></div>
-          </div>
-        ),
-      },
-    ];
+        footerSlide,
+      ];
   return (
     <>
       <SEO pageKey="resources" />

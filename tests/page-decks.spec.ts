@@ -157,3 +157,53 @@ test('the form slide is escapable even where the reCAPTCHA swallows swipes', asy
   await page.waitForTimeout(1600);
   expect(await label(), 'the cue must leave the form slide').toContain("Who you'll be talking to");
 });
+
+/* A desktop slide holds more than a phone one, so Templates falls 1 / 3 / 2
+   there — the hero carrying the workbook, the ZIP closing the last run — while
+   a phone still takes them two at a time. */
+const templateShape = (page: Page) =>
+  page.evaluate(() => {
+    const wrap = document.querySelector('main .relative.w-full.overflow-hidden')!;
+    return Array.from(wrap.firstElementChild!.querySelectorAll(':scope > section')).map((sec) => ({
+      label: sec.getAttribute('aria-label') ?? '',
+      // Each template is a card with its own download control.
+      downloads: sec.querySelectorAll('a[download]').length,
+      text: (sec as HTMLElement).innerText,
+    }));
+  });
+
+test('desktop lays the templates out 1 / 3 / 2 and closes on the footer', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, '/resources');
+  const slides = await templateShape(page);
+
+  expect(slides.map((s) => s.label)).toEqual([
+    'Free templates',
+    'Templates 2 to 4',
+    'Templates 5 and 6',
+    'Contact & info',
+  ]);
+  expect(slides[0].text, 'the hero carries the workbook').toContain('Business Plan Workbook');
+  expect(slides[0].downloads, 'one template on the first slide').toBe(1);
+  expect(slides[1].downloads, 'three on the second').toBe(3);
+  expect(slides[2].downloads, 'two on the third, plus the ZIP').toBe(3);
+  expect(slides[2].text).toContain('Want everything at once?');
+  expect(slides[3].text, 'and the footer closes it').toContain('All rights reserved');
+});
+
+test('a phone still takes the templates two at a time', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, '/resources');
+  const slides = await templateShape(page);
+
+  expect(slides.map((s) => s.label)).toEqual([
+    'Free templates',
+    'Templates 1 and 2',
+    'Templates 3 and 4',
+    'Templates 5 and 6',
+    'Take it further',
+    'Contact & info',
+  ]);
+  expect(slides[0].downloads, 'the phone hero carries no card').toBe(0);
+  for (const i of [1, 2, 3]) expect(slides[i].downloads, `slide ${i} holds two`).toBe(2);
+});
