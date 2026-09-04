@@ -344,7 +344,7 @@ body {
   .deck-fit { transform: scale(0.72); }
 }
 @media (max-height: 640px) {
-  .deck-fit { transform: scale(0.66); }
+  .deck-fit { transform: scale(0.65); }
 }
 
 
@@ -364,6 +364,16 @@ body {
 /* ── Contact founder portrait — a banner on phones, 4:5 from md up ── */
 .founder-portrait { aspect-ratio: 16 / 9; }
 @media (min-width: 768px) { .founder-portrait { aspect-ratio: 4 / 5; } }
+/* On the deck slide the portrait shares one screen with the bio and the
+   socials beneath it, so there it takes a shallower crop. */
+.founder-portrait-compact { aspect-ratio: 5 / 2; }
+/* A letterbox this shallow centred on the image lands on a chin, so aim it at
+   the face instead. */
+.founder-portrait-compact img { object-position: center 30%; }
+@media (min-width: 768px) {
+  .founder-portrait-compact { aspect-ratio: 4 / 5; }
+  .founder-portrait-compact img { object-position: center center; }
+}
 
 /* ── Contact hero image — a banner on phones, the tall frame from lg up ── */
 /* The subject of this photograph is the offered handshake, mid-frame, not a

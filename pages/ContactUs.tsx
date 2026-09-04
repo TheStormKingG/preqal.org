@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import { useWhatsApp } from '../components/WhatsAppContact';
+import FounderSocials from '../components/FounderSocials';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -117,9 +118,11 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
   {/* ── ABOUT PREQAL — who you'll be talking to ── */}
   <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'mt-0' : 'mt-20'}`}>
     <ScrollReveal yFrom={14}>
-      <div className={`text-center ${compact ? 'mb-5 lg:mb-12' : 'mb-12'}`}>
+      <div className={`text-center ${compact ? 'mb-2 lg:mb-12' : 'mb-12'}`}>
         <p className={`text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+        {/* The deck slide carries the socials under the bio as well, so its
+            heading gives up a step to make room. */}
+        <h2 className={`md:text-4xl font-bold text-slate-900 leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
           Who you'll be<br className="sm:hidden" />{' '}
           <span className="text-amber-600">talking to.</span>
         </h2>
@@ -127,12 +130,14 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
     </ScrollReveal>
 
     {/* Founder — portrait and a short bio, nothing else */}
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-12 md:items-center">
+    <div className={`grid grid-cols-1 md:grid-cols-12 md:gap-12 md:items-center ${compact ? 'gap-4' : 'gap-5'}`}>
 
       <div className="md:col-span-5">
         <ScrollReveal yFrom={20}>
           <div
-            className="founder-portrait relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none"
+            className={`founder-portrait relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none ${
+              compact ? 'founder-portrait-compact' : ''
+            }`}
             style={{
               boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
             }}
@@ -169,12 +174,15 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
       <div className="md:col-span-7">
         <ScrollReveal yFrom={20} delay={80}>
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-1">Dr. Stefan Gravesande</h3>
-          <p className="text-amber-600 text-xs font-bold mb-3 sm:mb-6 uppercase tracking-wider">
+          <p className={`text-amber-600 text-xs font-bold sm:mb-6 uppercase tracking-wider ${compact ? 'mb-2' : 'mb-3'}`}>
             Medical Leadership &rarr; Systems Engineer
           </p>
-          <p className="text-sm sm:text-base text-slate-600 leading-normal sm:leading-relaxed">
+          {/* The deck slide has to hold the bio and the socials on one screen,
+              so the lines close up a little there. */}
+          <p className={`text-sm sm:text-base text-slate-600 sm:leading-relaxed ${compact ? 'leading-snug' : 'leading-normal'}`}>
             Dr. Stefan Gravesande trained in medicine before turning that diagnostic discipline on businesses. Where most consultants hand over a template, he examines an operation first: its processes, its patterns, its vulnerabilities. Then he prescribes. He builds Integrated Management Systems from the ground up for firms across Guyana, aligning them with ISO 9001, ISO 14001, and ISO 45001, and has architected national-scale quality frameworks spanning agriculture, food production, and environmental systems. His work is evidence-led and risk-based: your time goes where it matters, and the standards you build protect your people, your community, and the world your business operates in.
           </p>
+          <FounderSocials compact={compact} className={compact ? 'mt-1 lg:mt-6' : 'mt-6'} />
         </ScrollReveal>
       </div>
 
