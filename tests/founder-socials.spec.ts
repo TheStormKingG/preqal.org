@@ -18,15 +18,13 @@ async function openContact(page: Page, width: number, height: number) {
   await decline.waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
   await page.waitForTimeout(1300);
 
-  /* Below lg the page is a deck and every slide but the open one is
+  /* The page is a deck at every width and every slide but the open one is
      aria-hidden, so the founder has to be brought on screen first. */
-  if (width < 1024) {
-    for (let i = 0; i < 3; i++) {
-      await page.keyboard.press('ArrowDown');
-      await page.waitForTimeout(700);
-    }
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(700);
   }
+  await page.waitForTimeout(700);
 }
 
 for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]] as const) {

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { type DeckSlide } from '../components/SlideDeck';
 import { useWhatsApp } from '../components/WhatsAppContact';
 
 /* ─── Free template library — direct downloads, no form ─── */
@@ -218,10 +218,7 @@ const NextStep: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
 const Resources: React.FC = () => {
   const base = import.meta.env.BASE_URL;
   const { openWhatsApp } = useWhatsApp();
-  const deck = useBelowWidth(); // sectioned like slides on phones, a page from lg up
-
-  if (deck) {
-    const slides: DeckSlide[] = [
+  const slides: DeckSlide[] = [
       {
         label: 'Free templates',
         node: (
@@ -260,25 +257,10 @@ const Resources: React.FC = () => {
         ),
       },
     ];
-    return (
-      <>
-        <SEO pageKey="resources" />
-        <SlideDeck slides={slides} />
-      </>
-    );
-  }
-
   return (
     <>
       <SEO pageKey="resources" />
-      <div className="min-h-screen pb-20">
-        <Hero />
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <TemplateCards items={TEMPLATES} base={base} />
-          <DownloadAll base={base} />
-          <NextStep openWhatsApp={openWhatsApp} />
-        </div>
-      </div>
+      <SlideDeck slides={slides} />
     </>
   );
 };

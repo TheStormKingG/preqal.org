@@ -71,18 +71,28 @@ for (const path of ['/resources', '/contact']) {
     });
   }
 
-  test(`${path} stays an ordinary scrolling page on desktop`, async ({ page }) => {
+  test(`${path} runs the same deck on desktop`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await open(page, path);
-    expect(await readSlides(page), `${path} must not be a deck on desktop`).toBeNull();
-    expect(await page.evaluate(() => document.documentElement.scrollHeight > innerHeight + 1)).toBe(true);
+    const rows = await readSlides(page);
+    expect(rows, `${path} is a deck at desktop width too`).not.toBeNull();
+    expect(rows!.length, 'the same slides the phone gets').toBeGreaterThan(3);
+    for (const row of rows!) {
+      if (row.scrollable) continue;
+      expect(row.over, `${row.label} overflows by ${row.over}px`).toBeLessThanOrEqual(1);
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight > innerHeight + 1),
+      'and the page itself does not scroll',
+    ).toBe(false);
   });
 }
 
 /* 375x667 is the case that bites: the second half is taller than that screen,
    so unless each half is pinned to exactly one slide the form becomes three
-   views and costs a dead gesture. */
-for (const [w, h] of [[390, 844], [375, 667]] as const) {
+   views and costs a dead gesture. 1440x900 is here because the form reads the
+   same way on a desktop deck. */
+for (const [w, h] of [[390, 844], [375, 667], [1440, 900]] as const) {
 test(`the contact form reads as two exact halves before the deck moves on — ${w}x${h}`, async ({ page }) => {
   await page.setViewportSize({ width: w, height: h });
   await open(page, '/contact');

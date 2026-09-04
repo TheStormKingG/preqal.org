@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import RouteSwipe from './components/RouteSwipe';
 import AnimatedRoutes from './components/AnimatedRoutes';
-import { useBelowWidth } from './components/SlideDeck';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
 import { initGA } from './src/analytics/ga';
@@ -23,18 +22,15 @@ const ConditionalBottomNav: React.FC = () => {
   return <BottomNav />;
 };
 
-/* Pages that run as a slide deck carry the footer as their last slide, so the
-   global one would be a second copy below the deck — and would make the page
-   itself scroll, which is exactly what a deck replaces. Home is a deck at every
-   width; Templates and Contact only below lg. */
-const DECK_ON_PHONES = ['/resources', '/contact'];
+/* All three run as a slide deck at every width, and each carries the footer as
+   its last slide. A global footer would be a second copy below the deck — and
+   would make the page itself scroll, which is exactly what a deck replaces. */
+const DECK_ROUTES = ['/', '/resources', '/contact'];
 
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
-  const phone = useBelowWidth();
   if (location.pathname.startsWith('/tools/')) return null;
-  if (location.pathname === '/') return null;
-  if (phone && DECK_ON_PHONES.includes(location.pathname)) return null;
+  if (DECK_ROUTES.includes(location.pathname)) return null;
   return <Footer />;
 };
 

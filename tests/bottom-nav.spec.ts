@@ -265,3 +265,104 @@ test('a vertical swipe still drives the deck, not the router', async () => {
     await browser.close();
   }
 });
+
+/* All three pages run as a deck at every width, so the footer is the last
+   slide everywhere and must sit identically on each. */
+test('the footer slide is the same on all three pages', async ({ page }) => {
+  test.setTimeout(180_000);
+  const readFooter = async (path: string, steps: number) => {
+    await open(page, path);
+    for (let i = 0; i < steps; i++) {
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(620);
+    }
+    await page.waitForTimeout(900);
+    return page.evaluate(() => {
+      const sec = document.querySelector('main section[aria-hidden="false"]')!;
+      const sr = sec.getBoundingClientRect();
+      const fit = sec.querySelector('.deck-fit') as HTMLElement;
+      const fr = fit.getBoundingClientRect();
+      return {
+        label: sec.getAttribute('aria-label'),
+        slide: Math.round(sr.height),
+        content: Math.round(fr.height),
+        top: Math.round(fr.top - sr.top),
+        scale: getComputedStyle(fit).transform,
+      };
+    });
+  };
+
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width > 1024 ? 900 : 844 });
+    const home = await readFooter('/', 7);
+    const templates = await readFooter('/resources', 5);
+    const contact = await readFooter('/contact', 4);
+
+    for (const [name, got] of [['templates', templates], ['contact', contact]] as const) {
+      expect(got.label, `${name} ends on the footer at ${width}px`).toBe('Contact & info');
+      expect(got.slide, `${name} slide height matches home`).toBe(home.slide);
+      expect(got.content, `${name} footer height matches home`).toBe(home.content);
+      expect(got.top, `${name} footer sits where home's does`).toBe(home.top);
+      expect(got.scale, `${name} is scaled like home`).toBe(home.scale);
+    }
+  }
+});
+
+test('desktop runs the same deck as the phone, footer slide and all', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const path of ['/resources', '/contact']) {
+    await open(page, path);
+    // A deck, not an ordinary scrolling page.
+    await expect(page.locator('main .relative.w-full.overflow-hidden')).toHaveCount(1);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight > innerHeight + 1),
+      `${path} does not scroll as a page`,
+    ).toBe(false);
+    // And exactly one footer — the slide's, not a second global one.
+    await expect(page.locator('footer'), `${path} carries one footer`).toHaveCount(1);
+  }
+});
+
+test('the arrow keys walk between the three pages', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page);
+  const at = () => new URL(page.url()).pathname;
+
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(900);
+  expect(at(), 'right goes to the next tab').toBe('/resources');
+
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(900);
+  expect(at()).toBe('/contact');
+
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(900);
+  expect(at(), 'the last tab does not wrap').toBe('/contact');
+
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForTimeout(900);
+  expect(at(), 'left goes back').toBe('/resources');
+
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForTimeout(900);
+  expect(at()).toBe('/');
+
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForTimeout(900);
+  expect(at(), 'the first tab does not wrap').toBe('/');
+});
+
+test('arrow keys inside a field are left to the field', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, '/contact');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(1500);
+
+  const first = page.locator('input[name="first_name"]');
+  await first.fill('Stefan');
+  await first.press('ArrowLeft');
+  await page.waitForTimeout(700);
+  expect(new URL(page.url()).pathname, 'the caret moved, not the page').toBe('/contact');
+});

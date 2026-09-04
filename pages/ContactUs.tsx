@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import { useWhatsApp } from '../components/WhatsAppContact';
 import FounderSocials from '../components/FounderSocials';
@@ -301,7 +301,6 @@ const InfoPanel: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => 
 
 const ContactUs: React.FC = () => {
   const { openWhatsApp } = useWhatsApp();
-  const deck = useBelowWidth(); // sectioned like slides on phones, a page from lg up
   const jobTitles = ['Quality Manager','Quality Assurance Manager','Quality Control Manager','Compliance Manager','QHSE Manager','HSE Manager','Operations Manager','Production Manager','Quality Engineer','Quality Assurance Engineer','Compliance Officer','Quality Analyst','Quality Specialist','Regulatory Affairs Manager','Director of Quality','VP of Quality','Chief Quality Officer','Other'];
   const qualityProblems = ['Inconsistent process execution','Poor document & change control','Unsafe behaviors + weak supervision','Inadequate risk assessments/controls','Training/competency gaps','Cash flow instability','Weak financial controls','Inventory and material flow issues','Lack of strategic alignment','Other'];
 
@@ -528,10 +527,7 @@ const ContactUs: React.FC = () => {
     )}
   </div>
   );
-  const formPanel = buildForm(false);
-
-  if (deck) {
-    const slides: DeckSlide[] = [
+  const slides: DeckSlide[] = [
       {
         label: 'Get in touch',
         node: (
@@ -551,13 +547,12 @@ const ContactUs: React.FC = () => {
         ),
       },
       {
-        // The form is longer than a phone screen and must not be squeezed, so
-        // this slide scrolls inside itself; the deck takes over at either end.
+        /* The form is longer than a screen at any width and must not be
+           squeezed, so this slide scrolls itself in two exact halves and the
+           deck takes over at either end. */
         label: 'Send a message',
         scrollable: true,
-        node: (
-          <div className="min-h-full">{buildForm(true)}</div>
-        ),
+        node: <div className="min-h-full">{buildForm(true)}</div>,
       },
       {
         label: "Who you'll be talking to",
@@ -576,36 +571,10 @@ const ContactUs: React.FC = () => {
         ),
       },
     ];
-    return (
-      <>
-        <SEO pageKey="contact" extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]} />
-        <SlideDeck slides={slides} />
-      </>
-    );
-  }
-
   return (
     <>
       <SEO pageKey="contact" extraSchemas={[getFounderPersonSchema(), getAboutPageSchema()]} />
-      <div className="min-h-screen pb-20">
-
-        <Hero />
-
-        {/* ── MAIN CONTENT ── */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal yFrom={20}>
-            <MainPanel>
-              <div className="grid grid-cols-1 lg:grid-cols-5 divide-y lg:divide-y-0 lg:divide-x divide-white/50">
-                <InfoPanel openWhatsApp={openWhatsApp} />
-                {formPanel}
-              </div>
-            </MainPanel>
-          </ScrollReveal>
-        </div>
-
-        <AboutFounder />
-
-      </div>
+      <SlideDeck slides={slides} />
     </>
   );
 };

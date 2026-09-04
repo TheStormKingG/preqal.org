@@ -108,12 +108,31 @@ const RouteSwipe: React.FC = () => {
       navigate(BOTTOM_NAV_ROUTES[next]);
     };
 
+    /* The deck owns up and down; sideways belongs to the router. A reader who
+       has found the arrow keys should be able to walk the whole site with them. */
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)
+      )
+        return;
+      if (e.metaKey || e.altKey || e.ctrlKey) return; // leave browser history alone
+      const next = index + (e.key === 'ArrowRight' ? 1 : -1);
+      if (next < 0 || next >= BOTTOM_NAV_ROUTES.length) return;
+      e.preventDefault();
+      navigate(BOTTOM_NAV_ROUTES[next]);
+    };
+
+    document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onDown);
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', clear);
     document.addEventListener('pointercancel', clear);
     document.addEventListener('wheel', onWheel, { passive: false });
     return () => {
+      document.removeEventListener('keydown', onKey);
       document.removeEventListener('pointerdown', onDown);
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', clear);
