@@ -102,7 +102,17 @@ const PHASES: Phase[] = [
 ];
 
 /* ─── Subtle scroll-parallax image frame ─── */
-const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: boolean }> = ({ src, alt, pos, deck }) => {
+/* `near` is deck-only: every slide is mounted at once, so without it all five
+   phase pictures (~350KB) download on arrival, ahead of anything the reader
+   can see. The frame keeps its size either way, so nothing shifts when the
+   picture arrives a slide early. */
+const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: boolean; near?: boolean }> = ({
+  src,
+  alt,
+  pos,
+  deck,
+  near = true,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
@@ -118,15 +128,18 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
         boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
       }}
     >
-      <motion.img
-        src={`${import.meta.env.BASE_URL}${src}`}
-        alt={alt}
-        className="absolute inset-0 w-full h-full object-cover"
-        style={still ? { objectPosition: pos } : { y, scale, objectPosition: pos }}
-        loading="lazy"
-        width="560"
-        height="420"
-      />
+      {near && (
+        <motion.img
+          src={`${import.meta.env.BASE_URL}${src}`}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={still ? { objectPosition: pos } : { y, scale, objectPosition: pos }}
+          loading="lazy"
+          decoding="async"
+          width="560"
+          height="420"
+        />
+      )}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.08) 0%, transparent 50%, rgba(15,23,42,0.16) 100%)' }}
@@ -149,7 +162,9 @@ const PhaseSection: React.FC<{
   badgeRef?: React.Ref<HTMLDivElement>;
   pop?: 'hidden' | 'shown';
   burst?: boolean;
-}> = ({ phase, index, deck, badgeRef, pop = 'shown', burst }) => {
+  /* Deck only — whether this slide is the open one or next to it. */
+  near?: boolean;
+}> = ({ phase, index, deck, badgeRef, pop = 'shown', burst, near = true }) => {
   const flip = index % 2 === 1;
   const ref = useRef<HTMLElement>(null);
   const prefersReduced = useReducedMotion();
@@ -321,10 +336,11 @@ const PhaseSection: React.FC<{
                 </motion.div>
                 <Link
                   to={`/services/${phase.waKey}`}
-                  aria-label={`Learn more about Preqal ${phase.serviceName}`}
                   className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
                 >
-                  Learn more
+                  {/* Five "Learn more"s tell a crawler nothing; the rest of the
+                      sentence is there for it and for screen readers alike. */}
+                  Learn more<span className="sr-only"> about Preqal {phase.serviceName}</span>
                 </Link>
               </div>
             </motion.div>
@@ -345,7 +361,7 @@ const PhaseSection: React.FC<{
               }
             : {})}
         >
-          <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} deck={deck} />
+          <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} deck={deck} near={near} />
         </motion.div>
       </div>
     </section>
@@ -401,6 +417,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
 
   const isOrigin = index === 0;
   const active = deck ? deck.index === PHASE_SLIDE_OFFSET + index : true;
+  const near = deck ? Math.abs(deck.index - (PHASE_SLIDE_OFFSET + index)) <= 1 : true;
   /* The flame travels the way the reader is moving: down the deck it arrives
      from above, back up the deck it arrives from below. Phase 01 keeps its
      origin behaviour only when it is reached going forward. */
@@ -598,7 +615,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
         </svg>
       )}
       <div className="relative z-10 max-w-6xl mx-auto w-full deck-fit">
-        <PhaseSection phase={phase} index={index} deck badgeRef={badgeRef} pop={pop} burst={burst} />
+        <PhaseSection phase={phase} index={index} deck badgeRef={badgeRef} pop={pop} burst={burst} near={near} />
       </div>
     </div>
   );
@@ -647,9 +664,12 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
               <span>From Idea to Bank</span>
             </motion.div>
 
+            {/* The headline and the picture are what the page is, so they are
+                served visible: a fade from nothing here would hold the largest
+                paint back until hydration and the animation had both finished. */}
             <motion.h1
               className={`text-3xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-1 lg:mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
-              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              initial={{ y: 18 }} animate={{ y: 0 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
               Every big brand<br />started small.
@@ -657,7 +677,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
             <motion.p
               className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-2.5 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
               style={{ fontStyle: 'italic', color: '#f59e0b' }}
-              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              initial={{ y: 14 }} animate={{ y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               Yours is next.
@@ -680,7 +700,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
           {/* Hero image — a shallow banner on phones, the tall frame from lg up */}
           <motion.div
             className={`flex-shrink-0 w-full ${deck ? 'mt-4 lg:mt-0 lg:w-[460px]' : 'lg:w-[520px]'}`}
-            initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
+            initial={{ x: 30 }} animate={{ x: 0 }}
             transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
             <div

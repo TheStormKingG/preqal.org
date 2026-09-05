@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={openWhatsApp}
-              aria-label="Contact us on WhatsApp"
+              aria-label="WhatsApp Us — message Preqal"
               className="flex h-12 items-center"
             >
               <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 text-white font-bold text-xs whitespace-nowrap neu-raised-sm">

@@ -76,7 +76,7 @@ test('desktop keeps the top nav and shows no tab bar', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await open(page);
   await expect(page.locator('nav[aria-label="Primary"]')).toBeHidden();
-  await expect(page.locator('nav').first().getByRole('button', { name: 'Contact us on WhatsApp' }),
+  await expect(page.locator('nav').first().getByRole('button', { name: 'WhatsApp Us — message Preqal' }),
     'the phone-only button stays off desktop').toBeHidden();
   await expect(page.getByRole('link', { name: 'Templates', exact: true }).first()).toBeVisible();
 });

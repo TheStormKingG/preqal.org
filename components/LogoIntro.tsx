@@ -21,9 +21,23 @@ export const LogoIntroProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [playing, setPlaying] = useState(false);
   const prefersReduced = useReducedMotion();
 
+  /* Warm the bytes so the first click plays at once — but only after the page
+     has loaded and gone idle. Fetched on mount, this 360KB was the largest
+     download on the home page and sat in front of the hero. */
   useEffect(() => {
     if (prefersReduced) return; // never shown, so never fetched
-    warmLogoIntro().catch(() => {}); // a miss here just means the first click waits
+    let idle = 0;
+    const warm = () => {
+      const ric = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+      idle = ric ? ric(() => warmLogoIntro().catch(() => {})) : window.setTimeout(() => warmLogoIntro().catch(() => {}), 2500);
+    };
+    if (document.readyState === 'complete') warm();
+    else window.addEventListener('load', warm, { once: true });
+    return () => {
+      window.removeEventListener('load', warm);
+      const cic = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
+      if (cic) cic(idle); else window.clearTimeout(idle);
+    };
   }, [prefersReduced]);
 
   // A reader who has asked for less motion gets the wordmark, not the roll-in.
