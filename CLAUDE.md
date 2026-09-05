@@ -204,7 +204,8 @@ do shell script "cd '/Users/stefangravesande/Documents/Projects/Preqal 2027/Apps
 | `npm run build` | Production build → `dist/` |
 | `npm run lint` | ESLint strict check — must pass before committing |
 | `npm run test:unit` | Vitest unit tests |
-| `npx playwright test` | E2e smoke tests (runs against live preqal.org) |
+| `npx playwright test tests/smoke.spec.ts` | Live smoke tests against preqal.org — the only spec CI runs (`smoke.yml`) |
+| `npx playwright test` | Full e2e suite — needs `npm run dev` on port 3000 first; every spec but smoke drives localhost |
 
 ---
 

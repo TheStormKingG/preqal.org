@@ -37,8 +37,11 @@ jobs:
         # Give GitHub Pages CDN a moment to propagate after deploy
         run: sleep 20
 
+      # Only the smoke spec runs here: it reads the live site through the
+      # config's baseURL. Every other spec drives a local dev server on
+      # localhost:3000, which CI does not start, and would fail on connection.
       - name: Run smoke tests
-        run: npx playwright test
+        run: npx playwright test tests/smoke.spec.ts
 
       - name: Upload test report on failure
         if: failure()
