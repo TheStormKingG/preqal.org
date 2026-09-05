@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 /* Clicking any Preqal mark takes the reader home and, while they arrive, the
@@ -6,7 +6,7 @@ import { useReducedMotion } from 'framer-motion';
    slide up to it — and settles back into the wordmark. The click and the
    playback live in different components (footer and top bar), so the request
    travels through this small context: `play` arms it, `playing` shows it,
-   `stop` clears it once the video ends. */
+   `stop` clears it once the intro ends. */
 interface LogoIntroApi {
   playing: boolean;
   play: () => void;
@@ -21,6 +21,11 @@ export const LogoIntroProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [playing, setPlaying] = useState(false);
   const prefersReduced = useReducedMotion();
 
+  useEffect(() => {
+    if (prefersReduced) return; // never shown, so never fetched
+    warmLogoIntro().catch(() => {}); // a miss here just means the first click waits
+  }, [prefersReduced]);
+
   // A reader who has asked for less motion gets the wordmark, not the roll-in.
   const play = useCallback(() => {
     if (prefersReduced) return;
@@ -32,33 +37,69 @@ export const LogoIntroProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   return <LogoIntroContext.Provider value={api}>{children}</LogoIntroContext.Provider>;
 };
 
-/* Chrome, Firefox and Edge play VP9 with an alpha plane; Safari does not, and
-   wants HEVC with alpha in a .mov instead. Safari will happily *play* the
-   webm — without its alpha, on a white slab — so the choice has to be made
-   here rather than left to <source> order. */
-const prefersHevc = () =>
-  typeof navigator !== 'undefined' &&
-  /safari/i.test(navigator.userAgent) &&
-  !/chrome|chromium|crios|android/i.test(navigator.userAgent);
+/* The intro is an animated PNG rather than a video. A video with an alpha
+   plane needs one codec for Chromium and Firefox and a different one for
+   Safari, chosen by sniffing the browser, and the Safari one played on a black
+   slab on an actual iPhone. An APNG decodes with alpha in every engine through
+   the ordinary image path, needs no autoplay permission, and can be proven in
+   WebKit here. It is authored to play once (acTL plays = 1).
 
-/** The intro itself, sized and placed exactly where the wordmark sits. */
-export const LogoIntroVideo: React.FC<{ className?: string }> = ({ className }) => {
+   Two consequences of it being an image. There is no "ended" event, so the
+   wordmark comes back on a timer. And a once-only animation that has already
+   run will, in WebKit, show its final frame when the same URL is mounted
+   again — so each play gets a fresh object URL minted from one cached Blob,
+   which restarts the animation without a second download. */
+const INTRO_MS = 1700; // 50 frames at 30fps, plus a beat for the decode
+
+let introBlob: Promise<Blob> | null = null;
+/** Fetch the intro once and keep it; every play draws on the same bytes. */
+export const warmLogoIntro = (): Promise<Blob> =>
+  (introBlob ??= fetch(`${import.meta.env.BASE_URL}logo-intro.png`).then((r) => {
+    if (!r.ok) throw new Error(`logo-intro.png ${r.status}`);
+    return r.blob();
+  }));
+
+export const LogoIntroImage: React.FC<{ className?: string }> = ({ className }) => {
   const { stop } = useLogoIntro();
+  const [src, setSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    let url = '';
+    warmLogoIntro()
+      .then((blob) => {
+        if (!live) return;
+        url = URL.createObjectURL(blob);
+        setSrc(url);
+      })
+      .catch(stop);
+    return () => {
+      live = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [stop]);
+
+  // The clock starts when the frames are in hand, not when the click landed.
+  const timer = React.useRef(0);
+  const onLoad = useCallback(() => {
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(stop, INTRO_MS);
+  }, [stop]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
   const base = import.meta.env.BASE_URL;
-  const src = prefersHevc() ? `${base}logo-intro.mov` : `${base}logo-intro.webm`;
   return (
-    <video
-      src={src}
+    <img
+      data-logo-intro=""
+      /* Until the bytes arrive the static mark holds the slot, so nothing blinks. */
+      src={src ?? `${base}Preqal%20Logo%20Sep25-9-400.webp`}
+      alt="Preqal logo"
       className={className}
-      width="1012"
-      height="248"
-      autoPlay
-      muted
-      playsInline
-      preload="auto"
-      aria-label="Preqal logo"
-      onEnded={stop}
-      /* If the browser cannot play it, the wordmark comes straight back. */
+      width="506"
+      height="124"
+      decoding="sync"
+      onLoad={src ? onLoad : undefined}
+      /* If the image cannot load, the wordmark comes straight back. */
       onError={stop}
     />
   );

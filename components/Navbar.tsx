@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 import { NAV_ITEMS, navLinkClass, NavUnderline } from './BottomNav';
-import { LogoIntroVideo, useLogoIntro } from './LogoIntro';
+import { LogoIntroImage, useLogoIntro } from './LogoIntro';
 
 /* From md up this is the whole navigation. Below md it carries the mark only —
    the three destinations live in BottomNav, within thumb reach. */
@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center" onClick={intro.play}>
               {intro.playing ? (
-                <LogoIntroVideo className="h-7 md:h-10 w-auto" />
+                <LogoIntroImage className="h-7 md:h-10 w-auto" />
               ) : (
               <picture>
                 <source
