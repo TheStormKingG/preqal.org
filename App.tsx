@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import RouteSwipe from './components/RouteSwipe';
+import { LogoIntroProvider } from './components/LogoIntro';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
@@ -89,6 +90,7 @@ const App: React.FC = () => {
     <HelmetProvider>
       <Router>
         <WhatsAppProvider>
+        <LogoIntroProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
         <RouteSwipe />
@@ -107,6 +109,7 @@ const App: React.FC = () => {
         </div>
         <ConditionalBottomNav />
         <CookieConsent />
+        </LogoIntroProvider>
         </WhatsAppProvider>
       </Router>
     </HelmetProvider>

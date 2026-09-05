@@ -3,6 +3,7 @@ import { Linkedin, Facebook, Youtube, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GLOBAL_STANDARDS_DATA } from '../data/globalStandards';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
+import { useLogoIntro } from './LogoIntro';
 
 const FOOTER_COMPLIANCE_PANEL_ID = 'footer-compliance-standards-panel';
 
@@ -83,6 +84,7 @@ const FooterComplianceStandards: React.FC = () => {
    other page renders the full footer. */
 const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { openWhatsApp } = useWhatsApp();
+  const { play: playIntro } = useLogoIntro();
   const journey = [
     { name: '01 · Business Plan', to: '/services/business-plan' },
     { name: '02 · Risk Scan™', to: '/services/risk-scan' },
@@ -102,6 +104,9 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
         <div className={`grid grid-cols-1 md:grid-cols-4 ${compact ? 'gap-5 lg:gap-8' : 'gap-8'}`}>
           <div className="col-span-1 md:col-span-1">
             <div className="mb-4">
+              {/* Every mark on the site is a way home, and every one asks the
+                  top bar to play the intro on arrival. */}
+              <Link to="/" aria-label="Preqal home" className="inline-block" onClick={playIntro}>
               <picture>
                 <source
                   type="image/avif"
@@ -124,6 +129,7 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
                   decoding="async"
                 />
               </picture>
+              </Link>
             </div>
             <div className={`mb-5 ${compact ? 'space-y-2 lg:space-y-3' : 'space-y-3'}`}>
               <div className="flex items-center gap-2.5">

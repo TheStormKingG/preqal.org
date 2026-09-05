@@ -2,12 +2,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 import { NAV_ITEMS, navLinkClass, NavUnderline } from './BottomNav';
+import { LogoIntroVideo, useLogoIntro } from './LogoIntro';
 
 /* From md up this is the whole navigation. Below md it carries the mark only —
    the three destinations live in BottomNav, within thumb reach. */
 const Navbar: React.FC = () => {
   const location = useLocation();
   const { openWhatsApp } = useWhatsApp();
+  const intro = useLogoIntro();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -16,7 +18,10 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-12 md:h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center" onClick={intro.play}>
+              {intro.playing ? (
+                <LogoIntroVideo className="h-7 md:h-10 w-auto" />
+              ) : (
               <picture>
                 <source
                   type="image/avif"
@@ -38,6 +43,7 @@ const Navbar: React.FC = () => {
                   decoding="async"
                 />
               </picture>
+              )}
             </Link>
           </div>
 
