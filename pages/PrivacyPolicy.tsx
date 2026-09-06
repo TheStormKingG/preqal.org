@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
+import { href } from '../lib/paths';
 
 const PrivacyPolicy: React.FC = () => {
   const lastUpdated = 'April 1, 2026';
@@ -177,7 +178,7 @@ const PrivacyPolicy: React.FC = () => {
                 </p>
                 <div className="neu-pressed-sm rounded-xl p-4 text-sm text-slate-600 space-y-1">
                   <p><strong>Email:</strong> privacy@preqal.org</p>
-                  <p><strong>General Contact:</strong> <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Form</Link></p>
+                  <p><strong>General Contact:</strong> <Link to={href('/contact')} className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Form</Link></p>
                 </div>
               </section>
 

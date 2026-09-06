@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight } from 'lucide-react';
 import { trackEvent } from '../src/analytics/ga';
+import { href } from '../lib/paths';
 
 /* ────────────────────────────────────────────────────────────────────────────
    WhatsApp contact — replaces the retired "Free 1hr Consult" / booking funnel.
@@ -207,7 +208,7 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
                   <p className="text-[11px] text-slate-400 text-center mt-5">
                     No WhatsApp? Email <a href="mailto:info@preqal.org" className="text-amber-600 font-semibold hover:text-amber-500">info@preqal.org</a> or
-                    use the <a href="/contact" className="text-amber-600 font-semibold hover:text-amber-500">contact form</a>.
+                    use the <a href={href('/contact')} className="text-amber-600 font-semibold hover:text-amber-500">contact form</a>.
                   </p>
                 </div>
               </motion.div>

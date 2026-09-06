@@ -43,12 +43,14 @@ test('the arrow keys still walk the pages from a canonical URL', async ({ page }
   expect(new URL(page.url()).pathname.replace(/\/$/, '')).toBe('/resources');
 });
 
-test('internal links are written the way the site serves them', async ({ page }) => {
-  await open(page, '/', 1440, 900);
-  const bad = await page.evaluate(() =>
-    [...document.querySelectorAll('a[href^="/"]')]
-      .map((a) => a.getAttribute('href') ?? '')
-      .filter((h) => h !== '/' && !/\.[a-z0-9]+$/i.test(h) && !h.startsWith('/tools/') && !h.endsWith('/')),
-  );
-  expect(bad, 'no page link without its trailing slash — each one is a 301 for a crawler').toEqual([]);
-});
+/* Read the raw served HTML rather than the DOM after consent is dismissed: the
+   cookie banner's own link is part of what a crawler sees. */
+for (const path of ['/', '/contact/', '/resources/', '/preqal-not-prequel/', '/privacy-policy/']) {
+  test(`internal links on ${path} are written the way the site serves them`, async ({ request }) => {
+    const html = await (await request.get('http://localhost:3000' + path)).text();
+    const bad = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)"/g)]
+      .map((m) => m[1])
+      .filter((h) => !h.startsWith('/tools/') && !/\.[a-z0-9]+$/.test(h) && !h.endsWith('/'));
+    expect(bad, 'no page link without its trailing slash — each one is a 301 for a crawler').toEqual([]);
+  });
+}

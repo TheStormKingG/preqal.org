@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import FounderSocials from '../components/FounderSocials';
+import { href } from '../lib/paths';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -419,14 +420,14 @@ const ContactUs: React.FC = () => {
             <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
-              <Link to="/privacy-policy" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
+              <Link to={href('/privacy-policy')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
             </span>
           </label>
           <label className="flex items-start gap-3 cursor-pointer group">
             <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
-              <Link to="/terms-of-service" target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
+              <Link to={href('/terms-of-service')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
             </span>
           </label>
         </div>

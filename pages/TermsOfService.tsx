@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import CollapsibleSection from '../components/CollapsibleSection';
+import { href } from '../lib/paths';
 
 const TermsOfService: React.FC = () => {
   const lastUpdated = 'April 1, 2026';
@@ -197,7 +198,7 @@ const TermsOfService: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">15. Entire Agreement</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  These Terms, together with our <Link to="/privacy-policy" className="text-amber-600 hover:text-amber-500 font-semibold underline">Privacy Policy</Link>, constitute the entire agreement between you and Preqal regarding the use of this website. Any separate consulting service agreement will supplement (not replace) these Terms for the duration of that engagement.
+                  These Terms, together with our <Link to={href('/privacy-policy')} className="text-amber-600 hover:text-amber-500 font-semibold underline">Privacy Policy</Link>, constitute the entire agreement between you and Preqal regarding the use of this website. Any separate consulting service agreement will supplement (not replace) these Terms for the duration of that engagement.
                 </p>
               </section>
 
@@ -208,7 +209,7 @@ const TermsOfService: React.FC = () => {
                 </p>
                 <div className="neu-pressed-sm rounded-xl p-4 text-sm text-slate-600 space-y-1">
                   <p><strong>Email:</strong> legal@preqal.org</p>
-                  <p><strong>General Contact:</strong> <Link to="/contact" className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Form</Link></p>
+                  <p><strong>General Contact:</strong> <Link to={href('/contact')} className="text-amber-600 hover:text-amber-500 font-semibold underline">Contact Form</Link></p>
                 </div>
               </section>
 
