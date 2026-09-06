@@ -54,9 +54,11 @@ for (const route of ['', 'contact', 'resources', 'preqal-not-prequel', 'privacy-
     const file = join(process.cwd(), 'dist', route, 'index.html');
     test.skip(!existsSync(file), 'run `npm run build` first');
     const html = readFileSync(file, 'utf8');
-    const bad = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)"/g)]
+    const links = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*\/?)"/g)]
       .map((m) => m[1])
-      .filter((h) => !h.startsWith('/tools/') && !/\.[a-z0-9]+$/.test(h) && !h.endsWith('/'));
+      .filter((h) => !h.startsWith('/tools/') && !/\.[a-z0-9]+$/.test(h));
+    expect(links.length, 'the page links to other pages at all — otherwise this checks nothing').toBeGreaterThan(3);
+    const bad = links.filter((h) => !h.endsWith('/'));
     expect(bad, 'no page link without its trailing slash — each one is a 301 for a crawler').toEqual([]);
   });
 }

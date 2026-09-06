@@ -169,7 +169,7 @@ for (const [path, expected] of [
    and Search Console credited this site with three internal links in total. */
 test('the served home page links to its pages without a redirect in the way', async ({ request }) => {
   const html = await (await request.get('/')).text();
-  const hrefs = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)"/g)].map((m) => m[1]);
+  const hrefs = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*\/?)"/g)].map((m) => m[1]);
   const pages = hrefs.filter((h) => !h.startsWith('/tools/') && !/\.[a-z0-9]+$/.test(h));
   expect(pages.length, 'the home page links to other pages at all').toBeGreaterThan(5);
   expect(pages.filter((h) => !h.endsWith('/')), 'none of them slash-less').toEqual([]);
