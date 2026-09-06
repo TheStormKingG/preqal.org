@@ -4,6 +4,9 @@ import { test, expect, chromium, devices, type Page, type CDPSession } from '@pl
    swipe moves between them in the same order. The burger menu is gone. */
 
 const BASE = 'http://localhost:3000';
+/* The tab bar links to the canonical, trailing-slash URL; the router accepts
+   either. Compare the form the app compares. */
+const where = (page: Page) => new URL(page.url()).pathname.replace(/(.)\/$/, '$1');
 
 async function open(page: Page, path = '/') {
   await page.goto(BASE + path, { waitUntil: 'networkidle' });
@@ -64,12 +67,12 @@ test('the tab bar navigates and follows the route', async ({ page }) => {
 
   await bar.getByRole('link', { name: 'Templates' }).click();
   await page.waitForTimeout(900);
-  expect(new URL(page.url()).pathname).toBe('/resources');
+  expect(where(page)).toBe('/resources');
   await expect(bar.getByRole('link', { name: 'Templates' })).toHaveAttribute('aria-current', 'page');
 
   await bar.getByRole('link', { name: 'Contact' }).click();
   await page.waitForTimeout(900);
-  expect(new URL(page.url()).pathname).toBe('/contact');
+  expect(where(page)).toBe('/contact');
 });
 
 test('desktop keeps the top nav and shows no tab bar', async ({ page }) => {
@@ -169,7 +172,7 @@ test('a sideways swipe moves between the three pages', async () => {
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await page.waitForTimeout(1100);
     };
-    const path = () => new URL(page.url()).pathname;
+    const path = () => where(page);
 
     await open(page);
     expect(path()).toBe('/');
@@ -220,7 +223,7 @@ test('a diagonal swipe moves the page or the deck, never both', async () => {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await page.waitForTimeout(1200);
 
-    expect(new URL(page.url()).pathname, 'the sideways intent wins').toBe('/resources');
+    expect(where(page), 'the sideways intent wins').toBe('/resources');
     expect(
       await page.evaluate(() =>
         document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
@@ -254,7 +257,7 @@ test('a vertical swipe still drives the deck, not the router', async () => {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await page.waitForTimeout(1200);
 
-    expect(new URL(page.url()).pathname, 'a vertical swipe must not change page').toBe('/');
+    expect(where(page), 'a vertical swipe must not change page').toBe('/');
     expect(
       await page.evaluate(() =>
         document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
@@ -326,7 +329,7 @@ test('desktop runs the same deck as the phone, footer slide and all', async ({ p
 test('the arrow keys walk between the three pages', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page);
-  const at = () => new URL(page.url()).pathname;
+  const at = () => where(page);
 
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(900);
@@ -363,5 +366,5 @@ test('arrow keys inside a field are left to the field', async ({ page }) => {
   await first.fill('Stefan');
   await first.press('ArrowLeft');
   await page.waitForTimeout(700);
-  expect(new URL(page.url()).pathname, 'the caret moved, not the page').toBe('/contact');
+  expect(where(page), 'the caret moved, not the page').toBe('/contact');
 });
