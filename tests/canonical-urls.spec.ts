@@ -43,11 +43,17 @@ test('the arrow keys still walk the pages from a canonical URL', async ({ page }
   expect(new URL(page.url()).pathname.replace(/\/$/, '')).toBe('/resources');
 });
 
-/* Read the raw served HTML rather than the DOM after consent is dismissed: the
-   cookie banner's own link is part of what a crawler sees. */
-for (const path of ['/', '/contact/', '/resources/', '/preqal-not-prequel/', '/privacy-policy/']) {
-  test(`internal links on ${path} are written the way the site serves them`, async ({ request }) => {
-    const html = await (await request.get('http://localhost:3000' + path)).text();
+/* Read the prerendered HTML in dist — the file a crawler is actually served —
+   rather than the dev server's shell or the DOM after consent is dismissed:
+   the cookie banner's own link is part of what a crawler sees. */
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+for (const route of ['', 'contact', 'resources', 'preqal-not-prequel', 'privacy-policy', 'guides/haccp-certification-guyana']) {
+  test(`built /${route} links to pages the way the site serves them`, async () => {
+    const file = join(process.cwd(), 'dist', route, 'index.html');
+    test.skip(!existsSync(file), 'run `npm run build` first');
+    const html = readFileSync(file, 'utf8');
     const bad = [...html.matchAll(/href="(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)"/g)]
       .map((m) => m[1])
       .filter((h) => !h.startsWith('/tools/') && !/\.[a-z0-9]+$/.test(h) && !h.endsWith('/'));
