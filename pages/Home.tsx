@@ -310,7 +310,18 @@ const PhaseSection: React.FC<{
                 border: '1.5px solid rgba(255,255,255,0.92)',
               }}
             >
-              <h3 className="text-lg font-bold text-slate-900 mb-1">Preqal {phase.serviceName}</h3>
+              {/* The card's own name is the link to its service page. "Learn
+                  more" told a crawler nothing about where it led; the service
+                  name is the phrase people actually search for. Styled to read
+                  exactly as the heading did — only the hover gives it away. */}
+              <h3 className="text-lg font-bold text-slate-900 mb-1">
+                <Link
+                  to={href(`/services/${phase.waKey}`)}
+                  className="hover:text-amber-600 transition-colors"
+                >
+                  Preqal {phase.serviceName}
+                </Link>
+              </h3>
               <p className="text-sm text-slate-500 italic mb-3 lg:mb-4">"{phase.servicePromise}"</p>
               <div className="flex flex-col gap-1.5 lg:gap-2 mb-4 lg:mb-5">
                 {phase.deliverables.map((d) => (
