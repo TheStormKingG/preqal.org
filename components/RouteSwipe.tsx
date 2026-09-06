@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BOTTOM_NAV_ROUTES } from './BottomNav';
+import { normalizePath } from '../lib/paths';
 
 /* Swiping sideways moves between the three pages, the way the bottom bar's
    tabs are ordered. It listens on the document rather than on any one page so
@@ -48,7 +49,7 @@ const RouteSwipe: React.FC = () => {
   const settleTimer = useRef(0);
 
   useEffect(() => {
-    const index = BOTTOM_NAV_ROUTES.indexOf(pathname as (typeof BOTTOM_NAV_ROUTES)[number]);
+    const index = BOTTOM_NAV_ROUTES.indexOf(normalizePath(pathname) as (typeof BOTTOM_NAV_ROUTES)[number]);
     if (index < 0) return; // a page outside the tab order swipes nowhere
 
     const onDown = (e: PointerEvent) => {

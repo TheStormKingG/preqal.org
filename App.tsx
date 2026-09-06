@@ -10,6 +10,7 @@ import AnimatedRoutes from './components/AnimatedRoutes';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
 import { initGA } from './src/analytics/ga';
+import { normalizePath } from './lib/paths';
 
 const ConditionalNavbar: React.FC = () => {
   const location = useLocation();
@@ -31,7 +32,7 @@ const DECK_ROUTES = ['/', '/resources', '/contact'];
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
   if (location.pathname.startsWith('/tools/')) return null;
-  if (DECK_ROUTES.includes(location.pathname)) return null;
+  if (DECK_ROUTES.includes(normalizePath(location.pathname))) return null;
   return <Footer />;
 };
 

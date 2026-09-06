@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { href, normalizePath } from '../lib/paths';
 
 /* The phone's primary navigation. With only three destinations a bottom bar
    beats a menu behind a button: every route is one thumb-reach away and always
@@ -40,13 +41,13 @@ const BottomNav: React.FC = () => {
     >
       <ul className="flex items-stretch justify-around px-2">
         {NAV_ITEMS.map(({ name, path }) => {
-          const active = pathname === path;
+          const active = normalizePath(pathname) === path;
           return (
             <li key={path} className="flex-1">
               {/* h-12 keeps the tap target at the 48px minimum, while the label
                   inside it carries the same treatment the top bar gives it. */}
               <Link
-                to={path}
+                to={href(path)}
                 aria-current={active ? 'page' : undefined}
                 className="flex h-12 items-center justify-center"
               >

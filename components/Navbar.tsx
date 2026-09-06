@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 import { NAV_ITEMS, navLinkClass, NavUnderline } from './BottomNav';
 import { LogoIntroImage, useLogoIntro } from './LogoIntro';
+import { href, normalizePath } from '../lib/paths';
 
 /* From md up this is the whole navigation. Below md it carries the mark only —
    the three destinations live in BottomNav, within thumb reach. */
@@ -11,7 +12,7 @@ const Navbar: React.FC = () => {
   const { openWhatsApp } = useWhatsApp();
   const intro = useLogoIntro();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => normalizePath(location.pathname) === path;
 
   return (
     <nav className="fixed w-full z-50 bg-[#e0e5ec]/90 backdrop-blur-xl shadow-[0_4px_8px_#a3b1c6]">
@@ -69,7 +70,7 @@ const Navbar: React.FC = () => {
             {NAV_ITEMS.map(({ name, path }) => {
               const active = isActive(path);
               return (
-                <Link key={name} to={path} aria-current={active ? 'page' : undefined} className={navLinkClass(active)}>
+                <Link key={name} to={href(path)} aria-current={active ? 'page' : undefined} className={navLinkClass(active)}>
                   {name}
                   {active && <NavUnderline />}
                 </Link>

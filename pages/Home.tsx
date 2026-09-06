@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
+import { href } from '../lib/paths';
 
 const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
 
@@ -336,7 +337,7 @@ const PhaseSection: React.FC<{
                   </a>
                 </motion.div>
                 <Link
-                  to={`/services/${phase.waKey}`}
+                  to={href(`/services/${phase.waKey}`)}
                   className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
                 >
                   {/* Five "Learn more"s tell a crawler nothing; the rest of the
@@ -835,7 +836,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             </motion.div>
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
               <Link
-                to="/resources"
+                to={href('/resources')}
                 className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
                 style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)' }}
               >

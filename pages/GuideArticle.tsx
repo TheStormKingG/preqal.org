@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
+import { href } from '../lib/paths';
 
 /* ────────────────────────────────────────────────────────────────────────────
    Cornerstone guides — long-form informational content targeting the
@@ -347,7 +348,7 @@ const GuideArticle: React.FC = () => {
                   <WhatsAppIcon className="h-4 w-4 text-[#25D366]" /> Message Dr. Gravesande
                 </a>
                 <Link
-                  to={`/services/${guide.serviceSlug}`}
+                  to={href(`/services/${guide.serviceSlug}`)}
                   className="text-sm font-semibold text-white/90 hover:text-white border-b border-white/40 pb-0.5"
                 >
                   About {guide.serviceName} <ArrowRight className="inline h-3.5 w-3.5" />
@@ -363,7 +364,7 @@ const GuideArticle: React.FC = () => {
               {others.map((o) => (
                 <Link
                   key={o.slug}
-                  to={`/guides/${o.slug}`}
+                  to={href(`/guides/${o.slug}`)}
                   className="flex items-center gap-3 rounded-2xl p-5 group"
                   style={glassCard}
                 >
@@ -410,7 +411,7 @@ export const GuidesIndex: React.FC = () => (
           {GUIDES.map((g, i) => (
             <ScrollReveal key={g.slug} yFrom={16} delay={i * 60}>
               <Link
-                to={`/guides/${g.slug}`}
+                to={href(`/guides/${g.slug}`)}
                 className="flex items-center gap-4 rounded-2xl p-6 group"
                 style={glassCard}
               >

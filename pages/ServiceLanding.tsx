@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
+import { href } from '../lib/paths';
 
 /* ────────────────────────────────────────────────────────────────────────────
    SEO landing pages for the five productized services.
@@ -555,7 +556,7 @@ const ServiceLanding: React.FC = () => {
                 {others.map((o) => (
                   <Link
                     key={o.slug}
-                    to={`/services/${o.slug}`}
+                    to={href(`/services/${o.slug}`)}
                     className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-amber-600 transition-colors"
                     style={{ background: '#e0e5ec', boxShadow: '3px 3px 8px #a3b1c6, -3px -3px 8px #ffffff' }}
                   >
@@ -626,7 +627,7 @@ export const ServicesIndex: React.FC = () => (
           {SERVICE_PAGES.map((p, i) => (
             <ScrollReveal key={p.slug} yFrom={16} delay={i * 60}>
               <Link
-                to={`/services/${p.slug}`}
+                to={href(`/services/${p.slug}`)}
                 className="flex items-center gap-4 rounded-2xl p-6 group"
                 style={glassCard}
               >

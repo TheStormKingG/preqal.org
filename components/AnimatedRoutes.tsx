@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
+import { normalizePath } from '../lib/paths';
 
 // Route-level code splitting: only Home ships in the main bundle (it's the LCP page).
 // Every other page loads its own chunk on demand — no visual or behavioural change.
@@ -33,8 +34,8 @@ const AnimatedRoutes: React.FC = () => {
   const [transitionStage, setTransitionStage] = useState<'enter' | 'exit'>('enter');
 
   // Derive direction at render time from the two locations — no separate state needed
-  const fromIndex = routeOrder.indexOf(displayLocation.pathname);
-  const toIndex = routeOrder.indexOf(location.pathname);
+  const fromIndex = routeOrder.indexOf(normalizePath(displayLocation.pathname));
+  const toIndex = routeOrder.indexOf(normalizePath(location.pathname));
   const direction: 'forward' | 'backward' = toIndex >= fromIndex ? 'forward' : 'backward';
 
   useEffect(() => {

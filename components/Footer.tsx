@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { GLOBAL_STANDARDS_DATA } from '../data/globalStandards';
 import { useWhatsApp, WhatsAppIcon } from './WhatsAppContact';
 import { useLogoIntro } from './LogoIntro';
+import { href } from '../lib/paths';
 
 const FOOTER_COMPLIANCE_PANEL_ID = 'footer-compliance-standards-panel';
 
@@ -86,11 +87,11 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { openWhatsApp } = useWhatsApp();
   const { play: playIntro } = useLogoIntro();
   const journey = [
-    { name: '01 · Business Plan', to: '/services/business-plan' },
-    { name: '02 · Risk Scan™', to: '/services/risk-scan' },
-    { name: '03 · Systems Builder™', to: '/services/systems-builder' },
-    { name: '04 · Certified Care™', to: '/services/certified-care' },
-    { name: '05 · Export-Ready™', to: '/services/export-ready' },
+    { name: '01 · Business Plan', to: href('/services/business-plan') },
+    { name: '02 · Risk Scan™', to: href('/services/risk-scan') },
+    { name: '03 · Systems Builder™', to: href('/services/systems-builder') },
+    { name: '04 · Certified Care™', to: href('/services/certified-care') },
+    { name: '05 · Export-Ready™', to: href('/services/export-ready') },
   ];
 
   return (
@@ -195,10 +196,10 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPANY</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/guides" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Guides</Link></li>
-              <li><Link to="/resources" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Templates</Link></li>
-              <li><Link to="/contact" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact</Link></li>
-              <li><Link to="/preqal-not-prequel" className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
+              <li><Link to={href('/guides')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Guides</Link></li>
+              <li><Link to={href('/resources')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Templates</Link></li>
+              <li><Link to={href('/contact')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact</Link></li>
+              <li><Link to={href('/preqal-not-prequel')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Preqal (Not Prequel)</Link></li>
             </ul>
           </div>
           </div>{/* end mobile 2-col wrapper */}
@@ -218,8 +219,8 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
         <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
           <p>&copy; {new Date().getFullYear()} Preqal Inc. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link to="/privacy-policy" className="hover:text-slate-600 transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="hover:text-slate-600 transition-colors">Terms of Service</Link>
+            <Link to={href('/privacy-policy')} className="hover:text-slate-600 transition-colors">Privacy Policy</Link>
+            <Link to={href('/terms-of-service')} className="hover:text-slate-600 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
