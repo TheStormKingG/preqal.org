@@ -7,6 +7,7 @@ import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
+import { GUIDES } from '../data/guides';
 
 /* ────────────────────────────────────────────────────────────────────────────
    SEO landing pages for the five productized services.
@@ -336,6 +337,8 @@ const ServiceLanding: React.FC = () => {
 
   const others = SERVICE_PAGES.filter((p) => p.slug !== page.slug);
 
+  const relatedGuides = GUIDES.filter((g) => g.serviceSlug === page.slug);
+
   return (
     <>
       <SEO
@@ -551,6 +554,30 @@ const ServiceLanding: React.FC = () => {
         <section className="px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-6xl mx-auto">
             <ScrollReveal yFrom={14}>
+              {/* Each guide already links to the service it belongs to; this is
+                  the return leg. Without it the guides were reachable only from
+                  their own index, which is why Google had barely crawled them. */}
+              {relatedGuides.length > 0 && (
+                <>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">
+                    Read this first
+                  </p>
+                  <div className="flex flex-wrap gap-3 mb-10">
+                    {relatedGuides.map((g) => (
+                      <Link
+                        key={g.slug}
+                        to={href(`/guides/${g.slug}`)}
+                        className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-amber-600 transition-colors"
+                        style={{ background: '#e0e5ec', boxShadow: '3px 3px 8px #a3b1c6, -3px -3px 8px #ffffff' }}
+                      >
+                        {g.title.replace(/\s*\|\s*Preqal$/, '')}
+                        <ArrowRight className="inline h-3.5 w-3.5 ml-1" />
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+
               <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">The other steps on the journey</p>
               <div className="flex flex-wrap gap-3 mb-12">
                 {others.map((o) => (

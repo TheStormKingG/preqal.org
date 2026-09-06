@@ -62,3 +62,29 @@ for (const route of ['', 'contact', 'resources', 'preqal-not-prequel', 'privacy-
     expect(bad, 'no page link without its trailing slash — each one is a 301 for a crawler').toEqual([]);
   });
 }
+
+/* The guides were near-orphans: every guide linked to its service, but no
+   service linked back, so they were reachable only from their own index and
+   Google had barely crawled them. Each guide declares the service it belongs
+   to, so this asserts the return leg exists in the built HTML. */
+test('each service page links to the guides that belong to it', async () => {
+  const read = (p: string) => readFileSync(join(process.cwd(), 'dist', p, 'index.html'), 'utf8');
+  test.skip(!existsSync(join(process.cwd(), 'dist', 'index.html')), 'run `npm run build` first');
+
+  for (const [service, guides] of [
+    ['services/systems-builder', ['iso-9001-cost-guyana']],
+    ['services/export-ready', ['haccp-certification-guyana', 'export-food-from-guyana']],
+  ] as const) {
+    const html = read(service);
+    for (const guide of guides) {
+      expect(html, `${service} links to ${guide}`).toContain(`href="/guides/${guide}/"`);
+    }
+    // The anchor text has to say what the guide is, not "read more".
+    const anchors = [...html.matchAll(/<a[^>]+href="\/guides\/([a-z0-9-]+)\/"[^>]*>([\s\S]*?)<\/a>/g)];
+    for (const m of anchors) {
+      const text = m[2].replace(/<[^>]+>/g, '').trim();
+      expect(text.length, `${m[1]} has descriptive anchor text`).toBeGreaterThan(15);
+      expect(text, 'and not the Preqal title suffix').not.toContain('| Preqal');
+    }
+  }
+});
