@@ -1,4 +1,24 @@
-# preqal.org — all welcome, including AI crawlers.
+# preqal.org
+#
+# Two kinds of AI crawler visit this site, and they get different answers.
+#
+#   Citation crawlers fetch a page to answer someone's question right now, and
+#   cite it with a link. They send readers. Welcome.
+#
+#   Training crawlers take content to train a model. Nothing comes back, and
+#   once a page is inside a model it cannot be withdrawn — which would leave an
+#   erasure request impossible to honour. Not welcome.
+#
+# Cloudflare's edge injects its own managed block above this file, disallowing
+# the training crawlers and reserving rights under Article 4 of EU Directive
+# 2019/790. The rules below say the same thing on purpose: the served file then
+# states one policy instead of two contradictory ones, and the policy still
+# holds if that Cloudflare setting is ever turned off.
+#
+# None of this affects Google Search. Googlebot is not restricted here, and
+# Google-Extended governs Gemini training only — not Search ranking, indexing,
+# or eligibility for AI Overviews.
+
 User-agent: *
 Allow: /
 Disallow: /admin-dashboard.html
@@ -6,9 +26,9 @@ Disallow: /qms/
 Disallow: /client-onboarding.html
 Disallow: /employee-onboarding.html
 
-# AI assistants and their search crawlers (explicitly welcomed)
-User-agent: GPTBot
-Allow: /
+# ── Citation crawlers — welcome ──
+# These answer a live question and link back. This is how the site earns its
+# way into a ChatGPT, Claude or Perplexity answer.
 
 User-agent: OAI-SearchBot
 Allow: /
@@ -16,19 +36,10 @@ Allow: /
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Claude-User
-Allow: /
-
 User-agent: Claude-SearchBot
 Allow: /
 
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: Google-Extended
+User-agent: Claude-User
 Allow: /
 
 User-agent: PerplexityBot
@@ -37,7 +48,36 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
+# ── Training crawlers — no ──
+# Apple's and Google's search crawlers are deliberately absent from this list:
+# Applebot still indexes for Siri and Spotlight, Googlebot for Search. Only the
+# training tokens are refused.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
 User-agent: CCBot
-Allow: /
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
 
 Sitemap: https://preqal.org/sitemap.xml

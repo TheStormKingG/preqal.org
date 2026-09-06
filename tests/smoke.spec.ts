@@ -174,3 +174,61 @@ test('the served home page links to its pages without a redirect in the way', as
   expect(pages.length, 'the home page links to other pages at all').toBeGreaterThan(5);
   expect(pages.filter((h) => !h.endsWith('/')), 'none of them slash-less').toEqual([]);
 });
+
+/* Cloudflare injects its own managed block above our robots.txt at the edge.
+   For a while the two halves disagreed — Cloudflare disallowed GPTBot,
+   ClaudeBot, CCBot and Google-Extended while our file allowed them — and a
+   crawler's behaviour then depends on whether it merges groups or takes the
+   first match. This reads the file as served and fails if any crawler is told
+   both things. */
+const robotsGroups = (txt: string): Map<string, string[]> => {
+  const rules = new Map<string, string[]>();
+  let agents: string[] = [];
+  let seenRule = false;
+  for (const raw of txt.split('\n')) {
+    const line = raw.replace(/#.*$/, '').trim();
+    if (!line) continue;
+    const [field, ...rest] = line.split(':');
+    const key = field.trim().toLowerCase();
+    const value = rest.join(':').trim();
+    if (key === 'user-agent') {
+      if (seenRule) {
+        agents = [];
+        seenRule = false;
+      }
+      agents.push(value.toLowerCase());
+      if (!rules.has(value.toLowerCase())) rules.set(value.toLowerCase(), []);
+    } else if (key === 'allow' || key === 'disallow') {
+      seenRule = true;
+      for (const a of agents) rules.get(a)!.push(`${key} ${value}`);
+    }
+  }
+  return rules;
+};
+
+test('robots.txt as served tells each crawler one thing', async ({ request }) => {
+  /* robots.txt is served with a 4-hour edge TTL, and this runs seconds after a
+     deploy — without the buster it would read the previous copy. Cloudflare
+     applies its managed block to every response either way, so what comes back
+     is still origin + edge, exactly what a crawler gets. */
+  const res = await request.get(`/robots.txt?v=${Date.now()}`);
+  expect(res.status()).toBe(200);
+  const txt = await res.text();
+  const groups = robotsGroups(txt);
+
+  expect(groups.size, 'the file names crawlers at all').toBeGreaterThan(5);
+  const conflicted = [...groups.entries()]
+    .filter(([, r]) => r.includes('allow /') && r.includes('disallow /'))
+    .map(([agent]) => agent);
+  expect(conflicted, 'no crawler is both allowed and disallowed at the root').toEqual([]);
+
+  // The policy itself: training refused, citation welcomed, Google untouched.
+  for (const bot of ['gptbot', 'claudebot', 'google-extended', 'ccbot']) {
+    expect(groups.get(bot), `${bot} is refused`).toContain('disallow /');
+  }
+  for (const bot of ['oai-searchbot', 'chatgpt-user', 'perplexitybot', 'claude-searchbot']) {
+    expect(groups.get(bot), `${bot} may cite us`).toContain('allow /');
+  }
+  expect(groups.has('googlebot'), 'Googlebot is never restricted here').toBe(false);
+  expect(txt, 'and the sitemap is still declared').toContain('Sitemap: https://preqal.org/sitemap.xml');
+});
