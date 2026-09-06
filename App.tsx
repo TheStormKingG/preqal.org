@@ -39,9 +39,7 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   React.useEffect(() => {
     window.scrollTo(0, 0);
-    // Give react-helmet-async a tick to flush head updates before signalling prerender
-    const t = setTimeout(() => window.dispatchEvent(new Event('prerender-ready')), 50);
-    return () => clearTimeout(t);
+    // The prerender signal is sent by <SEO> once the head is complete.
   }, [pathname]);
   return null;
 };

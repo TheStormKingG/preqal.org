@@ -130,3 +130,36 @@ test('404 page is handled gracefully', async ({ page }) => {
   const bodyText = await page.locator('body').innerText();
   expect(bodyText.length).toBeGreaterThan(10);
 });
+
+/* Structured data has to be in the HTML as served, not only in the DOM after
+   hydration: Google reads the former. The build prerenders every route and
+   snapshots once <SEO> reports the head complete; before that it snapshotted
+   on a timer and the guides and services shipped with no schema at all.
+   Read the raw response, so hydration cannot paper over a regression. */
+const schemaTypes = (html: string): string[] => {
+  const out: string[] = [];
+  for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)) {
+    try {
+      const d = JSON.parse(m[1]);
+      for (const x of Array.isArray(d) ? d : [d]) out.push(String(x['@type']));
+    } catch {
+      out.push('UNPARSEABLE');
+    }
+  }
+  return out;
+};
+
+for (const [path, expected] of [
+  ['/', ['Organization', 'WebSite', 'ProfessionalService']],
+  ['/guides/haccp-certification-guyana/', ['Article', 'FAQPage']],
+  ['/services/systems-builder/', ['ProfessionalService', 'Service', 'FAQPage']],
+  ['/contact/', ['Person', 'AboutPage']],
+] as const) {
+  test(`${path} ships its structured data in the served HTML`, async ({ request }) => {
+    const res = await request.get(path);
+    expect(res.status()).toBe(200);
+    const types = schemaTypes(await res.text());
+    expect(types, 'every block parses').not.toContain('UNPARSEABLE');
+    for (const t of expected) expect(types, `${path} carries ${t}`).toContain(t);
+  });
+}

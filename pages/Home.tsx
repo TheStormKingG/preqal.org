@@ -4,6 +4,7 @@ import { Download, CheckSquare } from 'lucide-react';
 import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
+import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import Footer from '../components/Footer';
 import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
@@ -894,7 +895,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <SEO pageKey="home" />
+      <SEO pageKey="home" extraSchemas={[getProfessionalServiceSchema()]} />
       <SlideDeck slides={slides} />
     </>
   );

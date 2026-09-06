@@ -87,3 +87,29 @@ export const getBookPageSchema = () => ({
     '@id': `${BASE_URL}/#service-risk-scan`
   }
 });
+
+/* The practice itself, as a local business: address, phone, service area.
+   Carried by the home page and every service page. */
+export const getProfessionalServiceSchema = () => ({
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${BASE_URL}/#localbusiness`,
+  name: 'Preqal Inc',
+  description:
+    'Quality, safety and compliance consultancy in Georgetown, Guyana. ISO 9001, HACCP and export certification consultants for Guyana and the Caribbean.',
+  url: BASE_URL,
+  telephone: '+5926335874',
+  email: 'info@preqal.org',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Georgetown',
+    addressRegion: 'Demerara-Mahaica',
+    addressCountry: 'GY',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: 6.8013, longitude: -58.1551 },
+  areaServed: [
+    { '@type': 'Country', name: 'Guyana' },
+    { '@type': 'Place', name: 'Caribbean' },
+  ],
+  priceRange: '$$',
+});

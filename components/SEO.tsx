@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SEOData, getSeoMeta } from '../seo/seo';
 import { getOrganizationSchema, getBrandSchema } from '../seo/organizationSchema';
@@ -11,7 +11,35 @@ interface SEOProps {
   extraSchemas?: object[];
 }
 
+/* The build prerenders every route with a headless browser and snapshots the
+   page when this event fires. Helmet writes the JSON-LD into <head> a beat
+   after render, so a snapshot taken on a timer raced it — and lost on every
+   page but the home page, leaving the guides and services with no structured
+   data at all. Fire once the scripts are actually in the head, or after a
+   deadline so the build can never hang. */
+const PRERENDER_EVENT = 'prerender-ready';
+const PRERENDER_DEADLINE_MS = 3000;
+const signalPrerender = (expected: number) => {
+  const started = performance.now();
+  const tick = () => {
+    const have = document.querySelectorAll('script[type="application/ld+json"][data-rh]').length;
+    if (have >= expected || performance.now() - started > PRERENDER_DEADLINE_MS) {
+      // The renderer listens on document; an event sent to window never
+      // reaches it, and the build waits on every route until it is killed.
+      document.dispatchEvent(new Event(PRERENDER_EVENT));
+      return;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+};
+
 const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
+  useEffect(() => {
+    signalPrerender(4 + (extraSchemas?.length ?? 0)); // the four site-wide blocks plus this page's
+    // Re-armed on every route: the page key changes, the head is rewritten.
+  }, [pageKey, extraSchemas?.length]);
+
   const seoData = { ...getSeoMeta(pageKey), ...customData };
   const orgSchema = getOrganizationSchema();
   const brandSchema = getBrandSchema();

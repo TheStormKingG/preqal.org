@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { CheckSquare, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
+import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 
@@ -294,29 +295,6 @@ const glassCard = {
   border: '1.5px solid rgba(255,255,255,0.92)',
 } as React.CSSProperties;
 
-const professionalServiceSchema = () => ({
-  '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
-  '@id': `${BASE_URL}/#localbusiness`,
-  name: 'Preqal Inc',
-  description:
-    'Quality, safety and compliance consultancy in Georgetown, Guyana. ISO 9001, HACCP and export certification consultants for Guyana and the Caribbean.',
-  url: BASE_URL,
-  telephone: '+5926335874',
-  email: 'info@preqal.org',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Georgetown',
-    addressRegion: 'Demerara-Mahaica',
-    addressCountry: 'GY',
-  },
-  geo: { '@type': 'GeoCoordinates', latitude: 6.8013, longitude: -58.1551 },
-  areaServed: [
-    { '@type': 'Country', name: 'Guyana' },
-    { '@type': 'Place', name: 'Caribbean' },
-  ],
-  priceRange: '$$',
-});
 
 const serviceSchema = (p: ServicePage) => ({
   '@context': 'https://schema.org',
@@ -366,7 +344,7 @@ const ServiceLanding: React.FC = () => {
           description: page.description,
           canonical: `${BASE_URL}/services/${page.slug}/`,
         }}
-        extraSchemas={[professionalServiceSchema(), serviceSchema(page), faqSchema(page)]}
+        extraSchemas={[getProfessionalServiceSchema(), serviceSchema(page), faqSchema(page)]}
       />
       <div className="min-h-screen pb-20">
 
@@ -628,7 +606,7 @@ export const ServicesIndex: React.FC = () => (
           'Five fixed-scope services that take a Guyanese business from idea to export. Business plans, risk scans, ISO systems, certification care and export readiness.',
         canonical: `${BASE_URL}/services/`,
       }}
-      extraSchemas={[professionalServiceSchema()]}
+      extraSchemas={[getProfessionalServiceSchema()]}
     />
     <div className="min-h-screen pb-20">
       <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">

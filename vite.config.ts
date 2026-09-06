@@ -45,7 +45,9 @@ export default defineConfig(({ mode }) => {
           routes: PRERENDER_ROUTES,
           renderer: new PuppeteerRenderer({
             headless: true,
-            renderAfterTime: 2000,
+            // Snapshot when <SEO> says the head is complete — a timer raced
+            // Helmet's JSON-LD and dropped it on most pages.
+            renderAfterDocumentEvent: 'prerender-ready',
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
               || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
           }),
