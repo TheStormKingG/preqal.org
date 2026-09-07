@@ -96,17 +96,22 @@ export const getProfessionalServiceSchema = () => ({
   '@id': `${BASE_URL}/#localbusiness`,
   name: 'Preqal Inc',
   description:
-    'Quality, safety and compliance consultancy in Georgetown, Guyana. ISO 9001, HACCP and export certification consultants for Guyana and the Caribbean.',
+    'ISO system setup consultancy for small and medium businesses in Guyana. Preqal builds ISO 9001, HACCP and export-readiness management systems with the client\'s team; an accredited certification body then audits and certifies them.',
   url: BASE_URL,
   telephone: '+5926335874',
   email: 'info@preqal.org',
+  /* The address and map pin of the verified Google Business Profile
+     (cid 492741203021679351), which the footer prints the same way. A
+     schema that named the capital instead gave Google two places for one company. */
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'Georgetown',
+    streetAddress: '90 Waiakabra, Soesdyke Linden Highway',
+    addressLocality: 'East Bank Demerara',
     addressRegion: 'Demerara-Mahaica',
     addressCountry: 'GY',
   },
-  geo: { '@type': 'GeoCoordinates', latitude: 6.8013, longitude: -58.1551 },
+  geo: { '@type': 'GeoCoordinates', latitude: 6.5261522, longitude: -58.2185775 },
+  hasMap: 'https://maps.google.com/maps?cid=492741203021679351',
   areaServed: [
     { '@type': 'Country', name: 'Guyana' },
     { '@type': 'Place', name: 'Caribbean' },

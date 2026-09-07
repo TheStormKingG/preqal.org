@@ -31,7 +31,7 @@ const PrivacyPolicy: React.FC = () => {
                   <p><strong>Business Name:</strong> Preqal Inc</p>
                   <p><strong>Founded by:</strong> Dr. Stefan Gravesande, MBBS</p>
                   <p><strong>Contact Email:</strong> privacy@preqal.org</p>
-                  <p><strong>Location:</strong> Georgetown, Guyana</p>
+                  <p><strong>Location:</strong> 90 Waiakabra, Soesdyke Linden Highway, East Bank Demerara, Guyana</p>
                 </div>
               </section>
 

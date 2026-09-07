@@ -14,7 +14,7 @@ export const getOrganizationSchema = () => {
       height: 630
     },
     image: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
-    description: 'Preqal is a quality, safety, ESG, and integrated management systems company. We build evidence-driven management systems for all types and sizes of businesses.',
+    description: 'Preqal sets up ISO 9001, ISO 14001, ISO 45001 and HACCP management systems for small and medium businesses in Guyana and the Caribbean. It is a consultancy, not a certification body: Preqal builds the system with the client\'s team, and an accredited certification body audits and certifies it.',
     foundingDate: '2023',
     founder: {
       '@type': 'Person',
@@ -22,10 +22,12 @@ export const getOrganizationSchema = () => {
       jobTitle: 'Founder & CEO',
       url: 'https://preqal.org/contact'
     },
+    // The address the verified Business Profile and the footer both carry.
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Georgetown',
-      addressRegion: 'Demerara',
+      streetAddress: '90 Waiakabra, Soesdyke Linden Highway',
+      addressLocality: 'East Bank Demerara',
+      addressRegion: 'Demerara-Mahaica',
       addressCountry: 'GY'
     },
     contactPoint: {
@@ -84,7 +86,7 @@ export const getBrandSchema = () => {
     alternateName: ['Preqal Inc', 'Preqal Inc.'],
     url: 'https://preqal.org',
     logo: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
-    description: 'Preqal is a quality, safety, ESG, and integrated management systems brand. Preqal is not "prequel" — it is unrelated to movies, fiction, or entertainment.',
+    description: 'Preqal is an ISO system setup consultancy for small and medium businesses in Guyana. Preqal is not "prequel" — it is unrelated to movies, fiction, or entertainment.',
     sameAs: [
       'https://www.linkedin.com/company/preqal',
       'https://www.facebook.com/preqal',

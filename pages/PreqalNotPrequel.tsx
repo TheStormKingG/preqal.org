@@ -28,7 +28,7 @@ const faqSchema = {
       name: 'Is Preqal related to movies or entertainment?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. Preqal is not related to movies, entertainment, or any form of media. Preqal is a quality management and compliance consulting company based in Georgetown, Guyana.'
+        text: 'No. Preqal is not related to movies, entertainment, or any form of media. Preqal is an ISO system setup consultancy for small and medium businesses, based on the East Bank of Demerara, Guyana.'
       }
     },
     {
@@ -44,7 +44,7 @@ const faqSchema = {
       name: 'Where is Preqal located?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Preqal operates primarily in Georgetown, Guyana and serves clients across the Caribbean region. We work with businesses of all sizes, from small shops to large corporations.'
+        text: 'Preqal is based at 90 Waiakabra, Soesdyke Linden Highway, East Bank Demerara, Guyana, and serves clients across the country and the wider Caribbean. Its focus is small and medium businesses that need an ISO management system set up properly.'
       }
     },
     {

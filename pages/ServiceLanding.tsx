@@ -67,7 +67,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     metaKey: 'servicesBusinessPlan',
     title: 'Business Plan Writers in Guyana | Preqal Business Plan',
     description:
-      'Bank-ready business plans for Guyanese entrepreneurs with compliance built in from day one. Fixed price, investor-ready, written in Georgetown.',
+      'Bank-ready business plans for Guyanese entrepreneurs with compliance built in from day one. Fixed price, investor-ready, written in Guyana.',
     h1: <>Business plans that banks in Guyana <em style={{ color: '#d97706' }}>say yes to.</em></>,
     intro:
       'A good idea deserves a plan a lender can approve. Preqal writes bank-ready business plans for Guyanese entrepreneurs, and we build compliance in from the first page so you never have to undo bad habits later.',

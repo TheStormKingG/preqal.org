@@ -6,7 +6,7 @@ export const getWebsiteSchema = () => {
     name: 'Preqal',
     alternateName: ['Preqal Inc', 'preqal.org'],
     url: 'https://preqal.org',
-    description: 'Preqal provides ISO-aligned quality management systems, safety management systems, and ESG programs for businesses across Guyana and the Caribbean.',
+    description: 'Preqal sets up ISO 9001, HACCP and integrated management systems for small and medium businesses across Guyana and the Caribbean, built with the client\'s own team.',
     inLanguage: 'en',
     publisher: {
       '@id': 'https://preqal.org/#organization'

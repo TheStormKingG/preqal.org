@@ -13,8 +13,8 @@ const DEFAULT_OG_IMAGE = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
 export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
     home: {
-      title: 'Preqal | ISO Certification & Quality Experts Guyana',
-      description: 'Preqal gets Guyanese businesses ISO 9001 and HACCP certified and export ready. Quality, safety and compliance consultants in Georgetown, Guyana.',
+      title: 'Preqal | ISO 9001 System Setup for SMEs in Guyana',
+      description: 'Preqal sets up ISO 9001 and HACCP systems for small and medium businesses in Guyana. We build the system with your team. An accredited body certifies it.',
       canonical: `${BASE_URL}/`,
       ogImage: `${BASE_URL}/og/home.webp`,
       ogType: 'website'
@@ -78,7 +78,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
     },
     preqalNotPrequel: {
       title: 'Preqal (Not Prequel) | Brand Clarification',
-      description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is a quality, safety, ESG, and integrated management systems company.',
+      description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is an ISO system setup consultancy for small and medium businesses in Guyana.',
       canonical: `${BASE_URL}/preqal-not-prequel/`,
       ogImage: `${BASE_URL}/og/preqal-not-prequel.webp`,
       ogType: 'article'

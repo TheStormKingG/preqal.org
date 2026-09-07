@@ -68,7 +68,7 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
       <meta property="og:image" content={seoData.ogImage || 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp'} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="Preqal - Quality, Safety & ESG Systems" />
+      <meta property="og:image:alt" content="Preqal: ISO system setup for SMEs in Guyana" />
       <meta property="og:site_name" content="Preqal" />
       <meta property="og:locale" content="en_US" />
 
