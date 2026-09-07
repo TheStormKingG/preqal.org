@@ -14,7 +14,7 @@ export const getOrganizationSchema = () => {
       height: 630
     },
     image: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
-    description: 'Preqal sets up ISO 9001, ISO 14001, ISO 45001 and HACCP management systems for small and medium businesses in Guyana and the Caribbean. It is a consultancy, not a certification body: Preqal builds the system with the client\'s team, and an accredited certification body audits and certifies it.',
+    description: 'Preqal sets up ISO 9001 management systems for small and medium businesses in Guyana and the Caribbean, with two aims: process improvement across the operation and strategic direction for top management. It is a consultancy, not a certification body: Preqal builds the system with the client\'s team, and an accredited certification body audits and certifies it.',
     foundingDate: '2023',
     founder: {
       '@type': 'Person',
@@ -86,7 +86,7 @@ export const getBrandSchema = () => {
     alternateName: ['Preqal Inc', 'Preqal Inc.'],
     url: 'https://preqal.org',
     logo: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
-    description: 'Preqal is an ISO system setup consultancy for small and medium businesses in Guyana. Preqal is not "prequel" — it is unrelated to movies, fiction, or entertainment.',
+    description: 'Preqal is an ISO system setup consultancy for small and medium businesses in Guyana, working on process improvement and strategic direction for top management. Preqal is not "prequel" — it is unrelated to movies, fiction, or entertainment.',
     sameAs: [
       'https://www.linkedin.com/company/preqal',
       'https://www.facebook.com/preqal',

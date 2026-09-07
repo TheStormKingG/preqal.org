@@ -96,7 +96,7 @@ export const getProfessionalServiceSchema = () => ({
   '@id': `${BASE_URL}/#localbusiness`,
   name: 'Preqal Inc',
   description:
-    'ISO system setup consultancy for small and medium businesses in Guyana. Preqal builds ISO 9001, HACCP and export-readiness management systems with the client\'s team; an accredited certification body then audits and certifies them.',
+    'ISO system setup consultancy for small and medium businesses in Guyana. Preqal builds ISO 9001 management systems with the client\'s team, for process improvement across the operation and strategic direction for top management; an accredited certification body then audits and certifies them.',
   url: BASE_URL,
   telephone: '+5926335874',
   email: 'info@preqal.org',

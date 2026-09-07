@@ -13,8 +13,10 @@ import { routeMeta } from '../../scripts/route-meta.mjs';
    would call itself. And the structured data placed the office in Georgetown
    while the verified Google Business Profile and the footer both put it at
    Waiakabra on the Soesdyke–Linden Highway. These hold the site's account of
-   itself to what the company is and where it is, in every copy of that
-   account, because the copies had already drifted from one another once. */
+   itself to what the company is — ISO systems for small and medium
+   businesses, for process improvement and strategic top management — and
+   where it is, in every copy of that account, because the copies had already
+   drifted from one another once. */
 
 const root = path.resolve(__dirname, '../..');
 const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -76,6 +78,11 @@ describe('the home description', () => {
 
 /* Every sentence that says what Preqal is. */
 const opener = (file: string) => read(file).split('\n').find((l) => l.startsWith('> ')) ?? '';
+const faqAnswer = (question: string) => {
+  const m = read('pages/PreqalNotPrequel.tsx').match(new RegExp(`name: '${question}',[\\s\\S]*?text: '([^']*)'`));
+  if (!m) throw new Error(`no FAQ answer for ${question}`);
+  return m[1];
+};
 const identity: Record<string, string> = {
   'home description': shell.description,
   'Organization schema': getOrganizationSchema().description,
@@ -84,12 +91,17 @@ const identity: Record<string, string> = {
   'ProfessionalService schema': getProfessionalServiceSchema().description,
   'llms.txt': opener('public/llms.txt'),
   'llms-full.txt': opener('public/llms-full.txt'),
+  '"What does Preqal do?" FAQ': faqAnswer('What does Preqal do\\?'),
 };
 
 describe('what the site says Preqal is', () => {
   for (const [where, text] of Object.entries(identity)) {
-    it(`${where}: a consultancy for small and medium businesses`, () => {
+    it(`${where}: ISO systems for SMEs, for process improvement and strategic top management`, () => {
       expect(text).toMatch(/small and medium businesses|SMEs/);
+      expect(text).toMatch(/process improvement/i);
+      expect(text).toMatch(/top management/i);
+      // Food safety is what one service is about, not what the company is.
+      expect(text).not.toMatch(/HACCP/);
       // "all types and sizes of businesses" was the line before the niche was chosen.
       expect(text).not.toMatch(/all (types and )?sizes/i);
     });

@@ -36,7 +36,7 @@ const faqSchema = {
       name: 'What does Preqal do?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Preqal helps businesses build quality, safety, and environmental management systems. We provide services such as risk assessments, ISO compliance support, documentation development, training, and audit preparation.'
+        text: 'Preqal sets up ISO 9001 management systems for small and medium businesses, with two aims: process improvement across the operation and strategic direction for top management. Services include risk scans, system design and documentation, training, internal audits and audit preparation. Preqal is not a certification body; an accredited body certifies the finished system.'
       }
     },
     {
@@ -139,7 +139,7 @@ const PreqalNotPrequel: React.FC = () => {
                   <p className="text-slate-700 leading-relaxed">No. Preqal is not related to movies, entertainment, or any form of media. Preqal is a quality management and compliance consulting company.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title="What does Preqal do?" headingLevel="h3">
-                  <p className="text-slate-700 leading-relaxed">Preqal helps businesses build quality, safety, and environmental management systems. We provide services such as risk assessments, ISO compliance support, documentation development, training, and audit preparation.</p>
+                  <p className="text-slate-700 leading-relaxed">Preqal sets up ISO 9001 management systems for small and medium businesses, with two aims: process improvement across the operation and strategic direction for top management. Services include risk scans, system design and documentation, training, internal audits and audit preparation. Preqal is not a certification body; an accredited body certifies the finished system.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title="Where is Preqal located?" headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">Preqal operates primarily in Guyana and serves clients across the Caribbean region. We work with businesses of all sizes, from small shops to large corporations.</p>

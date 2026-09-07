@@ -8,7 +8,7 @@ const DEFAULT_OG = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
 export const routeMeta = {
   '/': {
     title: 'Preqal | ISO 9001 System Setup for SMEs in Guyana',
-    description: 'Preqal sets up ISO 9001 and HACCP systems for small and medium businesses in Guyana. We build the system with your team. An accredited body certifies it.',
+    description: 'Preqal sets up ISO 9001 systems for SMEs in Guyana: process improvement and strategic direction for top management. An accredited body certifies it.',
     canonical: `${BASE_URL}/`,
     ogImage: `${BASE_URL}/og/home.webp`,
     ogType: 'website',
