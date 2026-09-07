@@ -65,7 +65,7 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
       <meta property="og:url" content={seoData.canonical} />
       <meta property="og:title" content={seoData.title} />
       <meta property="og:description" content={seoData.description} />
-      <meta property="og:image" content={seoData.ogImage || 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp'} />
+      <meta property="og:image" content={seoData.ogImage || 'https://preqal.org/og/home.png'} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content="Preqal: ISO system setup for SMEs in Guyana" />
@@ -79,7 +79,7 @@ const SEO: React.FC<SEOProps> = ({ pageKey, customData, extraSchemas }) => {
       <meta name="twitter:url" content={seoData.canonical} />
       <meta name="twitter:title" content={seoData.title} />
       <meta name="twitter:description" content={seoData.description} />
-      <meta name="twitter:image" content={seoData.ogImage || 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp'} />
+      <meta name="twitter:image" content={seoData.ogImage || 'https://preqal.org/og/home.png'} />
       <meta name="twitter:image:alt" content="Preqal - Quality, Safety & ESG Systems" />
 
       {/* Organization Structured Data */}

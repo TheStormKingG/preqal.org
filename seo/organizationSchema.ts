@@ -13,7 +13,7 @@ export const getOrganizationSchema = () => {
       width: 1200,
       height: 630
     },
-    image: 'https://preqal.org/Preqal%20Logo%20Sep25-9.webp',
+    image: 'https://preqal.org/og/home.png',
     description: 'Preqal sets up ISO 9001 management systems for small and medium businesses in Guyana and the Caribbean, with two aims: process improvement across the operation and strategic direction for top management. It is a consultancy, not a certification body: Preqal builds the system with the client\'s team, and an accredited certification body audits and certifies it.',
     foundingDate: '2023',
     founder: {

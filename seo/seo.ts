@@ -8,7 +8,7 @@ export interface SEOData {
 }
 
 const BASE_URL = 'https://preqal.org';
-const DEFAULT_OG_IMAGE = `${BASE_URL}/Preqal%20Logo%20Sep25-9.webp`;
+const DEFAULT_OG_IMAGE = `${BASE_URL}/og/home.png`;
 
 export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
@@ -16,56 +16,56 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Preqal | ISO 9001 System Setup for SMEs in Guyana',
       description: 'Preqal sets up ISO 9001 systems for SMEs in Guyana: process improvement and strategic direction for top management. An accredited body certifies it.',
       canonical: `${BASE_URL}/`,
-      ogImage: `${BASE_URL}/og/home.webp`,
+      ogImage: `${BASE_URL}/og/home.png`,
       ogType: 'website'
     },
     about: {
       title: 'About Preqal | Quality & Compliance Systems',
       description: 'Preqal builds quality, safety & ESG management systems for all sectors—from small shops to large corporations. Evidence-driven compliance for every scale.',
       canonical: `${BASE_URL}/about/`,
-      ogImage: `${BASE_URL}/og/about.webp`,
+      ogImage: `${BASE_URL}/og/about.png`,
       ogType: 'website'
     },
     services: {
       title: 'Services | Preqal Quality & Compliance Solutions',
       description: 'Quality, safety & ESG compliance services: Quality Risk Scans, IMS Design, Documentation Systems, Training, and Audit Support from Preqal.',
       canonical: `${BASE_URL}/services/`,
-      ogImage: `${BASE_URL}/og/services.webp`,
+      ogImage: `${BASE_URL}/og/services.png`,
       ogType: 'website'
     },
     contact: {
       title: 'Contact Preqal | Get in Touch',
       description: 'Contact Preqal to discuss your quality, safety, and compliance needs. We help businesses move from chaos to compliance with evidence-driven management systems.',
       canonical: `${BASE_URL}/contact/`,
-      ogImage: `${BASE_URL}/og/contact.webp`,
+      ogImage: `${BASE_URL}/og/contact.png`,
       ogType: 'website'
     },
     caseStudies: {
       title: 'Case Studies | Preqal Success Stories',
       description: 'Explore real case studies from Preqal clients across poultry, logistics, food-handling, eco-hospitality, oil & gas services, and waste/environmental operations.',
       canonical: `${BASE_URL}/case-studies/`,
-      ogImage: `${BASE_URL}/og/case-studies.webp`,
+      ogImage: `${BASE_URL}/og/case-studies.png`,
       ogType: 'website'
     },
     resources: {
       title: 'Resources | Preqal Quality Templates & Tools',
       description: 'Access Preqal\'s library of quality management templates, tools, and resources to support your compliance journey.',
       canonical: `${BASE_URL}/resources/`,
-      ogImage: `${BASE_URL}/og/resources.webp`,
+      ogImage: `${BASE_URL}/og/resources.png`,
       ogType: 'website'
     },
     book: {
       title: 'Book a Risk Scan | Preqal',
       description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 7 days—so you know exactly where to focus first.',
       canonical: `${BASE_URL}/book/`,
-      ogImage: `${BASE_URL}/og/book.webp`,
+      ogImage: `${BASE_URL}/og/book.png`,
       ogType: 'website'
     },
     businessGrowthAssessment: {
       title: 'Business Growth Investment Assessment | Preqal',
       description: 'Help Preqal understand your organisation to get the right level of support. Request a tailored quote via our Business Growth Investment Assessment.',
       canonical: `${BASE_URL}/business-growth-assessment/`,
-      ogImage: `${BASE_URL}/og/bga.webp`,
+      ogImage: `${BASE_URL}/og/bga.png`,
       ogType: 'website'
     },
     // Legacy key — kept so any existing SEO component references don't break
@@ -80,7 +80,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
       title: 'Preqal (Not Prequel) | Brand Clarification',
       description: 'Preqal is not "prequel" and is unrelated to movies, fiction, or film terminology. Preqal is an ISO system setup consultancy for small and medium businesses in Guyana.',
       canonical: `${BASE_URL}/preqal-not-prequel/`,
-      ogImage: `${BASE_URL}/og/preqal-not-prequel.webp`,
+      ogImage: `${BASE_URL}/og/preqal-not-prequel.png`,
       ogType: 'article'
     },
     privacyPolicy: {
