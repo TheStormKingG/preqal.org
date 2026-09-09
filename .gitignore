@@ -39,3 +39,7 @@ Preqal Website/
 # Playwright artifacts
 test-results/
 playwright-report/
+
+# ux-skill (local design-engine state and plugin marker; the engine lives on this Mac, not in CI)
+.ux/
+.claude-plugin/
