@@ -100,8 +100,20 @@ const App: React.FC = () => {
         {/* Below md the bottom bar is fixed over the page, so the shell reserves
             its height; from md up the top bar is the only chrome. */}
         <div className="flex flex-col min-h-screen text-slate-800 font-sans selection:bg-amber-500/30 pb-[var(--chrome-bottom)] md:pb-0">
+          {/* The first Tab stop on every page. Five stops of chrome sit before
+              the content otherwise; this one jumps straight to it. */}
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:font-semibold focus:shadow-lg"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('main')?.focus({ preventScroll: true });
+            }}
+          >
+            Skip to content
+          </a>
           <ConditionalNavbar />
-          <main className="flex-grow pt-[var(--chrome-top)] overflow-hidden">
+          <main id="main" tabIndex={-1} className="flex-grow pt-[var(--chrome-top)] overflow-hidden">
             <AnimatedRoutes />
           </main>
           <ConditionalFooter />

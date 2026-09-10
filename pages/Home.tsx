@@ -682,7 +682,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
                 paint back until hydration and the animation had both finished. */}
             <motion.h1
               className={`text-3xl sm:text-5xl font-black text-slate-900 leading-[1.05] mb-1 lg:mb-3 ${deck ? 'lg:text-[3.1rem]' : 'lg:text-[3.6rem]'}`}
-              initial={{ y: 18 }} animate={{ y: 0 }}
+              initial={prefersReduced ? false : { y: 18 }} animate={{ y: 0 }}
               transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             >
               Every big brand<br />started small.
@@ -690,7 +690,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
             <motion.p
               className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-2.5 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
               style={{ fontStyle: 'italic', color: '#b45309' }}
-              initial={{ y: 14 }} animate={{ y: 0 }}
+              initial={prefersReduced ? false : { y: 14 }} animate={{ y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               Yours is next.

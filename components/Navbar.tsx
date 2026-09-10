@@ -15,7 +15,8 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) => normalizePath(location.pathname) === path;
 
   return (
-    <nav className="fixed w-full z-50 bg-[#e0e5ec]/90 backdrop-blur-xl shadow-[0_4px_8px_#a3b1c6]">
+    <header className="fixed w-full z-50 bg-[#e0e5ec]/90 backdrop-blur-xl shadow-[0_4px_8px_#a3b1c6]">
+      <nav aria-label="Main">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-12 md:h-20">
           <div className="flex items-center">
@@ -89,6 +90,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
     </nav>
+    </header>
   );
 };
 

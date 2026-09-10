@@ -198,7 +198,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
               />
 
               <div className="flex items-center justify-between gap-4 mt-8 sticky bottom-8 sm:relative sm:bottom-0 p-4 sm:p-0 bg-white/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none rounded-3xl sm:rounded-none border border-neutral-200 sm:border-none">
-                <button
+                <button type="button"
                   onClick={handleBack}
                   disabled={currentIndex === 0}
                   className={`px-6 py-3 rounded-2xl font-bold transition-all ${
@@ -209,7 +209,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                 </button>
 
                 {currentIndex === QUESTIONS.length - 1 ? (
-                  <button
+                  <button type="button"
                     onClick={handleSubmit}
                     disabled={!isComplete || isSubmitting}
                     className={`px-10 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-200 ${
@@ -221,7 +221,7 @@ Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 
                     {isSubmitting ? 'Sending...' : 'Finalize Assessment'}
                   </button>
                 ) : (
-                  <button
+                  <button type="button"
                     onClick={handleNext}
                     disabled={!answers[QUESTIONS[currentIndex].id]}
                     className={`px-10 py-4 rounded-2xl font-bold transition-all ${
