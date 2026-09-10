@@ -224,7 +224,7 @@ const PhaseSection: React.FC<{
                 initial: { opacity: 0, y: prefersReduced ? 0 : 26 },
                 whileInView: { opacity: 1, y: 0 },
                 viewport: { once: true },
-                transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+                transition: { duration: prefersReduced ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] as const },
               }
             : {})}
         >
@@ -370,7 +370,7 @@ const PhaseSection: React.FC<{
                 initial: { opacity: 0, y: prefersReduced ? 0 : 26 },
                 whileInView: { opacity: 1, y: 0 },
                 viewport: { once: true },
-                transition: { duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] as const },
+                transition: { duration: prefersReduced ? 0 : 0.55, delay: prefersReduced ? 0 : 0.1, ease: [0.22, 1, 0.36, 1] as const },
               }
             : {})}
         >
@@ -849,7 +849,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
               <Link
                 to={href('/resources')}
                 className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-semibold text-slate-900 text-base w-full sm:w-auto"
-                style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)' }}
+                style={{ background: 'rgba(255,255,255,0.42)', border: '1px solid rgba(255,255,255,0.5)' }}
               >
                 <Download className="mr-2 h-5 w-5" />
                 Free Templates
