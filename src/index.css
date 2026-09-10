@@ -286,6 +286,11 @@ body {
 .industries-scroll { scrollbar-width: none; -ms-overflow-style: none; }
 .industries-scroll::-webkit-scrollbar { display: none; }
 
+/* A slide takes focus when it opens so Tab continues from its top; a ring
+   around the whole viewport would say nothing, and the live region already
+   announces the change. */
+.deck-slide:focus-visible { outline: none; box-shadow: none; }
+
 /* ── prefers-reduced-motion: kill all motion ── */
 @media (prefers-reduced-motion: reduce) {
   .orbit-ring { animation: none !important; }

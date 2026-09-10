@@ -207,6 +207,15 @@ const ContinueCue: React.FC = () => {
    one slide, so the form reads as two full views instead of a free scroll and
    neither view cuts a field. Off the deck it is a plain group and the page's
    own card supplies the frame. */
+/* One message under the field it belongs to, linked from the control by
+   aria-describedby so it is read with the field's name. */
+const FieldError: React.FC<{ id: string; message?: string }> = ({ id, message }) =>
+  message ? (
+    <p id={id} className="mt-1.5 text-xs font-medium text-red-700">
+      {message}
+    </p>
+  ) : null;
+
 const FormHalf: React.FC<{ halved: boolean; last?: boolean; children: React.ReactNode }> = ({
   halved,
   last = false,
@@ -261,25 +270,66 @@ const ContactUs: React.FC = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+    // A corrected field drops its message straight away.
+    if (fieldErrors[name]) setFieldErrors((prev) => { const next = { ...prev }; delete next[name]; return next; });
   };
+
+  /* The label points at the control and the control points at its message,
+     so a screen reader reads all three together. */
+  const fid = (name: string) => `contact-${name}`;
+  const eid = (name: string) => `contact-${name}-error`;
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  /* Every problem at once, in field order, so nobody fixes one only to find
+     the next. Each message says what to do. */
+  const validate = (): Record<string, string> => {
+    const p: Record<string, string> = {};
+    if (!formData.first_name.trim()) p.first_name = 'Enter your first name.';
+    if (!formData.last_name.trim()) p.last_name = 'Enter your last name.';
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) p.email = 'Enter a valid email address, like name@company.com.';
+    if (!formData.company.trim()) p.company = 'Enter your company name.';
+    if (!formData.job_title.trim()) p.job_title = 'Choose your job title.';
+    if (formData.job_title === 'Other' && !formData.custom_job_title.trim()) p.custom_job_title = 'Enter your job title.';
+    if (!formData.phone.trim()) p.phone = 'Enter your phone number.';
+    if (!formData.most_pressing_quality_problem.trim()) p.most_pressing_quality_problem = 'Choose the problem closest to yours.';
+    if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) p.custom_quality_problem = 'Describe your quality problem in a sentence or two.';
+    if (!acceptPrivacy) p.privacy = 'Tick the box to accept the Privacy Policy.';
+    if (!acceptTerms) p.terms = 'Tick the box to accept the Terms of Service.';
+    if (RECAPTCHA_SITE_KEY && !recaptchaToken) p.recaptcha = 'Complete the "I\'m not a robot" check.';
+    return p;
+  };
+  const showProblems = (p: Record<string, string>) => {
+    setFieldErrors(p);
+    const n = Object.keys(p).length;
+    setError(n === 1 ? '1 field needs attention.' : `${n} fields need attention.`);
+    // Focus goes to the first problem, so a keyboard user is taken to it.
+    const first = Object.keys(p)[0];
+    window.setTimeout(() => document.getElementById(fid(first))?.focus(), 0);
+  };
+  /* Checked as the reader leaves a field, so a slip is caught where it was
+     made rather than after the whole form. */
+  const checkField = (name: string) => {
+    const p = validate();
+    setFieldErrors((prev) => { const next = { ...prev }; if (p[name]) next[name] = p[name]; else delete next[name]; return next; });
+  };
+  const describe = (name: string) => ({
+    id: fid(name),
+    'aria-invalid': fieldErrors[name] ? true : undefined,
+    'aria-describedby': fieldErrors[name] ? eid(name) : undefined,
+    onBlur: () => checkField(name),
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
     try {
       setError('');
-      if (!formData.first_name.trim()) { setError('First name is required'); setStatus('idle'); return; }
-      if (!formData.last_name.trim()) { setError('Last name is required'); setStatus('idle'); return; }
-      if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { setError('Please enter a valid email'); setStatus('idle'); return; }
-      if (!formData.company.trim()) { setError('Company is required'); setStatus('idle'); return; }
-      if (!formData.job_title.trim()) { setError('Job title is required'); setStatus('idle'); return; }
-      if (formData.job_title === 'Other' && !formData.custom_job_title.trim()) { setError('Please enter your job title'); setStatus('idle'); return; }
-      if (!formData.phone.trim()) { setError('Phone number is required'); setStatus('idle'); return; }
-      if (!formData.most_pressing_quality_problem.trim()) { setError('Quality problem is required'); setStatus('idle'); return; }
-      if (formData.most_pressing_quality_problem === 'Other' && !formData.custom_quality_problem.trim()) { setError('Please describe your quality problem'); setStatus('idle'); return; }
-      if (!acceptPrivacy) { setError('Please accept the Privacy Policy to continue'); setStatus('idle'); return; }
-      if (!acceptTerms) { setError('Please accept the Terms of Service to continue'); setStatus('idle'); return; }
-      if (RECAPTCHA_SITE_KEY && !recaptchaToken) { setError('Please complete the reCAPTCHA verification'); setStatus('idle'); return; }
+      const problems = validate();
+      if (Object.keys(problems).length) {
+        showProblems(problems);
+        setStatus('idle');
+        return;
+      }
 
       const jobTitle = formData.job_title === 'Other' ? formData.custom_job_title.trim() : formData.job_title.trim();
       const qualityProblem = formData.most_pressing_quality_problem === 'Other' ? formData.custom_quality_problem.trim() : formData.most_pressing_quality_problem.trim();
@@ -342,6 +392,7 @@ const ContactUs: React.FC = () => {
           Thank you for reaching out. We'll review your message and get back to you within 1 business day.
         </p>
         <button
+          type="button"
           onClick={() => setStatus('idle')}
           className="text-sm text-amber-600 font-semibold hover:text-amber-500 transition-colors"
         >
@@ -351,6 +402,7 @@ const ContactUs: React.FC = () => {
       </FormHalf>
     ) : (
       <form
+        noValidate
         onSubmit={handleSubmit}
         className={halved ? '' : 'grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10 items-start'}
       >
@@ -360,87 +412,107 @@ const ContactUs: React.FC = () => {
         <FormHalf halved={halved}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
-            <input type="text" name="first_name" required className={inputClass} placeholder="John" value={formData.first_name} onChange={handleChange} />
+            <label htmlFor={fid('first_name')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
+            <input type="text" name="first_name" required className={inputClass} placeholder="John" value={formData.first_name} onChange={handleChange} {...describe('first_name')} />
+            <FieldError id={eid('first_name')} message={fieldErrors.first_name} />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Last Name *</label>
-            <input type="text" name="last_name" required className={inputClass} placeholder="Doe" value={formData.last_name} onChange={handleChange} />
+            <label htmlFor={fid('last_name')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Last Name *</label>
+            <input type="text" name="last_name" required className={inputClass} placeholder="Doe" value={formData.last_name} onChange={handleChange} {...describe('last_name')} />
+            <FieldError id={eid('last_name')} message={fieldErrors.last_name} />
           </div>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Email *</label>
-          <input type="email" name="email" required className={inputClass} placeholder="name@company.com" value={formData.email} onChange={handleChange} />
+          <label htmlFor={fid('email')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Email *</label>
+          <input type="email" name="email" required className={inputClass} placeholder="name@company.com" value={formData.email} onChange={handleChange} {...describe('email')} />
+          <FieldError id={eid('email')} message={fieldErrors.email} />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Company *</label>
-          <input type="text" name="company" required className={inputClass} placeholder="Company Name" value={formData.company} onChange={handleChange} />
+          <label htmlFor={fid('company')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Company *</label>
+          <input type="text" name="company" required className={inputClass} placeholder="Company Name" value={formData.company} onChange={handleChange} {...describe('company')} />
+          <FieldError id={eid('company')} message={fieldErrors.company} />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Job Title *</label>
-          <select name="job_title" required value={formData.job_title} onChange={handleChange} className={inputClass}>
+          <label htmlFor={fid('job_title')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Job Title *</label>
+          <select name="job_title" required value={formData.job_title} onChange={handleChange} className={inputClass} {...describe('job_title')}>
             <option value="">Select a job title</option>
             {jobTitles.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
+          <FieldError id={eid('job_title')} message={fieldErrors.job_title} />
           {showCustomJobTitle && (
-            <input type="text" name="custom_job_title" required value={formData.custom_job_title} onChange={handleChange} className={`${inputClass} mt-3`} placeholder="Enter your job title" />
+            <>
+              <label htmlFor={fid('custom_job_title')} className="sr-only">Your job title</label>
+              <input type="text" name="custom_job_title" required value={formData.custom_job_title} onChange={handleChange} className={`${inputClass} mt-3`} placeholder="Enter your job title" {...describe('custom_job_title')} />
+              <FieldError id={eid('custom_job_title')} message={fieldErrors.custom_job_title} />
+            </>
           )}
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number *</label>
+          <label htmlFor={fid('phone')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number *</label>
           <PhoneInput
             defaultCountry="gy"
             value={formData.phone}
-            onChange={(phone, { country, dialCode }) => setFormData({ ...formData, phone, country_iso: country?.iso2?.toLowerCase() || 'gy', dial_code: dialCode || '+592' })}
+            onChange={(phone, { country }) => setFormData({ ...formData, phone, country_iso: country?.iso2?.toLowerCase() || 'gy', dial_code: country?.dialCode ? `+${country.dialCode}` : '+592' })}
             className="w-full"
             inputClassName={inputClass}
+            inputProps={describe('phone')}
             countrySelectorStyleProps={{ buttonClassName: "px-3 py-3 rounded-l-xl bg-[#e0e5ec] shadow-[inset_2px_2px_5px_#a3b1c6,inset_-2px_-2px_5px_#ffffff]" }}
           />
+          <FieldError id={eid('phone')} message={fieldErrors.phone} />
         </div>
         </FormHalf>
 
         <FormHalf halved={halved} last>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
-          <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass}>
+          <label htmlFor={fid('most_pressing_quality_problem')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
+          <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass} {...describe('most_pressing_quality_problem')}>
             <option value="">Select a quality problem</option>
             {qualityProblems.map((p) => <option key={p} value={p}>{p}</option>)}
           </select>
+          <FieldError id={eid('most_pressing_quality_problem')} message={fieldErrors.most_pressing_quality_problem} />
           {showCustomQualityProblem && (
-            <textarea name="custom_quality_problem" required rows={3} value={formData.custom_quality_problem} onChange={handleChange} className={`${inputClass} mt-3 resize-none`} placeholder="Describe your most pressing quality or compliance challenge..." />
+            <>
+              <label htmlFor={fid('custom_quality_problem')} className="sr-only">Describe your quality problem</label>
+              <textarea name="custom_quality_problem" required rows={3} value={formData.custom_quality_problem} onChange={handleChange} className={`${inputClass} mt-3 resize-none`} placeholder="Describe your most pressing quality or compliance challenge..." {...describe('custom_quality_problem')} />
+              <FieldError id={eid('custom_quality_problem')} message={fieldErrors.custom_quality_problem} />
+            </>
           )}
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Message <span className="normal-case font-normal text-slate-400">(optional)</span></label>
-          <textarea name="message" rows={3} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
+          <label htmlFor={fid('message')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Message <span className="normal-case font-normal text-slate-400">(optional)</span></label>
+          <textarea name="message" id={fid('message')} rows={3} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
         </div>
 
         <div className="space-y-3 pt-1">
           <label className="flex items-start gap-3 cursor-pointer group">
-            <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+            <input type="checkbox" id={fid('privacy')} checked={acceptPrivacy} onChange={(e) => { setAcceptPrivacy(e.target.checked); if (e.target.checked) setFieldErrors((prev) => { const next = { ...prev }; delete next.privacy; return next; }); }} aria-invalid={fieldErrors.privacy ? true : undefined} aria-describedby={fieldErrors.privacy ? eid('privacy') : undefined} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
               <Link to={href('/privacy-policy')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
             </span>
           </label>
+          <FieldError id={eid('privacy')} message={fieldErrors.privacy} />
           <label className="flex items-start gap-3 cursor-pointer group">
-            <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
+            <input type="checkbox" id={fid('terms')} checked={acceptTerms} onChange={(e) => { setAcceptTerms(e.target.checked); if (e.target.checked) setFieldErrors((prev) => { const next = { ...prev }; delete next.terms; return next; }); }} aria-invalid={fieldErrors.terms ? true : undefined} aria-describedby={fieldErrors.terms ? eid('terms') : undefined} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
               <Link to={href('/terms-of-service')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
             </span>
           </label>
+          <FieldError id={eid('terms')} message={fieldErrors.terms} />
         </div>
 
         {RECAPTCHA_SITE_KEY && (
-          <div className="flex justify-center pt-1">
-            <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setRecaptchaToken(token)} onExpired={() => setRecaptchaToken(null)} />
+          <div id={fid('recaptcha')} tabIndex={-1} className="flex flex-col items-center pt-1 outline-none">
+            <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => { setRecaptchaToken(token); if (token) setFieldErrors((prev) => { const next = { ...prev }; delete next.recaptcha; return next; }); }} onExpired={() => setRecaptchaToken(null)} />
+            <FieldError id={eid('recaptcha')} message={fieldErrors.recaptcha} />
           </div>
         )}
 
         {error && (
           <div
-            className="px-4 py-3 rounded-xl text-red-600 text-sm"
+            role="alert"
+            className="px-4 py-3 rounded-xl text-red-700 text-sm font-medium"
             style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 6px rgba(163,177,198,0.5), inset -3px -3px 6px rgba(255,255,255,0.8)' }}
           >
             {error}

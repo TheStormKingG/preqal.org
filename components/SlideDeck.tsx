@@ -70,6 +70,11 @@ const PUSH_DELTA = 30;
 const PUSH_GRACE = 200; // ms into a slide before a further push counts as a new one
 const UNLOCK_DELAY = 80; // ms cooldown after the transition settles
 const SLIDE_MS = 520; // one slide's travel
+
+/* An inactive slide is inert: out of the tab order and the accessibility tree
+   together, so the Tab key and a screen reader agree about what is on the
+   page. React 18 does not know the attribute, so it is spread as a string. */
+const INERT = { inert: '' } as Record<string, string>;
 const PAGE_LOCK_MS = 420; // gesture cooldown while a slide pages inside itself
 
 const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
@@ -95,6 +100,14 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
 
   const unlockTimerRef = useRef(0);
   const count = slides.length;
+
+  /* Each slide element, for moving focus and for measuring overflow. */
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  /* A slide whose content has outgrown one screen — at 200% text, say —
+     scrolls inside itself like a declared scrollable one instead of clipping.
+     Measured from rendered boxes: the fit ladder scales paint, not layout, so
+     scrollHeight would report overflow that is not there. */
+  const [overflowing, setOverflowing] = useState<boolean[]>([]);
 
   /* The scrollable slide under an event, if any, and whether it still has
      room to scroll the way the reader is going. */
@@ -374,6 +387,50 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
 
   useEffect(() => () => window.clearTimeout(unlockTimerRef.current), []);
 
+  useEffect(() => {
+    const measure = () => {
+      const next = sectionRefs.current.map((sec) => {
+        if (!sec) return false;
+        const sr = sec.getBoundingClientRect();
+        const cs = getComputedStyle(sec);
+        const top = sr.top + (parseFloat(cs.paddingTop) || 0);
+        const bottom = sr.bottom - (parseFloat(cs.paddingBottom) || 0);
+        let over = false;
+        sec.querySelectorAll<HTMLElement>('*').forEach((el) => {
+          // Decorative glows deliberately run past the edge; only content counts.
+          if (over || getComputedStyle(el).pointerEvents === 'none') return;
+          const b = el.getBoundingClientRect();
+          if (b.height > 0 && (b.bottom > bottom + 2 || b.top < top - 2)) over = true;
+        });
+        return over;
+      });
+      setOverflowing((prev) => (prev.length === next.length && prev.every((v, k) => v === next[k]) ? prev : next));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    sectionRefs.current.forEach((sec) => sec && Array.from(sec.children).forEach((c) => ro.observe(c)));
+    window.addEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [count, slideH]);
+
+  /* Announce the slide that just opened and move focus into it, so Tab
+     continues from its top and a screen reader reads from there. Not on
+     mount: the first slide needs no announcing, and taking focus on load
+     would take it from wherever the reader had put it. */
+  const [announce, setAnnounce] = useState('');
+  const prevIndex = useRef(index);
+  const label = slides[index]?.label ?? '';
+  useEffect(() => {
+    if (prevIndex.current === index) return;
+    prevIndex.current = index;
+    setAnnounce(`Slide ${index + 1} of ${count}: ${label}`);
+    // preventScroll: a native scroll here would offset the transformed track.
+    sectionRefs.current[index]?.focus({ preventScroll: true });
+  }, [index, count, label]);
+
   return (
     <DeckContext.Provider value={{ goTo, index, count, dir }}>
       <div
@@ -407,10 +464,15 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
           {slides.map((s, i) => (
             <motion.section
               key={s.label}
+              ref={(el: HTMLElement | null) => {
+                sectionRefs.current[i] = el;
+              }}
               aria-label={s.label}
               aria-hidden={i !== index}
-              data-deck-scrollable={s.scrollable ? 'true' : undefined}
-              className={`deck-slide w-full ${s.scrollable ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
+              tabIndex={-1}
+              {...(i !== index ? INERT : {})}
+              data-deck-scrollable={s.scrollable || overflowing[i] ? 'true' : undefined}
+              className={`deck-slide w-full ${s.scrollable || overflowing[i] ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden'}`}
               /* Only the slide in focus is at full strength. Its neighbours are
                  seen for a few hundred ms as they pass, and dimming them reads
                  as depth — it is the one accent a deck can afford, since a
@@ -425,13 +487,17 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
                 /* touch-action does not inherit: without this the browser
                    pans the slide itself, swallows the gesture at either end,
                    and the deck never sees the swipe that should leave it. */
-                ...(s.scrollable ? { touchAction: 'none', overscrollBehavior: 'contain' } : null),
+                ...(s.scrollable || overflowing[i] ? { touchAction: 'none', overscrollBehavior: 'contain' } : null),
               }}
             >
               {s.node}
             </motion.section>
           ))}
         </motion.div>
+        <p className="sr-only">Use the arrow keys, or swipe, to move between slides.</p>
+        <p className="sr-only" aria-live="polite" aria-atomic="true">
+          {announce}
+        </p>
 
       </div>
     </DeckContext.Provider>
