@@ -238,13 +238,13 @@ When editing these, remember they embed Supabase JS via CDN and EmailJS via CDN 
 |---|---|
 | Page background | `#e0e5ec` |
 | Primary amber | `amber-500` `#f59e0b` |
-| Amber CTA / dark | `amber-600` `#d97706` |
+| Amber CTA / dark | `amber-600` — as **text** resolves to `#92400e` (5.6:1); the CTA gradient still uses `#d97706` inline |
 | Amber glow / stats | `amber-400` `#fbbf24` |
 | Dark navy band | `#0f172a` |
 | Heading text | `slate-900` |
 | Strong body | `slate-700` |
-| Body / subtext | `slate-500` |
-| Muted labels | `slate-400` |
+| Body / subtext | `slate-500` — resolves to `#475569` (re-tuned in `src/index.css` `@theme`; Tailwind's own read 3.76:1 on the ground) |
+| Muted labels | `slate-400` — resolves to `#55657a` (4.7:1) |
 | Shadow dark | `#a3b1c6` |
 | Shadow light | `#ffffff` |
 
@@ -271,7 +271,7 @@ photo/glass:   12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,25
 ### Typography Rhythm
 - **Section label:** `text-[11px] font-bold uppercase tracking-widest text-slate-400` (amber-400 on dark)
 - **Display heading:** `text-3xl sm:text-4xl md:text-5xl font-bold` (or `font-black` for hero)
-- **Italic amber emphasis:** `<em style={{ color: '#d97706' }}>word</em>` — never use a class for this
+- **Italic amber emphasis:** `<em style={{ color: '#b45309' }}>word</em>` — never use a class for this (amber-700: 3.96:1, the large-text bar; `#d97706` read 2.52:1)
 - **Body:** `text-lg text-slate-500 leading-relaxed`
 - **Card title:** `text-lg–xl font-bold text-slate-900`
 
@@ -283,7 +283,7 @@ photo/glass:   12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,25
 - Never use CSS transitions for interactive elements — always Framer Motion
 
 ### CTA Buttons
-- **Primary:** `background: linear-gradient(135deg, #f59e0b, #d97706)`, white `font-bold`, `rounded-xl`, neu shadow
+- **Primary:** `background: linear-gradient(135deg, #f59e0b, #d97706)`, `text-slate-900 font-bold`, `rounded-xl`, neu shadow — navy on amber reads 8.5:1; white read 2.15:1 on the light stop
 - **Hover:** spring to darker amber (`#b45309`), scale up
 - **Secondary:** `text-amber-600 font-semibold border-b-2 border-amber-300/50 hover:border-amber-500`
 

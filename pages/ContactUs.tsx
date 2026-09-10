@@ -31,7 +31,7 @@ const Hero: React.FC = () => (
         {/* Left: text */}
         <div className="flex-1 lg:max-w-[560px] mb-10 lg:mb-0">
           <motion.p
-            className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+            className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
           >
             Get in touch
@@ -42,7 +42,7 @@ const Hero: React.FC = () => (
             transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
             Let's write the next<br />
-            <em style={{ color: '#d97706' }}>chapter together.</em>
+            <em style={{ color: '#b45309' }}>chapter together.</em>
           </motion.h1>
           <motion.p
             className="text-lg text-slate-500 leading-relaxed"
@@ -113,7 +113,7 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
             than centred over the pair of columns. */}
         <ScrollReveal yFrom={14}>
           <div className={`text-center ${compact ? 'mb-3' : 'mb-5'}`}>
-            <p className={`text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
+            <p className={`text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
             {/* The deck slide carries the socials under the bio as well, so its
                 heading gives up a step to make room. */}
             <h2 className={`md:text-4xl font-bold text-slate-900 leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
@@ -525,7 +525,7 @@ const ContactUs: React.FC = () => {
           whileHover={{ scale: status === 'submitting' ? 1 : 1.02, y: status === 'submitting' ? 0 : -2 }}
           whileTap={{ scale: 0.98 }}
           transition={{ type: 'spring', stiffness: 340, damping: 22 }}
-          className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold text-base disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-slate-900 font-bold text-base disabled:opacity-70 disabled:cursor-not-allowed"
           style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
         >
           {status === 'submitting'

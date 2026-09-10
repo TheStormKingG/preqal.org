@@ -71,7 +71,7 @@ const GuideArticle: React.FC = () => {
       <div className="min-h-screen pb-20">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <motion.p
-            className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+            className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
           >
             Preqal Guides · Plain-language answers
@@ -122,8 +122,8 @@ const GuideArticle: React.FC = () => {
               className="rounded-3xl p-9 text-center mb-12"
               style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%)', boxShadow: '10px 10px 28px rgba(180,83,9,0.3)' }}
             >
-              <h2 className="text-2xl font-bold text-white mb-3">Ready to walk this road with help?</h2>
-              <p className="text-amber-100 mb-6 max-w-md mx-auto">
+              <h2 className="text-2xl font-bold text-slate-900 mb-3">Ready to walk this road with help?</h2>
+              <p className="text-slate-800 mb-6 max-w-md mx-auto">
                 Preqal {guide.serviceName} was built for exactly this journey. One message starts everything.
               </p>
               <div className="flex items-center justify-center gap-5 flex-wrap">
@@ -148,7 +148,7 @@ const GuideArticle: React.FC = () => {
 
           {/* Other guides */}
           <ScrollReveal yFrom={12}>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">More guides</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">More guides</p>
             <div className="flex flex-col gap-3">
               {others.map((o) => (
                 <Link
@@ -184,10 +184,10 @@ export const GuidesIndex: React.FC = () => (
     <div className="min-h-screen pb-20">
       <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Preqal Guides</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Preqal Guides</p>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5">
             Plain answers to the questions<br />
-            <em style={{ color: '#d97706' }}>everyone asks us.</em>
+            <em style={{ color: '#b45309' }}>everyone asks us.</em>
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
             No jargon and no gatekeeping. These guides give you the whole road map, whether

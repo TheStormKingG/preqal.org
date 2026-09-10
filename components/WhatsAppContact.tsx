@@ -192,7 +192,7 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                         style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px rgba(163,177,198,0.5), -4px -4px 10px rgba(255,255,255,0.85)' }}
                       >
                         <span
-                          className="w-9 h-9 rounded-lg flex items-center justify-center text-[11px] font-extrabold text-amber-600 flex-shrink-0"
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-extrabold text-amber-600 flex-shrink-0"
                           style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 6px rgba(163,177,198,0.5), inset -2px -2px 6px rgba(255,255,255,0.85)' }}
                         >
                           {opt.phase}
@@ -206,7 +206,7 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-slate-400 text-center mt-5">
+                  <p className="text-xs text-slate-400 text-center mt-5">
                     No WhatsApp? Email <a href="mailto:info@preqal.org" className="text-amber-600 font-semibold hover:text-amber-500">info@preqal.org</a> or
                     use the <a href={href('/contact')} className="text-amber-600 font-semibold hover:text-amber-500">contact form</a>.
                   </p>

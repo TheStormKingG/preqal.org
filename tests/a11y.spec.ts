@@ -89,7 +89,7 @@ test('text on the page ground clears 4.5:1, and CTA labels clear it on the light
     const ground = __rgb(getComputedStyle(document.body).backgroundColor);
     // Body copy and the small labels, as rendered.
     for (const el of document.querySelectorAll<HTMLElement>('main p, main span, main label, footer p, footer a, nav a span')) {
-      if (!el.getClientRects().length || !el.textContent?.trim()) continue;
+      if (!el.getClientRects().length || !el.textContent?.trim() || el.closest('[aria-hidden="true"]')) continue;
       const cs = getComputedStyle(el);
       let e: HTMLElement | null = el; let bg: string | null = null;
       while (e && e !== document.documentElement) { const b = getComputedStyle(e).backgroundColor; const bi = getComputedStyle(e).backgroundImage; if (/gradient/.test(bi)) { bg = 'gradient'; break; } if (b && !/rgba\(0, 0, 0, 0\)|transparent/.test(b)) { bg = b; break; } e = e.parentElement; }

@@ -914,7 +914,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                                 isDisabled
                                   ? 'neu-raised-sm text-slate-300 cursor-not-allowed'
                                   : isActive
-                                  ? 'text-white shadow-inner cursor-pointer'
+                                  ? 'text-slate-900 shadow-inner cursor-pointer'
                                   : 'neu-raised-sm text-slate-500 hover:text-amber-600 cursor-pointer',
                               ].join(' ')}
                               style={isActive ? {

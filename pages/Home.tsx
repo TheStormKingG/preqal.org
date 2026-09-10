@@ -33,7 +33,7 @@ const PHASES: Phase[] = [
   {
     number: '01',
     chapter: 'The Idea',
-    headline: <>It starts at your <em style={{ color: '#d97706' }}>kitchen table.</em></>,
+    headline: <>It starts at your <em style={{ color: '#b45309' }}>kitchen table.</em></>,
     story:
       'Great businesses begin with a skill nobody can copy. Everything changes when a banker reads your plan and nods.',
     serviceName: 'Business Plan',
@@ -48,7 +48,7 @@ const PHASES: Phase[] = [
   {
     number: '02',
     chapter: 'The Look',
-    headline: <>Now, see it <em style={{ color: '#d97706' }}>clearly.</em></>,
+    headline: <>Now, see it <em style={{ color: '#b45309' }}>clearly.</em></>,
     story:
       'You are too close to your business to see its gaps. Five days with us — fully online — shows you everything.',
     serviceName: 'Risk Scan™',
@@ -62,7 +62,7 @@ const PHASES: Phase[] = [
   {
     number: '03',
     chapter: 'The Build',
-    headline: <>Then we build it <em style={{ color: '#d97706' }}>together.</em></>,
+    headline: <>Then we build it <em style={{ color: '#b45309' }}>together.</em></>,
     story:
       'Imagine greeting your auditors calmly because you already passed a practice run.',
     serviceName: 'Systems Builder™',
@@ -76,7 +76,7 @@ const PHASES: Phase[] = [
   {
     number: '04',
     chapter: 'The Standard',
-    headline: <>Pass the audit. <em style={{ color: '#d97706' }}>Keep the standard.</em></>,
+    headline: <>Pass the audit. <em style={{ color: '#b45309' }}>Keep the standard.</em></>,
     story:
       'Systems drift and standards change. We stay beside you so every audit feels ordinary.',
     serviceName: 'Certified Care™',
@@ -90,7 +90,7 @@ const PHASES: Phase[] = [
   {
     number: '05',
     chapter: 'The Export',
-    headline: <>Your label <em style={{ color: '#d97706' }}>crosses the sea.</em></>,
+    headline: <>Your label <em style={{ color: '#b45309' }}>crosses the sea.</em></>,
     story:
       'Three gates stand between you and the world. Beyond them, buyers trust a label that says Made in Guyana.',
     serviceName: 'Export-Ready™',
@@ -254,7 +254,7 @@ const PhaseSection: React.FC<{
                         : 'transform .5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity .22s ease-out',
                     }}
                   >
-                    <span className="text-base font-extrabold leading-none text-white">{phase.number}</span>
+                    <span className="text-base font-extrabold leading-none text-slate-900">{phase.number}</span>
                   </div>
                 </div>
               ) : (
@@ -285,8 +285,8 @@ const PhaseSection: React.FC<{
                 </motion.div>
               )}
               <p
-                className="text-[11px] font-bold uppercase tracking-widest"
-                style={{ color: isLit ? '#d97706' : '#94a3b8', transition: 'color 0.4s ease' }}
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: isLit ? '#92400e' : '#55657a', transition: 'color 0.4s ease' }}
               >
                 Phase {phase.number} · {phase.chapter}
               </p>
@@ -341,7 +341,7 @@ const PhaseSection: React.FC<{
                     href={whatsAppLink(phase.waKey)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-900 font-bold text-sm"
                     style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
                   >
                     <WhatsAppIcon className="h-4 w-4" /> {phase.ctaLabel}
@@ -636,7 +636,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
 
 /* ─── Hero ─── */
 const JOURNEY_CTA =
-  'inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm whitespace-nowrap';
+  'inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-slate-900 font-bold text-sm whitespace-nowrap';
 const JOURNEY_CTA_STYLE: React.CSSProperties = {
   background: 'linear-gradient(135deg, #f59e0b, #d97706)',
   boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)',
@@ -669,11 +669,11 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
 
           <div className={`flex-1 lg:max-w-[580px] lg:mb-0 ${deck ? 'mb-4' : 'mb-10'}`}>
             <motion.div
-              className={`inline-flex items-center gap-2 text-amber-600 text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'py-1.5 mb-2 lg:mb-5' : 'mb-8'}`}
+              className={`inline-flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full ${deck ? 'py-1.5 mb-2 lg:mb-5' : 'mb-8'}`}
               style={{ background: '#e0e5ec', boxShadow: '3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff' }}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
             >
-              <span className="text-amber-500">◆</span>
+              <span className="text-amber-500" aria-hidden="true">◆</span>
               <span>From Idea to Bank</span>
             </motion.div>
 
@@ -689,7 +689,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
             </motion.h1>
             <motion.p
               className={`text-3xl sm:text-5xl font-black leading-[1.05] ${deck ? 'mb-2.5 lg:text-[3.1rem] lg:mb-5' : 'lg:text-[3.6rem] mb-7'}`}
-              style={{ fontStyle: 'italic', color: '#f59e0b' }}
+              style={{ fontStyle: 'italic', color: '#b45309' }}
               initial={{ y: 14 }} animate={{ y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
@@ -794,11 +794,11 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
           <div className="flex flex-col gap-5 border-l border-white/15 pl-5 flex-shrink-0 md:flex-row md:gap-8 lg:gap-12 md:border-0 md:pl-0">
             <div className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">98%</div>
-              <div className="text-lg text-white/40 font-medium mt-1 md:mt-2 leading-snug">pass rate</div>
+              <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">pass rate</div>
             </div>
             <div className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">9</div>
-              <div className="text-lg text-white/40 font-medium mt-1 md:mt-2 leading-snug">months to<br />certification</div>
+              <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">months to<br />certification</div>
             </div>
           </div>
         </div>
@@ -824,7 +824,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
       >
         <div className={`text-center ${deck ? 'p-4 sm:p-8 md:p-10' : 'p-8 md:p-14'}`}>
           <motion.h2
-            className={`text-3xl md:text-4xl font-bold text-white leading-tight ${deck ? 'mb-5 lg:mb-8' : 'mb-10'}`}
+            className={`text-3xl md:text-4xl font-bold text-slate-900 leading-tight ${deck ? 'mb-5 lg:mb-8' : 'mb-10'}`}
             initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
           >
@@ -848,7 +848,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
               <Link
                 to={href('/resources')}
-                className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-semibold text-white text-base w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-semibold text-slate-900 text-base w-full sm:w-auto"
                 style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)' }}
               >
                 <Download className="mr-2 h-5 w-5" />

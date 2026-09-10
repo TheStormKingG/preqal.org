@@ -88,7 +88,7 @@ const Hero: React.FC = () => (
     />
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
       <motion.p
-        className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+        className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
       >
         Free templates · No forms, no strings
@@ -99,7 +99,7 @@ const Hero: React.FC = () => (
         transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
       >
         Start building before<br />
-        <em style={{ color: '#d97706' }}>you spend a penny.</em>
+        <em style={{ color: '#b45309' }}>you spend a penny.</em>
       </motion.h1>
       <motion.p
         className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto"
@@ -143,14 +143,14 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
                 <h2 className="text-base font-bold text-slate-900">{t.title}</h2>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed line-clamp-3 sm:line-clamp-none">{t.desc}</p>
-              <p className="text-[11px] text-slate-400 mt-1">{t.type} · {t.size}</p>
+              <p className="text-xs text-slate-400 mt-1">{t.type} · {t.size}</p>
             </div>
             <motion.a
               whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 340, damping: 22 }}
               href={`${base}templates/${encodeURIComponent(t.file)}`}
               download
-              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl text-white font-bold text-sm flex-shrink-0"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl text-slate-900 font-bold text-sm flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
             >
               <Download className="h-4 w-4" /> Download

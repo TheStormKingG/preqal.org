@@ -52,7 +52,7 @@ const CookieConsent: React.FC = () => {
             <button
               type="button"
               onClick={() => choose('granted')}
-              className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-bold"
+              className="flex-1 px-4 py-2.5 rounded-xl text-slate-900 text-sm font-bold"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '3px 3px 10px rgba(217,119,6,0.35)' }}
             >
               Accept analytics

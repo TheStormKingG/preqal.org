@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+/* Three text tokens, re-tuned to WCAG AA on the page ground (#e0e5ec) and on
+   the glass cards. Tailwind's own slate-500 read 3.76:1 there, slate-400
+   2.08:1, amber-600 2.52:1 — none passes 4.5:1 for text under 24px. The
+   class names stay; only what they resolve to changes, so every existing
+   use is fixed at once. Fills are untouched: no bg-* uses these stops. */
+@theme {
+  --color-slate-500: #475569; /* 5.99:1 on the ground, 7.1:1 on glass */
+  --color-slate-400: #55657a; /* 4.7:1 — the muted step, still AA at 11px bold */
+  --color-amber-600: #92400e; /* 5.6:1 — amber for small text and links */
+}
+
+/* One focus ring for everything: navy with a white gap, so it reads on the
+   ground, on glass, on amber and on the navy band. Kept out of any layer on
+   purpose, so it beats the utilities' outline-none. */
+:focus-visible {
+  outline: 3px solid #0f172a;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px #ffffff;
+}
+
 /* ── Base ── */
 body {
   font-family: 'Rubik', sans-serif;

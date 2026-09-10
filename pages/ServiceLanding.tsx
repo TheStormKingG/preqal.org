@@ -68,7 +68,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     title: 'Business Plan Writers in Guyana | Preqal Business Plan',
     description:
       'Bank-ready business plans for Guyanese entrepreneurs with compliance built in from day one. Fixed price, investor-ready, written in Guyana.',
-    h1: <>Business plans that banks in Guyana <em style={{ color: '#d97706' }}>say yes to.</em></>,
+    h1: <>Business plans that banks in Guyana <em style={{ color: '#b45309' }}>say yes to.</em></>,
     intro:
       'A good idea deserves a plan a lender can approve. Preqal writes bank-ready business plans for Guyanese entrepreneurs, and we build compliance in from the first page so you never have to undo bad habits later.',
     body: [
@@ -103,7 +103,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     title: 'Virtual Quality Audit in Guyana | Preqal Risk Scan™',
     description:
       'A 5-day virtual quality audit for small businesses in Guyana and the Caribbean. ISO 9001 gap analysis, quality policy and document plan — GY$100,000 flat.',
-    h1: <>Every gap in your business, found <em style={{ color: '#d97706' }}>in five days — online.</em></>,
+    h1: <>Every gap in your business, found <em style={{ color: '#b45309' }}>in five days — online.</em></>,
     intro:
       'You are too close to your own business to see its gaps. The Risk Scan is a five-day audit delivered fully online: we study your documents, talk with your people and hand you a clear picture of where you stand — for one flat fee of GY$100,000.',
     body: [
@@ -188,7 +188,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     title: 'ISO 9001 Certification Consultants Guyana | Systems Builder',
     description:
       'ISO 9001, ISO 14001 and ISO 45001 management systems built with your team in 9 months, including training, internal audits and a mock certification audit.',
-    h1: <>ISO certification consultants for <em style={{ color: '#d97706' }}>Guyanese businesses.</em></>,
+    h1: <>ISO certification consultants for <em style={{ color: '#b45309' }}>Guyanese businesses.</em></>,
     intro:
       'Preqal Systems Builder takes your business from gaps to certification ready in nine months. We design your management system around how your business really works, train your team to own it and test everything before the real audit.',
     body: [
@@ -223,7 +223,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     title: 'ISO Certification Maintenance Guyana | Preqal Certified Care',
     description:
       'Monthly support that keeps your ISO or HACCP certification valid. System upkeep, annual internal audits and surveillance-visit support in Guyana.',
-    h1: <>Keep your certification, <em style={{ color: '#d97706' }}>year after year.</em></>,
+    h1: <>Keep your certification, <em style={{ color: '#b45309' }}>year after year.</em></>,
     intro:
       'Getting certified was the milestone. Staying certified is the standard. Certified Care is a monthly programme that keeps your management system sharp, so every surveillance audit feels like an ordinary day.',
     body: [
@@ -258,7 +258,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     title: 'HACCP & Export Certification for Guyana Agro-Processors',
     description:
       'Preqal Export-Ready takes agro-processors from unregulated to export certified through HACCP, ISO 22000 and GFSI readiness. Made in Guyana, trusted abroad.',
-    h1: <>HACCP and export certification for <em style={{ color: '#d97706' }}>Guyanese agro-processors.</em></>,
+    h1: <>HACCP and export certification for <em style={{ color: '#b45309' }}>Guyanese agro-processors.</em></>,
     intro:
       'CARICOM buyers and international shelves gate on one thing, a food safety certificate they trust. Export-Ready is a fixed-scope programme that takes a small agro-processor from unregulated to export certified through three staged gates.',
     body: [
@@ -358,7 +358,7 @@ const ServiceLanding: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
               <div className="flex-1 lg:max-w-[600px]">
                 <motion.p
-                  className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4"
+                  className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
                 >
                   {page.name}
@@ -384,7 +384,7 @@ const ServiceLanding: React.FC = () => {
                     href={whatsAppLink(page.waKey)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-slate-900 font-bold text-sm"
                     style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '5px 5px 14px rgba(217,119,6,0.38), -2px -2px 8px rgba(255,255,255,0.6)' }}
                   >
                     <WhatsAppIcon className="h-4 w-4" /> {page.cta}
@@ -458,9 +458,9 @@ const ServiceLanding: React.FC = () => {
           <section className="px-4 sm:px-6 lg:px-8 py-10">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal yFrom={14}>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">How the week runs</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">How the week runs</p>
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
-                  Five days, <em style={{ color: '#d97706' }}>start to finish.</em>
+                  Five days, <em style={{ color: '#b45309' }}>start to finish.</em>
                 </h2>
               </ScrollReveal>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -468,7 +468,7 @@ const ServiceLanding: React.FC = () => {
                   <ScrollReveal key={s.day} yFrom={18} delay={i * 80}>
                     <div className="rounded-2xl p-5 h-full" style={glassCard}>
                       <span
-                        className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[11px] font-extrabold uppercase tracking-wider text-amber-600 mb-3"
+                        className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase tracking-wider text-amber-600 mb-3"
                         style={{ background: '#e0e5ec', boxShadow: 'inset 2px 2px 5px rgba(163,177,198,0.45), inset -2px -2px 5px rgba(255,255,255,0.8)' }}
                       >
                         {s.day}
@@ -496,7 +496,7 @@ const ServiceLanding: React.FC = () => {
             />
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <ScrollReveal yFrom={16}>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-5">One flat fee</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-5">One flat fee</p>
                 <div className="flex flex-col md:flex-row md:items-center gap-10 md:gap-16">
                   <div className="flex-shrink-0">
                     <div className="text-5xl sm:text-6xl font-bold text-amber-400 leading-none">{page.pricing.amount}</div>
@@ -513,7 +513,7 @@ const ServiceLanding: React.FC = () => {
                         <p className="text-sm text-white/55 leading-relaxed">{t.desc}</p>
                       </div>
                     ))}
-                    <p className="text-xs text-white/40">{page.pricing.note}</p>
+                    <p className="text-xs text-white/60">{page.pricing.note}</p>
                     {page.onePagerHref && (
                       <a
                         href={page.onePagerHref}
@@ -559,7 +559,7 @@ const ServiceLanding: React.FC = () => {
                   their own index, which is why Google had barely crawled them. */}
               {relatedGuides.length > 0 && (
                 <>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
                     Read this first
                   </p>
                   <div className="flex flex-wrap gap-3 mb-10">
@@ -578,7 +578,7 @@ const ServiceLanding: React.FC = () => {
                 </>
               )}
 
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">The other steps on the journey</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">The other steps on the journey</p>
               <div className="flex flex-wrap gap-3 mb-12">
                 {others.map((o) => (
                   <Link
@@ -602,8 +602,8 @@ const ServiceLanding: React.FC = () => {
                 className="rounded-3xl p-10 text-center"
                 style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%)', boxShadow: '10px 10px 28px rgba(180,83,9,0.3)' }}
               >
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">One message starts everything.</h2>
-                <p className="text-amber-100 mb-7 max-w-md mx-auto">Expect no pressure and no jargon. Tell Dr. Gravesande where you are and he will show you your next move.</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">One message starts everything.</h2>
+                <p className="text-slate-800 mb-7 max-w-md mx-auto">Expect no pressure and no jargon. Tell Dr. Gravesande where you are and he will show you your next move.</p>
                 <a
                   href={whatsAppLink(page.waKey)}
                   target="_blank"
@@ -639,9 +639,9 @@ export const ServicesIndex: React.FC = () => (
     <div className="min-h-screen pb-20">
       <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Services</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Services</p>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5">
-            Five services. <em style={{ color: '#d97706' }}>One journey.</em>
+            Five services. <em style={{ color: '#b45309' }}>One journey.</em>
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
             Each service is fixed in scope and price, and each one takes you to the next step
