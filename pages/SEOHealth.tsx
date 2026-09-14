@@ -89,8 +89,8 @@ const SEOHealth: React.FC = () => {
             <div>
               <h2 className="text-xl font-semibold text-slate-900 mb-4">Site Files</h2>
               <div className="space-y-2">
-                <a href="/robots.txt" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 underline block">robots.txt</a>
-                <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-500 underline block">sitemap.xml</a>
+                <a href="/robots.txt" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-900 underline block">robots.txt</a>
+                <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-900 underline block">sitemap.xml</a>
               </div>
             </div>
           </div>

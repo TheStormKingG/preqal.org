@@ -31,7 +31,7 @@ export const GUIDES: Guide[] = [
     title: 'How to Get HACCP Certified in Guyana (2026 Guide) | Preqal',
     description:
       'A plain-language guide to HACCP certification for Guyanese food businesses. What it is, who needs it, the seven steps, realistic timelines and costs.',
-    h1: <>How to get HACCP certified in <em style={{ color: '#d97706' }}>Guyana</em></>,
+    h1: <>How to get HACCP certified in <em style={{ color: '#b45309' }}>Guyana</em></>,
     intro:
       'HACCP is the certificate that opens doors for Guyanese food businesses. Buyers ask for it, regulators expect it, and export markets require it. This guide explains what it is and how to get it, in plain language.',
     published: '2026-07-07',
@@ -100,7 +100,7 @@ export const GUIDES: Guide[] = [
     title: 'What ISO 9001 Certification Costs in Guyana (Honest Guide) | Preqal',
     description:
       'The real cost of ISO 9001 certification for a Guyanese business. The three costs to separate, what drives price, and how to avoid paying for paper.',
-    h1: <>What ISO 9001 certification really costs in <em style={{ color: '#d97706' }}>Guyana</em></>,
+    h1: <>What ISO 9001 certification really costs in <em style={{ color: '#b45309' }}>Guyana</em></>,
     intro:
       'Everyone asks the price first and the answer is usually vague. Here is an honest breakdown of what a Guyanese business actually pays for ISO 9001 certification, and where the money goes.',
     published: '2026-07-07',
@@ -161,7 +161,7 @@ export const GUIDES: Guide[] = [
     title: 'How to Export Food From Guyana, Step by Step | Preqal',
     description:
       'The road from a Guyanese kitchen to foreign shelves. Registrations, food safety certification, what CARICOM buyers ask for, and realistic timelines.',
-    h1: <>How to export food from Guyana, <em style={{ color: '#d97706' }}>step by step</em></>,
+    h1: <>How to export food from Guyana, <em style={{ color: '#b45309' }}>step by step</em></>,
     intro:
       'Guyanese food sells wherever it lands. The diaspora wants it, CARICOM wants it, and the world is discovering it. What stands between a great product and a foreign shelf is paperwork and certification, and both are beatable. Here is the road.',
     published: '2026-07-07',

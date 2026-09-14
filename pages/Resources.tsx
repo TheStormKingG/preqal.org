@@ -206,7 +206,7 @@ const NextStep: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
       <button
         type="button"
         onClick={openWhatsApp}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-900 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
       >
         Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />
       </button>

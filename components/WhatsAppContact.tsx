@@ -207,8 +207,8 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                   </div>
 
                   <p className="text-xs text-slate-400 text-center mt-5">
-                    No WhatsApp? Email <a href="mailto:info@preqal.org" className="text-amber-600 font-semibold hover:text-amber-500">info@preqal.org</a> or
-                    use the <a href={href('/contact')} className="text-amber-600 font-semibold hover:text-amber-500">contact form</a>.
+                    No WhatsApp? Email <a href="mailto:info@preqal.org" className="text-amber-600 font-semibold hover:text-amber-900">info@preqal.org</a> or
+                    use the <a href={href('/contact')} className="text-amber-600 font-semibold hover:text-amber-900">contact form</a>.
                   </p>
                 </div>
               </motion.div>

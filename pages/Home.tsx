@@ -349,7 +349,7 @@ const PhaseSection: React.FC<{
                 </motion.div>
                 <Link
                   to={href(`/services/${phase.waKey}`)}
-                  className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
+                  className="text-xs font-semibold text-amber-600 hover:text-amber-900 transition-colors border-b border-amber-300/50 hover:border-amber-500 pb-0.5"
                 >
                   {/* Five "Learn more"s tell a crawler nothing; the rest of the
                       sentence is there for it and for screen readers alike. */}

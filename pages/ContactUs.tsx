@@ -394,7 +394,7 @@ const ContactUs: React.FC = () => {
         <button
           type="button"
           onClick={() => setStatus('idle')}
-          className="text-sm text-amber-600 font-semibold hover:text-amber-500 transition-colors"
+          className="text-sm text-amber-600 font-semibold hover:text-amber-900 transition-colors"
         >
           Send another message
         </button>
@@ -488,7 +488,7 @@ const ContactUs: React.FC = () => {
             <input type="checkbox" id={fid('privacy')} checked={acceptPrivacy} onChange={(e) => { setAcceptPrivacy(e.target.checked); if (e.target.checked) setFieldErrors((prev) => { const next = { ...prev }; delete next.privacy; return next; }); }} aria-invalid={fieldErrors.privacy ? true : undefined} aria-describedby={fieldErrors.privacy ? eid('privacy') : undefined} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
-              <Link to={href('/privacy-policy')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Privacy Policy</Link> *
+              <Link to={href('/privacy-policy')} target="_blank" className="text-amber-600 hover:text-amber-900 underline font-medium">Privacy Policy</Link> *
             </span>
           </label>
           <FieldError id={eid('privacy')} message={fieldErrors.privacy} />
@@ -496,7 +496,7 @@ const ContactUs: React.FC = () => {
             <input type="checkbox" id={fid('terms')} checked={acceptTerms} onChange={(e) => { setAcceptTerms(e.target.checked); if (e.target.checked) setFieldErrors((prev) => { const next = { ...prev }; delete next.terms; return next; }); }} aria-invalid={fieldErrors.terms ? true : undefined} aria-describedby={fieldErrors.terms ? eid('terms') : undefined} className="mt-0.5 h-4 w-4 rounded accent-amber-500 flex-shrink-0" />
             <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
               I have read and accept the{' '}
-              <Link to={href('/terms-of-service')} target="_blank" className="text-amber-600 hover:text-amber-500 underline font-medium">Terms of Service</Link> *
+              <Link to={href('/terms-of-service')} target="_blank" className="text-amber-600 hover:text-amber-900 underline font-medium">Terms of Service</Link> *
             </span>
           </label>
           <FieldError id={eid('terms')} message={fieldErrors.terms} />

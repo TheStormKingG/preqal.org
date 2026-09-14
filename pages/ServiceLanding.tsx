@@ -392,7 +392,7 @@ const ServiceLanding: React.FC = () => {
                   <button
                     type="button"
                     onClick={openWhatsApp}
-                    className="text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
+                    className="text-sm font-semibold text-amber-600 hover:text-amber-900 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
                   >
                     Ask a question first
                   </button>

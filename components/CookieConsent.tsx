@@ -44,7 +44,7 @@ const CookieConsent: React.FC = () => {
           <p className="text-xs text-slate-500 leading-relaxed mb-4">
             We'd like to use Google Analytics to understand how visitors use this site.
             No analytics run unless you say yes. See our{' '}
-            <Link to={href('/privacy-policy')} className="text-amber-600 font-semibold hover:text-amber-500 underline">
+            <Link to={href('/privacy-policy')} className="text-amber-600 font-semibold hover:text-amber-900 underline">
               Privacy Policy
             </Link>.
           </p>

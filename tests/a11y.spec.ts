@@ -12,7 +12,21 @@ declare function __rgb(color: string): number[];
 declare function __ratio(a: number[], b: number[]): number;
 
 const AXE = fs.readFileSync(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
+/* The three pages the first audit covered. Their checks are the detailed ones:
+   Tab walks, focus rings, the form, 200% text. */
 const PAGES = ['/', '/resources/', '/contact/'] as const;
+
+/* Every other route a reader can reach. The first audit stopped at three
+   pages, so the first fix did too, and the same contrast defects sat on the
+   rest of the site for four days. axe runs over all of them. */
+const EVERY_ROUTE = [
+  '/', '/resources/', '/contact/', '/business-growth-assessment/', '/guides/',
+  '/preqal-not-prequel/', '/privacy-policy/', '/terms-of-service/',
+  '/services/business-plan/', '/services/risk-scan/', '/services/systems-builder/',
+  '/services/certified-care/', '/services/export-ready/',
+  '/guides/haccp-certification-guyana/', '/guides/iso-9001-cost-guyana/',
+  '/guides/export-food-from-guyana/', '/e-courses/',
+] as const;
 const VIEWPORTS = {
   phone: { width: 390, height: 844 },
   desktop: { width: 1440, height: 900 },
@@ -36,6 +50,22 @@ const CONTRAST_HELPERS = `
   const lum = ([r, g, b]) => { const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
   window.__ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 `;
+
+for (const path of EVERY_ROUTE) {
+  test(`axe finds no WCAG 2.1 AA violation across the site — ${path}`, async ({ page }) => {
+    test.setTimeout(90_000);
+    await open(page, path, VIEWPORTS.desktop);
+    await page.addScriptTag({ content: AXE });
+    const result = await page.evaluate(() =>
+      // @ts-expect-error axe is injected above
+      axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } }),
+    );
+    const violations = (result.violations as { id: string; impact: string; nodes: { target: string[]; failureSummary?: string }[] }[]).map(
+      (v) => `${v.id} (${v.impact}) ×${v.nodes.length}: ${v.nodes.slice(0, 2).map((n) => n.target.join(' ')).join(' | ')}`,
+    );
+    expect(violations, 'violations').toEqual([]);
+  });
+}
 
 for (const [vpName, vp] of Object.entries(VIEWPORTS)) {
   for (const path of PAGES) {

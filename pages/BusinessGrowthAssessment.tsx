@@ -427,7 +427,7 @@ const BusinessGrowthAssessment: React.FC = () => {
             <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-5 leading-tight">
               Business Growth
               <br className="hidden sm:block" />
-              <span className="text-amber-500">Investment Assessment</span>
+              <span className="text-amber-700">Investment Assessment</span>
             </h1>
             <p className="text-xl text-slate-500 max-w-2xl leading-relaxed mb-10">
               Help us understand your organisation so we can recommend the right level of
@@ -440,7 +440,7 @@ const BusinessGrowthAssessment: React.FC = () => {
               aria-haspopup="dialog"
               aria-controls="bga-modal"
               type="button"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-amber-500 text-white font-bold text-base hover:bg-amber-400 transition-all neu-raised-sm"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-amber-500 text-slate-900 font-bold text-base hover:bg-amber-400 transition-all neu-raised-sm"
             >
               Start Assessment
               <ChevronRight className="h-5 w-5" />
@@ -666,7 +666,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                 aria-haspopup="dialog"
                 aria-controls="bga-modal"
                 type="button"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-amber-500 text-white font-bold text-base hover:bg-amber-400 transition-all neu-raised-sm"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-amber-500 text-slate-900 font-bold text-base hover:bg-amber-400 transition-all neu-raised-sm"
               >
                 Start Assessment
                 <ChevronRight className="h-5 w-5" />
@@ -742,7 +742,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                         className="block text-sm font-medium text-slate-600 mb-1"
                       >
                         Company Name{' '}
-                        <span className="text-amber-500" aria-hidden="true">*</span>
+                        <span className="text-amber-600" aria-hidden="true">*</span>
                       </label>
                       <input
                         id="bga-companyName"
@@ -772,7 +772,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                           className="block text-sm font-medium text-slate-600 mb-1"
                         >
                           Contact Person{' '}
-                          <span className="text-amber-500" aria-hidden="true">*</span>
+                          <span className="text-amber-600" aria-hidden="true">*</span>
                         </label>
                         <input
                           id="bga-contactPersonName"
@@ -801,7 +801,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                           className="block text-sm font-medium text-slate-600 mb-1"
                         >
                           Email Address{' '}
-                          <span className="text-amber-500" aria-hidden="true">*</span>
+                          <span className="text-amber-600" aria-hidden="true">*</span>
                         </label>
                         <input
                           id="bga-email"
@@ -857,7 +857,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                         className="block text-sm font-medium text-slate-600 mb-1"
                       >
                         Team Size{' '}
-                        <span className="text-amber-500" aria-hidden="true">*</span>
+                        <span className="text-amber-600" aria-hidden="true">*</span>
                       </label>
                       <select
                         id="bga-staffSize"
@@ -947,7 +947,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                           className="block text-sm font-medium text-slate-600 mb-1"
                         >
                           Number of Services{' '}
-                          <span className="text-amber-500" aria-hidden="true">*</span>
+                          <span className="text-amber-600" aria-hidden="true">*</span>
                         </label>
                         <input
                           id="bga-numberOfServices"
@@ -984,7 +984,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                           className="block text-sm font-medium text-slate-600 mb-1"
                         >
                           Processes per Service{' '}
-                          <span className="text-amber-500" aria-hidden="true">*</span>
+                          <span className="text-amber-600" aria-hidden="true">*</span>
                         </label>
                         <select
                           id="bga-avgProcessesPerService"
@@ -1030,7 +1030,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                     <button
                       type="submit"
                       disabled={submitStatus === 'submitting'}
-                      className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-bold py-3.5 px-6 rounded-xl transition-all neu-raised-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-6 rounded-xl transition-all neu-raised-sm disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {submitStatus === 'submitting' ? (
                         <><Loader2 className="h-5 w-5 animate-spin" /> Submitting…</>

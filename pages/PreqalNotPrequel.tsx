@@ -145,13 +145,13 @@ const PreqalNotPrequel: React.FC = () => {
                   <p className="text-slate-700 leading-relaxed">Preqal operates primarily in Guyana and serves clients across the Caribbean region. We work with businesses of all sizes, from small shops to large corporations.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title="How do I contact Preqal?" headingLevel="h3">
-                  <p className="text-slate-700 leading-relaxed">You can contact Preqal through our <Link to={href('/contact')} className="text-amber-600 hover:text-amber-500 font-semibold underline">contact page</Link>, or explore the five-phase journey on our <Link to="/" className="text-amber-600 hover:text-amber-500 font-semibold underline">home page</Link>.</p>
+                  <p className="text-slate-700 leading-relaxed">You can contact Preqal through our <Link to={href('/contact')} className="text-amber-600 hover:text-amber-900 font-semibold underline">contact page</Link>, or explore the five-phase journey on our <Link to="/" className="text-amber-600 hover:text-amber-900 font-semibold underline">home page</Link>.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title='Is Preqal the same as "prequel"?' headingLevel="h3">
                   <p className="text-slate-700 leading-relaxed">No. Preqal is a brand name and company name, while "prequel" is a common English word referring to a narrative work that precedes another. They are completely unrelated concepts.</p>
                 </CollapsibleSection>
                 <CollapsibleSection title="What is the difference between Preqal and prequel?" headingLevel="h3">
-                  <p className="text-slate-700 leading-relaxed">Preqal (<a href="https://preqal.org" className="text-amber-600 hover:text-amber-500 font-semibold underline">preqal.org</a>) is a professional consulting company specializing in ISO-aligned quality management systems, safety management systems, and ESG programs. "Prequel" is an English word meaning a story set before a previously existing work. Preqal has no connection to entertainment, movies, or fiction.</p>
+                  <p className="text-slate-700 leading-relaxed">Preqal (<a href="https://preqal.org" className="text-amber-600 hover:text-amber-900 font-semibold underline">preqal.org</a>) is a professional consulting company specializing in ISO-aligned quality management systems, safety management systems, and ESG programs. "Prequel" is an English word meaning a story set before a previously existing work. Preqal has no connection to entertainment, movies, or fiction.</p>
                 </CollapsibleSection>
               </div>
             </section>
@@ -159,7 +159,7 @@ const PreqalNotPrequel: React.FC = () => {
             <section className="pt-8 border-t border-slate-200/50">
               <h2 className="text-xl font-bold text-slate-900 mb-4">Learn More About Preqal</h2>
               <div className="flex flex-wrap gap-3">
-                <Link to="/" className="inline-flex items-center px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-semibold rounded-xl transition-colors neu-raised-sm">Home</Link>
+                <Link to="/" className="inline-flex items-center px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold rounded-xl transition-colors neu-raised-sm">Home</Link>
                 <Link to={href('/contact')} className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">About Preqal</Link>
                 <Link to={href('/resources')} className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">Templates</Link>
                 <Link to={href('/contact')} className="inline-flex items-center px-6 py-3 text-slate-700 font-semibold rounded-xl transition-all neu-card hover:neu-raised">Contact Us</Link>
