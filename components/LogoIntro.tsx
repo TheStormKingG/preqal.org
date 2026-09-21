@@ -11,9 +11,12 @@ interface LogoIntroApi {
   playing: boolean;
   play: () => void;
   stop: () => void;
+  /* Called on hover or focus of a logo, so the bytes are usually in hand by
+     the time the click lands. Safe to call repeatedly: the fetch is cached. */
+  warm: () => void;
 }
 
-const LogoIntroContext = createContext<LogoIntroApi>({ playing: false, play: () => {}, stop: () => {} });
+const LogoIntroContext = createContext<LogoIntroApi>({ playing: false, play: () => {}, stop: () => {}, warm: () => {} });
 
 export const useLogoIntro = () => useContext(LogoIntroContext);
 
@@ -21,33 +24,24 @@ export const LogoIntroProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [playing, setPlaying] = useState(false);
   const prefersReduced = useReducedMotion();
 
-  /* Warm the bytes so the first click plays at once — but only after the page
-     has loaded and gone idle. Fetched on mount, this 360KB was the largest
-     download on the home page and sat in front of the hero. */
-  useEffect(() => {
+  /* Warmed on intent rather than on load. These 361KB were the single
+     largest download on the home page — more than every other asset put
+     together — and they bought an animation that only plays if someone
+     clicks the mark. Hover or focus is enough notice to have it ready. */
+  const warm = useCallback(() => {
     if (prefersReduced) return; // never shown, so never fetched
-    let idle = 0;
-    const warm = () => {
-      const ric = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
-      idle = ric ? ric(() => warmLogoIntro().catch(() => {})) : window.setTimeout(() => warmLogoIntro().catch(() => {}), 2500);
-    };
-    if (document.readyState === 'complete') warm();
-    else window.addEventListener('load', warm, { once: true });
-    return () => {
-      window.removeEventListener('load', warm);
-      const cic = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
-      if (cic) cic(idle); else window.clearTimeout(idle);
-    };
+    warmLogoIntro().catch(() => {});
   }, [prefersReduced]);
 
   // A reader who has asked for less motion gets the wordmark, not the roll-in.
   const play = useCallback(() => {
     if (prefersReduced) return;
+    warmLogoIntro().catch(() => {}); // a touch device never hovers
     setPlaying(true);
   }, [prefersReduced]);
   const stop = useCallback(() => setPlaying(false), []);
 
-  const api = useMemo(() => ({ playing, play, stop }), [playing, play, stop]);
+  const api = useMemo(() => ({ playing, play, stop, warm }), [playing, play, stop, warm]);
   return <LogoIntroContext.Provider value={api}>{children}</LogoIntroContext.Provider>;
 };
 

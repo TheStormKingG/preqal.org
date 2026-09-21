@@ -43,3 +43,7 @@ playwright-report/
 # ux-skill (local design-engine state and plugin marker; the engine lives on this Mac, not in CI)
 .ux/
 .claude-plugin/
+
+# /brag output: a 2MB render plus a third-party music track whose licence the
+# bundling skill says is unverified. Kept out of a public repo until it is.
+brag-output/

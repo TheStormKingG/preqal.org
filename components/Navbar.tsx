@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-12 md:h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center" onClick={intro.play}>
+            <Link to="/" className="flex items-center" onClick={intro.play} onPointerEnter={intro.warm} onFocus={intro.warm}>
               {intro.playing ? (
                 <LogoIntroImage className="h-7 md:h-10 w-auto" />
               ) : (

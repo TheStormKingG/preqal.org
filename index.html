@@ -29,7 +29,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
     <!-- Rubik is self-hosted via @fontsource/rubik (bundled by Vite) — no third-party font requests -->
     <!-- Preload LCP image (home hero, shown on all viewports) -->
-    <link rel="preload" as="image" href="/images/hero-bg-1040.webp" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      imagesrcset="/images/hero-bg-640.avif 640w, /images/hero-bg-1040.avif 1040w"
+      imagesizes="(min-width: 1024px) 520px, calc(100vw - 48px)"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root">

@@ -131,6 +131,20 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
       }}
     >
       {near && (
+        <picture>
+        {/* Each phase names one .webp; its right-sized siblings are built
+            beside it by scripts/convert-images.js, so the browser can take a
+            600px file on a phone instead of the 900px desktop one. */}
+        <source
+          type="image/avif"
+          srcSet={`${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}-600.avif 600w, ${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}.avif 900w`}
+          sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
+        />
+        <source
+          type="image/webp"
+          srcSet={`${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}-600.webp 600w, ${import.meta.env.BASE_URL}${src}`}
+          sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
+        />
         <motion.img
           src={`${import.meta.env.BASE_URL}${src}`}
           alt={alt}
@@ -141,6 +155,7 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
           width="560"
           height="420"
         />
+        </picture>
       )}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -722,6 +737,17 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
                 boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)',
               }}
             >
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${import.meta.env.BASE_URL}images/hero-bg-640.avif 640w, ${import.meta.env.BASE_URL}images/hero-bg-1040.avif 1040w`}
+                  sizes="(min-width: 1024px) 520px, calc(100vw - 48px)"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${import.meta.env.BASE_URL}images/hero-bg-640.webp 640w, ${import.meta.env.BASE_URL}images/hero-bg-1040.webp 1040w`}
+                  sizes="(min-width: 1024px) 520px, calc(100vw - 48px)"
+                />
               <motion.img
                 src={`${import.meta.env.BASE_URL}images/hero-bg-1040.webp`}
                 alt="Business leader relaxed and confident at their desk"
@@ -732,6 +758,7 @@ const HeroSection: React.FC<{ deck?: boolean }> = ({ deck }) => {
                 decoding="async"
                 {...({ fetchpriority: 'high' } as Record<string, string>)}
               />
+              </picture>
             </div>
 
             <motion.p

@@ -85,7 +85,7 @@ const FooterComplianceStandards: React.FC = () => {
    other page renders the full footer. */
 const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { openWhatsApp } = useWhatsApp();
-  const { play: playIntro } = useLogoIntro();
+  const { play: playIntro, warm: warmIntro } = useLogoIntro();
   const journey = [
     { name: '01 · Business Plan', to: href('/services/business-plan') },
     { name: '02 · Risk Scan™', to: href('/services/risk-scan') },
@@ -107,7 +107,7 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
             <div className="mb-4">
               {/* Every mark on the site is a way home, and every one asks the
                   top bar to play the intro on arrival. */}
-              <Link to="/" aria-label="Preqal home" className="inline-block" onClick={playIntro}>
+              <Link to="/" aria-label="Preqal home" className="inline-block" onClick={playIntro} onPointerEnter={warmIntro} onFocus={warmIntro}>
               <picture>
                 <source
                   type="image/avif"
