@@ -1,6 +1,8 @@
 // Google Analytics 4 integration
 // Only loads if VITE_GA_ID is set AND the visitor has opted in (GDPR/ePrivacy).
 
+import { recordConversion } from './conversions';
+
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
@@ -66,6 +68,14 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, unkno
   if (window.gtag) {
     window.gtag('event', eventName, eventParams);
   }
+  // The same event, appended to our own table so a page we control can read it
+  // back — GA's Data API needs a server this site does not have. The consent
+  // gate lives here rather than inside recordConversion so there is exactly
+  // one of it: the cookie banner promises no analytics without a yes, and a
+  // first-party write is still analytics.
+  if (getAnalyticsConsent() === 'granted') {
+    recordConversion(eventName, eventParams ?? {});
+  }
 };
 
 /**
@@ -74,6 +84,21 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, unkno
  * the landing page is counted twice. Re-issuing `config` would also reset
  * the stream's settings on every navigation; a `page_view` event does not.
  */
+/**
+ * The landing page, recorded to our own table only.
+ *
+ * GA already counts this via `send_page_view`, so sending it to gtag again
+ * would double-count. Our table has no such event, and without it the funnel
+ * has no denominator: a visit that lands, reads, and leaves without
+ * navigating or interacting fires nothing at all, making the most common
+ * visit shape the one that is invisible.
+ */
+export const trackLandingView = (path: string) => {
+  if (getAnalyticsConsent() === 'granted') {
+    recordConversion('page_view', { page_path: path, landing: true });
+  }
+};
+
 export const trackPageView = (path: string) => {
   if (window.gtag) {
     window.gtag('event', 'page_view', {

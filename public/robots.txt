@@ -25,6 +25,7 @@ Disallow: /admin-dashboard.html
 Disallow: /qms/
 Disallow: /client-onboarding.html
 Disallow: /employee-onboarding.html
+Disallow: /funnel-2fc78e702e2e.html
 
 # ── Citation crawlers — welcome ──
 # These answer a live question and link back. This is how the site earns its

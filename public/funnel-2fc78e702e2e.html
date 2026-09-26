@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Unlisted, not secret. Every file on a static host is fetchable by anyone
+     who knows the path, so the URL being unguessable is convenience only.
+     The lock is the RLS read policy on conversion_events; the sign-in below
+     is a gate on the interface, not on the data. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Funnel</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#e0e5ec; --dark:#a3b1c6; --light:#ffffff;
+    --navy:#0f172a; --amber:#f59e0b; --amber-d:#d97706; --amber-t:#92400e;
+    --ink:#0f172a; --body:#475569; --muted:#55657a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:Rubik,system-ui,sans-serif;color:var(--body);min-height:100vh}
+  .raised{box-shadow:6px 6px 12px var(--dark),-6px -6px 12px var(--light)}
+  .raised-sm{box-shadow:3px 3px 6px var(--dark),-3px -3px 6px var(--light)}
+  .pressed{box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light)}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+  .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+  h1{font-size:26px;font-weight:800;color:var(--ink);line-height:1.15}
+  h2{font-size:15px;font-weight:700;color:var(--ink)}
+  .card{background:var(--bg);border-radius:18px;padding:20px}
+  .btn{border:0;cursor:pointer;font-family:inherit;font-weight:700;border-radius:12px;
+       background:linear-gradient(135deg,var(--amber),var(--amber-d));color:var(--navy);
+       padding:12px 20px;font-size:14px}
+  .btn:disabled{opacity:.55;cursor:default}
+  .chip{border:0;cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;border-radius:10px;
+        background:var(--bg);color:var(--body);padding:8px 14px}
+  .chip[aria-pressed="true"]{color:var(--amber-t);box-shadow:inset 2px 2px 4px var(--dark),inset -2px -2px 4px var(--light)}
+  .chip[aria-pressed="false"]{box-shadow:3px 3px 6px var(--dark),-3px -3px 6px var(--light)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .grid{display:grid;gap:14px}
+  @media(min-width:720px){.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}}
+  .stat{font-size:30px;font-weight:800;color:var(--ink);line-height:1}
+  .sub{font-size:12px;color:var(--muted);margin-top:6px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-weight:700;color:var(--muted);font-size:11px;text-transform:uppercase;
+     letter-spacing:.08em;padding:8px 10px;border-bottom:1px solid rgba(163,177,198,.4)}
+  td{padding:9px 10px;border-bottom:1px solid rgba(163,177,198,.22);color:var(--body)}
+  td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+  .bar{height:26px;border-radius:8px;background:linear-gradient(135deg,var(--amber),var(--amber-d));min-width:3px}
+  .step{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:center;margin-bottom:10px}
+  .step .nm{font-size:13px;font-weight:600;color:var(--ink)}
+  .step .v{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .drop{font-size:11px;color:#b91c1c;font-weight:600}
+  .note{font-size:12px;color:var(--muted);line-height:1.6}
+  .banner{background:var(--navy);color:#fff;border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.6}
+  .banner b{color:var(--amber)}
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+        background:var(--bg);color:var(--ink);border:0;border-radius:12px;padding:13px;
+        font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  .err{color:#b91c1c;font-size:13px;min-height:18px;margin-top:10px}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="boot" class="wrap" style="padding-top:80px"><p class="note">Checking your session…</p></div>
+
+<!-- ── Sign in ────────────────────────────────────────────────────────── -->
+<div id="login" class="hide">
+  <div class="card raised" style="max-width:380px;width:100%">
+    <img src="/favicon.png" alt="" width="44" height="44" style="display:block;margin-bottom:14px">
+    <p class="label">Preqal · Internal</p>
+    <h1 style="margin:6px 0 8px">Funnel</h1>
+    <p class="note" style="margin-bottom:20px">Private conversion dashboard. Sign in with the Google account tied to your Preqal address.</p>
+    <button class="gbtn raised-sm" onclick="signInWithGoogle()">
+      <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-2.8-.4-4H24v7.5h12.6c-.3 2.1-1.6 5.2-4.7 7.3l7.2 5.6c4.3-4 6.9-9.8 6.9-16.4z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.6 2.3-8.7 2.3-6.3 0-11.7-3.7-13.6-8.9l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <p id="login-error" class="err"></p>
+  </div>
+</div>
+
+<!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+<div id="app" class="hide">
+<div class="wrap">
+
+  <div class="row" style="justify-content:space-between;margin-bottom:20px">
+    <div>
+      <p class="label">Preqal · Internal</p>
+      <h1>Funnel</h1>
+    </div>
+    <div class="row">
+      <span id="who" class="note"></span>
+      <button class="chip raised-sm" aria-pressed="false" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom:18px">
+    <span class="label">Range</span>
+    <button class="chip" data-days="7"  aria-pressed="false" onclick="setDays(7)">7 days</button>
+    <button class="chip" data-days="30" aria-pressed="true"  onclick="setDays(30)">30 days</button>
+    <button class="chip" data-days="90" aria-pressed="false" onclick="setDays(90)">90 days</button>
+    <span style="width:14px"></span>
+    <span class="label">Source</span>
+    <button class="chip" data-env="prod" aria-pressed="true"  onclick="setEnv('prod')">Live</button>
+    <button class="chip" data-env="dev"  aria-pressed="false" onclick="setEnv('dev')">Local</button>
+  </div>
+
+  <div id="empty" class="banner hide" style="margin-bottom:18px">
+    <b>No events in this range yet.</b> Tracking only records when a visitor accepts the cookie banner,
+    and the table starts from the moment the migration was applied — it holds no history from before then.
+  </div>
+
+  <div class="grid g3" style="margin-bottom:18px">
+    <div class="card raised"><p class="label">Sessions</p><p id="s-sessions" class="stat">—</p><p class="sub">distinct visits that fired at least one event</p></div>
+    <div class="card raised"><p class="label">Reached intent</p><p id="s-intent" class="stat">—</p><p class="sub">opened WhatsApp or started a form</p></div>
+    <div class="card raised"><p class="label">Converted</p><p id="s-conv" class="stat">—</p><p class="sub">sent a message or submitted a form</p></div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card raised">
+      <h2 style="margin-bottom:14px">WhatsApp path</h2>
+      <div id="f-wa"></div>
+    </div>
+    <div class="card raised">
+      <h2 style="margin-bottom:14px">Assessment form</h2>
+      <div id="f-form"></div>
+    </div>
+  </div>
+
+  <div id="alert" class="banner hide" style="margin-bottom:18px"></div>
+
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card raised">
+      <h2 style="margin-bottom:12px">Where intent came from</h2>
+      <table><thead><tr><th>Source</th><th style="text-align:right">Clicks</th></tr></thead><tbody id="t-source"></tbody></table>
+      <p id="t-source-empty" class="note hide" style="margin-top:10px">No WhatsApp clicks yet.</p>
+    </div>
+    <div class="card raised">
+      <h2 style="margin-bottom:12px">Templates downloaded</h2>
+      <table><thead><tr><th>Document</th><th style="text-align:right">Downloads</th></tr></thead><tbody id="t-dl"></tbody></table>
+      <p id="t-dl-empty" class="note hide" style="margin-top:10px">No downloads yet.</p>
+    </div>
+  </div>
+
+  <div class="card raised" style="margin-bottom:18px">
+    <h2 style="margin-bottom:12px">Every event</h2>
+    <table><thead><tr><th>Event</th><th style="text-align:right">Count</th><th style="text-align:right">Sessions</th></tr></thead><tbody id="t-ev"></tbody></table>
+  </div>
+
+  <div class="card pressed" style="border-radius:18px">
+    <p class="label" style="margin-bottom:8px">How to read this</p>
+    <p class="note">
+      Counts are a floor, not a total: nothing is recorded unless a visitor accepts the cookie banner,
+      so real traffic is higher by an unknown factor. Rates between steps stay valid, because both
+      numbers come from the same consenting visitors — trust the percentages, not the absolutes.
+      A visit that lands and leaves without navigating or interacting still counts as a session,
+      because the landing page is recorded. <span id="cap-note"></span>
+    </p>
+  </div>
+
+</div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://gndcjmxxgtnoidxgcdnx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_l96rPLvIkEmcgwuS6PrhlQ_R2nVYmW1';
+const ADMIN_EMAILS = ['stefan.gravesande@gmail.com','stefan.gravesande@preqal.org'];
+const ROW_CAP = 5000;
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let days = 30, env = 'prod', rows = [];
+
+/* ── Auth ─────────────────────────────────────────────────────────────────
+   Same shape as admin-dashboard.html: wait for INITIAL_SESSION rather than
+   getSession(), which can return null while a token refresh is in flight,
+   with a timeout so a silent failure still shows the login form. */
+function boot(){
+  let settled = false;
+  sb.auth.onAuthStateChange((_e, session) => {
+    if (settled) { if (session) enter(session); return; }
+    settled = true;
+    document.getElementById('boot').classList.add('hide');
+    session ? enter(session) : document.getElementById('login').classList.remove('hide');
+  });
+  setTimeout(() => {
+    if (settled) return;
+    settled = true;
+    document.getElementById('boot').classList.add('hide');
+    document.getElementById('login').classList.remove('hide');
+  }, 3000);
+}
+
+function enter(session){
+  const email = (session.user.email || '').toLowerCase();
+  if (!ADMIN_EMAILS.includes(email)) {
+    // Not an admin. Sign out rather than redirect — the redirect target in
+    // admin-dashboard.html points at a route that now redirects to '/'.
+    sb.auth.signOut().finally(() => {
+      document.getElementById('app').classList.add('hide');
+      document.getElementById('login').classList.remove('hide');
+      document.getElementById('login-error').textContent =
+        'That account does not have access.';
+    });
+    return;
+  }
+  document.getElementById('boot').classList.add('hide');
+  document.getElementById('login').classList.add('hide');
+  document.getElementById('app').classList.remove('hide');
+  document.getElementById('who').textContent = email;
+  load();
+}
+
+async function signInWithGoogle(){
+  const err = document.getElementById('login-error');
+  err.textContent = '';
+  const { error } = await sb.auth.signInWithOAuth({
+    provider:'google', options:{ redirectTo: window.location.href }
+  });
+  if (error) err.textContent = error.message;
+}
+async function signOut(){ await sb.auth.signOut(); location.reload(); }
+
+/* ── Controls ─────────────────────────────────────────────────────────── */
+function setDays(d){
+  days = d;
+  document.querySelectorAll('[data-days]').forEach(b =>
+    b.setAttribute('aria-pressed', String(Number(b.dataset.days) === d)));
+  load();
+}
+function setEnv(e){
+  env = e;
+  document.querySelectorAll('[data-env]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.env === e)));
+  load();
+}
+
+/* ── Data ─────────────────────────────────────────────────────────────── */
+async function load(){
+  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const { data, error } = await sb
+    .from('conversion_events')
+    .select('event_name, params, page_path, session_id, created_at')
+    .eq('env', env)
+    .gte('created_at', since)
+    .order('created_at', { ascending:false })
+    .limit(ROW_CAP);
+
+  if (error) {
+    document.getElementById('alert').classList.remove('hide');
+    document.getElementById('alert').innerHTML =
+      '<b>Could not read events.</b> ' + esc(error.message) +
+      ' — if this says the relation does not exist, the migration has not been applied yet.';
+    rows = [];
+    render();
+    return;
+  }
+  rows = data || [];
+  // A capped read is a partial answer, and a partial answer that does not say
+  // so reads exactly like a complete one.
+  document.getElementById('cap-note').textContent =
+    rows.length >= ROW_CAP
+      ? 'Showing the most recent ' + ROW_CAP + ' events only — the range holds more, so totals here are truncated.'
+      : '';
+  render();
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sessionsWhere = pred => new Set(rows.filter(pred).map(r => r.session_id).filter(Boolean)).size;
+const countWhere    = pred => rows.filter(pred).length;
+
+function render(){
+  const total = new Set(rows.map(r => r.session_id).filter(Boolean)).size;
+  document.getElementById('empty').classList.toggle('hide', rows.length > 0);
+
+  const intent = sessionsWhere(r => ['whatsapp_open','whatsapp_click','form_start'].includes(r.event_name));
+  const conv   = sessionsWhere(r => ['whatsapp_click','form_submit'].includes(r.event_name));
+  document.getElementById('s-sessions').textContent = total;
+  document.getElementById('s-intent').textContent   = intent;
+  document.getElementById('s-conv').textContent     = conv;
+
+  funnel('f-wa', [
+    ['Sessions',        total],
+    ['Opened WhatsApp', sessionsWhere(r => r.event_name === 'whatsapp_open')],
+    ['Chose a message', sessionsWhere(r => r.event_name === 'whatsapp_click')],
+  ]);
+
+  funnel('f-form', [
+    ['Started',   sessionsWhere(r => r.event_name === 'form_start')],
+    ['Hit errors',sessionsWhere(r => r.event_name === 'form_validation_error')],
+    ['Submitted', sessionsWhere(r => r.event_name === 'form_submit')],
+  ]);
+
+  // A submission that reached the inbox but not the register is PRO-03's
+  // non-conformance path, and it looks like success to the visitor.
+  const missed = countWhere(r => r.event_name === 'form_submit' && r.params && r.params.db_saved === false);
+  const alertEl = document.getElementById('alert');
+  alertEl.classList.toggle('hide', missed === 0);
+  if (missed > 0) {
+    alertEl.innerHTML = '<b>' + missed + ' submission' + (missed === 1 ? '' : 's') +
+      ' reached the inbox but not the register.</b> These look like a success to the person who sent them. ' +
+      'Add them to qualified_leads by hand — PRO-03 §10.';
+  }
+
+  tally('t-source', 't-source-empty',
+    rows.filter(r => r.event_name === 'whatsapp_click'),
+    r => (r.params && r.params.source) || 'unknown');
+
+  tally('t-dl', 't-dl-empty',
+    rows.filter(r => r.event_name === 'template_download'),
+    r => (r.params && (r.params.title || r.params.doc_id)) || 'unknown');
+
+  const names = [...new Set(rows.map(r => r.event_name))].sort();
+  document.getElementById('t-ev').innerHTML = names.map(n =>
+    '<tr><td>' + esc(n) + '</td><td class="n">' + countWhere(r => r.event_name === n) +
+    '</td><td class="n">' + sessionsWhere(r => r.event_name === n) + '</td></tr>'
+  ).join('') || '<tr><td colspan="3" class="note">Nothing recorded yet.</td></tr>';
+}
+
+function funnel(id, steps){
+  const top = steps[0][1] || 0;
+  document.getElementById(id).innerHTML = steps.map(([name, v], i) => {
+    const pct  = top ? Math.round((v / top) * 100) : 0;
+    const prev = i ? steps[i-1][1] : null;
+    const drop = (prev !== null && prev > 0 && v < prev)
+      ? '<span class="drop">−' + Math.round(((prev - v) / prev) * 100) + '%</span>' : '';
+    return '<div class="step"><span class="nm">' + esc(name) + '</span>' +
+           '<span class="bar" style="width:' + Math.max(pct, v ? 3 : 0) + '%"></span>' +
+           '<span class="v">' + v + ' · ' + pct + '% ' + drop + '</span></div>';
+  }).join('');
+}
+
+function tally(bodyId, emptyId, subset, keyFn){
+  const counts = {};
+  subset.forEach(r => { const k = keyFn(r); counts[k] = (counts[k] || 0) + 1; });
+  const pairs = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+  document.getElementById(bodyId).innerHTML = pairs.map(([k,v]) =>
+    '<tr><td>' + esc(k) + '</td><td class="n">' + v + '</td></tr>').join('');
+  document.getElementById(emptyId).classList.toggle('hide', pairs.length > 0);
+}
+
+boot();
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@ import { LogoIntroProvider } from './components/LogoIntro';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
-import { initGA, trackPageView } from './src/analytics/ga';
+import { initGA, trackPageView, trackLandingView } from './src/analytics/ga';
 import { normalizePath } from './lib/paths';
 
 const ConditionalNavbar: React.FC = () => {
@@ -63,7 +63,9 @@ const RouteAnalytics = () => {
   const lastSent = React.useRef<string | null>(null);
   useEffect(() => {
     if (lastSent.current === null) {
-      lastSent.current = pathname; // the landing page, already counted
+      lastSent.current = pathname;
+      // Already counted by GA; recorded here so our own funnel has a top.
+      trackLandingView(pathname);
       return;
     }
     if (lastSent.current === pathname) return; // an effect re-run, not a move
