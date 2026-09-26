@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import { supabase } from '../lib/supabaseClient';
+import { trackEvent } from '../src/analytics/ga';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -289,12 +290,27 @@ const BusinessGrowthAssessment: React.FC = () => {
 
   // ── Submit ──────────────────────────────────────────────────────────────────
 
+  // Fired once per visit, on first contact with any field. Without a start
+  // event the only measurable outcome is a completed submit, which makes the
+  // abandonment rate — the number that actually moves — uncomputable.
+  const startedRef = useRef(false);
+  const handleFormStart = useCallback(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent('form_start', { form: 'business_growth_assessment' });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      trackEvent('form_validation_error', {
+        form: 'business_growth_assessment',
+        fields: Object.keys(validationErrors).join(','),
+        field_count: Object.keys(validationErrors).length,
+      });
       const firstInvalid = modalRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
       firstInvalid?.focus();
       return;
@@ -403,8 +419,19 @@ const BusinessGrowthAssessment: React.FC = () => {
     // ── Result ────────────────────────────────────────────────────────────
     // Success if either channel worked. Only error if both failed.
     if (dbOk || emailOk) {
+      // db_saved:false is a lead that reached the inbox but not the register —
+      // PRO-03's non-conformance path. It reads as success to the visitor, so
+      // it has to be visible here or it is invisible everywhere.
+      trackEvent('form_submit', {
+        form: 'business_growth_assessment',
+        recommended_tier: submission.recommendedTier,
+        selected_steps: selectedSteps ?? 0,
+        db_saved: dbOk,
+        email_sent: emailOk,
+      });
       setSubmitStatus('success');
     } else {
+      trackEvent('form_error', { form: 'business_growth_assessment', reason: 'both_channels_failed' });
       setSubmitError('Something went wrong. Please try again or contact us directly.');
       setSubmitStatus('idle');
     }
@@ -729,7 +756,7 @@ const BusinessGrowthAssessment: React.FC = () => {
                     context and prepare a recommendation suited to your needs.
                   </p>
 
-                  <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  <form onSubmit={handleSubmit} onFocusCapture={handleFormStart} noValidate className="space-y-5">
 
                     <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">
                       Your Organisation

@@ -9,7 +9,7 @@ import { LogoIntroProvider } from './components/LogoIntro';
 import AnimatedRoutes from './components/AnimatedRoutes';
 import { WhatsAppProvider } from './components/WhatsAppContact';
 import CookieConsent from './components/CookieConsent';
-import { initGA } from './src/analytics/ga';
+import { initGA, trackPageView } from './src/analytics/ga';
 import { normalizePath } from './lib/paths';
 
 const ConditionalNavbar: React.FC = () => {
@@ -41,6 +41,50 @@ const ScrollToTop = () => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     // The prerender signal is sent by <SEO> once the head is complete.
+  }, [pathname]);
+  return null;
+};
+
+/** Longest we wait for Helmet to swap <title> before counting anyway. */
+const TITLE_SETTLE_MS = 2000;
+
+/**
+ * GA counts the landing page itself via `send_page_view`; everything after it
+ * is a client-side navigation that never reaches the server, so without this
+ * the whole site reads as one pageview per session. The landing path is the
+ * one GA already has, so it is held back rather than re-sent.
+ */
+const RouteAnalytics = () => {
+  const { pathname } = useLocation();
+  // Holds the last path GA has been told about, rather than a render count.
+  // StrictMode runs this effect twice on mount, and a counter reads the second
+  // run as a navigation — which double-counts the landing page, the one path
+  // GA already has from send_page_view. Comparing paths is correct under both.
+  const lastSent = React.useRef<string | null>(null);
+  useEffect(() => {
+    if (lastSent.current === null) {
+      lastSent.current = pathname; // the landing page, already counted
+      return;
+    }
+    if (lastSent.current === pathname) return; // an effect re-run, not a move
+    lastSent.current = pathname;
+
+    // Helmet rewrites <title> a beat after the route commits, and this effect
+    // runs before it — so sending now files the new path under the PREVIOUS
+    // page's title, in every report, invisibly. Wait for the title to actually
+    // change; the deadline covers two routes that legitimately share one.
+    const before = document.title;
+    const started = performance.now();
+    let raf = 0;
+    const send = () => {
+      if (document.title !== before || performance.now() - started > TITLE_SETTLE_MS) {
+        trackPageView(pathname);
+        return;
+      }
+      raf = requestAnimationFrame(send);
+    };
+    raf = requestAnimationFrame(send);
+    return () => cancelAnimationFrame(raf); // a fast second navigation wins
   }, [pathname]);
   return null;
 };
@@ -92,6 +136,7 @@ const App: React.FC = () => {
         <LogoIntroProvider>
         <GitHubPagesRedirect />
         <ScrollToTop />
+        <RouteAnalytics />
         <RouteSwipe />
 
         {/* Clean neumorphic background */}

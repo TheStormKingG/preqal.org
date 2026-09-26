@@ -13,6 +13,7 @@ import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import FounderSocials from '../components/FounderSocials';
 import { href } from '../lib/paths';
+import { trackEvent } from '../src/analytics/ga';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
@@ -319,6 +320,15 @@ const ContactUs: React.FC = () => {
     onBlur: () => checkField(name),
   });
 
+  // See BusinessGrowthAssessment: a submit count alone cannot yield an
+  // abandonment rate, which needs a denominator of people who began.
+  const startedRef = useRef(false);
+  const handleFormStart = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent('form_start', { form: 'contact' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
@@ -327,6 +337,11 @@ const ContactUs: React.FC = () => {
       const problems = validate();
       if (Object.keys(problems).length) {
         showProblems(problems);
+        trackEvent('form_validation_error', {
+          form: 'contact',
+          fields: Object.keys(problems).join(','),
+          field_count: Object.keys(problems).length,
+        });
         setStatus('idle');
         return;
       }
@@ -350,6 +365,9 @@ const ContactUs: React.FC = () => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'mijyAm1ocwE6qYCiq'
       );
 
+      // Email-only: this form leaves no row in template_leads, so GA is the
+      // only place a contact conversion is currently counted at all.
+      trackEvent('form_submit', { form: 'contact', channel: 'emailjs', db_saved: false });
       setStatus('success');
       setFormData({ first_name: '', last_name: '', email: '', company: '', job_title: '', custom_job_title: '', phone: '', country_iso: 'gy', dial_code: '+592', most_pressing_quality_problem: '', custom_quality_problem: '', message: '' });
       setShowCustomJobTitle(false);
@@ -360,6 +378,7 @@ const ContactUs: React.FC = () => {
       recaptchaRef.current?.reset();
     } catch (err) {
       console.error('Error sending contact form:', err);
+      trackEvent('form_error', { form: 'contact', reason: 'emailjs_failed' });
       setError('Something went wrong. Please try again or email us directly.');
       setStatus('idle');
     }
@@ -404,6 +423,7 @@ const ContactUs: React.FC = () => {
       <form
         noValidate
         onSubmit={handleSubmit}
+        onFocusCapture={handleFormStart}
         className={halved ? '' : 'grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10 items-start'}
       >
         {/* On a phone the deck reads this form as two views. Each half is sized

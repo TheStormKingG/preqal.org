@@ -84,14 +84,25 @@ export const WhatsAppIcon: React.FC<{ className?: string }> = ({ className }) =>
 
 /* ── Context ─────────────────────────────────────────────────────────────── */
 interface WaContextValue {
-  openWhatsApp: () => void;
+  /** `source` labels where the popup was opened from; see openWhatsApp. */
+  openWhatsApp: (source?: unknown) => void;
 }
 const WaContext = createContext<WaContextValue>({ openWhatsApp: () => {} });
 export const useWhatsApp = () => useContext(WaContext);
 
 export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const openWhatsApp = useCallback(() => setOpen(true), []);
+  // Opening the popup and choosing a message are separate decisions, and the
+  // gap between them is the only place popup abandonment is visible.
+  // Every current call site passes a label, but the handler is shaped to be
+  // used bare as an onClick, which would hand us a click event instead; only a
+  // real string counts, so an unlabelled site degrades to 'unknown' not [object].
+  const openWhatsApp = useCallback((source?: unknown) => {
+    trackEvent('whatsapp_open', {
+      source: typeof source === 'string' ? source : 'unknown',
+    });
+    setOpen(true);
+  }, []);
   const close = useCallback(() => setOpen(false), []);
 
   useEffect(() => {

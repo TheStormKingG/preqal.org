@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import Footer from '../components/Footer';
 import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
 import { useWhatsApp } from '../components/WhatsAppContact';
+import { trackEvent } from '../src/analytics/ga';
 
 /* ─── Free template library — direct downloads, no form ─── */
 interface TemplateDoc {
@@ -149,6 +150,7 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
               whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 340, damping: 22 }}
               href={`${base}templates/${encodeURIComponent(t.file)}`}
+              onClick={() => trackEvent('template_download', { doc_id: t.docId, title: t.title, scope: 'single' })}
               download
               className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl text-slate-900 font-bold text-sm flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(217,119,6,0.35), -2px -2px 8px rgba(255,255,255,0.6)' }}
@@ -183,6 +185,7 @@ const DownloadAll: React.FC<{ base: string }> = ({ base }) => (
         whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 340, damping: 22 }}
         href={`${base}premium-templates.zip`}
+        onClick={() => trackEvent('template_download', { doc_id: 'ALL', title: 'All templates', scope: 'zip' })}
         download
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-amber-600 font-bold text-sm flex-shrink-0"
         style={{ background: '#e0e5ec', boxShadow: '4px 4px 10px #a3b1c6, -4px -4px 10px #ffffff', border: '1.5px solid rgba(245,158,11,0.35)' }}
@@ -194,7 +197,7 @@ const DownloadAll: React.FC<{ base: string }> = ({ base }) => (
   </>
 );
 
-const NextStep: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
+const NextStep: React.FC<{ openWhatsApp: (source?: unknown) => void }> = ({ openWhatsApp }) => (
   <>
   {/* Next step */}
   <ScrollReveal yFrom={16} delay={160}>
@@ -205,7 +208,7 @@ const NextStep: React.FC<{ openWhatsApp: () => void }> = ({ openWhatsApp }) => (
       </p>
       <button
         type="button"
-        onClick={openWhatsApp}
+        onClick={() => openWhatsApp('resources_next_step')}
         className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-900 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
       >
         Message Dr. Gravesande on WhatsApp <ArrowRight className="h-3.5 w-3.5" />

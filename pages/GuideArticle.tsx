@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
-import { whatsAppLink, WhatsAppIcon } from '../components/WhatsAppContact';
+import { whatsAppLink, trackWhatsAppClick, WhatsAppIcon } from '../components/WhatsAppContact';
 import { GUIDES, type Guide } from '../data/guides';
 import { href } from '../lib/paths';
 
@@ -129,6 +129,7 @@ const GuideArticle: React.FC = () => {
               <div className="flex items-center justify-center gap-5 flex-wrap">
                 <a
                   href={whatsAppLink(guide.waKey)}
+                  onClick={() => trackWhatsAppClick(guide.waKey, 'guide_article')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-amber-700 text-sm"

@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center md:hidden">
             <button
               type="button"
-              onClick={openWhatsApp}
+              onClick={() => openWhatsApp('navbar_mobile')}
               aria-label="WhatsApp Us — message Preqal"
               className="flex h-12 items-center"
             >
@@ -80,7 +80,7 @@ const Navbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={openWhatsApp}
+              onClick={() => openWhatsApp('navbar_desktop')}
               className="whitespace-nowrap inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 text-slate-900 text-sm font-bold hover:bg-amber-400 transition-all neu-raised-sm"
             >
               <WhatsAppIcon className="h-4 w-4" /> WhatsApp Us

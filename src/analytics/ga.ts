@@ -68,10 +68,18 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, unkno
   }
 };
 
+/**
+ * A route change inside the SPA. The initial load is already counted by
+ * `send_page_view` in initGA, so the caller must skip the first render or
+ * the landing page is counted twice. Re-issuing `config` would also reset
+ * the stream's settings on every navigation; a `page_view` event does not.
+ */
 export const trackPageView = (path: string) => {
   if (window.gtag) {
-    window.gtag('config', import.meta.env.VITE_GA_ID || 'G-NCFNGZR285', {
-      page_path: path
+    window.gtag('event', 'page_view', {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title
     });
   }
 };

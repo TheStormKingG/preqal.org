@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
-import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
+import { useWhatsApp, whatsAppLink, trackWhatsAppClick, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
 import { GUIDES } from '../data/guides';
 
@@ -382,6 +382,7 @@ const ServiceLanding: React.FC = () => {
                 >
                   <a
                     href={whatsAppLink(page.waKey)}
+                    onClick={() => trackWhatsAppClick(page.waKey, 'service_hero')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-slate-900 font-bold text-sm"
@@ -391,7 +392,7 @@ const ServiceLanding: React.FC = () => {
                   </a>
                   <button
                     type="button"
-                    onClick={openWhatsApp}
+                    onClick={() => openWhatsApp('service_hero_secondary')}
                     className="text-sm font-semibold text-amber-600 hover:text-amber-900 transition-colors border-b-2 border-amber-300/50 hover:border-amber-500 pb-0.5"
                   >
                     Ask a question first
@@ -606,6 +607,7 @@ const ServiceLanding: React.FC = () => {
                 <p className="text-slate-800 mb-7 max-w-md mx-auto">Expect no pressure and no jargon. Tell Dr. Gravesande where you are and he will show you your next move.</p>
                 <a
                   href={whatsAppLink(page.waKey)}
+                  onClick={() => trackWhatsAppClick(page.waKey, 'service_cta_band')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-amber-700 text-base"

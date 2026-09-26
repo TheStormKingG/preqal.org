@@ -8,7 +8,7 @@ import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import Footer from '../components/Footer';
 import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
-import { useWhatsApp, whatsAppLink, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
+import { useWhatsApp, whatsAppLink, trackWhatsAppClick, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
 
 const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
@@ -354,6 +354,7 @@ const PhaseSection: React.FC<{
                 <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn} className="inline-block">
                   <a
                     href={whatsAppLink(phase.waKey)}
+                    onClick={() => trackWhatsAppClick(phase.waKey, 'home_phase_card')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-900 font-bold text-sm"
@@ -835,7 +836,7 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
 );
 
 /* ─── Final CTA ─── */
-const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ deck, openWhatsApp }) => (
+const CTASection: React.FC<{ deck?: boolean; openWhatsApp: (source?: unknown) => void }> = ({ deck, openWhatsApp }) => (
   <section className={`px-4 sm:px-6 lg:px-8 ${deck ? 'flex-1 min-h-0 flex flex-col justify-center py-[clamp(0.5rem,2vh,1.5rem)]' : 'py-16 pb-24'}`}>
     <div className={`max-w-4xl mx-auto w-full ${deck ? 'deck-fit' : ''}`}>
       <motion.div
@@ -865,7 +866,7 @@ const CTASection: React.FC<{ deck?: boolean; openWhatsApp: () => void }> = ({ de
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} transition={springBtn}>
               <button
                 type="button"
-                onClick={openWhatsApp}
+                onClick={() => openWhatsApp('home_cta_band')}
                 className="inline-flex items-center justify-center px-8 py-3 lg:py-4 rounded-xl font-bold text-amber-700 text-base w-full sm:w-auto"
                 style={{ background: 'rgba(255,255,255,0.95)', boxShadow: '4px 4px 14px rgba(0,0,0,0.12), -2px -2px 8px rgba(255,255,255,0.15)' }}
               >
