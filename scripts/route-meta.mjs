@@ -29,7 +29,7 @@ export const routeMeta = {
   },
   '/services/risk-scan': {
     title: 'Quality & Compliance Risk Scan Guyana | Preqal Risk Scan',
-    description: 'A 7-day quality, safety and compliance diagnostic for Guyanese businesses. Red Flag Report, ISO gap check and a plain-language action roadmap.',
+    description: 'A 5-day quality, safety and compliance diagnostic for Guyanese businesses. Red Flag Report, ISO gap check and a plain-language action roadmap.',
     canonical: `${BASE_URL}/services/risk-scan/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',

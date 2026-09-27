@@ -56,7 +56,7 @@ export const getSeoMeta = (pageKey: string): SEOData => {
     },
     book: {
       title: 'Book a Risk Scan | Preqal',
-      description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 7 days—so you know exactly where to focus first.',
+      description: 'Book a Quality Risk Scan with Preqal. Our rapid diagnostic service finds your top compliance risks in 5 days—so you know exactly where to focus first.',
       canonical: `${BASE_URL}/book/`,
       ogImage: `${BASE_URL}/og/book.png`,
       ogType: 'website'

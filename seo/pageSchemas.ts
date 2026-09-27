@@ -55,7 +55,7 @@ export const getRiskScanServiceSchema = () => ({
   name: 'Quality Risk Scan™',
   serviceType: 'Quality Management Diagnostic',
   description:
-    'A rapid seven-day diagnostic assessment that evaluates operational systems against ISO standards, regulatory requirements, and industry best practices. Delivers a prioritized Red Flag Report and strategic roadmap.',
+    'A rapid five-day diagnostic assessment that evaluates operational systems against ISO standards, regulatory requirements, and industry best practices. Delivers a prioritized Red Flag Report and strategic roadmap.',
   provider: {
     '@id': `${BASE_URL}/#organization`
   },
@@ -67,7 +67,7 @@ export const getRiskScanServiceSchema = () => ({
     '@type': 'Offer',
     name: 'Quality Risk Scan™',
     description:
-      'Seven-day quality risk scan delivering a prioritized Red Flag Report and compliance roadmap.',
+      'Five-day quality risk scan delivering a prioritized Red Flag Report and compliance roadmap.',
     url: `${BASE_URL}/book`
   }
 });
@@ -79,7 +79,7 @@ export const getBookPageSchema = () => ({
   url: `${BASE_URL}/book`,
   name: 'Book a Risk Scan | Preqal',
   description:
-    'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 7 days with our rapid diagnostic service.',
+    'Book a Quality Risk Scan with Preqal. Find your top compliance risks in 5 days with our rapid diagnostic service.',
   isPartOf: {
     '@id': `${BASE_URL}/#website`
   },

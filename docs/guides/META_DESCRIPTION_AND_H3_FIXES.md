@@ -73,7 +73,7 @@ Preqal builds evidence-driven quality, safety & ESG management systems for busin
 - **H3: Who it's for**
   - Content: Organizations preparing for certification or audits
 - **H3: How to start**
-  - Content: Book Risk Scan for seven-day diagnostic assessment
+  - Content: Book Risk Scan for five-day diagnostic assessment
 
 ---
 
