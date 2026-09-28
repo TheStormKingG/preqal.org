@@ -638,19 +638,28 @@ export const DeckAssemble: React.FC<{
          fixed. */
       const cx = er.left - m.m41 + er.width / 2 - (sr.left + sr.width / 2);
       const cy = er.top - m.m42 + er.height / 2 - (sr.top + sr.height / 2);
-      const r = Math.hypot(cx, cy);
+      /* Emphasise the horizontal before taking the bearing. A form panel is
+         narrow and tall: its left-column fields sit maybe 150px left of centre
+         while spanning 600px vertically, so a raw bearing is almost entirely
+         vertical and the fields appear to arrive from nowhere in particular.
+         Weighting x makes "left of the midline" actually read as coming from
+         the left, without flattening a genuinely vertical stack to sideways. */
+      const EMPHASIS = 2.4;
+      const ex = cx * EMPHASIS;
+      const r = Math.hypot(ex, cy);
       const FIXED: Record<string, [number, number]> = {
         bottom: [0, 1], top: [0, -1], left: [-1, 0], right: [1, 0],
       };
       const fixed = FIXED[from];
       // Dead centre has no bearing of its own; send it straight up.
-      const ux = fixed ? fixed[0] : r < 1 ? 0 : cx / r;
+      const ux = fixed ? fixed[0] : r < 1 ? 0 : ex / r;
       const uy = fixed ? fixed[1] : r < 1 ? -1 : cy / r;
       const maxR = Math.hypot(sr.width, sr.height) / 2 || 1;
       /* A forced bearing gets the full throw: it was chosen precisely because
          the piece sits near the middle, where the measured reach would be at
          its smallest and the movement barely visible. */
-      const reach = fixed ? spread : spread * Math.min(1, Math.max(0.45, r / maxR));
+      const trueR = Math.hypot(cx, cy);
+      const reach = fixed ? spread : spread * Math.min(1, Math.max(0.45, trueR / maxR));
       setVec({ x: ux * reach, y: uy * reach });
     };
     measure();

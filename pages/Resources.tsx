@@ -273,7 +273,7 @@ const Resources: React.FC = () => {
           label: 'Free templates',
           node: (
             <div className="h-full flex items-center px-4 sm:px-6">
-              <div className="w-full deck-fit"><Hero /></div>
+              <DeckAssemble seed={21} spread={560} className="w-full deck-fit"><Hero /></DeckAssemble>
             </div>
           ),
         },

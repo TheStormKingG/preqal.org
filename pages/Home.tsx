@@ -937,9 +937,9 @@ const Home: React.FC = () => {
       label: 'Welcome',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto w-full deck-fit">
+            <DeckAssemble seed={31} spread={560} className="max-w-6xl mx-auto w-full deck-fit">
               <HeroSection deck />
-            </div>
+            </DeckAssemble>
           </div>
         ),
       },
