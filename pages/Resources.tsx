@@ -129,9 +129,16 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
     for (let k = 0; k < id.length; k++) h = (h * 31 + id.charCodeAt(k)) % 997;
     return h;
   };
+  /* Cards alternate sides rather than taking a measured bearing. They are a
+     stack of full-width rows: every one of them centres horizontally, so a
+     measured bearing would be near-vertical for all six and they would arrive
+     as one column dropping in. Alternating left/right is the thing that reads
+     as a stack assembling. */
   const Entrance: React.FC<{ i: number; id: string; children: React.ReactNode }> = ({ i, id, children }) =>
     deck ? (
-      <DeckAssemble seed={seedOf(id)} spread={600}>{children}</DeckAssemble>
+      <DeckAssemble seed={seedOf(id)} spread={600} from={i % 2 === 0 ? 'left' : 'right'}>
+        {children}
+      </DeckAssemble>
     ) : (
       <ScrollReveal delay={i * 70} yFrom={16}>{children}</ScrollReveal>
     );
@@ -262,7 +269,7 @@ const Resources: React.FC = () => {
     label: 'Contact & info',
     node: (
       <div className="h-full flex items-center overflow-hidden">
-        <div className="w-full deck-fit"><Footer compact /></div>
+        <DeckAssemble seed={9} spread={520} from="bottom" className="w-full deck-fit"><Footer compact /></DeckAssemble>
       </div>
     ),
   };
