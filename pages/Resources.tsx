@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useBelowWidth, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useBelowWidth, useDeck, DeckAssemble, type DeckSlide } from '../components/SlideDeck';
 import { useWhatsApp } from '../components/WhatsAppContact';
 import { trackEvent } from '../src/analytics/ga';
 
@@ -114,10 +114,31 @@ const Hero: React.FC = () => (
   </>
 );
 
-const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items, base }) => (
+const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items, base }) => {
+  const deck = useDeck();
+  /* In the deck a card assembles from scatter; on the long-scroll page it
+     reveals on entering view. One entrance or the other, never both stacked —
+     two animations on one element read as a stutter, not as richness. */
+  /* Seed from the document id, not the index within the slide. Indexed by
+     position, every card slide would use seeds 0 and 1 and the three of them
+     would throw their cards along identical paths — three slides running the
+     same two trajectories reads as a mechanism, which is the opposite of the
+     effect. A per-document seed gives each card its own. */
+  const seedOf = (id: string) => {
+    let h = 0;
+    for (let k = 0; k < id.length; k++) h = (h * 31 + id.charCodeAt(k)) % 997;
+    return h;
+  };
+  const Entrance: React.FC<{ i: number; id: string; children: React.ReactNode }> = ({ i, id, children }) =>
+    deck ? (
+      <DeckAssemble seed={seedOf(id)} spread={600}>{children}</DeckAssemble>
+    ) : (
+      <ScrollReveal delay={i * 70} yFrom={16}>{children}</ScrollReveal>
+    );
+  return (
   <div className="flex flex-col gap-4">
       {items.map((t, i) => (
-        <ScrollReveal key={t.docId} delay={i * 70} yFrom={16}>
+        <Entrance key={t.docId} i={i} id={t.docId}>
           <motion.div
             whileHover={{ y: -3, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
@@ -158,10 +179,11 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
               <Download className="h-4 w-4" /> Download
             </motion.a>
           </motion.div>
-        </ScrollReveal>
+        </Entrance>
       ))}
   </div>
-);
+  );
+};
 
 const DownloadAll: React.FC<{ base: string }> = ({ base }) => (
   <>

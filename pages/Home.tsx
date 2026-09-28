@@ -833,7 +833,7 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
             statement rather than a paragraph with a footnote under it. From md
             up the original arrangement is untouched. */}
         <div className="flex flex-row items-center gap-5 md:items-end md:gap-20">
-          <DeckAssemble seed={0} spread={300} className="flex-1 min-w-0">
+          <DeckAssemble seed={0} spread={640} className="flex-1 min-w-0">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug mb-3 lg:mb-5">
               The businesses that made it<br />
               <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
@@ -843,11 +843,11 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
             </p>
           </DeckAssemble>
           <div className="flex flex-col gap-5 border-l border-white/15 pl-5 flex-shrink-0 md:flex-row md:gap-8 lg:gap-12 md:border-0 md:pl-0">
-            <DeckAssemble seed={1} spread={300} className="text-center">
+            <DeckAssemble seed={1} spread={640} className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">98%</div>
               <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">pass rate</div>
             </DeckAssemble>
-            <DeckAssemble seed={2} spread={300} className="text-center">
+            <DeckAssemble seed={2} spread={640} className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">9</div>
               <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">months to<br />certification</div>
             </DeckAssemble>
@@ -948,9 +948,9 @@ const Home: React.FC = () => {
       label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <div className="w-full deck-fit">
+            <DeckAssemble seed={4} spread={520} className="w-full deck-fit">
               <Footer compact />
-            </div>
+            </DeckAssemble>
           </div>
         ),
       },

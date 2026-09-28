@@ -584,8 +584,8 @@ const scatterFor = (seed: number, spread: number) => {
   return {
     x: Math.cos(angle) * dist,
     y: Math.sin(angle) * dist,
-    rotate: (c - 0.5) * 26,
-    scale: 0.86 + b * 0.10,
+    rotate: (c - 0.5) * 34,
+    scale: 0.74 + b * 0.16,
   };
 };
 
@@ -610,7 +610,7 @@ export const DeckAssemble: React.FC<{
   className?: string;
   style?: React.CSSProperties;
   children: React.ReactNode;
-}> = ({ seed = 0, spread = 260, className, style, children }) => {
+}> = ({ seed = 0, spread = 560, className, style, children }) => {
   const deck = useContext(DeckContext);
   const mySlide = useContext(SlideIndexContext);
   const prefersReduced = useReducedMotion();

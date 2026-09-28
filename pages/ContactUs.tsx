@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import Footer from '../components/Footer';
-import SlideDeck, { useBelowWidth, useDeck, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useBelowWidth, useDeck, DeckAssemble, type DeckSlide } from '../components/SlideDeck';
 import { getFounderPersonSchema, getAboutPageSchema } from '../seo/pageSchemas';
 import FounderSocials from '../components/FounderSocials';
 import { href } from '../lib/paths';
@@ -595,7 +595,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <div className="w-full deck-fit"><Footer compact /></div>
+            <DeckAssemble seed={3} spread={520} className="w-full deck-fit"><Footer compact /></DeckAssemble>
           </div>
         ),
       },
