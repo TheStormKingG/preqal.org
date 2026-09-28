@@ -112,6 +112,7 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
       <div className="md:col-span-5">
         {/* The heading introduces the man, so it sits with his portrait rather
             than centred over the pair of columns. */}
+        <DeckAssemble seed={11} spread={540}>
         <ScrollReveal yFrom={14}>
           <div className={`text-center ${compact ? 'mb-3' : 'mb-5'}`}>
             <p className={`text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ${compact ? 'hidden lg:block' : ''}`}>About Preqal</p>
@@ -123,6 +124,8 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
             </h2>
           </div>
         </ScrollReveal>
+        </DeckAssemble>
+        <DeckAssemble seed={5} spread={540}>
         <ScrollReveal yFrom={20}>
           <div
             className={`founder-portrait relative overflow-hidden rounded-3xl mx-auto max-w-[380px] md:max-w-none ${
@@ -159,9 +162,11 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
             />
           </div>
         </ScrollReveal>
+        </DeckAssemble>
       </div>
 
       <div className="md:col-span-7">
+        <DeckAssemble seed={17} spread={540}>
         <ScrollReveal yFrom={20} delay={80}>
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-1">Dr. Stefan Gravesande</h3>
           <p className={`text-amber-600 text-xs font-bold sm:mb-6 uppercase tracking-wider ${compact ? 'mb-2' : 'mb-3'}`}>
@@ -174,6 +179,7 @@ const AboutFounder: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
           </p>
           <FounderSocials compact={compact} className={compact ? 'mt-1 lg:mt-6' : 'mt-6'} />
         </ScrollReveal>
+        </DeckAssemble>
       </div>
 
     </div>
@@ -431,27 +437,36 @@ const ContactUs: React.FC = () => {
             the deck where the second view starts. */}
         <FormHalf halved={halved}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <DeckAssemble seed={6} spread={460}>
           <div>
             <label htmlFor={fid('first_name')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">First Name *</label>
             <input type="text" name="first_name" required className={inputClass} placeholder="John" value={formData.first_name} onChange={handleChange} {...describe('first_name')} />
             <FieldError id={eid('first_name')} message={fieldErrors.first_name} />
           </div>
+          </DeckAssemble>
+          <DeckAssemble seed={5} spread={460}>
           <div>
             <label htmlFor={fid('last_name')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Last Name *</label>
             <input type="text" name="last_name" required className={inputClass} placeholder="Doe" value={formData.last_name} onChange={handleChange} {...describe('last_name')} />
             <FieldError id={eid('last_name')} message={fieldErrors.last_name} />
           </div>
+          </DeckAssemble>
         </div>
+        <DeckAssemble seed={14} spread={460}>
         <div>
           <label htmlFor={fid('email')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Email *</label>
           <input type="email" name="email" required className={inputClass} placeholder="name@company.com" value={formData.email} onChange={handleChange} {...describe('email')} />
           <FieldError id={eid('email')} message={fieldErrors.email} />
         </div>
+        </DeckAssemble>
+        <DeckAssemble seed={0} spread={460}>
         <div>
           <label htmlFor={fid('company')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Company *</label>
           <input type="text" name="company" required className={inputClass} placeholder="Company Name" value={formData.company} onChange={handleChange} {...describe('company')} />
           <FieldError id={eid('company')} message={fieldErrors.company} />
         </div>
+        </DeckAssemble>
+        <DeckAssemble seed={13} spread={460}>
         <div>
           <label htmlFor={fid('job_title')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Job Title *</label>
           <select name="job_title" required value={formData.job_title} onChange={handleChange} className={inputClass} {...describe('job_title')}>
@@ -467,6 +482,8 @@ const ContactUs: React.FC = () => {
             </>
           )}
         </div>
+        </DeckAssemble>
+        <DeckAssemble seed={9} spread={460}>
         <div>
           <label htmlFor={fid('phone')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number *</label>
           <PhoneInput
@@ -480,9 +497,11 @@ const ContactUs: React.FC = () => {
           />
           <FieldError id={eid('phone')} message={fieldErrors.phone} />
         </div>
+        </DeckAssemble>
         </FormHalf>
 
         <FormHalf halved={halved} last>
+        <DeckAssemble seed={13} spread={460}>
         <div>
           <label htmlFor={fid('most_pressing_quality_problem')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Most Pressing Quality Problem *</label>
           <select name="most_pressing_quality_problem" required value={formData.most_pressing_quality_problem} onChange={handleChange} className={inputClass} {...describe('most_pressing_quality_problem')}>
@@ -498,10 +517,13 @@ const ContactUs: React.FC = () => {
             </>
           )}
         </div>
+        </DeckAssemble>
+        <DeckAssemble seed={5} spread={460}>
         <div>
           <label htmlFor={fid('message')} className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Message <span className="normal-case font-normal text-slate-400">(optional)</span></label>
           <textarea name="message" id={fid('message')} rows={3} value={formData.message} onChange={handleChange} className={`${inputClass} resize-none`} placeholder="Tell us about your project or how we can help..." />
         </div>
+        </DeckAssemble>
 
         <div className="space-y-3 pt-1">
           <label className="flex items-start gap-3 cursor-pointer group">
@@ -595,7 +617,7 @@ const ContactUs: React.FC = () => {
         label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <DeckAssemble seed={3} spread={520} className="w-full deck-fit"><Footer compact /></DeckAssemble>
+            <DeckAssemble seed={3} spread={520} from="bottom" className="w-full deck-fit"><Footer compact /></DeckAssemble>
           </div>
         ),
       },

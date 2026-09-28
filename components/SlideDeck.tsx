@@ -601,10 +601,16 @@ export const DeckAssemble: React.FC<{
   seed?: number;
   /** Peak distance from home, in px, for a piece at the slide's edge. */
   spread?: number;
+  /**
+   * Override the measured bearing. A full-width block centres on the slide,
+   * so it has no bearing of its own to measure — a footer is the obvious
+   * case, and it should rise from the bottom rather than pick a fallback.
+   */
+  from?: 'auto' | 'bottom' | 'top' | 'left' | 'right';
   className?: string;
   style?: React.CSSProperties;
   children: React.ReactNode;
-}> = ({ seed = 0, spread = 560, className, style, children }) => {
+}> = ({ seed = 0, spread = 560, from = 'auto', className, style, children }) => {
   const deck = useContext(DeckContext);
   const mySlide = useContext(SlideIndexContext);
   const prefersReduced = useReducedMotion();
@@ -633,11 +639,18 @@ export const DeckAssemble: React.FC<{
       const cx = er.left - m.m41 + er.width / 2 - (sr.left + sr.width / 2);
       const cy = er.top - m.m42 + er.height / 2 - (sr.top + sr.height / 2);
       const r = Math.hypot(cx, cy);
+      const FIXED: Record<string, [number, number]> = {
+        bottom: [0, 1], top: [0, -1], left: [-1, 0], right: [1, 0],
+      };
+      const fixed = FIXED[from];
       // Dead centre has no bearing of its own; send it straight up.
-      const ux = r < 1 ? 0 : cx / r;
-      const uy = r < 1 ? -1 : cy / r;
+      const ux = fixed ? fixed[0] : r < 1 ? 0 : cx / r;
+      const uy = fixed ? fixed[1] : r < 1 ? -1 : cy / r;
       const maxR = Math.hypot(sr.width, sr.height) / 2 || 1;
-      const reach = spread * Math.min(1, Math.max(0.45, r / maxR));
+      /* A forced bearing gets the full throw: it was chosen precisely because
+         the piece sits near the middle, where the measured reach would be at
+         its smallest and the movement barely visible. */
+      const reach = fixed ? spread : spread * Math.min(1, Math.max(0.45, r / maxR));
       setVec({ x: ux * reach, y: uy * reach });
     };
     measure();
@@ -660,7 +673,7 @@ export const DeckAssemble: React.FC<{
       window.removeEventListener('resize', measure);
       late.forEach(window.clearTimeout);
     };
-  }, [spread, prefersReduced, deck?.slideH]);
+  }, [spread, from, prefersReduced, deck?.slideH]);
 
   if (!deck || prefersReduced) {
     return (

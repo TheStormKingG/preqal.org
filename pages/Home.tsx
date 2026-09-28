@@ -307,12 +307,15 @@ const PhaseSection: React.FC<{
               </p>
             </div>
 
+            <DeckAssemble seed={index * 7 + 1} spread={520}>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-[1.15] lg:leading-[1.1] mb-2 lg:mb-4">
               {phase.headline}
             </h2>
             <p className={`text-sm lg:text-base text-slate-500 leading-relaxed max-w-[480px] mb-4 lg:mb-6 ${flip ? '' : 'lg:ml-auto'}`}>{phase.story}</p>
+            </DeckAssemble>
 
             {/* Service card — interior stays left-aligned for readability */}
+            <DeckAssemble seed={index * 7 + 2} spread={520}>
             <motion.div
               whileHover={{ y: -4, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
@@ -373,6 +376,7 @@ const PhaseSection: React.FC<{
                 </Link>
               </div>
             </motion.div>
+            </DeckAssemble>
           </div>
         </motion.div>
 
@@ -956,7 +960,7 @@ const Home: React.FC = () => {
       label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <DeckAssemble seed={4} spread={520} className="w-full deck-fit">
+            <DeckAssemble seed={4} spread={520} from="bottom" className="w-full deck-fit">
               <Footer compact />
             </DeckAssemble>
           </div>
