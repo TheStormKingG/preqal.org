@@ -570,42 +570,36 @@ export const DeckParallax: React.FC<{
   );
 };
 
-/* Deterministic scatter. Stable across renders and reloads — a Math.random()
-   here would re-throw every piece on each re-render, so a slide revisited
-   would assemble from somewhere new each time and the motion would read as
-   noise rather than as the same object coming back together. */
+/* A small deterministic wobble, so pieces on the same bearing do not tilt
+   identically. Direction and distance are measured, not seeded — only this
+   jitter is. */
 const frac = (n: number) => n - Math.floor(n);
-const scatterFor = (seed: number, spread: number) => {
-  const a = frac(Math.sin((seed + 1) * 12.9898) * 43758.5453);
-  const b = frac(Math.sin((seed + 1) * 78.233) * 12345.6789);
-  const c = frac(Math.sin((seed + 1) * 39.425) * 24634.6345);
-  const angle = a * Math.PI * 2;
-  const dist = (0.55 + b * 0.45) * spread;
-  return {
-    x: Math.cos(angle) * dist,
-    y: Math.sin(angle) * dist,
-    rotate: (c - 0.5) * 34,
-    scale: 0.74 + b * 0.16,
-  };
-};
+const tiltFor = (seed: number) => (frac(Math.sin((seed + 1) * 39.425) * 24634.6345) - 0.5) * 18;
 
 /**
- * A piece that flies in from a scattered position and settles as its slide
- * arrives — a slow explosion running backwards. Give each piece on a slide a
- * different `seed` and they converge from different directions, at slightly
- * different times, which is what reads as assembly rather than as one block
- * sliding in.
+ * A piece that returns from the periphery as its slide arrives — a slow
+ * explosion running backwards.
  *
- * `pointerEvents: none` while scattered is not cosmetic. The deck measures
- * whether a slide overflows by walking its descendants' rects, skipping only
- * pointer-events:none subtrees. A displaced piece would otherwise measure as
- * overflowing and silently flip the slide into a scrollable one — the gesture
- * behaviour would change as a side effect of an animation. Inactive slides
- * are already inert, so nothing is lost by it.
+ * Direction is RADIAL and measured, not random: each piece is thrown along
+ * the bearing from the slide's centre through its own centre, so something
+ * sitting left of the midline comes back from the left, something above comes
+ * back from above, and a corner piece returns diagonally. A seeded direction
+ * (the first version of this) had pieces arriving from wherever the hash
+ * pointed, which is why it never looked like one object coming apart — the
+ * trajectories had no relationship to the layout.
+ *
+ * Distance scales with how far out the piece already sits, so edge content
+ * travels further than something near the middle, the way it would if the
+ * whole slide had burst from its centre.
+ *
+ * Measurement uses offsetWidth/Height and a rect comparison taken while the
+ * piece is at rest. It is redone on resize, because the bearing is a property
+ * of the layout and the layout changes with the viewport.
  */
 export const DeckAssemble: React.FC<{
+  /** Only jitters the tilt; direction and distance come from the layout. */
   seed?: number;
-  /** Peak distance from home, in px. */
+  /** Peak distance from home, in px, for a piece at the slide's edge. */
   spread?: number;
   className?: string;
   style?: React.CSSProperties;
@@ -614,6 +608,59 @@ export const DeckAssemble: React.FC<{
   const deck = useContext(DeckContext);
   const mySlide = useContext(SlideIndexContext);
   const prefersReduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const [vec, setVec] = useState<{ x: number; y: number } | null>(null);
+
+  const active = !!deck && deck.index === mySlide;
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReduced) return;
+    const measure = () => {
+      const slide = el.closest('.deck-slide') as HTMLElement | null;
+      if (!slide || !el.offsetWidth) return;
+      const sr = slide.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      /* er already carries whatever transform is applied right now, so the
+         piece's resting centre is recovered by subtracting it. Reading
+         offsetLeft instead would mean walking an offsetParent chain that does
+         not reliably stop at the slide. */
+      const m = new DOMMatrixReadOnly(getComputedStyle(el).transform);
+      /* er carries the transform currently applied, so the resting centre is
+         recovered by subtracting the translation. Scale needs no correction:
+         transform-origin is the default 50% 50%, which leaves the centre
+         fixed. */
+      const cx = er.left - m.m41 + er.width / 2 - (sr.left + sr.width / 2);
+      const cy = er.top - m.m42 + er.height / 2 - (sr.top + sr.height / 2);
+      const r = Math.hypot(cx, cy);
+      // Dead centre has no bearing of its own; send it straight up.
+      const ux = r < 1 ? 0 : cx / r;
+      const uy = r < 1 ? -1 : cy / r;
+      const maxR = Math.hypot(sr.width, sr.height) / 2 || 1;
+      const reach = spread * Math.min(1, Math.max(0.45, r / maxR));
+      setVec({ x: ux * reach, y: uy * reach });
+    };
+    measure();
+    /* Observe the SLIDE as well as the piece. The deck measures and sets its
+       slide height after mount, so a bearing taken on first layout is computed
+       against a slide that has not reached its final size — every piece then
+       reports a resting centre near the middle and the radial direction is
+       meaningless. Watching only the piece misses this entirely, because the
+       piece's own box need not change when the slide's does. */
+    const slide = el.closest('.deck-slide');
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    if (slide) ro.observe(slide);
+    window.addEventListener('resize', measure);
+    // Fonts and images land after first paint and move things.
+    const late = [window.setTimeout(measure, 250), window.setTimeout(measure, 900)];
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+      late.forEach(window.clearTimeout);
+    };
+  }, [spread, prefersReduced, deck?.slideH]);
 
   if (!deck || prefersReduced) {
     return (
@@ -623,29 +670,30 @@ export const DeckAssemble: React.FC<{
     );
   }
 
-  const active = deck.index === mySlide;
-  const s = scatterFor(seed, spread);
+  /* Before the first measurement the piece sits at home — that is deliberate,
+     since the measurement needs a resting element to read. */
+  const away = !active && vec;
 
   return (
     <motion.div
+      ref={ref}
+      /* Tagged so this component's pieces can be told apart from the other
+         animation systems sharing a slide — ScrollReveal wrappers and the
+         parallax layers also carry transforms, and a verification that cannot
+         separate them measures all three and concludes nothing. */
+      data-assemble=""
       className={className}
       style={{ ...style, willChange: 'transform', pointerEvents: active ? undefined : 'none' }}
-      /* initial={false}: on first mount the starting slide must already be
-         assembled, or the page loads mid-explosion. */
       initial={false}
       animate={
-        active
-          ? { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }
-          : { x: s.x, y: s.y, rotate: s.rotate, scale: s.scale, opacity: 0 }
+        away
+          ? { x: vec.x, y: vec.y, rotate: tiltFor(seed), scale: 0.82, opacity: 0 }
+          : { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }
       }
       transition={{
-        /* Slower coming together than flying apart: assembly is the thing
-           worth watching, scattering is just the reset for next time. It also
-           outlasts the 520ms slide travel on purpose, so the pieces are still
-           settling after the slide itself has stopped. */
         duration: active ? 0.78 : 0.3,
         ease: active ? [0.16, 1, 0.3, 1] : 'easeIn',
-        delay: active ? seed * 0.075 : 0,
+        delay: active ? (seed % 5) * 0.06 : 0,
       }}
     >
       {children}
