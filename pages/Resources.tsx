@@ -114,6 +114,28 @@ const Hero: React.FC = () => (
   </>
 );
 
+const seedOf = (id: string) => {
+  let h = 0;
+  for (let k = 0; k < id.length; k++) h = (h * 31 + id.charCodeAt(k)) % 997;
+  return h;
+};
+
+/* Declared at module scope, NOT inside TemplateCards. A component defined in
+   another component's body is a new type on every render, so React unmounts
+   and remounts the subtree rather than updating it — DeckAssemble then
+   remounts with initial={false} and paints straight at its target, with
+   nothing left to animate. Measured before the fix: cards travelled 600px in
+   under 117ms against a configured 780ms, which reads as no motion at all. */
+const CardEntrance: React.FC<{ i: number; id: string; deck: boolean; children: React.ReactNode }> =
+  ({ i, id, deck, children }) =>
+    deck ? (
+      <DeckAssemble seed={seedOf(id)} spread={600} from={i % 2 === 0 ? 'left' : 'right'}>
+        {children}
+      </DeckAssemble>
+    ) : (
+      <ScrollReveal delay={i * 70} yFrom={16}>{children}</ScrollReveal>
+    );
+
 const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items, base }) => {
   const deck = useDeck();
   /* In the deck a card assembles from scatter; on the long-scroll page it
@@ -124,28 +146,15 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
      would throw their cards along identical paths — three slides running the
      same two trajectories reads as a mechanism, which is the opposite of the
      effect. A per-document seed gives each card its own. */
-  const seedOf = (id: string) => {
-    let h = 0;
-    for (let k = 0; k < id.length; k++) h = (h * 31 + id.charCodeAt(k)) % 997;
-    return h;
-  };
   /* Cards alternate sides rather than taking a measured bearing. They are a
      stack of full-width rows: every one of them centres horizontally, so a
      measured bearing would be near-vertical for all six and they would arrive
      as one column dropping in. Alternating left/right is the thing that reads
      as a stack assembling. */
-  const Entrance: React.FC<{ i: number; id: string; children: React.ReactNode }> = ({ i, id, children }) =>
-    deck ? (
-      <DeckAssemble seed={seedOf(id)} spread={600} from={i % 2 === 0 ? 'left' : 'right'}>
-        {children}
-      </DeckAssemble>
-    ) : (
-      <ScrollReveal delay={i * 70} yFrom={16}>{children}</ScrollReveal>
-    );
   return (
   <div className="flex flex-col gap-4">
       {items.map((t, i) => (
-        <Entrance key={t.docId} i={i} id={t.docId}>
+        <CardEntrance key={t.docId} i={i} id={t.docId} deck={!!deck}>
           <motion.div
             whileHover={{ y: -3, boxShadow: '10px 12px 28px rgba(163,177,198,0.52), -5px -5px 18px rgba(255,255,255,0.95)' }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
@@ -186,7 +195,7 @@ const TemplateCards: React.FC<{ items: TemplateDoc[]; base: string }> = ({ items
               <Download className="h-4 w-4" /> Download
             </motion.a>
           </motion.div>
-        </Entrance>
+        </CardEntrance>
       ))}
   </div>
   );
