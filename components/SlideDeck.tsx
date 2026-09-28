@@ -30,7 +30,14 @@ interface DeckApi {
   count: number;
   /** Direction of the move that brought the deck to `index`: 1 down, -1 up. */
   dir: 1 | -1;
+  /** Measured height of one slide, in px — the distance the track travels. */
+  slideH: number;
 }
+
+/* Which slide a subtree sits in. Parallax needs this: a layer's lag is
+   relative to its OWN slide, not to the deck as a whole, or a layer would
+   settle permanently offset instead of arriving at its natural position. */
+const SlideIndexContext = createContext(0);
 
 const DeckContext = createContext<DeckApi | null>(null);
 
@@ -432,7 +439,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
   }, [index, count, label]);
 
   return (
-    <DeckContext.Provider value={{ goTo, index, count, dir }}>
+    <DeckContext.Provider value={{ goTo, index, count, dir, slideH }}>
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden"
@@ -490,7 +497,7 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
                 ...(s.scrollable || overflowing[i] ? { touchAction: 'none', overscrollBehavior: 'contain' } : null),
               }}
             >
-              {s.node}
+              <SlideIndexContext.Provider value={i}>{s.node}</SlideIndexContext.Provider>
             </motion.section>
           ))}
         </motion.div>
@@ -501,6 +508,65 @@ const SlideDeck: React.FC<{ slides: DeckSlide[] }> = ({ slides }) => {
 
       </div>
     </DeckContext.Provider>
+  );
+};
+
+/**
+ * A decorative layer that moves at a different rate to the slide it sits in,
+ * so the deck reads as having depth rather than as flat panes swapping.
+ *
+ * `depth` is how much the layer LAGS the track, 0 to 1. At 0 it is welded to
+ * the slide and nothing changes. At 1 it is effectively stationary in the
+ * viewport while the slide moves past it. Small values are the useful range:
+ * past about 0.35 the layer visibly detaches and the effect turns into a
+ * distraction, which on a consultancy site costs more than it earns.
+ *
+ * Three things this deliberately does NOT do:
+ *  - add any listener. It reads the deck's existing index and derives from it.
+ *    The wheel/touch engine is tuned and has hard-won platform fixes in it;
+ *    a second thing sampling those events is how that tuning gets lost.
+ *  - move under prefers-reduced-motion. Parallax is the exact vestibular
+ *    trigger that setting exists for, so it collapses to a plain div.
+ *  - take pointer events. The deck's overflow measurement skips
+ *    pointer-events:none subtrees on purpose, so a layer that swallowed
+ *    clicks would also start counting as content and change slide sizing.
+ */
+export const DeckParallax: React.FC<{
+  depth?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}> = ({ depth = 0.2, className, style, children }) => {
+  const deck = useContext(DeckContext);
+  const mySlide = useContext(SlideIndexContext);
+  const prefersReduced = useReducedMotion();
+
+  // Outside a deck, or with motion reduced, this is a plain wrapper. Home
+  // renders the same band in both deck and long-scroll modes, so the
+  // pass-through has to keep the geometry identical.
+  if (!deck || prefersReduced || !deck.slideH) {
+    return (
+      <div aria-hidden="true" className={className} style={{ ...style, pointerEvents: 'none' }}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      className={className}
+      style={{ ...style, pointerEvents: 'none', willChange: 'transform' }}
+      /* Zero when this slide is the one on screen, so the layer always
+         settles where the designer put it. It only departs while the deck
+         is travelling, which is the whole of the effect. */
+      animate={{ y: (deck.index - mySlide) * deck.slideH * depth }}
+      /* Same curve and duration as the track. Different magnitude is what
+         makes it parallax; a different curve would just look out of sync. */
+      transition={{ duration: SLIDE_MS / 1000, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
   );
 };
 

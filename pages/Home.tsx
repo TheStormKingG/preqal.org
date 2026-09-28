@@ -6,7 +6,7 @@ import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import Footer from '../components/Footer';
-import SlideDeck, { useDeck, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useDeck, DeckParallax, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
 import { useWhatsApp, whatsAppLink, trackWhatsAppClick, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
@@ -797,12 +797,35 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
     className={`relative overflow-hidden ${deck ? 'py-3 sm:py-5 flex-shrink-0 flex items-center lg:py-0 lg:h-[40%]' : 'py-16 sm:py-20'}`}
     style={{ background: '#0f172a' }}
   >
-    <div className="absolute inset-0 pointer-events-none" style={{
-      background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
-    }} />
-    <div className="absolute inset-0 pointer-events-none" style={{
-      background: 'radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%), radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.05) 0%, transparent 50%)',
-    }} />
+    {/* Two decorative planes at different depths. In the deck they lag the
+        slide by different amounts, so moving between slides reads as looking
+        past the texture at the glow behind it rather than as one flat panel
+        sliding. Outside the deck both render as plain static layers.
+
+        OVERHANG, not inset-0: a layer that translates would otherwise pull
+        its own edge into view and expose bare navy behind it. 220px each side
+        covers the largest travel these depths can produce on a tall screen,
+        and the band is overflow-hidden so the excess never shows. */}
+    <DeckParallax
+      depth={0.10}
+      className="absolute left-0 right-0 pointer-events-none"
+      style={{
+        top: -220, bottom: -220,
+        background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
+      }}
+    >
+      <span />
+    </DeckParallax>
+    <DeckParallax
+      depth={0.18}
+      className="absolute left-0 right-0 pointer-events-none"
+      style={{
+        top: -220, bottom: -220,
+        background: 'radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%), radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.05) 0%, transparent 50%)',
+      }}
+    >
+      <span />
+    </DeckParallax>
     <div className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full ${deck ? 'deck-fit' : ''}`}>
       <ScrollReveal yFrom={16}>
         {/* On a phone the claim and the numbers stand side by side, split by a
