@@ -229,7 +229,9 @@ const QuoteClassifier: React.FC = () => {
     };
 
     // Log for development / debugging
-    console.warn('[Preqal Quote Classifier] Submission:', submission);
+    // Deliberately not logged. This object carries the company name, contact
+    // name, email and free-text business description — anyone with devtools
+    // open on this page would read a lead's details straight off the console.
 
     try {
       // ─── Save to Supabase ─────────────────────────────────────────────────

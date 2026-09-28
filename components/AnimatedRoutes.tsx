@@ -17,6 +17,7 @@ const MDST = lazy(() => import('../pages/MDST'));
 const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('../pages/TermsOfService'));
 const BusinessGrowthAssessment = lazy(() => import('../pages/BusinessGrowthAssessment'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 const routeOrder = [
   '/',
@@ -97,6 +98,11 @@ const AnimatedRoutes: React.FC = () => {
         {/* Hidden tool route - not in navigation */}
         <Route path="/tools/mdst"                 element={<MDST />} />
         {import.meta.env.DEV && <Route path="/seo-health" element={<SEOHealth />} />}
+        {/* Catch-all, kept last for readability. React Router v6 ranks routes
+            by specificity rather than declaration order, so a splat loses to
+            any static path wherever it sits — but a reader should not have to
+            know that to be sure /tools/mdst still resolves. */}
+        <Route path="*"                           element={<NotFound />} />
       </Routes>
       </Suspense>
     </div>

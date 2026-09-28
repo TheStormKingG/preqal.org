@@ -12,6 +12,14 @@ const DEFAULT_OG_IMAGE = `${BASE_URL}/og/home.png`;
 
 export const getSeoMeta = (pageKey: string): SEOData => {
   const seoMap: Record<string, SEOData> = {
+    notFound: {
+      title: 'Page not found | Preqal',
+      description: 'That page is not here. Find Preqal\u2019s services, free templates, guides and contact details instead.',
+      canonical: `${BASE_URL}/`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: 'website',
+      noindex: true
+    },
     home: {
       title: 'Preqal | ISO 9001 System Setup for SMEs in Guyana',
       description: 'Preqal sets up ISO 9001 systems for SMEs in Guyana: process improvement and strategic direction for top management. An accredited body certifies it.',

@@ -339,7 +339,9 @@ const BusinessGrowthAssessment: React.FC = () => {
       timestamp:              new Date().toISOString(),
     };
 
-    console.warn('[Preqal Business Growth Assessment] Submission:', submission);
+    // Deliberately not logged. This object carries the company name, contact
+    // name, email and free-text business description — anyone with devtools
+    // open on this page would read a lead's details straight off the console.
 
     // ── Save to Supabase qualified_leads ─────────────────────────────────
     // Wrapped independently so a DB outage never blocks the EmailJS notification.
