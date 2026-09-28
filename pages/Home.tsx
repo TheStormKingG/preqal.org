@@ -390,7 +390,15 @@ const PhaseSection: React.FC<{
               }
             : {})}
         >
-          <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} deck={deck} near={near} />
+          {/* The image assembles; the column does not. Transforms on a child
+              do not move the parent's layout box, so the media column's own
+              rect — which the wick uses with the copy column's to find the
+              gutter — is untouched. The badge lives in the copy column, so
+              its measured centre is untouched too. That is the whole reason
+              this is applied to the image rather than to the column. */}
+          <DeckAssemble seed={index * 7 + 3} spread={620}>
+            <ParallaxImage src={phase.img} alt={phase.imgAlt} pos={phase.imgPos} deck={deck} near={near} />
+          </DeckAssemble>
         </motion.div>
       </div>
     </section>
