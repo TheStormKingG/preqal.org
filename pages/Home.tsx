@@ -6,7 +6,7 @@ import ScrollReveal from '../components/ui/ScrollReveal';
 import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import Footer from '../components/Footer';
-import SlideDeck, { useDeck, DeckParallax, type DeckSlide } from '../components/SlideDeck';
+import SlideDeck, { useDeck, DeckParallax, DeckAssemble, type DeckSlide } from '../components/SlideDeck';
 import { wickRun } from '../lib/wickRun';
 import { useWhatsApp, whatsAppLink, trackWhatsAppClick, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
@@ -803,24 +803,24 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
         sliding. Outside the deck both render as plain static layers.
 
         OVERHANG, not inset-0: a layer that translates would otherwise pull
-        its own edge into view and expose bare navy behind it. 220px each side
+        its own edge into view and expose bare navy behind it. 400px each side
         covers the largest travel these depths can produce on a tall screen,
         and the band is overflow-hidden so the excess never shows. */}
     <DeckParallax
-      depth={0.10}
+      depth={0.22}
       className="absolute left-0 right-0 pointer-events-none"
       style={{
-        top: -220, bottom: -220,
+        top: -400, bottom: -400,
         background: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 80px)',
       }}
     >
       <span />
     </DeckParallax>
     <DeckParallax
-      depth={0.18}
+      depth={0.40}
       className="absolute left-0 right-0 pointer-events-none"
       style={{
-        top: -220, bottom: -220,
+        top: -400, bottom: -400,
         background: 'radial-gradient(ellipse at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 55%), radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.05) 0%, transparent 50%)',
       }}
     >
@@ -833,7 +833,7 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
             statement rather than a paragraph with a footnote under it. From md
             up the original arrangement is untouched. */}
         <div className="flex flex-row items-center gap-5 md:items-end md:gap-20">
-          <div className="flex-1 min-w-0">
+          <DeckAssemble seed={0} spread={300} className="flex-1 min-w-0">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug mb-3 lg:mb-5">
               The businesses that made it<br />
               <em style={{ color: '#f59e0b' }}>didn't get lucky.</em>
@@ -841,16 +841,16 @@ const ProofSection: React.FC<{ deck?: boolean }> = ({ deck }) => (
             <p className="text-white/55 text-sm lg:text-base leading-relaxed max-w-[480px]">
               Each one setup international standards.
             </p>
-          </div>
+          </DeckAssemble>
           <div className="flex flex-col gap-5 border-l border-white/15 pl-5 flex-shrink-0 md:flex-row md:gap-8 lg:gap-12 md:border-0 md:pl-0">
-            <div className="text-center">
+            <DeckAssemble seed={1} spread={300} className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">98%</div>
               <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">pass rate</div>
-            </div>
-            <div className="text-center">
+            </DeckAssemble>
+            <DeckAssemble seed={2} spread={300} className="text-center">
               <div className="text-[2.8rem] lg:text-[4.5rem] font-bold text-amber-400 leading-none">9</div>
               <div className="text-lg text-white/60 font-medium mt-1 md:mt-2 leading-snug">months to<br />certification</div>
-            </div>
+            </DeckAssemble>
           </div>
         </div>
       </ScrollReveal>

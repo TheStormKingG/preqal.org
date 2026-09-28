@@ -570,4 +570,87 @@ export const DeckParallax: React.FC<{
   );
 };
 
+/* Deterministic scatter. Stable across renders and reloads — a Math.random()
+   here would re-throw every piece on each re-render, so a slide revisited
+   would assemble from somewhere new each time and the motion would read as
+   noise rather than as the same object coming back together. */
+const frac = (n: number) => n - Math.floor(n);
+const scatterFor = (seed: number, spread: number) => {
+  const a = frac(Math.sin((seed + 1) * 12.9898) * 43758.5453);
+  const b = frac(Math.sin((seed + 1) * 78.233) * 12345.6789);
+  const c = frac(Math.sin((seed + 1) * 39.425) * 24634.6345);
+  const angle = a * Math.PI * 2;
+  const dist = (0.55 + b * 0.45) * spread;
+  return {
+    x: Math.cos(angle) * dist,
+    y: Math.sin(angle) * dist,
+    rotate: (c - 0.5) * 26,
+    scale: 0.86 + b * 0.10,
+  };
+};
+
+/**
+ * A piece that flies in from a scattered position and settles as its slide
+ * arrives — a slow explosion running backwards. Give each piece on a slide a
+ * different `seed` and they converge from different directions, at slightly
+ * different times, which is what reads as assembly rather than as one block
+ * sliding in.
+ *
+ * `pointerEvents: none` while scattered is not cosmetic. The deck measures
+ * whether a slide overflows by walking its descendants' rects, skipping only
+ * pointer-events:none subtrees. A displaced piece would otherwise measure as
+ * overflowing and silently flip the slide into a scrollable one — the gesture
+ * behaviour would change as a side effect of an animation. Inactive slides
+ * are already inert, so nothing is lost by it.
+ */
+export const DeckAssemble: React.FC<{
+  seed?: number;
+  /** Peak distance from home, in px. */
+  spread?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}> = ({ seed = 0, spread = 260, className, style, children }) => {
+  const deck = useContext(DeckContext);
+  const mySlide = useContext(SlideIndexContext);
+  const prefersReduced = useReducedMotion();
+
+  if (!deck || prefersReduced) {
+    return (
+      <div className={className} style={style}>
+        {children}
+      </div>
+    );
+  }
+
+  const active = deck.index === mySlide;
+  const s = scatterFor(seed, spread);
+
+  return (
+    <motion.div
+      className={className}
+      style={{ ...style, willChange: 'transform', pointerEvents: active ? undefined : 'none' }}
+      /* initial={false}: on first mount the starting slide must already be
+         assembled, or the page loads mid-explosion. */
+      initial={false}
+      animate={
+        active
+          ? { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }
+          : { x: s.x, y: s.y, rotate: s.rotate, scale: s.scale, opacity: 0 }
+      }
+      transition={{
+        /* Slower coming together than flying apart: assembly is the thing
+           worth watching, scattering is just the reset for next time. It also
+           outlasts the 520ms slide travel on purpose, so the pieces are still
+           settling after the slide itself has stopped. */
+        duration: active ? 0.78 : 0.3,
+        ease: active ? [0.16, 1, 0.3, 1] : 'easeIn',
+        delay: active ? seed * 0.075 : 0,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 export default SlideDeck;
