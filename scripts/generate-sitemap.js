@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { blogPosts } from './blog-posts.mjs';
+
 const BASE_URL = 'https://preqal.org';
 /* lastmod is the date the page's source last changed, read from git — not the
    build date. Stamping every URL with today on every deploy tells Google the
@@ -51,6 +53,17 @@ const routes = [
   { url: '/preqal-not-prequel',          changefreq: 'yearly',  priority: 0.75, lastmod: dateFor('/preqal-not-prequel') },
   { url: '/privacy-policy',              changefreq: 'yearly',  priority: 0.3, lastmod: dateFor('/privacy-policy') },
   { url: '/terms-of-service',            changefreq: 'yearly',  priority: 0.3, lastmod: dateFor('/terms-of-service') },
+    /* The blog, derived from content/blog/index.json. A draft is filtered
+       out upstream, so it cannot reach the sitemap — the same manifest
+       drives the prerender list and routeMeta, which is what keeps the
+       four authorities from drifting apart. */
+    { url: '/blog', changefreq: 'weekly', priority: 0.8, lastmod: blogPosts[0]?.published ?? TODAY },
+    ...blogPosts.map((p) => ({
+      url: `/blog/${p.slug}`,
+      changefreq: 'monthly',
+      priority: 0.8,
+      lastmod: p.updated ?? p.published,
+    })),
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

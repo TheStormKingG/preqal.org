@@ -14,7 +14,6 @@ Preqal serves poultry and hatchery operations, agro-processors, eco-tourism, log
 
 ## Learning
 
-- [Free e-course](https://preqal.org/e-courses): Build Systems That Actually Work, nine modules on practical quality management with a verifiable certificate.
 - [Free templates](https://preqal.org/resources): QHSE policy, document control procedure and IMS registers, direct download.
 
 ## Contact

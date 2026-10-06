@@ -1,0 +1,21 @@
+{
+  "mode": "delta",
+  "rationale": "Measured calibration: the founder's own prose scores 0 and genuinely corporate prose scores 100, so the detector discriminates. A delta gate rewards real improvement without making an absolute floor the pipeline's only objective.",
+  "requireFinalBelow": 40,
+  "requireReductionFrom": 70,
+  "minAbsoluteReduction": 30,
+  "maxIterations": 5,
+  "onNotMet": "hold",
+  "scoreSelector": {
+    "note": "Read the number bound to the verdict text. 98.4% and <1% are ZeroGPT's own marketing copy and appear identically on every result.",
+    "verdictPattern": "Your Text is\\s*([^\\n]{0,60})",
+    "scorePattern": "(\\d+(?:\\.\\d+)?)\\s*%\\s*AI\\s*GPT"
+  },
+  "executionPaths": [
+    "playwright-chromium-local",
+    "report-UNVERIFIED-and-hold"
+  ],
+  "preconditions": [
+    "chromium binary present — it lives in a purgeable cache on a volume that has repeatedly hit 100%; reinstall before the probe, never assume"
+  ]
+}

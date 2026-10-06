@@ -17,6 +17,8 @@ const MDST = lazy(() => import('../pages/MDST'));
 const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('../pages/TermsOfService'));
 const BusinessGrowthAssessment = lazy(() => import('../pages/BusinessGrowthAssessment'));
+const BlogIndex = lazy(() => import('../pages/BlogIndex'));
+const BlogArticle = lazy(() => import('../pages/BlogArticle'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
 const routeOrder = [
@@ -74,6 +76,8 @@ const AnimatedRoutes: React.FC = () => {
         {/* Cornerstone guides */}
         <Route path="/guides"                     element={<GuidesIndex />} />
         <Route path="/guides/:slug"               element={<GuideArticle />} />
+        <Route path="/blog"                       element={<BlogIndex />} />
+        <Route path="/blog/:slug"                 element={<BlogArticle />} />
         <Route path="/case-studies"               element={<Navigate to="/" replace />} />
         <Route path="/resources"                  element={<Resources />} />
         <Route path="/templates"                  element={<Navigate to="/resources" replace />} />

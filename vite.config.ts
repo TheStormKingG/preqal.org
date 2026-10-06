@@ -10,7 +10,10 @@ const require = createRequire(import.meta.url);
 const vitePrerender = require('vite-plugin-prerender');
 const { PuppeteerRenderer } = require('vite-plugin-prerender');
 
+const { blogPaths } = require('./scripts/blog-posts.mjs');
+
 const PRERENDER_ROUTES = [
+  ...blogPaths,
   '/',
   '/services',
   '/services/business-plan',

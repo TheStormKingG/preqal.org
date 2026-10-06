@@ -1,0 +1,66 @@
+{
+  "slug": "quality-system-after-certification",
+  "hero": {
+    "kicker": "Quality management",
+    "h1": "What happens to a quality system after the certificate arrives",
+    "standfirst": "Most ISO 9001 systems do not fail the audit. They pass it, and then quietly stop being used. The gap between a system that is certified and a system that is working is where almost all the wasted money sits."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "The certificate is not the system",
+      "blocks": [
+        { "kind": "p", "id": "s1p1", "text": "A certificate says that on one week in one year, a sample of your records matched a standard. It says nothing about the other fifty-one weeks. Plans to run a business well are not in short supply. Where it falls down is in what happens after they are written." },
+        { "kind": "p", "id": "s1p2", "text": "I have walked into companies holding a valid certificate where the document register was eighteen months out of date, the internal audit schedule had one entry, and the corrective action log ended on the week of the last external visit. Nothing in that building was fraudulent. The system had simply been built for the auditor rather than for the work." },
+        { "kind": "callout", "id": "s1c1", "tone": "note", "text": "A useful test: ask who opened the quality manual last, and when. If nobody can answer, the manual is documentation, not a system." }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "Three ways a working system goes quiet",
+      "blocks": [
+        { "kind": "p", "id": "s2p1", "text": "The decay is rarely dramatic. It follows one of three patterns, and each needs a different fix." },
+        { "kind": "list", "id": "s2l1", "ordered": true, "items": [
+          "The measure wears down. A check that was done daily becomes weekly, then becomes a signature at month end. Nobody decided this. It drifted.",
+          "The measure was never finished. A procedure exists as a title in the register and was never written. The sub-plan that would have made it work is still a heading.",
+          "The business outgrew it. The system was designed for one site and twelve people. There are now three sites and forty, and the document that governs them is unchanged."
+        ]},
+        { "kind": "p", "id": "s2p2", "text": "The first is a discipline problem. The second is a scoping problem. The third is a design problem, and it is the one most often mistaken for the other two. Treating a design problem with more training is how a company spends two years getting nowhere." }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "What to check this quarter",
+      "blocks": [
+        { "kind": "p", "id": "s3p1", "text": "None of this needs a consultant to diagnose. Four questions will tell you where you stand, and all four can be answered from records you already hold." },
+        { "kind": "list", "id": "s3l1", "items": [
+          "When was the last internal audit that found something, and what happened to it?",
+          "How many corrective actions are open, and how old is the oldest?",
+          "Which procedures have been revised since the business last changed shape?",
+          "Who, by name, owns each process, and do they know it?"
+        ]},
+        { "kind": "p", "id": "s3p2", "text": "A system that cannot answer the second question has no feedback loop. A system that cannot answer the fourth has no owner. Both will pass an audit. Neither will improve anything." },
+        { "kind": "quote", "id": "s3q1", "text": "The point of a management system is not to prove you are organised. It is to make the next mistake less likely than the last one.", "attribution": "Dr. Stefan Gravesande" }
+      ]
+    },
+    {
+      "id": "s4",
+      "heading": "Where to start if the answers were uncomfortable",
+      "blocks": [
+        { "kind": "p", "id": "s4p1", "text": "Start with the corrective action log, because it is the only record that shows whether the business learns. Close what can be closed honestly. Reopen what was closed without evidence. Then look at what the log is telling you about where the work actually goes wrong, and fix the procedure that governs it." },
+        { "kind": "p", "id": "s4p2", "text": "That is slower than rewriting the manual and it is the only order that holds. A rewritten manual on an unchanged process is a new document in the same drawer." }
+      ]
+    }
+  ],
+  "faqs": [
+    { "id": "f1", "q": "Does a lapsed system mean we lose certification?", "a": "Not immediately. Most lapses are found at surveillance and raised as findings with time to correct. The risk is less about the certificate and more about what the lapse is costing you in rework and lost time while it runs." },
+    { "id": "f2", "q": "We are small. Is this still worth doing?", "a": "It matters more. A small business feels every hour of rework directly. The system does not need to be large; it needs to be used." },
+    { "id": "f3", "q": "How long does it take to bring a dormant system back?", "a": "For most small businesses, a focused quarter. The slow part is not the paperwork. It is agreeing who owns what, and then holding to it." }
+  ],
+  "closing": {
+    "text": "If those four questions were uncomfortable to answer, that is useful information rather than bad news. A five-day Risk Scan looks at your documents, talks to your people, and tells you plainly which of the three patterns you are in.",
+    "ctaLabel": "See what a Risk Scan covers",
+    "ctaHref": "/services/risk-scan"
+  },
+  "sources": []
+}

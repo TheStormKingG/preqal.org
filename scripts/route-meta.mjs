@@ -2,10 +2,13 @@
    route. The build stamps these into each page's static HTML; at runtime
    seo/seo.ts (via Helmet) writes the same values — the unit test in
    tests/unit/seoCopy.test.ts holds the two to each other. */
+import { blogRouteMeta } from './blog-posts.mjs';
+
 const BASE_URL = 'https://preqal.org';
 const DEFAULT_OG = `${BASE_URL}/og/home.png`;
 
 export const routeMeta = {
+  ...blogRouteMeta,
   '/': {
     title: 'Preqal | ISO 9001 System Setup for SMEs in Guyana',
     description: 'Preqal sets up ISO 9001 systems for SMEs in Guyana: process improvement and strategic direction for top management. An accredited body certifies it.',
@@ -88,13 +91,6 @@ export const routeMeta = {
     description: 'Download five professional quality management templates free — QHSE policy, document control procedure, and IMS registers. No forms, instant download.',
     canonical: `${BASE_URL}/resources/`,
     ogImage: `${BASE_URL}/og/resources.png`,
-    ogType: 'website',
-  },
-  '/e-courses': {
-    title: 'E-Course | Preqal — Practical QMS Learning',
-    description: 'Nine-module QMS e-course covering process thinking, risk, documentation, audits, CAPA, and improvement—practical and built for real operations.',
-    canonical: `${BASE_URL}/e-courses/`,
-    ogImage: `${BASE_URL}/og/e-courses.png`,
     ogType: 'website',
   },
   '/contact': {
