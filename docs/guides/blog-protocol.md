@@ -109,7 +109,7 @@ Field rules, all enforced by `scripts/blog-validate.mjs`:
           "placement": "inline",
           "claimIds": ["c3"]
         },
-        { "id": "s1b4", "kind": "pullquote", "text": "…" }
+        { "id": "s1b4", "kind": "quote", "text": "…" }
       ]
     }
   ],
@@ -120,7 +120,7 @@ Field rules, all enforced by `scripts/blog-validate.mjs`:
 ```
 
 - **Every block, section and FAQ carries a unique `id`.** The renderer keys off it. `pages/GuideArticle.tsx:98` keys paragraphs on `p.slice(0, 24)`, and two machine-written paragraphs sharing their first 24 characters produce duplicate React keys and dropped nodes. `blog-validate.mjs` asserts global id uniqueness.
-- `type` is one of `p | list | figure | pullquote`. No other value renders.
+- `type` is one of `p | list | figure | quote`. No other value renders.
 
 ### 1.4 The derived route surface
 
@@ -253,7 +253,7 @@ The voice is quantified from the corpus, not described. Every number below was c
 ### 3.1 Two registers, and bleeding between them is the main failure mode
 
 **BODY** = every `p.text`, every `list.items[]` entry, every `faq.a`, `closing.text`.
-**HERO** = `h1`, `h1Emphasis`, `intro`, `excerpt`, every `pullquote.text`.
+**HERO** = `h1`, `h1Emphasis`, `intro`, `excerpt`, every `quote.text`.
 
 The hero register's permissions do not transfer to the body, and the body's formality does not transfer to a headline. A humanizer optimising one score across a whole post flattens the two into one and scores 0% on prose that is no longer Preqal's.
 
@@ -382,7 +382,7 @@ Every number appearing as a text node in the SVG must already appear in the post
 
 ### 6.1 What is scored
 
-**Body prose only, one section at a time.** `h1`, `h1Emphasis`, `intro`, `excerpt`, every `pullquote`, every FAQ and every figure are excluded. The hero register permits a contraction and an em dash the body forbids; scoring them together is precisely what makes a humanizer flatten the two registers while reporting 0%.
+**Body prose only, one section at a time.** `h1`, `h1Emphasis`, `intro`, `excerpt`, every `quote`, every FAQ and every figure are excluded. The hero register permits a contraction and an em dash the body forbids; scoring them together is precisely what makes a humanizer flatten the two registers while reporting 0%.
 
 ### 6.2 Concurrency — one owner, one context, one lease
 
