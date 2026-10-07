@@ -98,10 +98,10 @@ Field rules, all enforced by `scripts/blog-validate.mjs`:
       "id": "s1",
       "h2": "What the auditor opens first",
       "blocks": [
-        { "id": "s1b1", "type": "p", "text": "…", "role": "reversal" },
-        { "id": "s1b2", "type": "list", "items": ["…", "…"] },
+        { "id": "s1b1", "kind": "p", "text": "…" },
+        { "id": "s1b2", "kind": "list", "items": ["…", "…"] },
         {
-          "id": "s1b3", "type": "figure",
+          "id": "s1b3", "kind": "figure",
           "src": "images/blog/<slug>/fig-1.svg",
           "alt": "A full sentence stating what the figure shows.",
           "caption": "Optional one line.",
@@ -109,7 +109,7 @@ Field rules, all enforced by `scripts/blog-validate.mjs`:
           "placement": "inline",
           "claimIds": ["c3"]
         },
-        { "id": "s1b4", "type": "pullquote", "text": "…" }
+        { "id": "s1b4", "kind": "pullquote", "text": "…" }
       ]
     }
   ],
@@ -120,7 +120,6 @@ Field rules, all enforced by `scripts/blog-validate.mjs`:
 ```
 
 - **Every block, section and FAQ carries a unique `id`.** The renderer keys off it. `pages/GuideArticle.tsx:98` keys paragraphs on `p.slice(0, 24)`, and two machine-written paragraphs sharing their first 24 characters produce duplicate React keys and dropped nodes. `blog-validate.mjs` asserts global id uniqueness.
-- `role` is optional and one of `reversal | concession | named-warning | metaphoric-close`. Exactly one block must carry each of the four.
 - `type` is one of `p | list | figure | pullquote`. No other value renders.
 
 ### 1.4 The derived route surface
