@@ -1,0 +1,152 @@
+{
+  "slug": "what-a-tender-committee-checks",
+  "hero": {
+    "kicker": "Business performance",
+    "h1": "What a tender committee checks on your ISO certificate",
+    "standfirst": "A buyer does not read your quality manual. They read the certificate, and then they go looking for whoever stands behind it. That second step takes about two minutes, and it is the one most bidders have never thought about."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "The committee is not reading your quality manual",
+      "blocks": [
+        { "kind": "p", "id": "s1p1", "text": "Most businesses prepare for a tender by thickening the file, printing the manual, tabbing every procedure and binding the lot into something presentable. A committee rarely opens it. What it opens is the certificate, and then it starts looking for whoever stands behind the certificate." },
+        { "kind": "p", "id": "s1p2", "text": "You would think a thicker submission reads as a stronger one. It does not. Evaluators work to a checklist drawn from the tender document, and a document nobody asked for earns nothing at all, however well it has been written." },
+        { "kind": "callout", "id": "s1c1", "tone": "note", "text": "A quick test before you submit. Read the tender document again and mark every line that asks for evidence. If your quality certificate is not asked for anywhere, it is a nice addition rather than a scoring one." }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "Certification and accreditation are not the same thing",
+      "blocks": [
+        { "kind": "p", "id": "s2p1", "text": "The International Organization for Standardization writes ISO 9001 and certifies nobody at all. A separate company, called a certification body, audits your business against the standard and issues the certificate. Behind that company sits an accreditation body, whose whole job is checking that the certification body is competent and independent. That is three organisations, not one." },
+        { "kind": "p", "id": "s2p2", "text": "This is the sentence worth remembering. A consultant cannot sell you the certificate, and a certification body cannot build your system. Preqal builds the system and prepares the business, and an accredited certification body of your own choosing decides whether it passes." },
+        {
+          "kind": "figure",
+          "id": "s2f1",
+          "src": "blog-figures/what-a-tender-committee-checks/fig-1-chain.svg",
+          "alt": "Three separate organisations stand behind one certificate, with the standards body writing ISO 9001, an accreditation body vouching for a certification body, and the certification body auditing your business.",
+          "caption": "Who does what. A committee works up this chain from the bottom.",
+          "placement": "inline",
+          "claimIds": ["c1", "c2", "c3"]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "A buyer can check all of this in a few minutes",
+      "blocks": [
+        { "kind": "p", "id": "s3p1", "text": "None of this is hard to verify, which is the part most bidders miss entirely. A buyer with a browser can establish whether a certificate means anything at all. The order matters. The first check settles most cases on its own." },
+        { "kind": "list", "id": "s3l1", "ordered": true, "items": [
+          "Find the accreditation mark on the certificate and note which accreditation body it names, which is not the same as the certification body whose logo sits beside it.",
+          "Search that accreditation body for the certification body, or use the global register now kept by the Global Accreditation Cooperation Incorporated, which has taken over the former role of the International Accreditation Forum.",
+          "Read the scope line and check that the certified activity is the activity you are bidding to perform, since one site or one process does not cover a whole business.",
+          "Check the dates, and whether the surveillance audits that keep a certificate alive between full assessments have actually happened."
+        ]},
+        { "kind": "p", "id": "s3p2", "text": "The businesses that fail this check are rarely dishonest. They were sold something. A certificate mill sells paper without auditing anything and with no accreditation behind it, which is cheap and quick and worth nothing from the moment a buyer runs the second step above." },
+        { "kind": "callout", "id": "s3c1", "tone": "warning", "text": "One caution before anyone rejects a bid on this basis. Accreditation is not compulsory, and a certification body without it is not automatically disreputable. What matters is whether that body can demonstrate competence, and accreditation is simply the fastest way for a buyer to see that it can." },
+        {
+          "kind": "figure",
+          "id": "s3f1",
+          "src": "blog-figures/what-a-tender-committee-checks/fig-2-checks.svg",
+          "alt": "The four checks a tender evaluator runs on a quality certificate, in the order they are run, starting with the accreditation mark and ending with the audit dates.",
+          "caption": "The order is deliberate. A certificate that fails the first check never reaches the fourth.",
+          "placement": "inline",
+          "claimIds": ["c4", "c5"]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "heading": "What the certificate will not do for your bid",
+      "blocks": [
+        { "kind": "p", "id": "s4p1", "text": "You can win work in Guyana without an ISO 9001 certificate. Plenty of businesses do. What the certificate buys is a shorter argument about whether you are organised, and that matters most when a committee is choosing between two bids that look alike on price." },
+        { "kind": "quote", "id": "s4q1", "text": "A certificate is a claim about your business made by somebody else. The only question a buyer really has is whether that somebody else is worth listening to.", "attribution": "Dr. Stefan Gravesande" },
+        { "kind": "p", "id": "s4p2", "text": "So treat the certificate as a reference rather than a trophy. A reference is worth exactly as much as the person giving it, and the accreditation body is the one giving this one. A trophy sits on a shelf. A reference gets phoned." }
+      ]
+    }
+  ],
+  "faqs": [
+    { "id": "f1", "q": "Does an ISO 9001 certificate guarantee we win the tender?", "a": "No. It normally scores against a qualification or quality criterion rather than deciding the award, and price and capacity still carry most tenders. What it reliably does is stop you being screened out early." },
+    { "id": "f2", "q": "How do we tell whether our own certification body is accredited?", "a": "Look on your certificate for an accreditation mark and the name of the accreditation body, then find that body and search its public register for your certification body. If the certificate names no accreditation body at all, you have your answer." },
+    { "id": "f3", "q": "Our certificate is valid but the scope is narrow. Does that matter?", "a": "It matters a great deal. A committee reads the scope line to see whether the certified activity is the activity you are bidding to perform. A certificate covering one site or one process does not cover the whole business." },
+    { "id": "f4", "q": "We are a small business in Guyana. Is certification worth it for tenders?", "a": "It depends on who you sell to. If your buyers are public bodies or larger private firms that ask for quality evidence, the certificate removes an obstacle that keeps coming back. The Guyana National Bureau of Standards has been the national standards body since 1985, so the language of standards is already familiar to local buyers." }
+  ],
+  "closing": {
+    "text": "If you are bidding for work and are not sure whether your system would survive the checks above, it is better to learn that before a committee learns it for you. The nine-month Systems Builder™ programme builds the system with your team and prepares you for the certification body audit. Message Dr. Gravesande. He will tell you plainly where you stand.",
+    "ctaLabel": "See what the Systems Builder™ programme covers",
+    "ctaHref": "/services/systems-builder"
+  },
+  "sources": [
+    {
+      "claimId": "c1",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "ISO does not perform certification or issue certificates, and it does not permit anyone to use the ISO logo in connection with certification.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c2",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "Accreditation – the formal recognition by an independent body, generally known as an accreditation body, that a certification body operates according to international standards.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c3",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "Certification – the provision by an independent body of written assurance (a certificate) that the product, service or system in question meets specific requirements.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c4",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "However, accreditation is not compulsory, and non-accreditation does not necessarily mean the certification body is not reputable.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c5",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "Contact the relevant certification body, accreditation body, or Global ACI directly to confirm the respective statuses.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c6",
+      "url": "https://global-aci.org/en/home/",
+      "publisher": "Global Accreditation Cooperation Incorporated",
+      "quote": "Global ACI has assumed the former roles of the International Accreditation Forum (IAF)",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c7",
+      "url": "https://global-aci.org/en/home/",
+      "publisher": "Global Accreditation Cooperation Incorporated",
+      "quote": "The Global Accreditation Cooperation Incorporated (Global ACI) is the international authority on the accreditation of laboratories, certification bodies, inspection bodies, proficiency testing providers, validation/verification bodies, reference material producers and biobanks.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c8",
+      "url": "https://gnbsgy.com/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "The Guyana National Bureau of Standards (GNBS), operating under the Ministry of Tourism, Industry and Commerce, is a semi-autonomous governmental organisation responsible for standards and quality in Guyana.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c9",
+      "url": "https://gnbsgy.com/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "GNBS was established in March 1985, under Act No. 11 of the year 1984.",
+      "retrieved": "2026-10-12"
+    },
+    {
+      "claimId": "c10",
+      "url": "https://www.iso.org/certification.html",
+      "publisher": "International Organization for Standardization",
+      "quote": "Complaints should be addressed to the certification body that certified the organization.",
+      "retrieved": "2026-10-12"
+    }
+  ]
+}

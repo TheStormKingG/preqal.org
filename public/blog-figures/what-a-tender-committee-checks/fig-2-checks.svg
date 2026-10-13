@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380" role="img">
+  <title>The four checks a tender evaluator runs on a quality certificate, in the order they are run, starting with the accreditation mark and ending with the audit dates.</title>
+  <rect x="0" y="0" width="640" height="380" rx="16" fill="#e0e5ec"/>
+
+  <text x="36" y="36" font-family="Rubik, sans-serif" font-size="12" font-weight="600" fill="#55657a" letter-spacing="1.4">IN THIS ORDER</text>
+
+  <circle cx="60" cy="78" r="18" fill="#0f172a"/>
+  <text x="60" y="84" font-family="Rubik, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="94" y="72" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">The accreditation mark</text>
+  <text x="94" y="94" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Which accreditation body does the certificate name?</text>
+  <path d="M94 110 L604 110" stroke="#a3b1c6" stroke-width="1"/>
+
+  <circle cx="60" cy="158" r="18" fill="#b45309"/>
+  <text x="60" y="164" font-family="Rubik, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="94" y="152" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">The register of that body</text>
+  <text x="94" y="174" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Is the certification body actually listed as accredited?</text>
+  <path d="M94 190 L604 190" stroke="#a3b1c6" stroke-width="1"/>
+
+  <circle cx="60" cy="238" r="18" fill="#d97706"/>
+  <text x="60" y="244" font-family="Rubik, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="94" y="232" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">The scope line</text>
+  <text x="94" y="254" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Does it cover the work you are bidding to perform?</text>
+  <path d="M94 270 L604 270" stroke="#a3b1c6" stroke-width="1"/>
+
+  <circle cx="60" cy="318" r="18" fill="#f59e0b"/>
+  <text x="60" y="324" font-family="Rubik, sans-serif" font-size="16" font-weight="700" fill="#0f172a" text-anchor="middle">4</text>
+  <text x="94" y="312" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">The dates</text>
+  <text x="94" y="334" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Still current, with its surveillance audits carried out?</text>
+</svg>

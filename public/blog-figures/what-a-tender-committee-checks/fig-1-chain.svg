@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img">
+  <title>Three separate organisations stand behind one certificate, with the standards body writing ISO 9001, an accreditation body vouching for a certification body, and the certification body auditing your business.</title>
+  <rect x="0" y="0" width="640" height="400" rx="16" fill="#e0e5ec"/>
+
+  <rect x="36" y="26" width="568" height="72" rx="12" fill="#ffffff"/>
+  <rect x="36" y="26" width="5" height="72" rx="2.5" fill="#0f172a"/>
+  <text x="60" y="56" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">International Organization for Standardization</text>
+  <text x="60" y="79" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Writes the ISO 9001 standard. Certifies nobody at all.</text>
+
+  <path d="M320 100 L320 118" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M313 114 L320 122 L327 114 Z" fill="#d97706"/>
+
+  <rect x="36" y="124" width="568" height="72" rx="12" fill="#ffffff"/>
+  <rect x="36" y="124" width="5" height="72" rx="2.5" fill="#b45309"/>
+  <text x="60" y="154" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">Accreditation body</text>
+  <text x="60" y="177" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Checks that the certification body is competent and independent.</text>
+
+  <path d="M320 198 L320 216" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M313 212 L320 220 L327 212 Z" fill="#d97706"/>
+
+  <rect x="36" y="222" width="568" height="72" rx="12" fill="#ffffff"/>
+  <rect x="36" y="222" width="5" height="72" rx="2.5" fill="#f59e0b"/>
+  <text x="60" y="252" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#0f172a">Certification body</text>
+  <text x="60" y="275" font-family="Rubik, sans-serif" font-size="14" fill="#475569">Audits your business. Issues the certificate.</text>
+
+  <path d="M320 296 L320 314" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M313 310 L320 318 L327 310 Z" fill="#d97706"/>
+
+  <rect x="36" y="320" width="568" height="58" rx="12" fill="#0f172a"/>
+  <text x="60" y="347" font-family="Rubik, sans-serif" font-size="17" font-weight="600" fill="#ffffff">Your business</text>
+  <text x="60" y="367" font-family="Rubik, sans-serif" font-size="14" fill="#a3b1c6">Holds the certificate. Named on the tender.</text>
+</svg>
