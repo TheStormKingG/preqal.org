@@ -47,3 +47,8 @@ playwright-report/
 # /brag output: a 2MB render plus a third-party music track whose licence the
 # bundling skill says is unverified. Kept out of a public repo until it is.
 brag-output/
+
+# Blog review state: local runtime, written by the scheduled runs.
+# A stale "awaiting" committed into a fresh checkout would wedge the weekly
+# task behind a review that cannot complete.
+content/blog/runs/review-state.json
