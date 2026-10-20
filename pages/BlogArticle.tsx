@@ -172,12 +172,28 @@ const BlogArticle: React.FC = () => {
           {post.body.sources.length > 0 && (
             <section className="mb-10">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Sources</h2>
+              {/* Deduplicated by URL. Several claims routinely cite one page, and
+                  rendering one row per CLAIM printed the same publisher name ten
+                  times over three real URLs — which reads as a padded citation
+                  list rather than an honest one. The count of claims each source
+                  carries is shown instead, so nothing is hidden by the merge. */}
               <ol className="list-decimal pl-5 space-y-1.5 text-sm text-slate-400">
-                {post.body.sources.map((s) => (
-                  <li key={s.claimId}>
+                {Object.values(
+                  post.body.sources.reduce<Record<string, { url: string; publisher: string; n: number }>>(
+                    (acc, s) => {
+                      acc[s.url] = acc[s.url]
+                        ? { ...acc[s.url], n: acc[s.url].n + 1 }
+                        : { url: s.url, publisher: s.publisher, n: 1 };
+                      return acc;
+                    },
+                    {},
+                  ),
+                ).map((s) => (
+                  <li key={s.url}>
                     <a href={s.url} target="_blank" rel="noopener noreferrer nofollow" className="hover:text-amber-700 underline decoration-slate-300 underline-offset-2">
                       {s.publisher}
                     </a>
+                    {s.n > 1 && <span className="text-slate-400"> ({s.n} references)</span>}
                   </li>
                 ))}
               </ol>
