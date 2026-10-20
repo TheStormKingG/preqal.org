@@ -11,6 +11,7 @@ export const BOTTOM_NAV_ROUTES = ['/', '/resources', '/contact'] as const;
    two never drift apart. */
 export const NAV_ITEMS = [
   { name: 'Home', path: '/' },
+  { name: 'Journal', path: '/blog' },
   { name: 'Templates', path: '/resources' },
   { name: 'Contact', path: '/contact' },
 ];

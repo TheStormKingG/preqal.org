@@ -196,6 +196,7 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
           <div className="md:pt-7">
             <h3 className="text-slate-800 font-semibold mb-4 tracking-wider uppercase text-sm">COMPANY</h3>
             <ul className="space-y-2 text-sm">
+              <li><Link to={href('/blog')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Journal</Link></li>
               <li><Link to={href('/guides')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Guides</Link></li>
               <li><Link to={href('/resources')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Templates</Link></li>
               <li><Link to={href('/contact')} className="text-slate-500 hover:text-amber-600 transition-colors duration-200">Contact</Link></li>
