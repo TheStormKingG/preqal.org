@@ -37,7 +37,13 @@ for (const s of sources) {
       headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36' },
       signal: AbortSignal.timeout(25000),
     });
-    pages.set(s.url, r.ok ? strip(await r.text()) : { refused: `HTTP ${r.status}` });
+    if (!r.ok) { pages.set(s.url, { refused: `HTTP ${r.status}` }); continue; }
+    const body = strip(await r.text());
+    /* A 200 carrying almost nothing is a bot-block shell, not a page. iso.org
+       serves 403 to fetch and a 257-character shell to a headless browser; a
+       checker that treats that as readable reports every quote MISSING and
+       sends someone to delete correct citations. Too-short is UNVERIFIED. */
+    pages.set(s.url, body.length < 1200 ? { refused: `thin body (${body.length} chars) — looks like a bot block` } : body);
   } catch (e) {
     pages.set(s.url, { refused: String(e.name || e).slice(0, 40) });
   }
