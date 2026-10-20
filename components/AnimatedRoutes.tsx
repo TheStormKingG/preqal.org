@@ -23,6 +23,7 @@ const NotFound = lazy(() => import('../pages/NotFound'));
 
 const routeOrder = [
   '/',
+  '/blog',
   '/resources',
   '/contact',
   '/business-growth-assessment',

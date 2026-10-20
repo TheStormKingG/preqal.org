@@ -5,7 +5,6 @@ import { href, normalizePath } from '../lib/paths';
 /* The phone's primary navigation. With only three destinations a bottom bar
    beats a menu behind a button: every route is one thumb-reach away and always
    visible, so nothing has to be opened to find out where the site goes. */
-export const BOTTOM_NAV_ROUTES = ['/', '/resources', '/contact'] as const;
 
 /* One list, one look. The top bar renders these same items from md up, so the
    two never drift apart. */
@@ -15,6 +14,13 @@ export const NAV_ITEMS = [
   { name: 'Templates', path: '/resources' },
   { name: 'Contact', path: '/contact' },
 ];
+
+/* Derived from NAV_ITEMS, never written out again. RouteSwipe walks this list
+   for left/right and swipe navigation, and when it was a separate literal it
+   silently lost /blog — the Journal rendered in both bars and was skipped by
+   every swipe and arrow press. The comment above NAV_ITEMS already promised
+   one list; this makes that true rather than aspirational. */
+export const BOTTOM_NAV_ROUTES = NAV_ITEMS.map((i) => i.path);
 
 /** A destination's own styling, shared by both bars. */
 export const navLinkClass = (active: boolean) =>
