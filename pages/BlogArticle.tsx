@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarDays } from 'lucide-react';
 import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getPost, POSTS, TOPIC_LABEL, type BlogBlock } from '../data/blog';
+import { GUIDES } from '../data/guides';
 import { blogPostingSchema, blogFaqSchema } from '../seo/blogSchemas';
 import { href } from '../lib/paths';
 
@@ -199,6 +200,34 @@ const BlogArticle: React.FC = () => {
               </ol>
             </section>
           )}
+
+          {/* Further reading. The post declares its cluster once; the guide and
+              service pages derive the reverse from the same declaration, so an
+              edge cannot exist in only one direction. */}
+          {(post.body.relatedGuides?.length || post.body.relatedServices?.length) ? (
+            <section className="mb-10">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Further reading</h2>
+              <ul className="space-y-2">
+                {post.body.relatedGuides?.map((g) => {
+                  const guide = GUIDES.find((x) => x.slug === g);
+                  return guide ? (
+                    <li key={g}>
+                      <Link to={href(`/guides/${g}`)} className="text-base font-semibold text-amber-700 hover:text-amber-900">
+                        {guide.title.split('|')[0].trim()}
+                      </Link>
+                    </li>
+                  ) : null;
+                })}
+                {post.body.relatedServices?.map((sv) => (
+                  <li key={sv}>
+                    <Link to={href(`/services/${sv}`)} className="text-base font-semibold text-amber-700 hover:text-amber-900">
+                      {sv.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <Link to={href('/blog')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700">
             <ArrowLeft className="h-4 w-4" /> All posts

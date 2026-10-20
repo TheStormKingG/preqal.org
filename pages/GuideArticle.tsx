@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { whatsAppLink, trackWhatsAppClick, WhatsAppIcon } from '../components/WhatsAppContact';
 import { GUIDES, type Guide } from '../data/guides';
+import { postsForGuide } from '../data/blog';
 import { href } from '../lib/paths';
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -149,6 +150,18 @@ const GuideArticle: React.FC = () => {
 
           {/* Other guides */}
           <ScrollReveal yFrom={12}>
+            {postsForGuide(guide.slug).length > 0 && (
+              <div className="mb-10">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">From the Journal</p>
+                <div className="flex flex-col gap-3">
+                  {postsForGuide(guide.slug).map((bp) => (
+                    <Link key={bp.slug} to={href(`/blog/${bp.slug}`)} className="text-base font-semibold text-amber-700 hover:text-amber-900">
+                      {bp.title.split('|')[0].trim()}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">More guides</p>
             <div className="flex flex-col gap-3">
               {others.map((o) => (

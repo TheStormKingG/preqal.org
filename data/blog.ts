@@ -71,6 +71,12 @@ export interface BlogPostBody {
   faqs?: { id: string; q: string; a: string }[];
   closing: { text: string; ctaLabel: string; ctaHref: string };
   sources: BlogSource[];
+  /* Cluster membership, declared ONCE here and read in both directions. The
+     post renders these as further reading; the guide and service pages derive
+     the reverse by asking which posts name them. Declaring each edge twice is
+     how half a cluster ends up one-way without anything noticing. */
+  relatedGuides?: string[];
+  relatedServices?: string[];
 }
 
 export interface BlogPost extends BlogPostMeta {
@@ -108,6 +114,14 @@ export const POSTS: BlogPost[] = ALL_POSTS.filter((p) => p.status === 'published
 
 export const getPost = (slug: string): BlogPost | undefined =>
   POSTS.find((p) => p.slug === slug);
+
+/** Published posts that name this guide. The reverse of relatedGuides. */
+export const postsForGuide = (guideSlug: string): BlogPost[] =>
+  POSTS.filter((p) => p.body.relatedGuides?.includes(guideSlug));
+
+/** Published posts that name this service. The reverse of relatedServices. */
+export const postsForService = (serviceSlug: string): BlogPost[] =>
+  POSTS.filter((p) => p.body.relatedServices?.includes(serviceSlug));
 
 export const TOPIC_LABEL: Record<BlogTopic, string> = {
   'quality-management': 'Quality management',

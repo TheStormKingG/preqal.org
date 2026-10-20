@@ -74,6 +74,18 @@ if (overloaded.length) {
   console.log('  OVERLOADED (one page carrying 4+ distinct claims — cite the specific page):');
   for (const [u, n] of overloaded) console.log(`    ${n}x  ${u}`);
 }
-if (missing > 0 || overloaded.length) process.exit(1);
+/* Cluster membership. A post with no declared relations is an orphan: it
+   receives nav/footer links only, which every page on the site already has,
+   so it inherits no topical authority and passes none on. Measured before
+   this rule existed, the two live posts carried 2 in-content inbound links
+   against 5-7 for a service page. */
+const guides = post.relatedGuides ?? [];
+const services = post.relatedServices ?? [];
+console.log(`\n  cluster: ${guides.length} guide(s), ${services.length} service(s)`);
+let orphan = false;
+if (guides.length === 0) { console.log('  NO relatedGuides — the post links up to no hub'); orphan = true; }
+if (services.length === 0) { console.log('  NO relatedServices — the post sells nothing'); orphan = true; }
+
+if (missing > 0 || overloaded.length || orphan) process.exit(1);
 if (unverified > 0) { console.log('  PASS WITH UNVERIFIED — report these, do not call the post clean'); process.exit(0); }
 process.exit(0);

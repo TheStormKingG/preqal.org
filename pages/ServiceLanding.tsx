@@ -7,6 +7,7 @@ import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useWhatsApp, whatsAppLink, trackWhatsAppClick, WhatsAppIcon, type WhatsAppServiceKey } from '../components/WhatsAppContact';
 import { href } from '../lib/paths';
+import { postsForService } from '../data/blog';
 import { GUIDES } from '../data/guides';
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -338,6 +339,9 @@ const ServiceLanding: React.FC = () => {
   const others = SERVICE_PAGES.filter((p) => p.slug !== page.slug);
 
   const relatedGuides = GUIDES.filter((g) => g.serviceSlug === page.slug);
+  /* The reverse of a post's relatedServices. Declared once on the post,
+     read here, so the edge cannot exist in only one direction. */
+  const relatedPosts = postsForService(page.slug);
 
   return (
     <>
@@ -558,6 +562,24 @@ const ServiceLanding: React.FC = () => {
               {/* Each guide already links to the service it belongs to; this is
                   the return leg. Without it the guides were reachable only from
                   their own index, which is why Google had barely crawled them. */}
+              {relatedPosts.length > 0 && (
+                <>
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
+                    From the Journal
+                  </p>
+                  <div className="flex flex-col gap-2 mb-10">
+                    {relatedPosts.map((bp) => (
+                      <Link
+                        key={bp.slug}
+                        to={href(`/blog/${bp.slug}`)}
+                        className="text-base font-semibold text-amber-700 hover:text-amber-900"
+                      >
+                        {bp.title.split('|')[0].trim()}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
               {relatedGuides.length > 0 && (
                 <>
                   <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
