@@ -109,7 +109,7 @@ const BlogArticle: React.FC = () => {
       <div className="min-h-screen pb-24" style={{ touchAction: 'pan-y' }}>
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <motion.p
-            className="text-[11px] font-bold uppercase tracking-widest text-amber-700 mb-3"
+            className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-3"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 }}
           >
@@ -138,7 +138,7 @@ const BlogArticle: React.FC = () => {
             <span aria-hidden="true">·</span>
             <span>{post.readMinutes} min read</span>
             <span aria-hidden="true">·</span>
-            <span className="text-amber-700 font-semibold">{TOPIC_LABEL[post.topic]}</span>
+            <span className="text-amber-600 font-semibold">{TOPIC_LABEL[post.topic]}</span>
           </div>
 
           <p className="text-xl text-slate-700 leading-relaxed mb-10">{post.body.hero.standfirst}</p>
@@ -220,7 +220,7 @@ const BlogArticle: React.FC = () => {
                   const guide = GUIDES.find((x) => x.slug === g);
                   return guide ? (
                     <li key={g}>
-                      <Link to={href(`/guides/${g}`)} className="text-base font-semibold text-amber-700 hover:text-amber-900">
+                      <Link to={href(`/guides/${g}`)} className="text-base font-semibold text-amber-600 hover:text-amber-900">
                         {guide.title.split('|')[0].trim()}
                       </Link>
                     </li>
@@ -228,7 +228,7 @@ const BlogArticle: React.FC = () => {
                 })}
                 {post.body.relatedServices?.map((sv) => (
                   <li key={sv}>
-                    <Link to={href(`/services/${sv}`)} className="text-base font-semibold text-amber-700 hover:text-amber-900">
+                    <Link to={href(`/services/${sv}`)} className="text-base font-semibold text-amber-600 hover:text-amber-900">
                       {sv.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')}
                     </Link>
                   </li>
@@ -237,7 +237,7 @@ const BlogArticle: React.FC = () => {
             </section>
           ) : null}
 
-          <Link to={href('/blog')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700">
+          <Link to={href('/blog')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600">
             <ArrowLeft className="h-4 w-4" /> All posts
           </Link>
 

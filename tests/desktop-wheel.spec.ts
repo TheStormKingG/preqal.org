@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { NAV_ITEMS } from '../components/BottomNav';
 
 /* Desktop drives the deck entirely from the wheel, and the two devices that
    produce wheel events could not be less alike:
@@ -140,19 +141,30 @@ const sideFlick = (peak: number) => {
 };
 
 test('a sideways trackpad swipe moves one page, and only one', async ({ page }) => {
-  test.setTimeout(90_000);
+  /* Derived from NAV_ITEMS. Written out by hand, this test named / then
+     /resources then /contact, so it kept passing when the Journal joined the
+     bar and the trackpad path skipped it — the same defect, on the one input
+     device the touch and keyboard tests do not cover. */
+  test.setTimeout(120_000);
   await open(page);
-  expect(await sideways(page, sideFlick(40)), 'swiping left goes to the next tab').toBe('/resources');
-  expect(await sideways(page, sideFlick(40)), 'and again').toBe('/contact');
-  expect(await sideways(page, sideFlick(40)), 'the last tab does not wrap').toBe('/contact');
-  expect(await sideways(page, sideFlick(-40)), 'swiping right goes back').toBe('/resources');
+  const tabs = NAV_ITEMS.map((t) => t.path);
+  expect(tabs.length, 'the bar should carry more than one tab').toBeGreaterThan(1);
+
+  for (let i = 1; i < tabs.length; i++) {
+    expect(await sideways(page, sideFlick(40)), `left should reach ${tabs[i]}`).toBe(tabs[i]);
+  }
+  expect(await sideways(page, sideFlick(40)), 'the last tab does not wrap').toBe(tabs[tabs.length - 1]);
+  for (let i = tabs.length - 2; i >= 0; i--) {
+    expect(await sideways(page, sideFlick(-40)), `right should reach ${tabs[i]}`).toBe(tabs[i]);
+  }
+  expect(await sideways(page, sideFlick(-40)), 'the first tab does not wrap').toBe(tabs[0]);
 });
 
 test('a long sideways swipe with a coast still moves only one page', async ({ page }) => {
   test.setTimeout(90_000);
   await open(page);
   const long = [...sideFlick(60), ...Array.from({ length: 40 }, (_, i) => ({ dx: Math.max(1, 40 - i) }))];
-  expect(await sideways(page, long)).toBe('/resources');
+  expect(await sideways(page, long)).toBe(NAV_ITEMS[1].path);
 });
 
 test('a mostly vertical wheel is left to the deck, not the router', async ({ page }) => {

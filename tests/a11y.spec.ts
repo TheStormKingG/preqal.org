@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { routeMeta } from '../scripts/route-meta.mjs';
 import fs from 'node:fs';
 
 /* The accessibility contract, measured in a browser against the dev server.
@@ -19,14 +20,15 @@ const PAGES = ['/', '/resources/', '/contact/'] as const;
 /* Every other route a reader can reach. The first audit stopped at three
    pages, so the first fix did too, and the same contrast defects sat on the
    rest of the site for four days. axe runs over all of them. */
-const EVERY_ROUTE = [
-  '/', '/resources/', '/contact/', '/business-growth-assessment/', '/guides/',
-  '/preqal-not-prequel/', '/privacy-policy/', '/terms-of-service/',
-  '/services/business-plan/', '/services/risk-scan/', '/services/systems-builder/',
-  '/services/certified-care/', '/services/export-ready/',
-  '/guides/haccp-certification-guyana/', '/guides/iso-9001-cost-guyana/',
-  '/guides/export-food-from-guyana/', '/e-courses/',
-] as const;
+/* Derived from routeMeta, which is the list the prerenderer and the sitemap
+   already build from, so it is the real published-route set. Hand-written, this
+   list had drifted twice over: it never gained /blog or /services, and it
+   carried /e-courses, which is a <Navigate> redirect — axe was auditing the
+   home page twice under another name and the Journal not at all. The note above
+   wanted every route a reader can reach; this is how it stays true. */
+const EVERY_ROUTE = Object.keys(routeMeta)
+  .map((r) => (r.endsWith('/') ? r : `${r}/`))
+  .sort();
 const VIEWPORTS = {
   phone: { width: 390, height: 844 },
   desktop: { width: 1440, height: 900 },
