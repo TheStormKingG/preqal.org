@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { href, normalizePath } from '../lib/paths';
 
-/* The phone's primary navigation. With only three destinations a bottom bar
+/* The phone's primary navigation. With a handful of destinations a bottom bar
    beats a menu behind a button: every route is one thumb-reach away and always
    visible, so nothing has to be opened to find out where the site goes. */
 

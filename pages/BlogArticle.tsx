@@ -98,7 +98,15 @@ const BlogArticle: React.FC = () => {
         }}
         extraSchemas={schemas}
       />
-      <div className="min-h-screen pb-24">
+      {/* The deck pages set touch-action: none so Chrome cannot claim a drag and
+      cancel the pointer stream (SlideDeck.tsx:451, and the comment above it).
+      The Journal is the only nav destination that is NOT a deck, so it kept
+      the browser default and inherited exactly the bug that comment warns
+      about: Chrome took the horizontal drag, fired pointercancel, RouteSwipe
+      dropped its start point, and a swipe could get INTO the Journal but
+      never out of it. pan-y keeps vertical scrolling, which a long article
+      needs, while leaving sideways gestures to the router. */}
+      <div className="min-h-screen pb-24" style={{ touchAction: 'pan-y' }}>
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <motion.p
             className="text-[11px] font-bold uppercase tracking-widest text-amber-700 mb-3"

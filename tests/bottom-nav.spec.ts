@@ -1,12 +1,27 @@
 import { test, expect, chromium, devices, type Page, type CDPSession } from '@playwright/test';
+import { NAV_ITEMS } from '../components/BottomNav';
 
-/* On a phone the three destinations live in a bottom tab bar and a sideways
-   swipe moves between them in the same order. The burger menu is gone. */
+/* On a phone every NAV_ITEMS destination lives in a bottom tab bar and a
+   sideways swipe moves between them in the same order. Both walks below take
+   their destinations from NAV_ITEMS, so a tab added to the bar is a tab these
+   tests require to be reachable. */
 
 const BASE = 'http://localhost:3000';
 /* The tab bar links to the canonical, trailing-slash URL; the router accepts
    either. Compare the form the app compares. */
 const where = (page: Page) => new URL(page.url()).pathname.replace(/(.)\/$/, '$1');
+
+/* Press/swipe, then wait for the router to actually arrive. A fixed delay
+   raced the first gesture after load: the key landed before RouteSwipe was
+   listening, the URL never changed, and the test failed for a reason that had
+   nothing to do with the behaviour under test. A real wait still fails if the
+   page genuinely never gets there — it just stops failing when it does. */
+async function settle(page: Page, want: string, ms = 6000) {
+  await page
+    .waitForURL((u) => new URL(u).pathname.replace(/(.)\/$/, '$1') === want, { timeout: ms })
+    .catch(() => {});
+  await page.waitForTimeout(250);
+}
 
 async function open(page: Page, path = '/') {
   await page.goto(BASE + path, { waitUntil: 'networkidle' });
@@ -22,7 +37,7 @@ test('the phone carries a bottom tab bar and no burger', async ({ page }) => {
 
   const bar = page.locator('nav[aria-label="Primary"]');
   await expect(bar, 'the tab bar is on screen').toBeVisible();
-  await expect(bar.getByRole('link'), 'one tab per destination').toHaveCount(3);
+  await expect(bar.getByRole('link'), 'one tab per destination').toHaveCount(NAV_ITEMS.length);
   await expect(page.getByRole('button', { name: /toggle menu/i }), 'the burger is gone').toHaveCount(0);
 
   // It sits at the bottom, and the deck stops above it rather than running under.
@@ -147,7 +162,7 @@ test('both WhatsApp buttons are the same amber pill', async ({ page }) => {
   expect(phone.radius, 'both fully rounded').toBeGreaterThan(20);
 });
 
-test('a sideways swipe moves between the three pages', async () => {
+test('a sideways swipe walks every tab in the bar', async () => {
   test.setTimeout(120_000);
   const browser = await chromium.launch();
   try {
@@ -175,25 +190,26 @@ test('a sideways swipe moves between the three pages', async () => {
     const path = () => where(page);
 
     await open(page);
-    expect(path()).toBe('/');
+    const tabs = NAV_ITEMS.map((t) => t.path);
+    expect(path(), 'the walk starts at the first tab').toBe(tabs[0]);
+
+    for (let n = 1; n < tabs.length; n++) {
+      await swipe(0.8, 0.2);
+      await settle(page, tabs[n]);
+      expect(path(), `swiping left should reach ${tabs[n]}`).toBe(tabs[n]);
+    }
 
     await swipe(0.8, 0.2);
-    expect(path(), 'swiping left goes to the next tab').toBe('/resources');
+    expect(path(), 'the last tab does not wrap around').toBe(tabs[tabs.length - 1]);
 
-    await swipe(0.8, 0.2);
-    expect(path()).toBe('/contact');
-
-    await swipe(0.8, 0.2);
-    expect(path(), 'the last tab does not wrap around').toBe('/contact');
-
-    await swipe(0.2, 0.8);
-    expect(path(), 'swiping right goes back').toBe('/resources');
+    for (let n = tabs.length - 2; n >= 0; n--) {
+      await swipe(0.2, 0.8);
+      await settle(page, tabs[n]);
+      expect(path(), `swiping right should reach ${tabs[n]}`).toBe(tabs[n]);
+    }
 
     await swipe(0.2, 0.8);
-    expect(path()).toBe('/');
-
-    await swipe(0.2, 0.8);
-    expect(path(), 'the first tab does not wrap around').toBe('/');
+    expect(path(), 'the first tab does not wrap around').toBe(tabs[0]);
   } finally {
     await browser.close();
   }
@@ -207,7 +223,13 @@ test('a diagonal swipe moves the page or the deck, never both', async () => {
     const page = await ctx.newPage();
     const cdp: CDPSession = await ctx.newCDPSession(page);
     const { width, height } = devices['Galaxy S9+'].viewport;
-    await open(page);
+    /* Deliberately not starting at home: this test needs the DESTINATION to run
+       as a deck so it can also prove the deck did not advance, and the tab after
+       home (/blog) is an ordinary scrolling page with no deck at all. */
+    const tabs = NAV_ITEMS.map((t) => t.path);
+    const start = '/resources';
+    const dest = tabs[tabs.indexOf(start) + 1];
+    await open(page, start);
 
     // Mostly sideways with a healthy vertical drift — the kind of swipe a real
     // thumb makes. The router should take it and the deck should stay put.
@@ -221,15 +243,27 @@ test('a diagonal swipe moves the page or the deck, never both', async () => {
       });
     }
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-    await page.waitForTimeout(1200);
+    /* Same wait the two walks use. A flat delay here let a dropped first
+       gesture read as 'the router ignored a sideways swipe', which is a claim
+       about the behaviour rather than about the timing. */
+    await settle(page, dest);
 
-    expect(where(page), 'the sideways intent wins').toBe('/resources');
-    expect(
-      await page.evaluate(() =>
-        document.querySelector('main section[aria-hidden="false"]')?.getAttribute('aria-label') ?? '',
-      ),
-      'and the deck it left behind did not also advance',
-    ).toContain('Free templates');
+    /* Derived, not named: the old version froze this to a three-tab era and
+       went red the day a fourth tab was added. */
+    expect(where(page), 'the sideways intent wins').toBe(dest);
+
+    /* By position, not by slide title. Asking "is the active slide still the
+       first one" says exactly what this test means, and keeps saying it when a
+       slide is retitled or reordered. */
+    const deck = await page.evaluate(() => {
+      const secs = Array.from(document.querySelectorAll('main section'));
+      return {
+        count: secs.length,
+        active: secs.findIndex((x) => x.getAttribute('aria-hidden') === 'false'),
+      };
+    });
+    expect(deck.count, `${dest} must run as a deck for this to mean anything`).toBeGreaterThan(1);
+    expect(deck.active, 'and the deck it arrived on did not also advance').toBe(0);
   } finally {
     await browser.close();
   }
@@ -271,15 +305,55 @@ test('a vertical swipe still drives the deck, not the router', async () => {
 
 /* All three pages run as a deck at every width, so the footer is the last
    slide everywhere and must sit identically on each. */
-test('the footer slide is the same on all three pages', async ({ page }) => {
+/* Every deck page, which is not every nav destination: /blog is an ordinary
+   scrolling article with no deck and no footer slide, so it has nothing to
+   compare here. */
+test('the footer slide is the same on every deck page', async ({ page }) => {
   test.setTimeout(180_000);
-  const readFooter = async (path: string, steps: number) => {
+  /* No step count: the footer is the LAST slide, so walk until the deck says it
+     is there. The old version pressed a hardcoded 7/5/3 times with a flat 620ms
+     wait, which froze the counts to one era of the decks and lost a slide
+     whenever a press landed slow — the failure read 'Send a message' instead of
+     'Contact & info', which looks like a footer bug and is really a dropped
+     keystroke. */
+  const readFooter = async (path: string) => {
     await open(page, path);
-    for (let i = 0; i < steps; i++) {
+    const slides = await page.evaluate(() => document.querySelectorAll('main section').length);
+    expect(slides, `${path} should run as a deck`).toBeGreaterThan(1);
+    for (let i = 1; i < slides; i++) {
       await page.keyboard.press('ArrowDown');
-      await page.waitForTimeout(620);
+      await page
+        .waitForFunction(
+          (want) =>
+            Array.from(document.querySelectorAll('main section')).findIndex(
+              (s) => s.getAttribute('aria-hidden') === 'false',
+            ) >= want,
+          i,
+          { timeout: 6000 },
+        )
+        .catch(() => {});
     }
-    await page.waitForTimeout(900);
+    /* Wait for the slide to stop moving, rather than for a fixed stretch and
+       hope. These numbers are compared across pages down to the pixel, and the
+       deck arrives on a spring: sampled mid-settle, home read a scale of 1 and
+       the next page 0.999868 — the same layout caught at two different
+       instants. */
+    await page
+      .waitForFunction(
+        () => {
+          const fit = document.querySelector('main section[aria-hidden="false"] .deck-fit');
+          if (!fit) return false;
+          const now = getComputedStyle(fit).transform;
+          const w = window as unknown as { __lastFit?: string; __fitStill?: number };
+          w.__fitStill = now === w.__lastFit ? (w.__fitStill ?? 0) + 1 : 0;
+          w.__lastFit = now;
+          return (w.__fitStill ?? 0) >= 3;
+        },
+        undefined,
+        { timeout: 8000, polling: 120 },
+      )
+      .catch(() => {});
+    await page.waitForTimeout(250);
     return page.evaluate(() => {
       const sec = document.querySelector('main section[aria-hidden="false"]')!;
       const sr = sec.getBoundingClientRect();
@@ -290,16 +364,16 @@ test('the footer slide is the same on all three pages', async ({ page }) => {
         slide: Math.round(sr.height),
         content: Math.round(fr.height),
         top: Math.round(fr.top - sr.top),
-        scale: getComputedStyle(fit).transform,
+        scale: Math.round(new DOMMatrixReadOnly(getComputedStyle(fit).transform).a * 1000) / 1000,
       };
     });
   };
 
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width > 1024 ? 900 : 844 });
-    const home = await readFooter('/', 7);
-    const templates = await readFooter('/resources', 5);
-    const contact = await readFooter('/contact', 3);
+    const home = await readFooter('/');
+    const templates = await readFooter('/resources');
+    const contact = await readFooter('/contact');
 
     for (const [name, got] of [['templates', templates], ['contact', contact]] as const) {
       expect(got.label, `${name} ends on the footer at ${width}px`).toBe('Contact & info');
@@ -326,34 +400,40 @@ test('desktop runs the same deck as the phone, footer slide and all', async ({ p
   }
 });
 
-test('the arrow keys walk between the three pages', async ({ page }) => {
+test('the arrow keys walk every tab in the bar, in order', async ({ page }) => {
+  /* Derived from NAV_ITEMS, deliberately. The previous version of this test
+     named /, /resources and /contact by hand, so when the Journal joined the
+     bar the test kept passing while the tab itself could not be reached by
+     arrow or swipe. A test that hardcodes the destinations cannot notice a new
+     one going missing. */
+  test.setTimeout(120_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page);
   const at = () => where(page);
 
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(900);
-  expect(at(), 'right goes to the next tab').toBe('/resources');
+  const forward = NAV_ITEMS.map((i) => i.path);
+  expect(forward.length, 'the bar should carry more than one tab').toBeGreaterThan(1);
+  expect(at(), 'the walk starts at the first tab').toBe(forward[0]);
+
+  for (let i = 1; i < forward.length; i++) {
+    await page.keyboard.press('ArrowRight');
+    await settle(page, forward[i]);
+    expect(at(), `right from ${forward[i - 1]} should reach ${forward[i]}`).toBe(forward[i]);
+  }
 
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(900);
-  expect(at()).toBe('/contact');
+  expect(at(), 'the last tab does not wrap').toBe(forward[forward.length - 1]);
 
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(900);
-  expect(at(), 'the last tab does not wrap').toBe('/contact');
-
-  await page.keyboard.press('ArrowLeft');
-  await page.waitForTimeout(900);
-  expect(at(), 'left goes back').toBe('/resources');
+  for (let i = forward.length - 2; i >= 0; i--) {
+    await page.keyboard.press('ArrowLeft');
+    await settle(page, forward[i]);
+    expect(at(), `left from ${forward[i + 1]} should reach ${forward[i]}`).toBe(forward[i]);
+  }
 
   await page.keyboard.press('ArrowLeft');
   await page.waitForTimeout(900);
-  expect(at()).toBe('/');
-
-  await page.keyboard.press('ArrowLeft');
-  await page.waitForTimeout(900);
-  expect(at(), 'the first tab does not wrap').toBe('/');
+  expect(at(), 'the first tab does not wrap').toBe(forward[0]);
 });
 
 test('arrow keys inside a field are left to the field', async ({ page }) => {

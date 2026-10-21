@@ -21,7 +21,7 @@ const BlogIndex = lazy(() => import('../pages/BlogIndex'));
 const BlogArticle = lazy(() => import('../pages/BlogArticle'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
-const routeOrder = [
+export const routeOrder = [
   '/',
   '/blog',
   '/resources',
