@@ -83,3 +83,92 @@ export function classifyReply(text) {
      silence, but never as consent. */
   return { verdict: 'ambiguous', reason: 'no APPROVE or REJECT keyword found' };
 }
+
+/* How long a post may sit with the reviewer before the weekly run stops
+   treating silence as normal. One cycle unanswered is a reminder; two is the
+   pipeline being held shut by a draft nobody is going to answer. */
+export const STALE_AFTER_DAYS = 7;
+export const RELEASE_AFTER_DAYS = 14;
+
+/**
+ * What should THIS Monday's run do?
+ *
+ * The rule used to be a line of prose in the task file: if `awaiting` is set,
+ * stop. That is correct for a week and wrong forever. On 2026-10-20 the run
+ * fired, found a draft from the day before still unanswered, stopped, and
+ * reported success in five and a half minutes. Nothing was broken and nothing
+ * was produced, and the two readings are indistinguishable from outside: a run
+ * that writes a post takes about half an hour, and both say "succeeded".
+ *
+ * So the decision moves here, where it can be tested, and it returns an
+ * outcome the run has to print rather than a boolean it can describe however
+ * it likes.
+ *
+ * @param {object} state  from readState()
+ * @param {Date}   now    injected, never read from the clock here
+ */
+export function decideWeeklyRun(state, now) {
+  const halt = (outcome, reason) => ({ action: 'halt', outcome, reason, ageDays: null });
+
+  /* A corrupt state file might be hiding a post already sent out. Producing
+     another one would put two in front of the reviewer, which is the thing the
+     original rule existed to prevent, so this stops — but loudly, and as its
+     own outcome rather than as a skip. */
+  if (state.corrupt) {
+    return halt('BLOCKED', 'review-state.json is unreadable — repair it before the next run');
+  }
+
+  if (!state.awaiting) {
+    return { action: 'produce', outcome: 'PRODUCE', ageDays: null, reason: 'nothing awaiting review' };
+  }
+
+  const { slug, sentAt } = state.awaiting;
+  const sent = new Date(sentAt);
+  if (Number.isNaN(sent.getTime())) {
+    /* An unreadable timestamp cannot be aged, so it cannot be shown to have
+       been waiting a short time. Escalate rather than skip quietly. */
+    return {
+      action: 'escalate',
+      outcome: 'ESCALATE',
+      ageDays: null,
+      reason: `${slug} is awaiting review but its sentAt (${sentAt}) will not parse`,
+    };
+  }
+
+  const ageDays = Math.round(((now.getTime() - sent.getTime()) / 86_400_000) * 10) / 10;
+
+  if (ageDays < STALE_AFTER_DAYS) {
+    return {
+      action: 'skip',
+      outcome: 'SKIP',
+      ageDays,
+      reason: `${slug} has been with the reviewer ${ageDays}d, under the ${STALE_AFTER_DAYS}d mark`,
+    };
+  }
+
+  if (ageDays < RELEASE_AFTER_DAYS) {
+    return {
+      action: 'escalate',
+      outcome: 'ESCALATE',
+      ageDays,
+      reason: `${slug} has been unanswered ${ageDays}d, past ${STALE_AFTER_DAYS}d — chase it on the existing thread, and still do not add a second post to that thread`,
+    };
+  }
+
+  /* Past two cycles the hold costs more than the clash it was preventing. The
+     new post goes out on its OWN thread, so the reviewer still never has two
+     posts in one thread to untangle, and the old draft stays pending rather
+     than being thrown away. */
+  return {
+    action: 'release',
+    outcome: 'RELEASE',
+    ageDays,
+    reason: `${slug} has been unanswered ${ageDays}d, past ${RELEASE_AFTER_DAYS}d — produce this week's post on a NEW thread and leave the old one pending`,
+  };
+}
+
+/** The one line a weekly run must print, so a skip can never read as a post. */
+export function weeklyOutcomeLine(decision) {
+  const age = decision.ageDays === null ? '' : ` after ${decision.ageDays}d`;
+  return `OUTCOME: ${decision.outcome}${age} — ${decision.reason}`;
+}
