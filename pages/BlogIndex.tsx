@@ -99,7 +99,16 @@ const BlogIndex: React.FC = () => (
                       the words, and anchors the row on a wider screen. width and
                       height are the rendered box rather than the file, so the
                       column does not jump as each one arrives. */}
-                  {/* The sizing lives on the <picture>, because that is the flex
+                  {/* The first card's picture is the largest thing on a phone
+                      screen and almost certainly the LCP element, so it is
+                      fetched straight away while the rest stay lazy. That
+                      matters more here than it looks: the router wraps the page
+                      in .page-transition, which starts a full viewport width to
+                      the right, and while that is running the thumbnails are
+                      off-screen, so a lazy one cannot begin until the transition
+                      settles and the reader watches empty boxes fill in after.
+
+                      The sizing lives on the <picture>, because that is the flex
                       item. Put it on the <img> and the picture collapses around
                       it: the thumbnails rendered at half their width that way. */}
                   <picture className="block w-full sm:w-52 md:w-64 shrink-0 mb-4 sm:mb-0">
@@ -118,7 +127,8 @@ const BlogIndex: React.FC = () => (
                       alt={p.thumbnail.alt}
                       width={1200}
                       height={800}
-                      loading="lazy"
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      fetchPriority={i === 0 ? 'high' : undefined}
                       decoding="async"
                       className="w-full aspect-[3/2] object-cover rounded-xl"
                       style={{ boxShadow: '4px 5px 14px rgba(163,177,198,0.45), -3px -3px 10px rgba(255,255,255,0.85)' }}
