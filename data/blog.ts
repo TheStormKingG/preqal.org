@@ -94,6 +94,17 @@ export interface BlogPostMeta {
   topic: BlogTopic;
   readMinutes: number;
   ogImage?: string;
+  /* The picture the Journal index shows for this post, and the one that goes
+     out on a share card. Required rather than optional: every post carries a
+     photograph, and a card with a hole where the picture should be is worse
+     than a card that was never designed to have one. A unit test checks that
+     the files behind it actually exist, because a path that is merely spelled
+     correctly still renders as a blank box.
+
+     src is a basename with no width or extension, exactly as a photo block
+     uses, so the index can ask for the small variant and the article the
+     large one. */
+  thumbnail: { src: string; alt: string };
 }
 
 export interface BlogPostBody {

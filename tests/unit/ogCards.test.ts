@@ -24,12 +24,25 @@ for (const file of ['seo/seo.ts', 'scripts/route-meta.mjs', 'index.html', 'compo
 }
 
 describe('the share cards', () => {
-  it('every card the site references is a PNG that exists', () => {
+  it('every card the site references exists in a format the previews render', () => {
     expect(referenced.size).toBeGreaterThan(0);
     for (const url of referenced) {
-      expect(url, url).toMatch(/\.png$/);
+      /* png for the drawn cards, jpg for the ones that are photographs: a
+         1200x630 photograph as png runs well over the 300KB WhatsApp cliff
+         below, which is the constraint that actually matters. WebP stays out
+         either way, because LinkedIn will not render it. */
+      expect(url, `${url} is not a format the previews render`).toMatch(/\.(png|jpe?g)$/);
       expect(fs.existsSync(local(url)), `${url} is in public/`).toBe(true);
     }
+  });
+
+  it.each([...referenced])('%s is 1200x630 and under the 300KB WhatsApp limit', async (url) => {
+    /* This used to be asserted for the home card alone. Every card is pasted
+       into the same chat windows, so every card is held to it. */
+    const file = local(url);
+    const meta = await sharp(file).metadata();
+    expect([meta.width, meta.height], `${url} is ${meta.width}x${meta.height}`).toEqual([1200, 630]);
+    expect(fs.statSync(file).size, `${url} is over the WhatsApp limit`).toBeLessThan(300 * 1024);
   });
 
   it('the home card is 1200×630 and under the 300KB WhatsApp limit', async () => {

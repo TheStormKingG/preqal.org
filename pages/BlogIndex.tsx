@@ -10,6 +10,12 @@ import { href } from '../lib/paths';
 
 const BASE_URL = 'https://preqal.org';
 
+/* The card picture is never wider than 256px on a desktop and full width on a
+   phone, so there is no reason to let the browser reach for the 1600px file. */
+const THUMB_SIZES = '(max-width: 640px) 100vw, 256px';
+const thumbBase = (p: { thumbnail: { src: string } }) =>
+  `${import.meta.env.BASE_URL}${p.thumbnail.src.replace(/^\//, '')}`;
+
 /* The index reads the MANIFEST only — never a post body. Bodies are an eager
    glob, so importing one here would pull every post's full text into this
    chunk and grow it by a post a week forever. */
@@ -80,7 +86,7 @@ const BlogIndex: React.FC = () => (
               <ScrollReveal key={p.slug} delay={i * 70} yFrom={16}>
                 <Link
                   to={href(`/blog/${p.slug}`)}
-                  className="group block rounded-2xl p-6 sm:p-7"
+                  className="group block rounded-2xl p-6 sm:p-7 sm:flex sm:gap-6 sm:items-start"
                   style={{
                     background: 'rgba(255,255,255,0.72)',
                     backdropFilter: 'blur(16px)',
@@ -89,6 +95,37 @@ const BlogIndex: React.FC = () => (
                     border: '1.5px solid rgba(255,255,255,0.92)',
                   }}
                 >
+                  {/* The picture carries the card on a phone, where it sits above
+                      the words, and anchors the row on a wider screen. width and
+                      height are the rendered box rather than the file, so the
+                      column does not jump as each one arrives. */}
+                  {/* The sizing lives on the <picture>, because that is the flex
+                      item. Put it on the <img> and the picture collapses around
+                      it: the thumbnails rendered at half their width that way. */}
+                  <picture className="block w-full sm:w-52 md:w-64 shrink-0 mb-4 sm:mb-0">
+                    <source
+                      type="image/avif"
+                      srcSet={`${thumbBase(p)}-800.avif 800w, ${thumbBase(p)}-1200.avif 1200w`}
+                      sizes={THUMB_SIZES}
+                    />
+                    <source
+                      type="image/webp"
+                      srcSet={`${thumbBase(p)}-800.webp 800w, ${thumbBase(p)}-1200.webp 1200w`}
+                      sizes={THUMB_SIZES}
+                    />
+                    <img
+                      src={`${thumbBase(p)}-800.jpg`}
+                      alt={p.thumbnail.alt}
+                      width={1200}
+                      height={800}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full aspect-[3/2] object-cover rounded-xl"
+                      style={{ boxShadow: '4px 5px 14px rgba(163,177,198,0.45), -3px -3px 10px rgba(255,255,255,0.85)' }}
+                    />
+                  </picture>
+
+                  <div className="min-w-0">
                   <div className="flex items-center gap-3 mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
                     <span className="text-amber-700">{TOPIC_LABEL[p.topic]}</span>
                     <span aria-hidden="true">·</span>
@@ -111,6 +148,7 @@ const BlogIndex: React.FC = () => (
                     Read it
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
+                  </div>
                 </Link>
               </ScrollReveal>
             ))}
