@@ -104,8 +104,14 @@
   </url>
   <url>
     <loc>https://preqal.org/blog/</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://preqal.org/blog/what-changed-behind-your-iso-certificate/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
