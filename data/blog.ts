@@ -31,6 +31,38 @@ export type BlogBlock =
          judgement. */
       placement: 'inline' | 'wide';
       claimIds: string[];
+    }
+  | {
+      /* A photograph, as opposed to a generated diagram. Diagrams argue; these
+         carry the reader through the piece and give it a face. Every post is
+         expected to have them.
+
+         Raster is allowed here and nowhere else, and only through
+         scripts/fetch-blog-photo.mjs, which refuses a source under 1920px wide
+         and writes an avif/webp set instead of the original. A 2400px JPEG is
+         about 900KB; the whole set is about 330KB and a reader downloads one
+         variant of it. That is what keeps "real photographs on every post"
+         compatible with a repo on a volume that has hit 100% more than once. */
+      kind: 'photo';
+      id: string;
+      /* Basename without width or extension, e.g. blog-photos/<slug>/<name>.
+         The renderer appends -800/-1200/-1600 and the format. */
+      src: string;
+      alt: string;
+      caption: string;
+      placement: 'inline' | 'wide';
+      /* Intrinsic size of the source, so the box is reserved before the bytes
+         land and the text underneath does not jump. */
+      width: number;
+      height: number;
+      /* Where it came from, kept whether or not the licence demands it: a year
+         from now "is this ours to use?" should be answerable from the repo. */
+      credit: {
+        photographer: string;
+        source: string;
+        sourceUrl: string;
+        license: string;
+      };
     };
 
 export interface BlogSection {

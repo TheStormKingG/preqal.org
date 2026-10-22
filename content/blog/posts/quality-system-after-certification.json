@@ -16,6 +16,22 @@
           "text": "A certificate says that on one week in one year, a sample of your records matched a standard. It says nothing about the other fifty-one weeks. Plans to run a business well are not in short supply. Where it falls down is in what happens after they are written."
         },
         {
+          "kind": "photo",
+          "id": "sorting-line-photo",
+          "src": "blog-photos/quality-system-after-certification/sorting-line",
+          "alt": "Workers in caps sorting fish into stacked crates beside a conveyor on a processing floor.",
+          "caption": "The system is whatever happens on this floor on an ordinary Tuesday.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Bernd Dittrich",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/three-men-sort-fish-in-a-processing-plant-YorPySI1Pgc",
+            "license": "Unsplash License"
+          }
+        },
+        {
           "kind": "p",
           "id": "s1p2",
           "text": "I have walked into companies holding a valid certificate where the document register was eighteen months out of date, the internal audit schedule had one entry, and the corrective action log ended on the week of the last external visit. Nothing in that building was fraudulent. The system had simply been built for the auditor rather than for the work."
@@ -62,6 +78,22 @@
           "kind": "p",
           "id": "s3p1",
           "text": "None of this needs a consultant to diagnose. Four questions will tell you where you stand, and all four can be answered from records you already hold."
+        },
+        {
+          "kind": "photo",
+          "id": "records-photo",
+          "src": "blog-photos/quality-system-after-certification/records",
+          "alt": "A worker holding a sheaf of papers beside a large industrial machine in a well lit plant.",
+          "caption": "Records are the system proving that it ran. Without them there is only memory.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Geraldine Lewa",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/man-holding-bunch-of-white-papers-while-operating-large-gray-industrial-machine-inside-well-lighted-room-3fWE0Dp_aj8",
+            "license": "Unsplash License"
+          }
         },
         {
           "kind": "list",

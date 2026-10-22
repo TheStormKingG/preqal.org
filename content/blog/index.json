@@ -1,6 +1,17 @@
 {
   "posts": [
     {
+      "slug": "what-changed-behind-your-iso-certificate",
+      "title": "ISO 9001:2026 and the end of the IAF: what changed behind your certificate | Preqal",
+      "description": "The 2015 edition was withdrawn in September and the IAF closed in January. Your certificate is still valid. Here is what the dates require and what to fix in your own wording.",
+      "published": "2026-10-22",
+      "updated": "2026-10-22",
+      "status": "draft",
+      "topic": "quality-management",
+      "readMinutes": 5,
+      "ogImage": "/og/resources.png"
+    },
+    {
       "slug": "what-a-tender-committee-checks",
       "title": "What tender committees in Guyana check on ISO certificates | Preqal",
       "description": "A tender committee does not read your quality manual. It checks who accredited the certificate, and that takes about two minutes. Here is what it looks for.",

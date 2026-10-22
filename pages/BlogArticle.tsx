@@ -6,6 +6,12 @@ import SEO from '../components/SEO';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getPost, POSTS, TOPIC_LABEL, type BlogBlock } from '../data/blog';
 import { GUIDES } from '../data/guides';
+
+/* The reading column is 768px wide; a 'wide' photograph breaks out of it on
+   larger screens. Saying so stops the browser pulling the 1600px file for a
+   768px slot on a phone. */
+const SIZES_INLINE = '(max-width: 768px) 100vw, 768px';
+const SIZES_WIDE = '(max-width: 768px) 100vw, (max-width: 1024px) 896px, 1024px';
 import { blogPostingSchema, blogFaqSchema } from '../seo/blogSchemas';
 import { href } from '../lib/paths';
 
@@ -70,6 +76,48 @@ const Block: React.FC<{ block: BlogBlock }> = ({ block }) => {
           <figcaption className="mt-2 text-sm text-slate-400 leading-relaxed">{block.caption}</figcaption>
         </figure>
       );
+    case 'photo': {
+      /* One picture, three widths, two modern formats and a jpg behind them.
+         The browser takes exactly one. width/height are the intrinsic size, so
+         the aspect box is reserved before the bytes arrive. */
+      const base = `${import.meta.env.BASE_URL}${block.src.replace(/^\//, '')}`;
+      const set = (fmt: string) =>
+        [800, 1200, 1600].map((w) => `${base}-${w}.${fmt} ${w}w`).join(', ');
+      const sizes = block.placement === 'wide' ? SIZES_WIDE : SIZES_INLINE;
+      return (
+        <figure className={`mb-7 ${block.placement === 'wide' ? 'sm:-mx-8 lg:-mx-16' : ''}`}>
+          <picture>
+            <source type="image/avif" srcSet={set('avif')} sizes={sizes} />
+            <source type="image/webp" srcSet={set('webp')} sizes={sizes} />
+            <img
+              src={`${base}-1200.jpg`}
+              alt={block.alt}
+              width={block.width}
+              height={block.height}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-auto rounded-2xl"
+              style={{ boxShadow: '7px 8px 20px rgba(163,177,198,0.45), -4px -4px 14px rgba(255,255,255,0.9)' }}
+            />
+          </picture>
+          <figcaption className="mt-2 text-sm text-slate-400 leading-relaxed">
+            {block.caption}{' '}
+            <span className="whitespace-nowrap">
+              Photograph:{' '}
+              <a
+                href={block.credit.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="underline decoration-slate-300 underline-offset-2 hover:text-amber-600"
+              >
+                {block.credit.photographer}
+              </a>
+              .
+            </span>
+          </figcaption>
+        </figure>
+      );
+    }
     default:
       return null;
   }

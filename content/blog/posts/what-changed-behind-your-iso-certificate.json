@@ -1,0 +1,201 @@
+{
+  "slug": "what-changed-behind-your-iso-certificate",
+  "hero": {
+    "kicker": "QUALITY MANAGEMENT",
+    "h1": "Two things changed behind your ISO certificate this year",
+    "standfirst": "The standard your certificate names was withdrawn in September. The body that sat at the top of the chain closed in January. Your certificate is still valid, and there is still something to do about both."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "The standard on your certificate was withdrawn in September",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s1p1",
+          "text": "ISO published the sixth edition of ISO 9001 on 16 September 2026, and in the same move withdrew the 2015 edition along with the climate change amendment added to it in 2024. Most certificates in Guyana name the 2015 edition. That is the line that changed."
+        },
+        {
+          "kind": "photo",
+          "id": "checking-photo",
+          "src": "blog-photos/what-changed-behind-your-iso-certificate/checking",
+          "alt": "Two people at a desk going through a printed document together, one of them signing it.",
+          "caption": "The certificate is a claim about a standard. In September the standard it names stopped being current.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Gabrielle Henderson",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/woman-signing-on-white-printer-paper-beside-woman-about-to-touch-the-documents-HJckKnwCXxQ",
+            "license": "Unsplash License"
+          }
+        },
+        {
+          "kind": "p",
+          "id": "s1p2",
+          "text": "Withdrawal sounds worse than it is. A withdrawn standard does not cancel the certificates issued against it, and nobody loses certification on the day of publication. What it does is start a clock, and the clock is run by your certification body rather than by ISO."
+        },
+        {
+          "kind": "callout",
+          "id": "s1c1",
+          "tone": "note",
+          "text": "Your current certificate remains valid. Nothing about this requires you to stop quoting it in a tender tomorrow."
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "The body at the top of the chain closed on 1 January",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s2p1",
+          "text": "A certificate is only worth the chain behind it. Your certification body is accredited by an accreditation body, and that accreditation body belonged to an international arrangement that made the whole thing recognisable abroad. For certification work that arrangement was run by the International Accreditation Forum. The IAF no longer exists."
+        },
+        {
+          "kind": "p",
+          "id": "s2p2",
+          "text": "It ceased operations on 1 January 2026 and merged with the laboratory side, ILAC, into a single body called Global Accreditation Cooperation Incorporated. The old IAF website is now kept as an archive. Visit it and it tells you so in the first line."
+        },
+        {
+          "kind": "list",
+          "id": "s2l1",
+          "items": [
+            "Existing accreditations carry on being recognised while the arrangements move across.",
+            "The older IAF and ILAC marks stay valid until the new mark is fully adopted.",
+            "Your certification body does not change, and neither does your accreditation body."
+          ]
+        },
+        {
+          "kind": "p",
+          "id": "s2p3",
+          "text": "So nothing breaks. But if your company profile, your website or your tender boilerplate describes your certificate as IAF recognised, that sentence now names a body that closed. An evaluator who checks it will find an archive page."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "What the dates actually require",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s3p1",
+          "text": "Two dates are being reported for the move to the 2026 edition. New certificates against ISO 9001:2015 are expected to stop being issued after 31 March 2028, and certification bodies are expected to have moved every certified client across by 30 September 2029. Three years is the usual shape of an ISO transition."
+        },
+        {
+          "kind": "photo",
+          "id": "surveillance-photo",
+          "src": "blog-photos/what-changed-behind-your-iso-certificate/surveillance",
+          "alt": "A man in a workplace holding a clipboard and looking at it, with equipment behind him.",
+          "caption": "The transition will reach you at a surveillance visit, not in a letter.",
+          "placement": "inline",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "TruckRun E-bike Systems",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/a-man-standing-in-a-room-holding-a-clipboard-8iDaJg7TPz4",
+            "license": "Unsplash License"
+          }
+        },
+        {
+          "kind": "callout",
+          "id": "s3c1",
+          "tone": "warning",
+          "text": "Treat those two dates as indicative, not settled. Transition deadlines are set by accreditation rules rather than by ISO, and the accreditation side has just reorganised itself. Ask your certification body for the date it is working to and get the answer in writing."
+        },
+        {
+          "kind": "p",
+          "id": "s3p2",
+          "text": "That caveat is not a technicality. The people who set transition deadlines are the same people who spent this year merging two international bodies into one. Dates published before that merger were published by an organisation that has since closed. Ask rather than assume."
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "heading": "What to do before your next surveillance visit",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s4p1",
+          "text": "None of this needs a project. It needs an hour and four questions, and the work is mostly reading what you already have."
+        },
+        {
+          "kind": "list",
+          "id": "s4l1",
+          "ordered": true,
+          "items": [
+            "Ask your certification body, in writing, which edition your next audit will be against and what its transition date is.",
+            "Search your own website, capability statement and tender templates for the letters IAF. Replace what you find.",
+            "Check that your certificate number still resolves on your accreditation body's public register.",
+            "Put the transition on the agenda of your next management review, with a named owner and a date."
+          ]
+        },
+        {
+          "kind": "p",
+          "id": "s4p2",
+          "text": "The fourth one matters more than it looks. A transition that belongs to everybody belongs to nobody, and it will arrive as a finding at a surveillance visit instead of a plan. Name the owner."
+        },
+        {
+          "kind": "quote",
+          "id": "s4q1",
+          "text": "The certificate did not change. What changed is the paperwork around it, and paperwork is what a buyer checks.",
+          "attribution": "Dr. Stefan Gravesande"
+        }
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "id": "f1",
+      "q": "Is my ISO 9001:2015 certificate still valid?",
+      "a": "Yes. Withdrawing a standard does not cancel certificates issued against it. Your certificate stays valid through the transition period, and you can still quote it in a tender."
+    },
+    {
+      "id": "f2",
+      "q": "When do we have to move to ISO 9001:2026?",
+      "a": "Reporting points to no new 2015 certificates after 31 March 2028 and all certified clients moved across by 30 September 2029. Those dates come from accreditation rules rather than from ISO, and the accreditation bodies reorganised in January 2026, so confirm the date with your own certification body in writing."
+    },
+    {
+      "id": "f3",
+      "q": "Does the IAF closing affect our certificate?",
+      "a": "Not its validity. Existing accreditations are still recognised and the old marks stay valid until the new one is adopted. What it affects is your wording: anything describing your certificate as IAF recognised now names a body that ceased operations on 1 January 2026."
+    }
+  ],
+  "closing": {
+    "text": "If you are not sure which edition your next audit is against, or what your own documents still claim about accreditation, that is an hour of checking rather than a project. We can do it with you.",
+    "ctaLabel": "Talk to us about your transition",
+    "ctaHref": "/contact"
+  },
+  "sources": [
+    {
+      "claimId": "s1p1",
+      "url": "https://sdsmanager.com/us/chemical-hse-news/iso-publishes-iso-9001-2026/",
+      "publisher": "SDS Manager",
+      "quote": "ISO published the sixth edition of ISO 9001, its quality management systems standard, on September 16, 2026.",
+      "retrieved": "2026-10-22"
+    },
+    {
+      "claimId": "s2p2",
+      "url": "https://iaf.nu/en/iafnews/",
+      "publisher": "International Accreditation Forum",
+      "quote": "IAF ceased operations on 01 January 2026. This website is a legacy site maintained for archival/reference purposes only.",
+      "retrieved": "2026-10-22"
+    },
+    {
+      "claimId": "s2p2",
+      "url": "https://www.apac-accreditation.org/global-accreditation-cooperation-incorporated-to-replace-iaf-and-ilac/",
+      "publisher": "Asia Pacific Accreditation Cooperation",
+      "quote": "On 1 January 2026 the Global Accreditation Cooperation Incorporated became operational.",
+      "retrieved": "2026-10-22"
+    }
+  ],
+  "relatedGuides": [
+    "iso-9001-cost-guyana"
+  ],
+  "relatedServices": [
+    "systems-builder",
+    "certified-care"
+  ]
+}

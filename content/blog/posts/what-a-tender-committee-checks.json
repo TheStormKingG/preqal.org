@@ -16,6 +16,22 @@
           "text": "Most businesses prepare for a tender by thickening the file, printing the manual, tabbing every procedure and binding the lot into something presentable. A committee rarely opens it. What it opens is the certificate, and then it starts looking for whoever stands behind the certificate."
         },
         {
+          "kind": "photo",
+          "id": "committee-photo",
+          "src": "blog-photos/what-a-tender-committee-checks/committee",
+          "alt": "Five people seated along a boardroom table in discussion, one speaking while the others listen.",
+          "caption": "The people who decide are rarely the people who read the manual.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Christina @ wocintechchat.com",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/five-people-sitting-at-table-and-talking-jzonFmreWok",
+            "license": "Unsplash License"
+          }
+        },
+        {
           "kind": "p",
           "id": "s1p2",
           "text": "You would think a thicker submission reads as a stronger one. It does not. Evaluators work to a checklist drawn from the tender document, and a document nobody asked for earns nothing at all, however well it has been written."
@@ -110,6 +126,22 @@
           "kind": "p",
           "id": "s4p1",
           "text": "You can win work in Guyana without an ISO 9001 certificate. Plenty of businesses do. What the certificate buys is a shorter argument about whether you are organised, and that matters most when a committee is choosing between two bids that look alike on price."
+        },
+        {
+          "kind": "photo",
+          "id": "paperwork-photo",
+          "src": "blog-photos/what-a-tender-committee-checks/paperwork",
+          "alt": "A woman at a desk covered in loose documents and folders, working through the pile.",
+          "caption": "A thicker file is not a stronger bid. The committee is looking for one page.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Dilyara Garifullina",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/a-woman-sitting-at-a-table-with-lots-of-papers-ZH4FUYiaczY",
+            "license": "Unsplash License"
+          }
         },
         {
           "kind": "quote",
