@@ -12,7 +12,9 @@ const BASE_URL = 'https://preqal.org';
 
 /* The card picture is never wider than 256px on a desktop and full width on a
    phone, so there is no reason to let the browser reach for the 1600px file. */
-const THUMB_SIZES = '(max-width: 640px) 100vw, 256px';
+/* The picture is half the card, and the card is the 768px reading column, so
+   384px on a desktop and the full width of a phone. */
+const THUMB_SIZES = '(max-width: 640px) 100vw, 384px';
 const thumbBase = (p: { thumbnail: { src: string } }) =>
   `${import.meta.env.BASE_URL}${p.thumbnail.src.replace(/^\//, '')}`;
 
@@ -86,7 +88,7 @@ const BlogIndex: React.FC = () => (
               <ScrollReveal key={p.slug} delay={i * 70} yFrom={16}>
                 <Link
                   to={href(`/blog/${p.slug}`)}
-                  className="group block rounded-2xl p-6 sm:p-7 sm:flex sm:gap-6 sm:items-start"
+                  className="group block rounded-2xl overflow-hidden sm:flex sm:items-stretch"
                   style={{
                     background: 'rgba(255,255,255,0.72)',
                     backdropFilter: 'blur(16px)',
@@ -110,8 +112,15 @@ const BlogIndex: React.FC = () => (
 
                       The sizing lives on the <picture>, because that is the flex
                       item. Put it on the <img> and the picture collapses around
-                      it: the thumbnails rendered at half their width that way. */}
-                  <picture className="block w-full sm:w-52 md:w-64 shrink-0 mb-4 sm:mb-0">
+                      it: the thumbnails rendered at half their width that way.
+
+                      The <img> fills the picture absolutely rather than with
+                      h-full. A percentage height needs a parent with a definite
+                      one, and a flex item stretched by align-items does not give
+                      the child something to resolve against: the picture was the
+                      right height and the image inside it still sized itself from
+                      its own 3:2 ratio, stopping about 60% down the card. */}
+                  <picture className="relative block w-full h-52 sm:h-auto sm:w-1/2 shrink-0 self-stretch">
                     <source
                       type="image/avif"
                       srcSet={`${thumbBase(p)}-800.avif 800w, ${thumbBase(p)}-1200.avif 1200w`}
@@ -128,14 +137,13 @@ const BlogIndex: React.FC = () => (
                       width={1200}
                       height={800}
                       loading={i === 0 ? 'eager' : 'lazy'}
-                      fetchPriority={i === 0 ? 'high' : undefined}
+                      {...(i === 0 ? ({ fetchpriority: 'high' } as Record<string, string>) : {})}
                       decoding="async"
-                      className="w-full aspect-[3/2] object-cover rounded-xl"
-                      style={{ boxShadow: '4px 5px 14px rgba(163,177,198,0.45), -3px -3px 10px rgba(255,255,255,0.85)' }}
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </picture>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 p-6 sm:p-7 sm:w-1/2 sm:flex sm:flex-col sm:justify-center">
                   <div className="flex items-center gap-3 mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
                     <span className="text-amber-700">{TOPIC_LABEL[p.topic]}</span>
                     <span aria-hidden="true">·</span>
