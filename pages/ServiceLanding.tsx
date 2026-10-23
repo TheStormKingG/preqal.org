@@ -57,8 +57,6 @@ interface ServicePage {
   deliverables: string[];
   audience: string;
   cta: string;
-  img: string;
-  imgAlt: string;
   /* The picture on the services index. Separate from img, which is the hero on
      the page itself: the hero predates the imagery contract and none of them
      reach the 1920px the contract asks for. Same shape as a post's or a
@@ -93,8 +91,6 @@ export const SERVICE_PAGES: ServicePage[] = [
     deliverables: ['Bank-ready business plan', 'Cash-flow map', 'Compliance roadmap', 'A planning session with Dr. Gravesande'],
     audience: 'Idea-stage founders, informal businesses ready to formalise, and owners applying for loans or grants in Guyana.',
     cta: 'Get your Business Plan',
-    img: 'images/business-team.jpg',
-    imgAlt: 'A Guyanese business team planning at a table',
     faqs: [
       {
         q: 'How much does a business plan cost in Guyana?',
@@ -139,8 +135,6 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     audience: 'Small and medium businesses in Guyana and the Caribbean — from a one-person operation to about fifty staff — that want clarity before an audit, a tender or a certification project.',
     cta: 'Book the Risk Scan',
-    img: 'images/services/phase1-diagnose.jpg',
-    imgAlt: 'Consultant reviewing business documents with a client in Guyana',
     schedule: [
       {
         day: 'Day 1',
@@ -221,8 +215,6 @@ export const SERVICE_PAGES: ServicePage[] = [
     deliverables: ['Integrated management system design', 'Plain-language SOPs', 'Internal auditor training', 'Internal audit and management review', 'Mock certification audit'],
     audience: 'Guyanese and Caribbean businesses from five to five hundred staff that want ISO 9001, ISO 14001 or ISO 45001 certification.',
     cta: 'Start the 9-month build',
-    img: 'images/services/phase2-train.jpg',
-    imgAlt: 'Quality management training workshop in Guyana',
     faqs: [
       {
         q: 'How long does ISO 9001 certification take in Guyana?',
@@ -260,8 +252,6 @@ export const SERVICE_PAGES: ServicePage[] = [
     deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support', 'Priority support line'],
     audience: 'Businesses in Guyana and the Caribbean holding ISO 9001, ISO 14001, ISO 45001, HACCP or FSSC 22000 certification.',
     cta: 'Stay certified',
-    img: 'images/services/phase3-audit.jpg',
-    imgAlt: 'Internal audit under way at a certified Guyanese business',
     faqs: [
       {
         q: 'What happens if I skip maintenance after certification?',
@@ -299,8 +289,6 @@ export const SERVICE_PAGES: ServicePage[] = [
     deliverables: ['HACCP foundation', 'ISO 22000 food safety system', 'GFSI scheme readiness', 'Staff training at every gate', 'Mock certification audits'],
     audience: 'Agro-processors, poultry operations and food manufacturers in Guyana and the Caribbean with export ambition.',
     cta: 'Start Export-Ready™',
-    img: 'images/case-studies/poultry.jpg',
-    imgAlt: 'Guyanese agro-processing operation preparing food products for export',
     faqs: [
       {
         q: 'Do I need HACCP certification to export food from Guyana?',
@@ -439,13 +427,29 @@ const ServiceLanding: React.FC = () => {
                 transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="overflow-hidden rounded-3xl relative" style={{ aspectRatio: '4 / 3', boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)' }}>
+                  <picture>
+                  {/* The same photograph the index card shows, at the widths a
+                      440px 4:3 box needs on a 2x screen. The old heroes were
+                      900 to 1600px wide and none of them met the 1920 the
+                      imagery contract asks of a source. */}
+                  <source
+                    type="image/avif"
+                    srcSet={`${svcThumb(page)}-800.avif 800w, ${svcThumb(page)}-1200.avif 1200w`}
+                    sizes="440px"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={`${svcThumb(page)}-800.webp 800w, ${svcThumb(page)}-1200.webp 1200w`}
+                    sizes="440px"
+                  />
                   <img
-                    src={`${import.meta.env.BASE_URL}${page.img}`}
-                    alt={page.imgAlt}
-                    className="w-full h-full object-cover"
+                    src={`${svcThumb(page)}-800.jpg`}
+                    alt={page.thumbnail.alt}
+                    className="absolute inset-0 w-full h-full object-cover"
                     width="440"
                     height="330"
                   />
+                  </picture>
                   <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, rgba(245,158,11,0.10) 0%, transparent 50%, rgba(15,23,42,0.20) 100%)' }} />
                 </div>
               </motion.div>
