@@ -19,6 +19,7 @@
 import { mkdir, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
+import { createHash } from 'node:crypto';
 
 /* The article column is 768px (max-w-3xl); 'wide' breaks out to roughly 1024.
    Two-times those, capped where the source stops being sharp. */
@@ -33,11 +34,11 @@ const arg = (flag, fallback = null) => {
 
 const slug = arg('--slug');
 const id = arg('--id');
-const name = arg('--name');
+const rawName = arg('--name');
 const credit = arg('--credit', '');
 const page = arg('--page', '');
 
-if (!slug || !id || !name) {
+if (!slug || !id || !rawName) {
   console.error('need --slug, --id and --name');
   process.exit(1);
 }
@@ -60,6 +61,14 @@ if (!res.ok) {
   process.exit(1);
 }
 const buf = Buffer.from(await res.arrayBuffer());
+
+/* The basename carries a hash of the picture itself. Replacing a photograph
+   while keeping its name keeps its URL, so browsers and the CDN go on serving
+   the old bytes: a picture pulled for breaking the imagery rule stayed on
+   screen for hours after it had been replaced, because nothing about the
+   address had changed. A new picture is now a new address, always. */
+const hash = createHash('sha256').update(buf).digest('hex').slice(0, 8);
+const name = `${rawName}.${hash}`;
 
 const meta = await sharp(buf).metadata();
 if (meta.width < 1920) {

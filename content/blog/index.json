@@ -9,9 +9,9 @@
       "status": "published",
       "topic": "quality-management",
       "readMinutes": 5,
-      "ogImage": "/blog-photos/what-changed-behind-your-iso-certificate/checking-og.jpg",
+      "ogImage": "/blog-photos/what-changed-behind-your-iso-certificate/checking.379481c6-og.jpg",
       "thumbnail": {
-        "src": "blog-photos/what-changed-behind-your-iso-certificate/checking",
+        "src": "blog-photos/what-changed-behind-your-iso-certificate/checking.379481c6",
         "alt": "Two men leaning over a table, going through printed documents spread out across it."
       }
     },
@@ -24,9 +24,9 @@
       "status": "published",
       "topic": "business-performance",
       "readMinutes": 6,
-      "ogImage": "/blog-photos/what-a-tender-committee-checks/committee-og.jpg",
+      "ogImage": "/blog-photos/what-a-tender-committee-checks/committee.4df65cb5-og.jpg",
       "thumbnail": {
-        "src": "blog-photos/what-a-tender-committee-checks/committee",
+        "src": "blog-photos/what-a-tender-committee-checks/committee.4df65cb5",
         "alt": "Five people seated along a boardroom table in discussion, one speaking while the others listen."
       }
     },
@@ -38,9 +38,9 @@
       "status": "published",
       "topic": "quality-management",
       "readMinutes": 5,
-      "ogImage": "/blog-photos/quality-system-after-certification/sorting-line-og.jpg",
+      "ogImage": "/blog-photos/quality-system-after-certification/sorting-line.f18fcc13-og.jpg",
       "thumbnail": {
-        "src": "blog-photos/quality-system-after-certification/sorting-line",
+        "src": "blog-photos/quality-system-after-certification/sorting-line.f18fcc13",
         "alt": "Workers at a long line of stations in a garment factory, with folded goods stacked along the benches."
       }
     }

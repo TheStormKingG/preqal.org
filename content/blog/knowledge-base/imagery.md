@@ -68,7 +68,23 @@ and webp at 800/1200/1600 with jpg fallbacks. Then, for the thumbnail only:
 
     node scripts/make-og-crops.mjs <slug>/<basename>
 
-## 7. Look at the picture before you ship it
+## 7. Never replace a picture in place
+
+Filenames carry a hash of the picture itself, like
+`checking.379481c6-800.avif`. `fetch-blog-photo.mjs` puts it there; do not
+hand-write a name without one.
+
+The reason is a failure that has already happened. A photograph was pulled for
+breaking the rule in section 3 and replaced with a compliant one under the same
+filename. The bytes on the server changed, the URL did not, and so every
+browser and CDN edge that already had a copy went on serving the rejected
+picture for hours. The replacement was correct and invisible. The owner saw the
+old image and reasonably concluded nothing had been fixed.
+
+A different picture must be a different address. Never swap the bytes behind an
+existing name, and never reuse a name with a stale hash on it.
+
+## 8. Look at the picture before you ship it
 
 Alt text from a search result is not a description of the photograph. In the
 run that produced this contract, four images were chosen from their alt text
