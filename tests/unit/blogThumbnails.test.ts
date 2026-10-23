@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { readFileSync } from 'node:fs';
 import { GUIDES } from '../../data/guides';
+import { SERVICE_PAGES } from '../../pages/ServiceLanding';
 
 /* Every post carries a photograph, and the index shows it. Both halves of that
    can fail quietly: a manifest row can be written without a thumbnail, and a
@@ -97,6 +98,40 @@ describe('every guide has a thumbnail that resolves', () => {
     ({ slug, src }) => {
       /* Without it, replacing the picture keeps the URL and caches go on
          serving the old one. That has already happened once. */
+      expect(src, `${slug} thumbnail is not content-hashed`).toMatch(/\.[0-9a-f]{8}$/);
+    },
+  );
+});
+
+/* The services index carries the same cards again, so the same promise holds. */
+describe('every service has a thumbnail that resolves', () => {
+  it('finds services to check at all', () => {
+    expect(SERVICE_PAGES.length).toBeGreaterThan(0);
+  });
+
+  it.each(SERVICE_PAGES.map((p) => ({ slug: p.slug, thumbnail: p.thumbnail })))(
+    '$slug declares a thumbnail with usable alt text',
+    ({ slug, thumbnail }) => {
+      expect(thumbnail, `${slug} has no thumbnail`).toBeDefined();
+      expect(thumbnail.src, `${slug} thumbnail has no src`).toBeTruthy();
+      expect(
+        thumbnail.alt.trim().length,
+        `${slug} thumbnail alt is too short to describe anything`,
+      ).toBeGreaterThan(20);
+    },
+  );
+
+  it.each(SERVICE_PAGES.map((p) => ({ slug: p.slug, src: p.thumbnail.src })))(
+    '$slug thumbnail files all exist',
+    ({ slug, src }) => {
+      const missing = REQUIRED.filter((suffix) => !onDisk(`${src}${suffix}`));
+      expect(missing, `${slug} is missing ${missing.join(', ')}`).toEqual([]);
+    },
+  );
+
+  it.each(SERVICE_PAGES.map((p) => ({ slug: p.slug, src: p.thumbnail.src })))(
+    '$slug picture name carries a content hash',
+    ({ slug, src }) => {
       expect(src, `${slug} thumbnail is not content-hashed`).toMatch(/\.[0-9a-f]{8}$/);
     },
   );

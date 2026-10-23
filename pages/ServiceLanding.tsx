@@ -19,6 +19,11 @@ import { GUIDES } from '../data/guides';
 
 const BASE_URL = 'https://preqal.org';
 
+/* The card picture is half of the 768px column. */
+const SVC_THUMB_SIZES = '(max-width: 640px) 100vw, 384px';
+const svcThumb = (p: ServicePage) =>
+  `${import.meta.env.BASE_URL}${p.thumbnail.src.replace(/^\//, '')}`;
+
 interface Faq {
   q: string;
   a: string;
@@ -54,6 +59,11 @@ interface ServicePage {
   cta: string;
   img: string;
   imgAlt: string;
+  /* The picture on the services index. Separate from img, which is the hero on
+     the page itself: the hero predates the imagery contract and none of them
+     reach the 1920px the contract asks for. Same shape as a post's or a
+     guide's, hash and all, so a replacement is always a new URL. */
+  thumbnail: { src: string; alt: string };
   schedule?: ScheduleDay[];
   pricing?: PricingBlock;
   onePagerHref?: string;
@@ -63,6 +73,10 @@ interface ServicePage {
 export const SERVICE_PAGES: ServicePage[] = [
   {
     slug: 'business-plan',
+    thumbnail: {
+      src: 'service-photos/business-plan/planning.9c7729f4',
+      alt: 'Three colleagues around a boardroom table with laptops open, working through a plan.',
+    },
     waKey: 'business-plan',
     name: 'Preqal Business Plan',
     metaKey: 'servicesBusinessPlan',
@@ -98,6 +112,10 @@ export const SERVICE_PAGES: ServicePage[] = [
   },
   {
     slug: 'risk-scan',
+    thumbnail: {
+      src: 'service-photos/risk-scan/review.5f66c849',
+      alt: 'A team leaning over laptops together, going through the records of a business.',
+    },
     waKey: 'risk-scan',
     name: 'Preqal Risk Scan™',
     metaKey: 'servicesRiskScan',
@@ -183,6 +201,10 @@ export const SERVICE_PAGES: ServicePage[] = [
   },
   {
     slug: 'systems-builder',
+    thumbnail: {
+      src: 'service-photos/systems-builder/buildout.6214a351',
+      alt: 'A room of colleagues seated around a table while one of them walks them through the work.',
+    },
     waKey: 'systems-builder',
     name: 'Preqal Systems Builder™',
     metaKey: 'servicesSystemsBuilder',
@@ -218,6 +240,10 @@ export const SERVICE_PAGES: ServicePage[] = [
   },
   {
     slug: 'certified-care',
+    thumbnail: {
+      src: 'service-photos/certified-care/upkeep.3dd67939',
+      alt: 'A worker in a hairnet checking and packing goods on a factory floor that is still running.',
+    },
     waKey: 'certified-care',
     name: 'Preqal Certified Care™',
     metaKey: 'servicesCertifiedCare',
@@ -253,6 +279,10 @@ export const SERVICE_PAGES: ServicePage[] = [
   },
   {
     slug: 'export-ready',
+    thumbnail: {
+      src: 'service-photos/export-ready/flock.c6e8d984',
+      alt: 'A hen in close focus on a farm, with the rest of the flock behind her.',
+    },
     waKey: 'export-ready',
     name: 'Preqal Export-Ready™',
     metaKey: 'servicesExportReady',
@@ -679,20 +709,45 @@ export const ServicesIndex: React.FC = () => (
             <ScrollReveal key={p.slug} yFrom={16} delay={i * 60}>
               <Link
                 to={href(`/services/${p.slug}`)}
-                className="flex items-center gap-4 rounded-2xl p-6 group"
+                className="group block rounded-2xl overflow-hidden sm:flex sm:items-stretch sm:min-h-64"
                 style={glassCard}
               >
-                <span
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-extrabold text-amber-600 flex-shrink-0"
-                  style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85)' }}
-                >
-                  0{i + 1}
-                </span>
-                <span className="flex-grow">
+                {/* Half the card, run to its edges, same as the Journal and the
+                    guides. The image fills the picture absolutely: a percentage
+                    height has nothing to resolve against inside a stretched
+                    flex item. */}
+                <picture className="relative block w-full h-44 sm:h-auto sm:w-1/2 shrink-0 self-stretch">
+                  <source
+                    type="image/avif"
+                    srcSet={`${svcThumb(p)}-800.avif 800w, ${svcThumb(p)}-1200.avif 1200w`}
+                    sizes={SVC_THUMB_SIZES}
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={`${svcThumb(p)}-800.webp 800w, ${svcThumb(p)}-1200.webp 1200w`}
+                    sizes={SVC_THUMB_SIZES}
+                  />
+                  <img
+                    src={`${svcThumb(p)}-800.jpg`}
+                    alt={p.thumbnail.alt}
+                    width={1200}
+                    height={800}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    {...(i === 0 ? ({ fetchpriority: 'high' } as Record<string, string>) : {})}
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </picture>
+                <span className="block min-w-0 p-6 sm:w-1/2 sm:flex sm:flex-col sm:justify-center">
                   <span className="block text-base font-bold text-slate-900">{p.name}</span>
-                  <span className="block text-sm text-slate-500 leading-snug">{p.description}</span>
+                  <span className="block text-sm text-slate-500 leading-snug mb-3">{p.description}</span>
+                  {/* Inside the words, not beside them: as a sibling it became a
+                      third item in the row and the halves stopped being halves. */}
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600">
+                    See it
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </span>
-                <ArrowRight className="h-4 w-4 text-amber-600 flex-shrink-0 transition-transform group-hover:translate-x-1" />
               </Link>
             </ScrollReveal>
           ))}
