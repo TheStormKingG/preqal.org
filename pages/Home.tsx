@@ -24,6 +24,7 @@ interface Phase {
   deliverables: string[];
   ctaLabel: string;
   waKey: WhatsAppServiceKey;
+  /* The stem of the HD photograph, with no width suffix and no extension. */
   img: string;
   imgAlt: string;
   imgPos?: string;
@@ -41,9 +42,8 @@ const PHASES: Phase[] = [
     deliverables: ['Bank-ready business plan', 'Cash-flow map', 'Compliance roadmap'],
     ctaLabel: 'Get your Business Plan',
     waKey: 'business-plan',
-    img: 'images/business-team.webp',
-    imgAlt: 'A small Guyanese business team planning at a table',
-    imgPos: '50% 18%',
+    img: 'service-photos/business-plan/planning.9c7729f4',
+    imgAlt: 'Three colleagues around a boardroom table with laptops open, working through a plan.',
   },
   {
     number: '02',
@@ -56,8 +56,8 @@ const PHASES: Phase[] = [
     deliverables: ['ISO 9001 gap analysis', 'Quality policy + organisation chart', 'Plain-language recommendations'],
     ctaLabel: 'Book the Risk Scan',
     waKey: 'risk-scan',
-    img: 'images/services/phase1-diagnose.webp',
-    imgAlt: 'Consultant reviewing operations with a client',
+    img: 'service-photos/risk-scan/review.5f66c849',
+    imgAlt: 'A team leaning over laptops together, going through the records of a business.',
   },
   {
     number: '03',
@@ -70,8 +70,8 @@ const PHASES: Phase[] = [
     deliverables: ['Plain-language SOPs', 'Internal auditor training', 'Mock certification audit'],
     ctaLabel: 'Start the 9-month build',
     waKey: 'systems-builder',
-    img: 'images/services/phase2-train.webp',
-    imgAlt: 'Team in a quality management training workshop',
+    img: 'service-photos/systems-builder/buildout.6214a351',
+    imgAlt: 'A room of colleagues seated around a table while one of them walks them through the work.',
   },
   {
     number: '04',
@@ -84,8 +84,8 @@ const PHASES: Phase[] = [
     deliverables: ['Monthly system upkeep', 'Annual internal audit', 'Surveillance-visit support'],
     ctaLabel: 'Stay certified',
     waKey: 'certified-care',
-    img: 'images/services/phase3-audit.webp',
-    imgAlt: 'Quality supervisor conducting an audit on the facility floor',
+    img: 'service-photos/certified-care/upkeep.3dd67939',
+    imgAlt: 'A worker in a hairnet checking and packing goods on a factory floor that is still running.',
   },
   {
     number: '05',
@@ -98,10 +98,19 @@ const PHASES: Phase[] = [
     deliverables: ['HACCP foundation', 'ISO 22000 system', 'GFSI certificate'],
     ctaLabel: 'Start Export-Ready™',
     waKey: 'export-ready',
-    img: 'images/case-studies/poultry.webp',
-    imgAlt: 'Guyanese agro-processing operation preparing product for export',
+    img: 'service-photos/export-ready/flock.c6e8d984',
+    imgAlt: 'A hen in close focus on a farm, with the rest of the flock behind her.',
   },
 ];
+
+/* Measured, not guessed: the frame is 358px at 390, 448 at 480, 592 at 640,
+   852 at 900, and on the desktop it runs 448 at 1024 up to a 520 cap that
+   holds at every width above it. The gutter is 32px below 640 and 48px from
+   there to 1023, which the single calc the old value used got wrong at phone
+   widths. Declaring the cap keeps the browser one tier ahead of the parallax,
+   which paints up to 1.1x of the frame. */
+const PHASE_MEDIA_SIZES =
+  '(min-width: 1024px) 520px, (min-width: 640px) calc(100vw - 48px), calc(100vw - 32px)';
 
 /* ─── Subtle scroll-parallax image frame ─── */
 /* `near` is deck-only: every slide is mounted at once, so without it all five
@@ -132,21 +141,23 @@ const ParallaxImage: React.FC<{ src: string; alt: string; pos?: string; deck?: b
     >
       {near && (
         <picture>
-        {/* Each phase names one .webp; its right-sized siblings are built
-            beside it by scripts/convert-images.js, so the browser can take a
-            600px file on a phone instead of the 900px desktop one. */}
+        {/* Each phase names the same photograph its service page leads with,
+            from the HD set, so the journey and the page a phase sends you to
+            agree. The frame is 2:1 on a phone, 16:9 on a tablet and 4:3 on
+            the desktop; the sources are 3:2 and centre-crop cleanly in all
+            three, which is why no phase sets imgPos. */}
         <source
           type="image/avif"
-          srcSet={`${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}-600.avif 600w, ${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}.avif 900w`}
-          sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
+          srcSet={`${import.meta.env.BASE_URL}${src}-800.avif 800w, ${import.meta.env.BASE_URL}${src}-1200.avif 1200w, ${import.meta.env.BASE_URL}${src}-1600.avif 1600w`}
+          sizes={PHASE_MEDIA_SIZES}
         />
         <source
           type="image/webp"
-          srcSet={`${import.meta.env.BASE_URL}${src.replace(/\.webp$/, '')}-600.webp 600w, ${import.meta.env.BASE_URL}${src}`}
-          sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
+          srcSet={`${import.meta.env.BASE_URL}${src}-800.webp 800w, ${import.meta.env.BASE_URL}${src}-1200.webp 1200w, ${import.meta.env.BASE_URL}${src}-1600.webp 1600w`}
+          sizes={PHASE_MEDIA_SIZES}
         />
         <motion.img
-          src={`${import.meta.env.BASE_URL}${src}`}
+          src={`${import.meta.env.BASE_URL}${src}-1200.jpg`}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
           style={still ? { objectPosition: pos } : { y, scale, objectPosition: pos }}

@@ -20,15 +20,11 @@ const responsive = [
       { name: 'images/hero-bg-640.webp',  width: 640 },
       { name: 'images/hero-bg-1040.avif', width: 1040 },
   ] },
-  ...['business-team', 'services/phase1-diagnose', 'services/phase2-train',
-      'services/phase3-audit', 'case-studies/poultry'].map((stem) => ({
-    input: `images/${stem}.webp`,
-    variants: [
-      { name: `images/${stem}-600.avif`, width: 600 },
-      { name: `images/${stem}-600.webp`, width: 600 },
-      { name: `images/${stem}.avif`,     width: 900 },
-    ],
-  })),
+  /* The five journey phases used to be generated here at 600 and 900px. They
+     now take the same HD photographs their service pages lead with, out of
+     public/service-photos, which this script does not produce - so there is
+     nothing left to convert. Their old inputs and outputs are still on disk
+     and are no longer referenced by anything. */
 ];
 
 const conversions = [
