@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { readFileSync } from 'node:fs';
+import { GUIDES } from '../../data/guides';
 
 /* Every post carries a photograph, and the index shows it. Both halves of that
    can fail quietly: a manifest row can be written without a thumbnail, and a
@@ -62,4 +63,41 @@ describe('every blog post has a thumbnail that resolves', () => {
     expect(post.ogImage, `${post.slug} has no ogImage`).toBeTruthy();
     expect(onDisk(post.ogImage!), `${post.slug} ogImage ${post.ogImage} is not on disk`).toBe(true);
   });
+});
+
+/* The guides index carries the same cards as the Journal, so it carries the
+   same promise: a thumbnail that exists, at every width the markup asks for. */
+describe('every guide has a thumbnail that resolves', () => {
+  it('finds guides to check at all', () => {
+    expect(GUIDES.length).toBeGreaterThan(0);
+  });
+
+  it.each(GUIDES.map((g) => ({ slug: g.slug, thumbnail: g.thumbnail })))(
+    '$slug declares a thumbnail with usable alt text',
+    ({ slug, thumbnail }) => {
+      expect(thumbnail, `${slug} has no thumbnail`).toBeDefined();
+      expect(thumbnail.src, `${slug} thumbnail has no src`).toBeTruthy();
+      expect(
+        thumbnail.alt.trim().length,
+        `${slug} thumbnail alt is too short to describe anything`,
+      ).toBeGreaterThan(20);
+    },
+  );
+
+  it.each(GUIDES.map((g) => ({ slug: g.slug, src: g.thumbnail.src })))(
+    '$slug thumbnail files all exist',
+    ({ slug, src }) => {
+      const missing = REQUIRED.filter((suffix) => !onDisk(`${src}${suffix}`));
+      expect(missing, `${slug} is missing ${missing.join(', ')}`).toEqual([]);
+    },
+  );
+
+  it.each(GUIDES.map((g) => ({ slug: g.slug, src: g.thumbnail.src })))(
+    '$slug picture name carries a content hash',
+    ({ slug, src }) => {
+      /* Without it, replacing the picture keeps the URL and caches go on
+         serving the old one. That has already happened once. */
+      expect(src, `${slug} thumbnail is not content-hashed`).toMatch(/\.[0-9a-f]{8}$/);
+    },
+  );
 });

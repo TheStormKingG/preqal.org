@@ -17,6 +17,12 @@ import { href } from '../lib/paths';
 
 const BASE_URL = 'https://preqal.org';
 
+/* The guide card's picture is half the card, and the card sits in the same
+   768px column the Journal uses. */
+const GUIDE_THUMB_SIZES = '(max-width: 640px) 100vw, 384px';
+const guideThumb = (g: Guide) =>
+  `${import.meta.env.BASE_URL}${g.thumbnail.src.replace(/^\//, '')}`;
+
 
 const glassCard = {
   background: 'rgba(255,255,255,0.72)',
@@ -215,20 +221,45 @@ export const GuidesIndex: React.FC = () => (
             <ScrollReveal key={g.slug} yFrom={16} delay={i * 60}>
               <Link
                 to={href(`/guides/${g.slug}`)}
-                className="flex items-center gap-4 rounded-2xl p-6 group"
+                className="group block rounded-2xl overflow-hidden sm:flex sm:items-stretch"
                 style={glassCard}
               >
-                <span
-                  className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#e0e5ec', boxShadow: 'inset 3px 3px 8px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.85)' }}
-                >
-                  <BookOpen className="h-5 w-5 text-amber-600" />
-                </span>
-                <span className="flex-grow">
+                {/* Same treatment as the Journal card: half the card, run to
+                    its edges, and the image fills the picture absolutely
+                    because a percentage height has nothing to resolve against
+                    inside a stretched flex item. */}
+                <picture className="relative block w-full h-44 sm:h-auto sm:w-1/2 shrink-0 self-stretch">
+                  <source
+                    type="image/avif"
+                    srcSet={`${guideThumb(g)}-800.avif 800w, ${guideThumb(g)}-1200.avif 1200w`}
+                    sizes={GUIDE_THUMB_SIZES}
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={`${guideThumb(g)}-800.webp 800w, ${guideThumb(g)}-1200.webp 1200w`}
+                    sizes={GUIDE_THUMB_SIZES}
+                  />
+                  <img
+                    src={`${guideThumb(g)}-800.jpg`}
+                    alt={g.thumbnail.alt}
+                    width={1200}
+                    height={800}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    {...(i === 0 ? ({ fetchpriority: 'high' } as Record<string, string>) : {})}
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </picture>
+                <span className="block min-w-0 p-6 sm:w-1/2 sm:flex sm:flex-col sm:justify-center">
                   <span className="block text-base font-bold text-slate-900">{g.title.split('|')[0].trim()}</span>
-                  <span className="block text-sm text-slate-500 leading-snug">{g.description}</span>
+                  <span className="block text-sm text-slate-500 leading-snug mb-3">{g.description}</span>
+                  {/* The arrow moves inside the words. Left as a sibling it became
+                      a third item in the row and the halves stopped being halves. */}
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600">
+                    Read it
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </span>
-                <ArrowRight className="h-4 w-4 text-amber-600 flex-shrink-0 transition-transform group-hover:translate-x-1" />
               </Link>
             </ScrollReveal>
           ))}

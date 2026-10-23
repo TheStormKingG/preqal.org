@@ -43,7 +43,10 @@ if (!slug || !id || !rawName) {
   process.exit(1);
 }
 
-const outDir = join('public', 'blog-photos', slug);
+/* Guides keep their pictures apart from the Journal's, so the base is a
+   flag rather than a constant. */
+const base = arg('--base', 'blog-photos');
+const outDir = join('public', base, slug);
 await mkdir(outDir, { recursive: true });
 
 /* Crop to landscape at the source rather than accepting whatever shape the
@@ -94,21 +97,24 @@ for (const w of WIDTHS) {
   }
 }
 
-/* One jpg so the picture still resolves anywhere the modern formats do not. */
-const jpg = join(outDir, `${name}-${JPEG_FALLBACK_WIDTH}.jpg`);
-await sharp(buf)
-  .resize({ width: JPEG_FALLBACK_WIDTH, withoutEnlargement: true })
-  .jpeg({ quality: 80, mozjpeg: true })
-  .toFile(jpg);
-const { size: jpgSize } = await stat(jpg);
-total += jpgSize;
-written.push(`${name}-${JPEG_FALLBACK_WIDTH}.jpg ${(jpgSize / 1024).toFixed(0)}KB`);
+/* jpg at both widths, so a card asking for the small one and an article
+   asking for the large one each have something to fall back to. */
+let jpgTotal = 0;
+for (const w of [800, JPEG_FALLBACK_WIDTH]) {
+  if (w > meta.width) continue;
+  const jpg = join(outDir, `${name}-${w}.jpg`);
+  await sharp(buf).resize({ width: w, withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toFile(jpg);
+  const { size } = await stat(jpg);
+  jpgTotal += size;
+  written.push(`${name}-${w}.jpg ${(size / 1024).toFixed(0)}KB`);
+}
+const jpgSize = jpgTotal;
 
 const ratio = await sharp(buf).metadata();
 const block = {
   kind: 'photo',
   id: `${name}-photo`,
-  src: `blog-photos/${slug}/${name}`,
+  src: `${base}/${slug}/${name}`,
   alt: 'TODO: describe what the photograph shows, for a reader who cannot see it',
   caption: 'TODO: one line tying the picture to the argument on the page',
   placement: 'inline',

@@ -23,11 +23,20 @@ export interface Guide {
   serviceName: string;
   waKey: WhatsAppServiceKey;
   published: string;
+  /* The picture on the guides index, same contract as a blog post's: a
+     basename with no width or extension, carrying a hash of the image so a
+     replacement is always a new URL. Required, so a guide cannot ship with a
+     hole where its picture goes. See content/blog/knowledge-base/imagery.md. */
+  thumbnail: { src: string; alt: string };
 }
 
 export const GUIDES: Guide[] = [
   {
     slug: 'haccp-certification-guyana',
+    thumbnail: {
+      src: 'guide-photos/haccp-certification-guyana/sorting.1a7a2f16',
+      alt: 'Women at a long table sorting through produce by hand, picking out what should not go on.',
+    },
     title: 'How to Get HACCP Certified in Guyana (2026 Guide) | Preqal',
     description:
       'A plain-language guide to HACCP certification for Guyanese food businesses. What it is, who needs it, the seven steps, realistic timelines and costs.',
@@ -97,6 +106,10 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'iso-9001-cost-guyana',
+    thumbnail: {
+      src: 'guide-photos/iso-9001-cost-guyana/shopfront.800aaf08',
+      alt: 'A shop owner behind her counter, with the shelves of her business stocked behind her.',
+    },
     title: 'What ISO 9001 Certification Costs in Guyana (Honest Guide) | Preqal',
     description:
       'The real cost of ISO 9001 certification for a Guyanese business. The three costs to separate, what drives price, and how to avoid paying for paper.',
@@ -158,6 +171,10 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'export-food-from-guyana',
+    thumbnail: {
+      src: 'guide-photos/export-food-from-guyana/containers.b1bab6b6',
+      alt: 'Shipping containers stacked in rows across a working port, seen from above.',
+    },
     title: 'How to Export Food From Guyana, Step by Step | Preqal',
     description:
       'The road from a Guyanese kitchen to foreign shelves. Registrations, food safety certification, what CARICOM buyers ask for, and realistic timelines.',

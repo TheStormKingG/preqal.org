@@ -9,7 +9,9 @@ import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
 
-const ROOT = 'public/blog-photos';
+/* Accept a base so guide pictures can live beside the guides. */
+const BASE = process.env.PHOTO_BASE || 'blog-photos';
+const ROOT = `public/${BASE}`;
 const wanted = process.argv.slice(2); // slug/name pairs, e.g. my-post/hero
 
 for (const pair of wanted) {
