@@ -23,8 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
-# Copied at build time from ./QMS Module Videos (see npm run build). Do not commit full MP4s here.
-public/e-courses/modules/*/video.mp4
+# The e-course retired 2026-09-01. Its slides live in archive/e-courses so they are kept
+# but no longer published, and the two module videos were moved out of the repository
+# entirely (../preqal-ecourse-media) because they are the only copies and are ~580MB.
+# These guards stay so a rebuilt or re-synced copy can never be committed.
+public/e-courses/
+**/e-courses/**/*.mp4
 
 # Claude Code worktrees and session data
 .claude/
