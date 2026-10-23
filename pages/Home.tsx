@@ -107,8 +107,9 @@ const PHASES: Phase[] = [
    852 at 900, and on the desktop it runs 448 at 1024 up to a 520 cap that
    holds at every width above it. The gutter is 32px below 640 and 48px from
    there to 1023, which the single calc the old value used got wrong at phone
-   widths. Declaring the cap keeps the browser one tier ahead of the parallax,
-   which paints up to 1.1x of the frame. */
+   widths. These are layout widths and nothing inflates them: Home renders its
+   phases inside SlideDeck at every width, so `still` below is always true and
+   the y/scale transforms never reach the picture. */
 const PHASE_MEDIA_SIZES =
   '(min-width: 1024px) 520px, (min-width: 640px) calc(100vw - 48px), calc(100vw - 32px)';
 
