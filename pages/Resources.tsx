@@ -278,7 +278,7 @@ const Resources: React.FC = () => {
     label: 'Contact & info',
     node: (
       <div className="h-full flex items-center overflow-hidden">
-        <DeckAssemble seed={9} spread={520} from="bottom" className="w-full deck-fit"><Footer compact /></DeckAssemble>
+        <div className="deck-fit"><DeckAssemble seed={9} spread={520} from="bottom" className="w-full"><Footer compact /></DeckAssemble></div>
       </div>
     ),
   };
@@ -289,7 +289,7 @@ const Resources: React.FC = () => {
           label: 'Free templates',
           node: (
             <div className="h-full flex items-center px-4 sm:px-6">
-              <DeckAssemble seed={21} spread={560} className="w-full deck-fit"><Hero /></DeckAssemble>
+              <div className="deck-fit"><DeckAssemble seed={21} spread={560} className="w-full"><Hero /></DeckAssemble></div>
             </div>
           ),
         },

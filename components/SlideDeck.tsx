@@ -607,6 +607,14 @@ export const DeckAssemble: React.FC<{
    * case, and it should rise from the bottom rather than pick a fallback.
    */
   from?: 'auto' | 'bottom' | 'top' | 'left' | 'right';
+  /**
+   * Never pass `deck-fit` here. This component animates `scale` on the element
+   * this class lands on, and Framer Motion writes that transform inline, where
+   * it beats the stylesheet rule the fit ladder is written as - the slide then
+   * renders at scale 1 while active instead of its rung, and silently spills.
+   * A `transform` also leaves the parent reserving the UNSCALED height, so the
+   * fit class belongs on a wrapper AROUND this component, never on a child.
+   */
   className?: string;
   style?: React.CSSProperties;
   children: React.ReactNode;

@@ -949,9 +949,11 @@ const Home: React.FC = () => {
       label: 'Welcome',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6 lg:px-8">
-            <DeckAssemble seed={31} spread={560} className="max-w-6xl mx-auto w-full deck-fit">
-              <HeroSection deck />
-            </DeckAssemble>
+            <div className="deck-fit max-w-6xl mx-auto">
+              <DeckAssemble seed={31} spread={560} className="w-full">
+                <HeroSection deck />
+              </DeckAssemble>
+            </div>
           </div>
         ),
       },
@@ -972,9 +974,11 @@ const Home: React.FC = () => {
       label: 'Contact & info',
         node: (
           <div className="h-full flex items-center overflow-hidden">
-            <DeckAssemble seed={4} spread={520} from="bottom" className="w-full deck-fit">
-              <Footer compact />
-            </DeckAssemble>
+            <div className="deck-fit">
+              <DeckAssemble seed={4} spread={520} from="bottom" className="w-full">
+                <Footer compact />
+              </DeckAssemble>
+            </div>
           </div>
         ),
       },
