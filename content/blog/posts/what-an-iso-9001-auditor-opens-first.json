@@ -1,0 +1,357 @@
+{
+  "slug": "what-an-iso-9001-auditor-opens-first",
+  "hero": {
+    "kicker": "QUALITY MANAGEMENT",
+    "h1": "What an ISO 9001 auditor opens first",
+    "standfirst": "An audit of your quality system does not begin on the factory floor. It begins in a reading room, with a small set of records the auditor opens in a settled order. Four of them decide how the rest of the week goes."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "The audit starts in your documents, not on your floor",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s1p1",
+          "text": "A first certification audit is run in two stages, and the first stage is mostly reading. The auditor wants to know whether there is a system there to audit at all. That stage has a name and a literature behind it. The ISO 9001 Auditing Practices Group publishes a paper on the two-stage initial certification audit, alongside papers on audit planning, on checklists and on evidence collection. None of those papers is about your floor."
+        },
+        {
+          "kind": "photo",
+          "id": "reading-the-record-photo",
+          "src": "blog-photos/what-an-iso-9001-auditor-opens-first/reading-the-record.0aa562fe",
+          "alt": "Two men sitting at a conference table, one speaking with an open notebook in front of him while the other listens.",
+          "caption": "The first stage of a certification audit is mostly reading. The floor comes later.",
+          "placement": "wide",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Unknown (see sourceUrl)",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/two-men-in-a-meeting-at-a-conference-table-3IJbPn9sL_w",
+            "license": "Unsplash License"
+          }
+        },
+        {
+          "kind": "p",
+          "id": "s1p2",
+          "text": "That group has been running since 2003, and it is not a vendor. It is an informal group of quality management system experts, auditors and practitioners drawn from the International Organization for Standardization committee that owns ISO 9001 and from the accreditation side of the chain. Its papers are free to read. Read the one on evidence collection before your auditor does."
+        },
+        {
+          "kind": "p",
+          "id": "s1p3",
+          "text": "You will read online that the certification audit is the moment everything is decided. It is not. Most of what an auditor will conclude about your system is already sitting in four records, and those records were written months before anyone arrived at your gate."
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "Four records tell the auditor whether the system is used",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s2p1",
+          "text": "The four are your scope, your quality policy with its objectives, your last internal audit report and the minutes of your last management review. Take them in that order, because that is roughly the order they get opened in. The scope says what you claim to control. The policy and the objectives say what good looks like in numbers. The internal audit says whether you checked for yourself. The management review says whether anyone senior read the answer and did something about it."
+        },
+        {
+          "kind": "p",
+          "id": "s2p2",
+          "text": "The Auditing Practices Group arranges its own guidance along the same line, with separate papers on scope and applicability, on policy, objectives and management review, and on internal audit. The thinking in those papers follows the process-based approach and the risk-based thinking that auditing ISO 9001 requires. That is the whole test in one phrase. A system that exists only as a folder fails it."
+        },
+        {
+          "kind": "p",
+          "id": "s2p3",
+          "text": "The Guyana National Bureau of Standards lays the standard out the same way, naming Context of the Organisation, Leadership, Planning, Support, Operation and Performance Evaluation as the clauses that guide a working system. Performance Evaluation is the clause most systems are thinnest on. It is also the one the auditor reaches first."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "The standard your auditor works to was reissued this year",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s3p1",
+          "text": "ISO 19011 is the guidance auditors themselves work from, and a new edition of it landed this year. It was released in May 2026 and announced by the quality management committee on 9 June 2026. The committee that owns ISO 9001 names it as the key standard to refer to for auditing against ISO 9001. So the rule book moved."
+        },
+        {
+          "kind": "p",
+          "id": "s3p2",
+          "text": "What changed is worth knowing before you sit across a table from an auditor. The 2026 edition is written to address the growing weight of technology, digitisation and virtual working, and it puts more emphasis on risk analysis and on mitigation. Remote and hybrid auditing is now ordinary rather than an exception. Expect more of your audit to happen through a screen."
+        },
+        {
+          "kind": "p",
+          "id": "s3p3",
+          "text": "There is a second standard behind the first, and it governs whether your auditor is competent to audit a quality system at all. It is ISO/IEC 17021-3, published in 2017, and it sets the competence requirements for bodies that audit and certify quality management systems. Nobody will volunteer this. Ask."
+        },
+        {
+          "kind": "callout",
+          "id": "s3c1",
+          "tone": "warning",
+          "text": "Ask your certification body which edition of ISO 19011 its auditors are working to, and get the answer in writing. A proposal written against the older edition is not wrong. It does tell you how current the body is, and that is worth knowing before you sign."
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "heading": "In Guyana your first audit is usually not the certification audit",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s4p1",
+          "text": "Most Guyanese businesses meet an auditor long before a certification body ever arrives. The Guyana National Bureau of Standards has been certified to ISO 9001 since 2018, and it runs training on the awareness and interpretation of the standard, on implementation, on internal auditing and on pre-assessment audits. It also runs an auditing programme of its own, giving an organisation an independent look at its own operations. That is a rehearsal, and a rehearsal is cheap."
+        },
+        {
+          "kind": "p",
+          "id": "s4p2",
+          "text": "The Bureau is not new to any of this. It was established under the Standards Act No. 11 of 1984, amended in 1997, and it opened in March 1985. It is governed by a National Standards Council whose members come from sectors across the economy. Four decades is a long memory."
+        },
+        {
+          "kind": "photo",
+          "id": "on-the-floor-photo",
+          "src": "blog-photos/what-an-iso-9001-auditor-opens-first/on-the-floor.acb6bf1c",
+          "alt": "Four women in blue uniforms and hairnets sorting and rolling towels along a factory bench, with printed notices on the wall behind them.",
+          "caption": "The notices on that wall are part of the record. An auditor reads about them before walking past them.",
+          "placement": "inline",
+          "width": 2400,
+          "height": 1600,
+          "credit": {
+            "photographer": "Unknown (see sourceUrl)",
+            "source": "Unsplash",
+            "sourceUrl": "https://unsplash.com/photos/workers-sort-and-roll-textiles-in-a-factory-7s31d66Slo8",
+            "license": "Unsplash License"
+          }
+        },
+        {
+          "kind": "p",
+          "id": "s4p3",
+          "text": "You could skip the rehearsal and go straight at the certification audit. Yes, and some businesses do, and some of them pass. What a pre-assessment actually buys you is the list of findings while they are still cheap to fix, because a finding raised by the Bureau costs you a fortnight of work and the same finding raised at the real audit costs you a corrective action plan and a return visit."
+        },
+        {
+          "kind": "p",
+          "id": "s4p4",
+          "text": "There is also a rung below international certification, and it is often the right one to stand on first. The Bureau runs a national quality management system certification aimed at micro, small and medium enterprises in Guyana, built as a step towards the international standard. For a company of twelve people that is usually the sensible first move. It is a rung, not a detour."
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "heading": "What to have ready, and in what order",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s5p1",
+          "text": "None of this needs a project. It needs four folders and an afternoon to put them in order."
+        },
+        {
+          "kind": "list",
+          "id": "s5l1",
+          "ordered": true,
+          "items": [
+            "Write your scope in one paragraph, then check that it matches what you actually do and the sites you actually do it at.",
+            "Put your quality policy and this year's objectives on a single page, with the current figure written beside each objective.",
+            "Produce your last internal audit report, including the findings you have not closed yet. Especially those.",
+            "Produce the minutes of your last management review, signed, with a named owner against every action.",
+            "Ask your certification body, in writing, which edition of ISO 19011 and which edition of ISO 9001 your audit will be run against."
+          ]
+        },
+        {
+          "kind": "p",
+          "id": "s5p2",
+          "text": "The thing to avoid is the folder written for the auditor. It reads beautifully and nobody in the building has opened it since the week it was printed. An auditor who has read four hundred of those can tell inside a page. Audits are there to assess conformity, to evaluate effectiveness and to find opportunities to improve, and effectiveness is exactly where the folder written for show falls apart."
+        },
+        {
+          "kind": "p",
+          "id": "s5p3",
+          "text": "It does work when it is done properly, and there is a Guyanese case to point at. Metro Office and Computer Supplies, a Guyana-located company, was certified to ISO 9001 in July 2022 under a regional trade programme. The Bureau worked with the Metro team through 2021 on implementing the requirements, and it was credited with an integral part in the result. That was about a year of work before anybody was audited."
+        },
+        {
+          "kind": "quote",
+          "id": "s5q1",
+          "text": "The auditor is not looking for your manual. The auditor is looking for the last four decisions your management actually made.",
+          "attribution": "Dr. Stefan Gravesande"
+        },
+        {
+          "kind": "p",
+          "id": "s5p4",
+          "text": "Think of those four records as the house papers for your quality system. A buyer does not walk the rooms first. A buyer asks who owns the place, what the title covers and whether the last inspection turned anything up. Your auditor is a buyer."
+        }
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "id": "f1",
+      "q": "What does an ISO 9001 auditor look at first?",
+      "a": "Your scope, your quality policy with its objectives, your last internal audit report and the minutes of your last management review. Those four say whether the system is used or only written. The floor and the interviews come after them."
+    },
+    {
+      "id": "f2",
+      "q": "Is the first certification audit one visit or two?",
+      "a": "Two stages. The first is largely a review of your documents and your readiness, which is why the ISO 9001 Auditing Practices Group publishes a paper on the two-stage initial certification audit. The second is the full audit against the standard."
+    },
+    {
+      "id": "f3",
+      "q": "Which edition of ISO 19011 will my auditor use?",
+      "a": "The current edition was released in May 2026 and announced on 9 June 2026, and it carries more emphasis on risk and on virtual working. Which edition your own auditor works to is a question for your certification body, and the answer belongs in writing."
+    },
+    {
+      "id": "f4",
+      "q": "Can the Guyana National Bureau of Standards audit us before certification?",
+      "a": "Yes. The Bureau offers pre-assessment audits and training on internal auditing, and it runs its own auditing programme. It also runs a national quality management system certification for micro, small and medium enterprises as a step towards the international standard."
+    }
+  ],
+  "closing": {
+    "text": "If your scope, your objectives, your last internal audit and your last management review do not currently sit in one place, that is the work of a week before the audit rather than the audit itself. Systems Builder™ puts those four in place and gets them used. Certified Care™ keeps them current between visits, which is the part that decides your next surveillance audit.",
+    "ctaLabel": "Talk to Dr. Gravesande about audit readiness",
+    "ctaHref": "/contact"
+  },
+  "sources": [
+    {
+      "claimId": "c1",
+      "url": "https://committee.iso.org/home/tc176/iso-9001-auditing-practices-group.html",
+      "publisher": "ISO 9001 Auditing Practices Group",
+      "quote": "This group was established in 2003 as an on-line source of papers on auditing quality management systems and on the audit process.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c2",
+      "url": "https://committee.iso.org/home/tc176/iso-9001-auditing-practices-group.html",
+      "publisher": "ISO 9001 Auditing Practices Group",
+      "quote": "The ISO 9001 APG is constituted as an informal group of quality management system experts, auditors and practitioners, drawn from the ISO Technical Committee 176 Quality Management and Quality Assurance",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c3",
+      "url": "https://committee.iso.org/home/tc176/iso-9001-auditing-practices-group.html",
+      "publisher": "ISO 9001 Auditing Practices Group",
+      "quote": "The ideas, examples and explanations given reflect the process-based approach and risk-based thinking that are essential for auditing the requirements of ISO 9001 Quality management systems - Requirements.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c4",
+      "url": "https://committee.iso.org/sites/tc176/home/news/content-left-area/news-and-updates/iso-19011-2026-released.html",
+      "publisher": "ISO/TC 176 Quality management and quality assurance",
+      "quote": "This new version was released in May and can be obtained directly from iso.org or from ISO member standards bodies.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c5",
+      "url": "https://committee.iso.org/sites/tc176/home/news/content-left-area/news-and-updates/iso-19011-2026-released.html",
+      "publisher": "ISO/TC 176 Quality management and quality assurance",
+      "quote": "The 2026 version of ISO19011 helps to address the changing landscape of organizational operations, particularly the growing impacts of technology, digitization, and virtual environments.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c6",
+      "url": "https://committee.iso.org/sites/tc176/home/news/content-left-area/news-and-updates/iso-19011-2026-released.html",
+      "publisher": "ISO/TC 176 Quality management and quality assurance",
+      "quote": "ISO19011:2026 provides important foundational guidance for any organization taking responsibility for auditing management systems to help ensure the systems are and remain effective and in conformance with corresponding standards, such as ISO9001.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c7",
+      "url": "https://committee.iso.org/home/tc176sc2",
+      "publisher": "ISO/TC 176/SC 2 Quality systems",
+      "quote": "A key standard you should refer to is ISO 19011:2026 Guidelines for auditing management systems",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c8",
+      "url": "https://committee.iso.org/home/tc176sc2",
+      "publisher": "ISO/TC 176/SC 2 Quality systems",
+      "quote": "These have been developed by an informal group of quality management system experts, auditors and practitioners from ISO/TC 176 and the International Accreditation Forum",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c9",
+      "url": "https://committee.iso.org/home/tc176sc2",
+      "publisher": "ISO/TC 176/SC 2 Quality systems",
+      "quote": "Also note that ISO/IEC 17021-3: 2017 Conformity assessment -- Requirements for bodies providing audit and certification of management systems - Part 3: Competence requirements for auditing and certification of quality management systems may help you.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c10",
+      "url": "https://gnbsgy.com/quality-compliance-success-how-gnbs-supports-iso-9001-certification/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "The Guyana National Bureau of Standards (GNBS), certified ISO 9001 since 2018, is committed to helping businesses adopt, develop, and implement an effective Quality Management System",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c11",
+      "url": "https://gnbsgy.com/quality-compliance-success-how-gnbs-supports-iso-9001-certification/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "The Standard outlines several clauses that guide organisations in establishing and maintaining an effective QMS. These include Context of the Organisation, Leadership, Planning, Support, Operation and Performance Evaluation.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c12",
+      "url": "https://gnbsgy.com/quality-compliance-success-how-gnbs-supports-iso-9001-certification/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "Our team of Technical Officers offers expert guidance through training on the Awareness and Interpretation of the Standard, Implementation, Internal Auditing and Pre-Assessment Audits to help businesses meet and maintain certification requirements successfully.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c13",
+      "url": "https://gnbsgy.com/auditing-services/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "Audits are used to assess conformity, evaluate effectiveness and identify opportunities for improvement.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c14",
+      "url": "https://gnbsgy.com/auditing-services/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "The GNBS Internal Auditing Programme is geared towards providing auditing services to organizations, companies and laboratories desirous of having an independent assessment of their operations",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c15",
+      "url": "https://portal.gov.gy/agencies/guyana-national-bureau-of-standards-gnbs",
+      "publisher": "Government of Guyana Portal",
+      "quote": "It was established under the Standards Act No. 11 of 1984, amended in 1997, and opened in March 1985.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c16",
+      "url": "https://portal.gov.gy/agencies/guyana-national-bureau-of-standards-gnbs",
+      "publisher": "Government of Guyana Portal",
+      "quote": "It is governed by a National Standards Council whose members represent the various interest groups and sectors of the economy.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c17",
+      "url": "https://portal.gov.gy/agencies/guyana-national-bureau-of-standards-gnbs",
+      "publisher": "Government of Guyana Portal",
+      "quote": "A national quality management system certification aimed at micro, small and medium enterprises in Guyana as a step towards international",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c18",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "Metro Office and Computer Supplies, a Guyana-located company, recently became the first company under the 11th EDF",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c19",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "The Bureau, during 2021 worked with the Metro Team providing Technical Assistance towards the implementation of the Quality Management System requirements.",
+      "retrieved": "2026-11-02"
+    },
+    {
+      "claimId": "c20",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "The Guyana National Bureau of Standards (GNBS) played an integral role in realizing this outstanding achievement by Metro, which is now the newest internationally-certified company in Guyana.",
+      "retrieved": "2026-11-02"
+    }
+  ],
+  "relatedGuides": [
+    "iso-9001-cost-guyana"
+  ],
+  "relatedServices": [
+    "systems-builder",
+    "certified-care"
+  ]
+}

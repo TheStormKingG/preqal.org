@@ -1,6 +1,21 @@
 {
   "posts": [
     {
+      "slug": "what-an-iso-9001-auditor-opens-first",
+      "title": "What an ISO 9001 auditor opens first in Guyana | Preqal",
+      "description": "An ISO 9001 audit does not begin on your factory floor. It begins with four records, read in a settled order, and they decide how the rest of the week goes.",
+      "published": "2026-11-02",
+      "updated": "2026-11-02",
+      "status": "draft",
+      "topic": "quality-management",
+      "readMinutes": 6,
+      "ogImage": "/blog-photos/what-an-iso-9001-auditor-opens-first/reading-the-record.0aa562fe-og.jpg",
+      "thumbnail": {
+        "src": "blog-photos/what-an-iso-9001-auditor-opens-first/reading-the-record.0aa562fe",
+        "alt": "Two men sitting at a conference table, one speaking with an open notebook in front of him while the other listens."
+      }
+    },
+    {
       "slug": "what-changed-behind-your-iso-certificate",
       "title": "ISO 9001:2026 and the end of the IAF: what changed behind your certificate | Preqal",
       "description": "The 2015 edition was withdrawn in September and the IAF closed in January. Your certificate is still valid. Here is what the dates require and what to fix in your own wording.",
