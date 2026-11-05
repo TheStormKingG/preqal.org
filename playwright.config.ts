@@ -25,7 +25,14 @@ export default defineConfig({
   ],
 
   // Reporter: concise in CI, verbose locally
-  reporter: process.env.CI ? 'github' : 'list',
+  /* 'github' annotates the failing line in the PR diff but writes no files, so
+     the workflows' "upload playwright-report/ on failure" step was collecting a
+     directory that never existed — every CI failure arrived with its screenshots,
+     traces and error context discarded. The html reporter writes that directory;
+     both are kept because they answer different questions. */
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }]]
+    : 'list',
 
   /* Every spec but smoke.spec.ts drives http://localhost:3000 by absolute URL,
      so those need a dev server; smoke reads the live site through baseURL and
