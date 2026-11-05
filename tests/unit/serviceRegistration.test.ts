@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { SERVICE_PAGES } from '../../pages/ServiceLanding';
 import { WHATSAPP_OPTIONS } from '../../components/WhatsAppContact';
 
-/* Four lists must gain a slug whenever SERVICE_PAGES does, and none of them
+/* Five lists must gain a slug whenever SERVICE_PAGES does, and none of them
    derives from it. Each is asserted separately: a combined assertion stops at
    the first failure, so the later authorities would never be exercised. */
 const read = (p: string) => readFileSync(new URL(`../../${p}`, import.meta.url), 'utf8');
@@ -42,6 +42,13 @@ describe('every service slug reaches every authority', () => {
     const src = read('scripts/route-meta.mjs');
     for (const slug of slugs) {
       expect(src, `${slug}: absent from scripts/route-meta.mjs, so it is never prerendered and gets no a11y test`).toContain(`/services/${slug}`);
+    }
+  });
+
+  it('each slug is linked from the footer journey list', () => {
+    const src = read('components/Footer.tsx');
+    for (const slug of slugs) {
+      expect(src, `${slug}: absent from the Footer journey array, so it has no site-wide link — /services is in neither nav bar`).toContain(`/services/${slug}`);
     }
   });
 });
