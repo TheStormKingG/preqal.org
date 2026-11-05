@@ -1,0 +1,83 @@
+name: E2E Tests
+
+# This is the gate on the code in a commit, so it runs BEFORE anything is
+# published. Smoke Tests is the separate, later gate on what the deploy
+# actually served, and the two must not be merged: a suite that drives a dev
+# server cannot tell you the deploy landed, and one that reads the live site
+# cannot tell you this commit is sound — it is still reading the previous one.
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+# A newer commit makes an in-flight run moot; this suite is long enough that
+# letting superseded runs finish wastes real minutes.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    # The suite takes about 7 minutes locally at 2 workers; this leaves room
+    # for a slower runner without letting a hung server burn the whole hour.
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # webkit as well as chromium: two specs call webkit.launch() directly to
+      # check the Apple engine, and without the binary they fail with a missing
+      # executable that reads nothing like the engine problem they test for.
+      - name: Install Playwright browsers
+        run: npx playwright install chromium webkit --with-deps
+
+      # E2E_LOCAL turns on the webServer block in playwright.config.ts, which
+      # starts `npm run dev`, waits for localhost:3000 and tears it down after.
+      # Letting Playwright own the server means a server that never comes up is
+      # reported as that, rather than as every test failing on connection.
+      - name: Run the specs that drive localhost
+        shell: bash
+        env:
+          E2E_LOCAL: '1'
+        run: |
+          set -euo pipefail
+          # Derived, never listed: a hardcoded set silently stops covering any
+          # spec added after it was written, and reports the same green while
+          # doing it. smoke is excluded because it reads the live site.
+          specs=$(ls tests/*.spec.ts | grep -v 'smoke\.spec\.ts$')
+          if [ -z "$specs" ]; then
+            echo "::error::no specs matched — the glob or the tests directory moved"
+            exit 1
+          fi
+          if echo "$specs" | grep -q 'smoke\.spec\.ts'; then
+            echo "::error::smoke.spec.ts leaked into the local run; it would read the live site"
+            exit 1
+          fi
+          echo "Running $(echo "$specs" | wc -l | tr -d ' ') spec files:"
+          echo "$specs" | sed 's/^/  /'
+          # Piped into xargs rather than expanded as $specs: whether an unquoted
+          # variable splits on newlines is a shell dialect difference (bash does,
+          # zsh does not), and a gate that passes its whole file list as ONE
+          # argument matches nothing and says "No tests found" — which reads like
+          # a glob mistake, not like the suite never ran.
+          echo "$specs" | xargs npx playwright test
+
+      - name: Upload test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-e2e
+          path: playwright-report/
+          retention-days: 7
