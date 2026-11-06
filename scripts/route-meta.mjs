@@ -18,7 +18,7 @@ export const routeMeta = {
   },
   '/services': {
     title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
-    description: 'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and bespoke QHSE software.',
+    description: 'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and QHSE software built to fit.',
     canonical: `${BASE_URL}/services/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',
@@ -61,7 +61,7 @@ export const routeMeta = {
   '/services/qhse-control': {
     title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
     description:
-      'Bespoke quality, health, safety and environmental software, designed around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+      'Quality, health, safety and environmental software built around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
     canonical: `${BASE_URL}/services/qhse-control/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',

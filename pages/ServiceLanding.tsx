@@ -316,7 +316,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     metaKey: 'servicesQhseControl',
     title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
     description:
-      'Bespoke quality, health, safety and environmental software, designed around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+      'Quality, health, safety and environmental software built around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
     h1: (
       <>
         Your QHSE system, built around <em style={{ color: '#b45309' }}>how you actually work.</em>
@@ -362,7 +362,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     faqs: [
       {
-        q: 'Why build something bespoke instead of buying QHSE software?',
+        q: 'Why build our own instead of buying QHSE software?',
         a: 'Because off-the-shelf software is designed for the average of every industry, and you do not operate the average. A bought system makes you describe your work in its vocabulary; a built one uses yours. If a generic platform genuinely fits your operation, we will tell you that at the discovery call rather than sell you a build.',
       },
       {
@@ -776,7 +776,7 @@ export const ServicesIndex: React.FC = () => (
       customData={{
         title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
         description:
-          'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and bespoke QHSE software.',
+          'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and QHSE software built to fit.',
         canonical: `${BASE_URL}/services/`,
       }}
       extraSchemas={[getProfessionalServiceSchema()]}
