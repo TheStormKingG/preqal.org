@@ -722,7 +722,7 @@ const ServiceLanding: React.FC = () => {
                 </>
               )}
 
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">The other steps on the journey</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">More from Preqal</p>
               <div className="flex flex-wrap gap-3 mb-12">
                 {others.map((o) => (
                   <Link
