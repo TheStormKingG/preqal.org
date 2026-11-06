@@ -41,7 +41,7 @@ AMBER_600 = (0xD9, 0x77, 0x06)
 # fit the middle square (630px) so the compose-box thumbnail never clips it.
 CARDS = {
     "home": "ISO 9001 system setup for SMEs",
-    "services": "Five fixed-scope services for SMEs",
+    "services": "Six services for Guyanese SMEs",
     "resources": "Free quality management templates",
     "e-courses": "Build Systems That Actually Work",
     "e-courses-register": "Build Systems That Actually Work",
