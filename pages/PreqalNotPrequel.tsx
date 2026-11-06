@@ -104,7 +104,7 @@ const PreqalNotPrequel: React.FC = () => {
               <h2 className="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-amber-500 pl-4">What is Preqal?</h2>
               <CollapsibleSection title="Services & offerings" headingLevel="h3" defaultOpen={true}>
                 <p className="text-slate-700 leading-relaxed mb-4">
-                  Preqal is a professional services company that provides quality, safety, and environmental compliance solutions. Founded with a mission to help organizations move from chaos to compliance, Preqal offers:
+                  Preqal is a professional services company that sets up the quality, safety and environmental systems a business runs on. Founded with a mission to help organisations move from chaos to compliance, Preqal offers:
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-slate-700 mb-4 ml-4">
                   <li>Quality Risk Scans and diagnostic assessments</li>

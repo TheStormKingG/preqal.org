@@ -37,9 +37,28 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      # Cheap and first: a banned word in reader-facing copy should fail before
+      # we spend two minutes downloading browsers. The term list is parsed out
+      # of docs/guides/blog-protocol.md, so the guide stays the only copy of it.
+      - name: Brand vocabulary
+        run: npm run check:vocab
+
+      # Keyed on the lockfile, so a Playwright bump invalidates it and anything
+      # else reuses the download. Without this the job fetches two browsers on
+      # every run: ordinarily a couple of minutes, but it is also the step that
+      # wedged for 35 minutes against a 30-minute job timeout, and a cache hit
+      # removes the opportunity entirely.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       # webkit as well as chromium: two specs call webkit.launch() directly to
       # check the Apple engine, and without the binary they fail with a missing
       # executable that reads nothing like the engine problem they test for.
+      # --with-deps stays outside the cache: it installs apt packages onto the
+      # runner, not into the cached directory.
       - name: Install Playwright browsers
         run: npx playwright install chromium webkit --with-deps
 

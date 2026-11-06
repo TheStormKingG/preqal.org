@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --max-warnings 0",
+    "check:vocab": "node scripts/check-banned-vocabulary.mjs",
     "build": "node scripts/generate-sitemap.js && vite build && node scripts/inject-seo-meta.mjs",
     "og:cards": "python3 scripts/generate-og-cards.py",
     "sync-module1-slides": "node scripts/sync-module1-slides.mjs",

@@ -290,7 +290,7 @@ The hero register's permissions do not transfer to the body, and the body's form
 
 **Whitelist**: Guyana Food Safety Authority · Guyana National Bureau of Standards · Guyana Marketing Corporation · Guyana Revenue Authority · Caribbean Community · CARICOM · Global Food Safety Initiative · International Organization for Standardization · Food and Agriculture Organization of the United Nations · Codex Alimentarius Commission. Markets are named in full: the United States, Canada, the United Kingdom and the European Union. Never US, UK, EU or GFSA.
 
-**Banned vocabulary**, each verified at zero occurrences across `pages/`, `data/` and `components/`: leverage · cutting-edge · world-class · best-in-class · state-of-the-art · bespoke · seamless · robust · holistic · synergy · empower · elevate · transformative · game-changing · passionate · excellence · delve · furthermore · moreover · "in today's" · solutions · streamline · unlock · dive into.
+**Banned vocabulary** — enforced, not asserted. `npm run check:vocab` parses this very list out of this line and walks the TypeScript AST of `pages/`, `data/` and `components/`, so it reads JSX text, copy attributes and string literals while ignoring identifiers, route slugs and class names. It runs on every pull request and again before any deploy. Terms: leverage · cutting-edge · world-class · best-in-class · state-of-the-art · bespoke · seamless · robust · holistic · synergy · empower · elevate · transformative · game-changing · passionate · excellence · delve · furthermore · moreover · "in today's" · solutions · streamline · unlock · dive into.
 
 ### 3.3 BODY — advisory, reported and never failed
 
