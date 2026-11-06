@@ -309,6 +309,84 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
     ],
   },
+  {
+    slug: 'qhse-control',
+    waKey: 'qhse-control',
+    name: 'Preqal QHSE Control',
+    metaKey: 'servicesQhseControl',
+    title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
+    description:
+      'Bespoke quality, health, safety and environmental software, designed around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+    h1: (
+      <>
+        Your QHSE system, built around <em style={{ color: '#b45309' }}>how you actually work.</em>
+      </>
+    ),
+    intro:
+      'Most QHSE software asks you to change how you operate so the software makes sense. We do it the other way round: we learn how your business runs, then build the system around it.',
+    body: [
+      'Policies in one folder, risk assessments in a spreadsheet somebody owns, corrective actions in an inbox, and a fortnight of preparation before every audit. The problem is not that your team does not care about quality and safety. It is that holding it together by hand takes the time you needed for the work itself.',
+      'Generic QHSE platforms solve this by giving everyone the same system and asking each business to bend. That works until the first process that does not fit, and then the workarounds start — the spreadsheet comes back, and you are maintaining two systems instead of one.',
+      'Preqal starts with a discovery process. We map how your business actually operates: what you make or do, what can go wrong, who decides, what you already have to prove to a regulator or a customer. Then we design and build software around that, and we stay with it while your team learns to use it.',
+      'You do not need a QHSE system before you call us. Working out what you need is the first thing we do together.',
+    ],
+    deliverables: [
+      'A discovery report mapping your processes, risks and obligations',
+      'One working control loop first — a real problem, found and closed inside the system',
+      'Controlled documents: policies, procedures, registers, forms and logs',
+      'Guided risk and hazard assessment with controls and owners',
+      'Nonconformities and corrective actions, tracked to verified closure',
+      'Internal audit planning, checklists, findings and follow-up',
+      'Dashboards showing open actions, overdue reviews and recurring problems',
+      'Training for your team, and support while the system beds in',
+    ],
+    audience:
+      'Businesses in manufacturing, agriculture, food production, logistics, construction and industrial services that already run real processes and need a QHSE system that fits them. It suits you best if you have operations worth modelling and someone accountable for quality or safety. It is not for you if you are looking for an off-the-shelf licence you install yourself, or if your processes are not yet defined — start with a Preqal Risk Scan instead.',
+    cta: 'Book a free discovery call',
+    thumbnail: {
+      src: 'service-photos/qhse-control/record.f0b72c92',
+      alt: 'A technician writing a test result onto a clipboard beside equipment on a production floor.',
+    },
+    scheduleEyebrow: 'How the system works',
+    scheduleHeading: (
+      <>
+        One problem, <em style={{ color: '#b45309' }}>start to finish.</em>
+      </>
+    ),
+    schedule: [
+      { day: 'Define', title: 'The limit', desc: 'The specification, the acceptable range, and who is accountable when it is missed.' },
+      { day: 'Capture', title: 'The result', desc: 'Recorded where the work happens, on a phone or a tablet, not copied up later.' },
+      { day: 'Detect', title: 'Out of spec', desc: 'The system flags it as it happens, instead of it surfacing in a monthly review.' },
+      { day: 'Act', title: 'Contained', desc: 'Held, investigated, an action assigned to a person with a date.' },
+      { day: 'Verify', title: 'Did it work', desc: 'Checked, closed, and counted — so a problem that keeps returning becomes visible.' },
+    ],
+    faqs: [
+      {
+        q: 'Why build something bespoke instead of buying QHSE software?',
+        a: 'Because off-the-shelf software is designed for the average of every industry, and you do not operate the average. A bought system makes you describe your work in its vocabulary; a built one uses yours. If a generic platform genuinely fits your operation, we will tell you that at the discovery call rather than sell you a build.',
+      },
+      {
+        q: 'What does it cost?',
+        a: 'It depends on how many processes, sites and users the system covers, and we will not quote before we understand that. The discovery call is free and carries no obligation. If we go further, you get a scoped proposal with a fixed implementation price before any work starts.',
+      },
+      {
+        q: 'How long before we are using it?',
+        a: 'We build in stages, and the first stage is one working control loop rather than the whole system — so you are using something real early, and the rest is added around a system your team already knows. The timeline is agreed in the proposal, after discovery.',
+      },
+      {
+        q: 'Does this make us ISO certified?',
+        a: 'No. Certification is issued by an accredited certification body after an audit, and no software grants it. What the system does is make the evidence an auditor asks for — controlled documents, risk assessments, corrective actions, internal audits — something you already have rather than something you assemble beforehand.',
+      },
+      {
+        q: 'Who owns the software when it is built?',
+        a: 'That is agreed in writing in the proposal, before the build starts, along with where your data lives and what happens to it if we stop working together. Ask about it on the call.',
+      },
+      {
+        q: 'What if it does not do what we agreed?',
+        a: 'The proposal names the workflows being delivered. At the acceptance review, if those are not working as specified, we correct them at no further configuration charge.',
+      },
+    ],
+  },
 ];
 
 /* ── shared bits ─────────────────────────────────────────────────────────── */
