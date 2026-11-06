@@ -667,7 +667,7 @@ const PhaseSlide: React.FC<{ phase: Phase; index: number }> = ({ phase, index })
           />
         </svg>
       )}
-      <div className="relative z-10 max-w-6xl mx-auto w-full deck-fit">
+      <div className="relative z-10 max-w-6xl mx-auto w-full deck-fit deck-dense">
         <PhaseSection phase={phase} index={index} deck badgeRef={badgeRef} pop={pop} burst={burst} near={near} />
       </div>
     </div>

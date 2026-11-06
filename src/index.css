@@ -364,7 +364,12 @@ main:focus-visible { outline: none; box-shadow: none; }
 
 /* One ladder for every deck page, so text reads at the same size site-wide.
    Each step is the largest scale the densest slide on any page can carry at
-   that height — measured, not guessed. Raising a step spills a slide. */
+   that height — measured, not guessed. Raising a step spills a slide.
+   The floor on this ladder is a tap target, not a layout: the footer's social
+   marks are 48px in the markup, so any rung below ~0.896 lands them under the
+   44px minimum and tests/founder-socials.spec.ts fails on the width it checks.
+   That floor is the reason the dense ladder below exists instead of this one
+   simply going lower. */
 @media (max-width: 1023px) {
   .deck-fit { transform: scale(0.91); }
 }
@@ -376,6 +381,34 @@ main:focus-visible { outline: none; box-shadow: none; }
 }
 @media (max-height: 640px) {
   .deck-fit { transform: scale(0.65); }
+}
+
+/* The home deck's five phase slides are the densest thing the ladder carries,
+   and on the phone rungs they were clearing their content box by only 7-25px —
+   inside the variation between one platform's text metrics and another's. The
+   same commit passed on macOS and failed Linux CI by 2-30px, varying run to
+   run, because a slide's height is the sum of its line boxes and those do not
+   round identically on every platform. A margin that small is not a fit.
+   These slides hold no interactive elements, so unlike the shared ladder above
+   they can shrink past the tap-target floor. Each rung below was measured to
+   leave ~40px on the tightest phase slide. Specificity (.deck-fit.deck-dense)
+   puts these ahead of the shared rungs regardless of source order. */
+@media (max-width: 1023px) {
+  .deck-fit.deck-dense { transform: scale(0.89); }
+}
+/* 375-wide wraps the phase copy ~24px taller than 390-wide does, so the tall
+   band needs its own narrow rung — one value for both over-shrinks the 390s. */
+@media (max-width: 380px) and (max-height: 860px) {
+  .deck-fit.deck-dense { transform: scale(0.82); }
+}
+@media (max-width: 1023px) and (max-height: 780px) {
+  .deck-fit.deck-dense { transform: scale(0.77); }
+}
+@media (max-width: 1023px) and (max-height: 700px) {
+  .deck-fit.deck-dense { transform: scale(0.62); }
+}
+@media (max-height: 640px) {
+  .deck-fit.deck-dense { transform: scale(0.56); }
 }
 
 

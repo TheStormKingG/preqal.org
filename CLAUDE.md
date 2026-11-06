@@ -203,6 +203,7 @@ do shell script "cd '/Users/stefangravesande/Documents/Projects/Preqal 2027/Apps
 | `npm run dev` | Local dev server (port 3000) |
 | `npm run build` | Production build → `dist/` |
 | `npm run lint` | ESLint strict check — must pass before committing |
+| `npm run check:vocab` | Banned-vocabulary gate on reader-facing copy. Parses the term list out of `docs/guides/blog-protocol.md` and walks the TypeScript AST of `pages/`, `data/` and `components/`, so it reads JSX text, copy attributes and string literals while ignoring identifiers and route slugs. Runs on every PR and before every deploy. |
 | `npm run test:unit` | Vitest unit tests |
 | `npx playwright test tests/smoke.spec.ts` | Live smoke tests against preqal.org — the only spec CI runs (`smoke.yml`) |
 | `npm run og:cards` | Redraw the social share cards in `public/og/*.png` and `public/favicon.ico` (Pillow + the bundled Rubik). They are committed, not built: CI used to draw them in Ubuntu's fallback font. Rerun after changing a caption in `scripts/generate-og-cards.py`. |
