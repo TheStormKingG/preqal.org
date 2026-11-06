@@ -7,7 +7,7 @@ import { href } from '../lib/paths';
 
 /* ────────────────────────────────────────────────────────────────────────────
    WhatsApp contact — replaces the retired "Free 1hr Consult" / booking funnel.
-   One button, one popup, five predetermined first messages (one per service).
+   One button, one popup, one predetermined first message per offer.
    ──────────────────────────────────────────────────────────────────────────── */
 
 export const WHATSAPP_NUMBER = '5926335874'; // +592 633 5874
@@ -17,7 +17,8 @@ export type WhatsAppServiceKey =
   | 'risk-scan'
   | 'systems-builder'
   | 'certified-care'
-  | 'export-ready';
+  | 'export-ready'
+  | 'qhse-control';
 
 interface WaOption {
   key: WhatsAppServiceKey;
@@ -61,6 +62,13 @@ export const WHATSAPP_OPTIONS: WaOption[] = [
     service: 'Export-Ready™',
     message:
       "Hi Dr. Gravesande 👋 I make food products and I want to sell them abroad. Please tell me about Export-Ready.",
+  },
+  {
+    key: 'qhse-control',
+    phase: 'SW',
+    service: 'QHSE Control',
+    message:
+      "Hi Dr. Gravesande 👋 I want QHSE software built around how my business runs. Please book me a free discovery call.",
   },
 ];
 
