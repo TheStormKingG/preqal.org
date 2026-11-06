@@ -585,7 +585,7 @@ const ContactUs: React.FC = () => {
         label: 'Get in touch',
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="deck-fit"><DeckAssemble seed={29} spread={560} className="w-full"><Hero /></DeckAssemble></div>
+            <div className="deck-fit deck-dense"><DeckAssemble seed={29} spread={560} className="w-full"><Hero /></DeckAssemble></div>
           </div>
         ),
       },
@@ -609,7 +609,7 @@ const ContactUs: React.FC = () => {
         label: "Who you'll be talking to",
         node: (
           <div className="h-full flex items-center px-4 sm:px-6">
-            <div className="w-full deck-fit"><AboutFounder compact /></div>
+            <div className="w-full deck-fit deck-dense"><AboutFounder compact /></div>
           </div>
         ),
       },
