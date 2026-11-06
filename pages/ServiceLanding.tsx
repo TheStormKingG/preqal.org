@@ -63,6 +63,11 @@ interface ServicePage {
      guide's, hash and all, so a replacement is always a new URL. */
   thumbnail: { src: string; alt: string };
   schedule?: ScheduleDay[];
+  /* The schedule block's two headings. Absent on every journey service, whose
+     schedule really is a five-day week; supplied by offers that reuse the same
+     card row for a sequence that is not one. */
+  scheduleEyebrow?: string;
+  scheduleHeading?: React.ReactNode;
   pricing?: PricingBlock;
   onePagerHref?: string;
   faqs: Faq[];
@@ -497,9 +502,13 @@ const ServiceLanding: React.FC = () => {
           <section className="px-4 sm:px-6 lg:px-8 py-10">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal yFrom={14}>
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">How the week runs</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
+                  {page.scheduleEyebrow ?? 'How the week runs'}
+                </p>
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
-                  Five days, <em style={{ color: '#b45309' }}>start to finish.</em>
+                  {page.scheduleHeading ?? (
+                    <>Five days, <em style={{ color: '#b45309' }}>start to finish.</em></>
+                  )}
                 </h2>
               </ScrollReveal>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
