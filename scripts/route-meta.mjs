@@ -18,7 +18,7 @@ export const routeMeta = {
   },
   '/services': {
     title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
-    description: 'Five fixed-scope services that take a Guyanese business from idea to export. Business plans, risk scans, ISO systems, certification care and export readiness.',
+    description: 'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and bespoke QHSE software.',
     canonical: `${BASE_URL}/services/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',

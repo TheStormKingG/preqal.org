@@ -776,7 +776,7 @@ export const ServicesIndex: React.FC = () => (
       customData={{
         title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
         description:
-          'Five fixed-scope services that take a Guyanese business from idea to export. Business plans, risk scans, ISO systems, certification care and export readiness.',
+          'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and bespoke QHSE software.',
         canonical: `${BASE_URL}/services/`,
       }}
       extraSchemas={[getProfessionalServiceSchema()]}
@@ -786,11 +786,11 @@ export const ServicesIndex: React.FC = () => (
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Services</p>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5">
-            Five services. <em style={{ color: '#b45309' }}>One journey.</em>
+            Six services. <em style={{ color: '#b45309' }}>One standard.</em>
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
-            Each service is fixed in scope and price, and each one takes you to the next step
-            on the road from idea to export.
+            Five of them take a business from first plan to export certification.
+            The sixth builds the software that runs the system underneath.
           </p>
         </div>
       </section>

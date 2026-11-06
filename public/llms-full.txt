@@ -1,6 +1,6 @@
 # Preqal
 
-> Preqal is an ISO system setup consultancy for small and medium businesses, based at 90 Waiakabra, Soesdyke Linden Highway, East Bank Demerara, Guyana. It builds ISO 9001 management systems with the client's own team, for process improvement across the operation and strategic direction for top management; an accredited certification body then certifies them. Five fixed-scope services take a business from first business plan to export-certified supplier. Founded and led by Dr. Stefan Gravesande, MBBS. Known as the Clinic on Quality.
+> Preqal is an ISO system setup consultancy for small and medium businesses, based at 90 Waiakabra, Soesdyke Linden Highway, East Bank Demerara, Guyana. It builds ISO 9001 management systems with the client's own team, for process improvement across the operation and strategic direction for top management; an accredited certification body then certifies them. Five of its services are fixed in scope and take a business from first business plan to export-certified supplier; a sixth builds the bespoke QHSE software that runs the system. Founded and led by Dr. Stefan Gravesande, MBBS. Known as the Clinic on Quality.
 
 Preqal serves poultry and hatchery operations, agro-processors, eco-tourism, logistics, oil and gas services and HR firms across Guyana and the Caribbean. Clients hold a 98% audit pass rate, with an average of nine months from first scan to certification readiness.
 
@@ -11,6 +11,7 @@ Preqal serves poultry and hatchery operations, agro-processors, eco-tourism, log
 - [Preqal Systems Builder](https://preqal.org/services/systems-builder): ISO 9001, ISO 14001 and ISO 45001 management systems built with the client's team in 9 months, ending in a mock certification audit.
 - [Preqal Certified Care](https://preqal.org/services/certified-care): monthly retainer that keeps certifications valid, including annual internal audits and surveillance-visit support.
 - [Preqal Export-Ready](https://preqal.org/services/export-ready): takes small agro-processors from unregulated to export certified through three gates, HACCP, ISO 22000 and GFSI scheme readiness (FSSC 22000, BRCGS or SQF).
+- [Preqal QHSE Control](https://preqal.org/services/qhse-control): bespoke quality, health, safety and environmental software, designed around how the business already works after a discovery process, with controlled documents, risk assessments, corrective actions and internal audits in one system.
 
 ## Learning
 
