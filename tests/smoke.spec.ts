@@ -153,6 +153,7 @@ for (const [path, expected] of [
   ['/', ['Organization', 'WebSite', 'ProfessionalService']],
   ['/guides/haccp-certification-guyana/', ['Article', 'FAQPage']],
   ['/services/systems-builder/', ['ProfessionalService', 'Service', 'FAQPage']],
+  ['/services/qhse-control/', ['ProfessionalService', 'Service', 'FAQPage']],
   ['/contact/', ['Person', 'AboutPage']],
 ] as const) {
   test(`${path} ships its structured data in the served HTML`, async ({ request }) => {
