@@ -278,6 +278,7 @@ The hero register's permissions do not transfer to the body, and the body's form
 | `actually` / `really` | ≤ 1 per post, and only inside an `h2` | 2 in 118 sentences |
 | `™` on `Risk Scan`, `Systems Builder`, `Certified Care`, `Export-Ready` | every occurrence | — |
 | `™` on `Business Plan` | 0 | — |
+| `™` on `QHSE Control` / `Preqal QHSE Control` | 0 | — |
 | `Guyana` or `Guyanese` | ≥ 1 | 15 / 7 |
 | Institution from the whitelist, named in full | ≥ 1 | — |
 | A figure written in digits | ≥ 1 | — |
