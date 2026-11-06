@@ -148,7 +148,7 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 role="dialog"
                 aria-modal="true"
                 aria-label="Message Dr. Gravesande on WhatsApp"
-                className="relative w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden"
+                className="relative w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[100dvh] sm:max-h-[88dvh]"
                 style={{
                   background: '#e0e5ec',
                   boxShadow: '14px 16px 40px rgba(15,23,42,0.35), -6px -6px 20px rgba(255,255,255,0.25)',
@@ -161,7 +161,7 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 {/* Amber top bar */}
                 <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)' }} />
 
-                <div className="p-6 sm:p-8">
+                <div className="p-6 sm:p-8 flex flex-col min-h-0">
                   <div className="flex items-start justify-between gap-4 mb-1">
                     <div className="flex items-center gap-3">
                       <div
@@ -191,7 +191,11 @@ export const WhatsAppProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                     <strong className="text-slate-700"> change it however you like.</strong>
                   </p>
 
-                  <div className="flex flex-col gap-2.5">
+                  {/* The list is the only part that scrolls: with six options a 667px-tall
+                      phone would otherwise push the dialog's heading and its only Close
+                      button off the top of the screen, and the provider sets body overflow
+                      hidden while open, so nothing could scroll them back into view. */}
+                  <div className="flex flex-col gap-2.5 overflow-y-auto min-h-0 -mx-1 px-1">
                     {WHATSAPP_OPTIONS.map((opt, i) => (
                       <motion.a
                         key={opt.key}
