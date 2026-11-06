@@ -48,12 +48,13 @@ entry is a plan defect.
 | §4 `alt` > 20 chars | 5 | |
 | §4 Reuse `/og/services.png` | 6 | |
 | §4 Redraw the og caption | 10 | |
+| §5 Footer journey array asserted | 1b | Found during Task 1 |
 | §5 WhatsApp union member | 3 | |
 | §5 `WHATSAPP_OPTIONS` row | 3 | |
 | §5 `vite.config.ts` prerender | 6 | |
 | §5 `route-meta.mjs` entry | 6 | |
 | §5 `generate-sitemap.js` row | 6 | |
-| §5 Footer link | 9 | |
+| §5 Footer link | 7 | |
 | §5 Count literal — index h1 | 9 | |
 | §5 Count literal — index meta description | 9 | |
 | §5 Count literal — `route-meta.mjs` copy | 9 | Byte-identical to the above |
@@ -61,8 +62,8 @@ entry is a plan defect.
 | §5 Count literal — `llms-full.txt` opener | 9 | Must stay identical to `llms.txt` |
 | §5 Index sub-paragraph "fixed in scope and price" | 9 | False for this offer |
 | §5 Related-services pills wording | 9 | |
-| §6 `smoke.spec.ts` JSON-LD case | 10 | |
-| §6 Reconciliation test | 1 | |
+| §6 `smoke.spec.ts` JSON-LD case | 9 | |
+| §6 Reconciliation test | 1, 1b | |
 | §6 Manual: reuse `glassCard` by reference | 7, 8 | No second glass value authored |
 | §6 Manual: `ScrollReveal` rhythm | 8 | |
 | §6 Manual: no inline hex for text roles | 5, 8 | |
@@ -101,14 +102,35 @@ Task 10 exist to fix.
 | `scripts/route-meta.mjs` | **Task 1 test** (was: none) |
 | Image asset set | `blogThumbnails.test.ts` (already) |
 | `ogImage` target exists | `ogCards.test.ts` (already) |
-| Page emits JSON-LD | **Task 10 smoke case** (was: none) |
-| `components/Footer.tsx` link | **none** — manual, Task 9 |
-| Count literals (5 places) | **none** — manual, Task 9; llms parity only is gated |
+| Page emits JSON-LD | **Task 9 smoke case** (was: none) |
+| `components/Footer.tsx` journey array | **Task 1b test** (was: none) |
+| Count literals (5 places) | **none** — manual, Task 7; llms parity only is gated |
 | og card caption | **none** — manual, Task 10 |
+| `pages/Home.tsx` PHASES | **deliberately not an authority** — see below |
 
-The three remaining "none" rows are accepted: a footer link and prose counts
-are judgement, not mechanism. They are listed so their absence is a decision
-rather than an oversight.
+The two remaining "none" rows are accepted: prose counts and a drawn share
+card are judgement, not mechanism. They are listed so their absence is a
+decision rather than an oversight.
+
+**Correction, found during Task 1.** This table originally listed four
+hand-maintained authorities. There are six. `components/Footer.tsx:89-95`
+holds a `journey` array of five literal `{ name, to }` rows that imports
+nothing from `SERVICE_PAGES`; a service missing from it has no site-wide
+navigation link at all, with every test green. It is now asserted by Task 1b.
+
+The design audit this plan came from also counted four, and the two documents
+named a *different* set of four — the audit counted a nav array, this plan
+substituted the route-meta map. Both said "four", and the matching count is
+precisely what stopped anyone diffing the members.
+
+**`pages/Home.tsx` PHASES is the exception, and must stay one.** It is
+hand-maintained and it does enumerate services, so it looks like a seventh
+assertion waiting to be written. It is not: §2 and §7 of the spec decide that
+this offer is **not** a sixth step on the idea-to-export journey, so the slug
+must be absent from that array. A reconciliation assertion over PHASES would
+enforce the opposite of the design. Recorded here so its absence reads as a
+decision, because the next person to extend this test will find it the same
+way Task 1 did.
 
 ---
 
@@ -250,6 +272,64 @@ Run: `git status --short` — expect only `tests/unit/serviceRegistration.test.t
 ```bash
 git add tests/unit/serviceRegistration.test.ts
 git commit -m "test: reconcile every service slug against the four lists nothing derived"
+```
+
+---
+
+### Task 1b: The sixth authority Task 1 found
+
+Task 1's terminating probe — grepping an existing slug's literal across the
+repo rather than reading the test directory — found two more hand-maintained
+lists. One of them must be asserted; the other must not.
+
+**Files:**
+- Modify: `tests/unit/serviceRegistration.test.ts`
+
+- [ ] **Step 1: Confirm the Footer array is hand-written**
+
+Run: `grep -n "SERVICE_PAGES" components/Footer.tsx; sed -n '89,96p' components/Footer.tsx`
+Expected: no import, and five literal `{ name, to: href('/services/<slug>') }` rows.
+
+- [ ] **Step 2: Add the sixth assertion**
+
+Append inside the existing `describe`:
+
+```ts
+  it('each slug is linked from the footer journey list', () => {
+    const src = read('components/Footer.tsx');
+    for (const slug of slugs) {
+      expect(src, `${slug}: absent from the Footer journey array, so it has no site-wide link — /services is in neither nav bar`).toContain(`/services/${slug}`);
+    }
+  });
+```
+
+Do **not** add an equivalent for `pages/Home.tsx` PHASES. That array is also
+hand-maintained and also enumerates services, which makes it look like the next
+assertion to write — but the spec decides this offer is not a sixth step on the
+journey, so the slug must be absent from it. Asserting it would enforce the
+opposite of the design.
+
+- [ ] **Step 3: Run it — expect green on the five existing slugs**
+
+Run: `npx vitest run tests/unit/serviceRegistration.test.ts`
+Expected: PASS, 6 tests.
+
+- [ ] **Step 4: Negative control for the new assertion alone**
+
+Temporarily delete the `05 · Export-Ready™` row from the `journey` array in
+`components/Footer.tsx`.
+
+Run: `npx vitest run tests/unit/serviceRegistration.test.ts`
+Expected: exactly ONE failure, naming `export-ready` and the footer. Record the
+message. Restore the row and re-run — expect 6 passed, and
+`git status --short` showing `components/Footer.tsx` unmodified.
+
+- [ ] **Step 5: Lint and commit**
+
+```bash
+npx eslint tests/unit/serviceRegistration.test.ts
+git add tests/unit/serviceRegistration.test.ts
+git commit -m "test: the footer journey list is the sixth authority a slug must reach"
 ```
 
 ---

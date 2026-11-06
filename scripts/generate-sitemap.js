@@ -43,6 +43,7 @@ const routes = [
   { url: '/services/systems-builder',    changefreq: 'monthly', priority: 0.9, lastmod: dateFor('/services/systems-builder') },
   { url: '/services/certified-care',     changefreq: 'monthly', priority: 0.85, lastmod: dateFor('/services/certified-care') },
   { url: '/services/export-ready',       changefreq: 'monthly', priority: 0.9, lastmod: dateFor('/services/export-ready') },
+  { url: '/services/qhse-control',       changefreq: 'monthly', priority: 0.85, lastmod: dateFor('/services/qhse-control') },
   { url: '/guides',                      changefreq: 'weekly',  priority: 0.8, lastmod: dateFor('/guides') },
   { url: '/guides/haccp-certification-guyana', changefreq: 'monthly', priority: 0.8, lastmod: dateFor('/guides/haccp-certification-guyana') },
   { url: '/guides/iso-9001-cost-guyana', changefreq: 'monthly', priority: 0.8, lastmod: dateFor('/guides/iso-9001-cost-guyana') },

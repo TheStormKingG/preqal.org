@@ -13,7 +13,10 @@ import { href } from '../lib/paths';
 
 const springBtn = { type: 'spring', stiffness: 340, damping: 22 } as const;
 
-/* ─── The journey: one Guyanese entrepreneur, five phases, five services ─── */
+/* ─── The journey: one Guyanese entrepreneur, five phases, five services ───
+   Five, not six: QHSE Control is a sixth service but not a journey phase, so
+   it is deliberately absent from this deck. The count of services lives in
+   SERVICE_PAGES; this list is the journey only. ─────────────────────────── */
 interface Phase {
   number: string;
   chapter: string;
