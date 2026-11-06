@@ -58,6 +58,14 @@ export const routeMeta = {
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',
   },
+  '/services/qhse-control': {
+    title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
+    description:
+      'Bespoke quality, health, safety and environmental software, designed around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+    canonical: `${BASE_URL}/services/qhse-control/`,
+    ogImage: `${BASE_URL}/og/services.png`,
+    ogType: 'website',
+  },
   '/guides': {
     title: 'Guides | HACCP, ISO & Export Answers for Guyana | Preqal',
     description: 'Plain-language guides for Guyanese businesses. HACCP certification, ISO 9001 costs, and how to export food from Guyana, written by Preqal.',

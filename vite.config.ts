@@ -21,6 +21,7 @@ const PRERENDER_ROUTES = [
   '/services/systems-builder',
   '/services/certified-care',
   '/services/export-ready',
+  '/services/qhse-control',
   '/guides',
   '/guides/haccp-certification-guyana',
   '/guides/iso-9001-cost-guyana',
