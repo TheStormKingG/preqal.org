@@ -53,6 +53,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Brand vocabulary
+        run: npm run check:vocab
+
       - name: Unit tests
         run: npm run test:unit
 
