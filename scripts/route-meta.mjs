@@ -61,7 +61,7 @@ export const routeMeta = {
   '/services/qhse-control': {
     title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
     description:
-      'Quality, health, safety and environmental software built around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+      'Quality, health, safety and environmental software built around how your business works. Documents, risk, corrective actions and audits in one system.',
     canonical: `${BASE_URL}/services/qhse-control/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',
@@ -96,7 +96,7 @@ export const routeMeta = {
   },
   '/resources': {
     title: 'Free Templates | Preqal Quality Management Downloads',
-    description: 'Download five professional quality management templates free — QHSE policy, document control procedure, and IMS registers. No forms, instant download.',
+    description: 'Download six professional quality management templates free — QHSE policy, document control procedure, and IMS registers. No forms, instant download.',
     canonical: `${BASE_URL}/resources/`,
     ogImage: `${BASE_URL}/og/resources.png`,
     ogType: 'website',

@@ -40,16 +40,44 @@ test('homepage loads', async ({ page }) => {
   check();
 });
 
-// Retired routes now redirect — services & case studies live on the home journey
-test('/services redirects to home', async ({ page }) => {
+/* /services is a real page again: the index that carries every offer, and the
+   only surface that positions the sixth one against the five journey steps.
+
+   This test used to assert it redirected to home, and passed anyway — Pages
+   301s /services to /services/, and the old regex only demanded a URL ending
+   in a slash, which the index's own URL does. It was satisfied by both the
+   redirect and its absence, so it guarded neither. Assert the index itself,
+   and name the slugs: a page that silently dropped one would stay green
+   against any check that only counted links. */
+const SERVICE_SLUGS = [
+  'business-plan',
+  'risk-scan',
+  'systems-builder',
+  'certified-care',
+  'export-ready',
+  'qhse-control',
+] as const;
+
+test('/services is the services index and links every service', async ({ page }) => {
   await page.goto('/services');
-  await expect(page).toHaveURL(/\/(\?.*)?$/);
+  await expect(page).toHaveURL(/\/services\/?$/);
   await expect(page.locator('h1').first()).toBeVisible();
+  const linked = await page.evaluate(() =>
+    [...document.querySelectorAll('a[href*="/services/"]')]
+      .map((a) => new URL((a as HTMLAnchorElement).href).pathname)
+      .map((p) => p.replace(/^\/services\//, '').replace(/\/$/, ''))
+      .filter((s) => s && !s.includes('/')),
+  );
+  for (const slug of SERVICE_SLUGS) {
+    expect(linked, `the services index links ${slug}`).toContain(slug);
+  }
 });
 
+/* Still a genuine <Navigate>. Anchored to the origin root, so landing on any
+   other slash-terminated path — /services/ included — fails. */
 test('/case-studies redirects to home', async ({ page }) => {
   await page.goto('/case-studies');
-  await expect(page).toHaveURL(/\/(\?.*)?$/);
+  await expect(page).toHaveURL(/^https?:\/\/[^/]+\/(\?.*)?$/);
   await expect(page.locator('h1').first()).toBeVisible();
 });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { CheckSquare, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
@@ -11,8 +11,12 @@ import { postsForService } from '../data/blog';
 import { GUIDES } from '../data/guides';
 
 /* ────────────────────────────────────────────────────────────────────────────
-   SEO landing pages for the five productized services.
-   Linked from the footer and the home journey. Each page targets one keyword
+   SEO landing pages for the productized services. The count lives in
+   SERVICE_PAGES below, never in this sentence — it was "five" for one branch
+   too long after the sixth arrived.
+   All of them are linked from the footer. The five journey services are also
+   linked from the home journey; QHSE Control is not, deliberately, because it
+   runs alongside the journey rather than being a step in it. Each page targets one keyword
    cluster for Guyana and the Caribbean and carries Service, FAQPage and
    ProfessionalService structured data.
    ──────────────────────────────────────────────────────────────────────────── */
@@ -316,7 +320,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     metaKey: 'servicesQhseControl',
     title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
     description:
-      'Quality, health, safety and environmental software built around how your business already works. Documents, risk, corrective actions and internal audits in one system.',
+      'Quality, health, safety and environmental software built around how your business works. Documents, risk, corrective actions and audits in one system.',
     h1: (
       <>
         Your QHSE system, built around <em style={{ color: '#b45309' }}>how you actually work.</em>
@@ -345,7 +349,11 @@ export const SERVICE_PAGES: ServicePage[] = [
     cta: 'Book a free discovery call',
     thumbnail: {
       src: 'service-photos/qhse-control/record.f0b72c92',
-      alt: 'A technician writing a test result onto a clipboard beside equipment on a production floor.',
+      /* Describes only what is in the frame. It previously claimed a test
+         result and a production floor, neither of which is visible — alt text
+         is the only access a non-sighted visitor has, so it may not assert
+         what a sighted one cannot see. */
+      alt: 'A man looking down at a clipboard, pen in hand, beside racks of equipment.',
     },
     scheduleEyebrow: 'How the system works',
     scheduleHeading: (
@@ -434,6 +442,15 @@ const faqSchema = (p: ServicePage) => ({
 const ServiceLanding: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { openWhatsApp } = useWhatsApp();
+  /* The hero was the one block on this page that still translated under
+     prefers-reduced-motion while every section below it faded only. Same
+     vestibular-safe compromise as ScrollReveal: keep the fade, drop the
+     movement. Shared template code, so this covers all six service pages. */
+  const prefersReduced = useReducedMotion();
+  const enter = (axis: 'x' | 'y', from: number) =>
+    prefersReduced
+      ? { initial: { opacity: 0 }, animate: { opacity: 1 } }
+      : { initial: { opacity: 0, [axis]: from }, animate: { opacity: 1, [axis]: 0 } };
   const page = SERVICE_PAGES.find((p) => p.slug === slug);
   if (!page) return <Navigate to="/services" replace />;
 
@@ -464,26 +481,26 @@ const ServiceLanding: React.FC = () => {
               <div className="flex-1 lg:max-w-[600px]">
                 <motion.p
                   className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+                  {...enter('y', 10)} transition={{ duration: 0.4 }}
                 >
                   {page.name}
                 </motion.p>
                 <motion.h1
                   className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
-                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                  {...enter('y', 18)}
                   transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {page.h1}
                 </motion.h1>
                 <motion.p
                   className="text-lg text-slate-500 leading-relaxed mb-8"
-                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.22 }}
+                  {...enter('y', 12)} transition={{ duration: 0.45, delay: 0.22 }}
                 >
                   {page.intro}
                 </motion.p>
                 <motion.div
                   className="flex flex-wrap items-center gap-4"
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.34 }}
+                  {...enter('y', 10)} transition={{ duration: 0.4, delay: 0.34 }}
                 >
                   <a
                     href={whatsAppLink(page.waKey)}
@@ -506,7 +523,7 @@ const ServiceLanding: React.FC = () => {
               </div>
               <motion.div
                 className="hidden lg:block flex-shrink-0 w-[440px]"
-                initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
+                {...enter('x', 28)}
                 transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="overflow-hidden rounded-3xl relative" style={{ aspectRatio: '4 / 3', boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)' }}>
@@ -575,7 +592,9 @@ const ServiceLanding: React.FC = () => {
           </div>
         </section>
 
-        {/* 5-day schedule (services that define one) */}
+        {/* Schedule or sequence row — five cards, headings overridable per
+            service, so it reads as a week for the journey services and as
+            build stages for QHSE Control. */}
         {page.schedule && (
           <section className="px-4 sm:px-6 lg:px-8 py-10">
             <div className="max-w-6xl mx-auto">
