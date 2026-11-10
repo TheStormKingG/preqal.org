@@ -63,9 +63,44 @@ export function shouldCheck(state, now) {
            reason: `past ${HOT_WINDOW_HOURS}h — next check at ${DAILY_SLOT_HOUR}:00` };
 }
 
+/* Everything below a quote marker was written by US, not by the reviewer.
+   This matters more than it looks: every review email we send ends with
+   "Reply APPROVE to publish, or REJECT with what you want changed", and Gmail
+   quotes the whole thing underneath the reply. So the quoted text reliably
+   contains BOTH keywords, and a one-word "Approve" came back as ambiguous.
+   Worse, the classifier reads a fixed 400-character window, so which keyword
+   it reaches depends on how long the reviewer's signature happens to be —
+   the verdict was a function of the signature block, which is not a property
+   of the reply at all. Strip the quote first, then classify what is left. */
+export function stripQuotedReply(text) {
+  const raw = (text || '').replace(/\r\n/g, '\n');
+  const markers = [
+    /* Gmail wraps this header when the address is long, so it is not reliably
+       one line: "On Tue, 10 Nov 2026 at 11:31 AM, Name <\naddress> wrote:".
+       Cross the break rather than anchoring to a single line — bounded, and
+       still required to end a line on "wrote:". */
+    /^[ \t]*On\s[\s\S]{0,300}?\bwrote:[ \t]*$/m,   // Gmail / Apple Mail
+    /^\s*-{2,}\s*Original Message\s*-{2,}/im,
+    /^\s*_{10,}\s*$/m,                   // Outlook's rule
+    /^\s*From:\s.+$/m,                   // forwarded header block
+    /^\s*Sent from my /m,
+  ];
+  let cut = raw.length;
+  for (const m of markers) {
+    const hit = raw.search(m);
+    if (hit !== -1 && hit < cut) cut = hit;
+  }
+  return raw
+    .slice(0, cut)
+    .split('\n')
+    .filter((l) => !/^\s*>/.test(l))     // quoted lines anywhere above the marker
+    .join('\n')
+    .trim();
+}
+
 /** Classify a human reply. Ambiguity resolves to ASK, never to publish. */
 export function classifyReply(text) {
-  const t = (text || '').trim();
+  const t = stripQuotedReply(text);
   if (!t) return { verdict: 'ambiguous', reason: 'empty reply' };
   const head = t.slice(0, 400).toLowerCase();
   const approve = /\b(approve|approved|publish it|ship it|looks good to publish|go ahead and post)\b/.test(head);
