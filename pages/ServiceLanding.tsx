@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { CheckSquare, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { getProfessionalServiceSchema } from '../seo/pageSchemas';
 import ScrollReveal from '../components/ui/ScrollReveal';
@@ -11,8 +11,12 @@ import { postsForService } from '../data/blog';
 import { GUIDES } from '../data/guides';
 
 /* ────────────────────────────────────────────────────────────────────────────
-   SEO landing pages for the five productized services.
-   Linked from the footer and the home journey. Each page targets one keyword
+   SEO landing pages for the productized services. The count lives in
+   SERVICE_PAGES below, never in this sentence — it was "five" for one branch
+   too long after the sixth arrived.
+   All of them are linked from the footer. The five journey services are also
+   linked from the home journey; QHSE Control is not, deliberately, because it
+   runs alongside the journey rather than being a step in it. Each page targets one keyword
    cluster for Guyana and the Caribbean and carries Service, FAQPage and
    ProfessionalService structured data.
    ──────────────────────────────────────────────────────────────────────────── */
@@ -63,6 +67,11 @@ interface ServicePage {
      guide's, hash and all, so a replacement is always a new URL. */
   thumbnail: { src: string; alt: string };
   schedule?: ScheduleDay[];
+  /* The schedule block's two headings. Absent on every journey service, whose
+     schedule really is a five-day week; supplied by offers that reuse the same
+     card row for a sequence that is not one. */
+  scheduleEyebrow?: string;
+  scheduleHeading?: React.ReactNode;
   pricing?: PricingBlock;
   onePagerHref?: string;
   faqs: Faq[];
@@ -304,6 +313,88 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
     ],
   },
+  {
+    slug: 'qhse-control',
+    waKey: 'qhse-control',
+    name: 'Preqal QHSE Control',
+    metaKey: 'servicesQhseControl',
+    title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
+    description:
+      'Quality, health, safety and environmental software built around how your business works. Documents, risk, corrective actions and audits in one system.',
+    h1: (
+      <>
+        Your QHSE system, built around <em style={{ color: '#b45309' }}>how you actually work.</em>
+      </>
+    ),
+    intro:
+      'Most QHSE software asks you to change how you operate so the software makes sense. We do it the other way round: we learn how your business runs, then build the system around it.',
+    body: [
+      'Policies in one folder, risk assessments in a spreadsheet somebody owns, corrective actions in an inbox, and a fortnight of preparation before every audit. The problem is not that your team does not care about quality and safety. It is that holding it together by hand takes the time you needed for the work itself.',
+      'Generic QHSE platforms solve this by giving everyone the same system and asking each business to bend. That works until the first process that does not fit, and then the workarounds start — the spreadsheet comes back, and you are maintaining two systems instead of one.',
+      'Preqal starts with a discovery process. We map how your business actually operates: what you make or do, what can go wrong, who decides, what you already have to prove to a regulator or a customer. Then we design and build software around that, and we stay with it while your team learns to use it.',
+      'You do not need a QHSE system before you call us. Working out what you need is the first thing we do together.',
+    ],
+    deliverables: [
+      'A discovery report mapping your processes, risks and obligations',
+      'One working control loop first — a real problem, found and closed inside the system',
+      'Controlled documents: policies, procedures, registers, forms and logs',
+      'Guided risk and hazard assessment with controls and owners',
+      'Nonconformities and corrective actions, tracked to verified closure',
+      'Internal audit planning, checklists, findings and follow-up',
+      'Dashboards showing open actions, overdue reviews and recurring problems',
+      'Training for your team, and support while the system beds in',
+    ],
+    audience:
+      'Businesses in manufacturing, agriculture, food production, logistics, construction and industrial services that already run real processes and need a QHSE system that fits them. It suits you best if you have operations worth modelling and someone accountable for quality or safety. It is not for you if you are looking for an off-the-shelf licence you install yourself, or if your processes are not yet defined — start with a Preqal Risk Scan instead.',
+    cta: 'Book a free discovery call',
+    thumbnail: {
+      src: 'service-photos/qhse-control/record.f0b72c92',
+      /* Describes only what is in the frame. It previously claimed a test
+         result and a production floor, neither of which is visible — alt text
+         is the only access a non-sighted visitor has, so it may not assert
+         what a sighted one cannot see. */
+      alt: 'A man looking down at a clipboard, pen in hand, beside racks of equipment.',
+    },
+    scheduleEyebrow: 'How the system works',
+    scheduleHeading: (
+      <>
+        One problem, <em style={{ color: '#b45309' }}>start to finish.</em>
+      </>
+    ),
+    schedule: [
+      { day: 'Define', title: 'The limit', desc: 'The specification, the acceptable range, and who is accountable when it is missed.' },
+      { day: 'Capture', title: 'The result', desc: 'Recorded where the work happens, on a phone or a tablet, not copied up later.' },
+      { day: 'Detect', title: 'Out of spec', desc: 'The system flags it as it happens, instead of it surfacing in a monthly review.' },
+      { day: 'Act', title: 'Contained', desc: 'Held, investigated, an action assigned to a person with a date.' },
+      { day: 'Verify', title: 'Did it work', desc: 'Checked, closed, and counted — so a problem that keeps returning becomes visible.' },
+    ],
+    faqs: [
+      {
+        q: 'Why build our own instead of buying QHSE software?',
+        a: 'Because off-the-shelf software is designed for the average of every industry, and you do not operate the average. A bought system makes you describe your work in its vocabulary; a built one uses yours. If a generic platform genuinely fits your operation, we will tell you that at the discovery call rather than sell you a build.',
+      },
+      {
+        q: 'What does it cost?',
+        a: 'It depends on how many processes, sites and users the system covers, and we will not quote before we understand that. The discovery call is free and carries no obligation. If we go further, you get a scoped proposal with a fixed implementation price before any work starts.',
+      },
+      {
+        q: 'How long before we are using it?',
+        a: 'We build in stages, and the first stage is one working control loop rather than the whole system — so you are using something real early, and the rest is added around a system your team already knows. The timeline is agreed in the proposal, after discovery.',
+      },
+      {
+        q: 'Does this make us ISO certified?',
+        a: 'No. Certification is issued by an accredited certification body after an audit, and no software grants it. What the system does is make the evidence an auditor asks for — controlled documents, risk assessments, corrective actions, internal audits — something you already have rather than something you assemble beforehand.',
+      },
+      {
+        q: 'Who owns the software when it is built?',
+        a: 'That is agreed in writing in the proposal, before the build starts, along with where your data lives and what happens to it if we stop working together. Ask about it on the call.',
+      },
+      {
+        q: 'What if it does not do what we agreed?',
+        a: 'The proposal names the workflows being delivered. At the acceptance review, if those are not working as specified, we correct them at no further configuration charge.',
+      },
+    ],
+  },
 ];
 
 /* ── shared bits ─────────────────────────────────────────────────────────── */
@@ -351,6 +442,15 @@ const faqSchema = (p: ServicePage) => ({
 const ServiceLanding: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { openWhatsApp } = useWhatsApp();
+  /* The hero was the one block on this page that still translated under
+     prefers-reduced-motion while every section below it faded only. Same
+     vestibular-safe compromise as ScrollReveal: keep the fade, drop the
+     movement. Shared template code, so this covers all six service pages. */
+  const prefersReduced = useReducedMotion();
+  const enter = (axis: 'x' | 'y', from: number) =>
+    prefersReduced
+      ? { initial: { opacity: 0 }, animate: { opacity: 1 } }
+      : { initial: { opacity: 0, [axis]: from }, animate: { opacity: 1, [axis]: 0 } };
   const page = SERVICE_PAGES.find((p) => p.slug === slug);
   if (!page) return <Navigate to="/services" replace />;
 
@@ -381,26 +481,26 @@ const ServiceLanding: React.FC = () => {
               <div className="flex-1 lg:max-w-[600px]">
                 <motion.p
                   className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+                  {...enter('y', 10)} transition={{ duration: 0.4 }}
                 >
                   {page.name}
                 </motion.p>
                 <motion.h1
                   className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5"
-                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                  {...enter('y', 18)}
                   transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {page.h1}
                 </motion.h1>
                 <motion.p
                   className="text-lg text-slate-500 leading-relaxed mb-8"
-                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.22 }}
+                  {...enter('y', 12)} transition={{ duration: 0.45, delay: 0.22 }}
                 >
                   {page.intro}
                 </motion.p>
                 <motion.div
                   className="flex flex-wrap items-center gap-4"
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.34 }}
+                  {...enter('y', 10)} transition={{ duration: 0.4, delay: 0.34 }}
                 >
                   <a
                     href={whatsAppLink(page.waKey)}
@@ -423,7 +523,7 @@ const ServiceLanding: React.FC = () => {
               </div>
               <motion.div
                 className="hidden lg:block flex-shrink-0 w-[440px]"
-                initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}
+                {...enter('x', 28)}
                 transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="overflow-hidden rounded-3xl relative" style={{ aspectRatio: '4 / 3', boxShadow: '12px 14px 32px rgba(163,177,198,0.55), -6px -6px 20px rgba(255,255,255,0.9)' }}>
@@ -492,14 +592,20 @@ const ServiceLanding: React.FC = () => {
           </div>
         </section>
 
-        {/* 5-day schedule (services that define one) */}
+        {/* Schedule or sequence row — five cards, headings overridable per
+            service, so it reads as a week for the journey services and as
+            build stages for QHSE Control. */}
         {page.schedule && (
           <section className="px-4 sm:px-6 lg:px-8 py-10">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal yFrom={14}>
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">How the week runs</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
+                  {page.scheduleEyebrow ?? 'How the week runs'}
+                </p>
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
-                  Five days, <em style={{ color: '#b45309' }}>start to finish.</em>
+                  {page.scheduleHeading ?? (
+                    <>Five days, <em style={{ color: '#b45309' }}>start to finish.</em></>
+                  )}
                 </h2>
               </ScrollReveal>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -635,7 +741,7 @@ const ServiceLanding: React.FC = () => {
                 </>
               )}
 
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">The other steps on the journey</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">More from Preqal</p>
               <div className="flex flex-wrap gap-3 mb-12">
                 {others.map((o) => (
                   <Link
@@ -689,7 +795,7 @@ export const ServicesIndex: React.FC = () => (
       customData={{
         title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
         description:
-          'Five fixed-scope services that take a Guyanese business from idea to export. Business plans, risk scans, ISO systems, certification care and export readiness.',
+          'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and QHSE software built to fit.',
         canonical: `${BASE_URL}/services/`,
       }}
       extraSchemas={[getProfessionalServiceSchema()]}
@@ -699,11 +805,11 @@ export const ServicesIndex: React.FC = () => (
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Services</p>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.08] mb-5">
-            Five services. <em style={{ color: '#b45309' }}>One journey.</em>
+            Six services. <em style={{ color: '#b45309' }}>One standard.</em>
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed">
-            Each service is fixed in scope and price, and each one takes you to the next step
-            on the road from idea to export.
+            Five of them take a business from first plan to export certification.
+            The sixth builds the software that runs the system underneath.
           </p>
         </div>
       </section>

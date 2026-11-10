@@ -18,7 +18,7 @@ export const routeMeta = {
   },
   '/services': {
     title: 'Services | ISO, HACCP & Export Certification Consulting | Preqal',
-    description: 'Five fixed-scope services that take a Guyanese business from idea to export. Business plans, risk scans, ISO systems, certification care and export readiness.',
+    description: 'Six services for Guyanese businesses: business plans, risk scans, ISO systems, certification care, export readiness and QHSE software built to fit.',
     canonical: `${BASE_URL}/services/`,
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',
@@ -58,6 +58,14 @@ export const routeMeta = {
     ogImage: `${BASE_URL}/og/services.png`,
     ogType: 'website',
   },
+  '/services/qhse-control': {
+    title: 'Custom QHSE Software in Guyana | Preqal QHSE Control',
+    description:
+      'Quality, health, safety and environmental software built around how your business works. Documents, risk, corrective actions and audits in one system.',
+    canonical: `${BASE_URL}/services/qhse-control/`,
+    ogImage: `${BASE_URL}/og/services.png`,
+    ogType: 'website',
+  },
   '/guides': {
     title: 'Guides | HACCP, ISO & Export Answers for Guyana | Preqal',
     description: 'Plain-language guides for Guyanese businesses. HACCP certification, ISO 9001 costs, and how to export food from Guyana, written by Preqal.',
@@ -88,7 +96,7 @@ export const routeMeta = {
   },
   '/resources': {
     title: 'Free Templates | Preqal Quality Management Downloads',
-    description: 'Download five professional quality management templates free — QHSE policy, document control procedure, and IMS registers. No forms, instant download.',
+    description: 'Download six professional quality management templates free — QHSE policy, document control procedure, and IMS registers. No forms, instant download.',
     canonical: `${BASE_URL}/resources/`,
     ogImage: `${BASE_URL}/og/resources.png`,
     ogType: 'website',

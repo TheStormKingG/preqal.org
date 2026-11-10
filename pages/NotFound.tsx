@@ -14,7 +14,7 @@ import { href } from '../lib/paths';
 
 const DESTINATIONS = [
   { to: '/',          label: 'Home',      note: 'The five steps, start to finish' },
-  { to: '/services',  label: 'Services',  note: 'Business plan, Risk Scan, systems, certification' },
+  { to: '/services',  label: 'Services',  note: 'All six, from business plan to QHSE software' },
   { to: '/resources', label: 'Templates', note: 'Free downloads, no form' },
   { to: '/guides',    label: 'Guides',    note: 'ISO cost, HACCP, exporting from Guyana' },
   { to: '/contact',   label: 'Contact',   note: 'Reach Dr. Gravesande directly' },

@@ -92,6 +92,9 @@ const Footer: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
     { name: '03 · Systems Builder™', to: href('/services/systems-builder') },
     { name: '04 · Certified Care™', to: href('/services/certified-care') },
     { name: '05 · Export-Ready™', to: href('/services/export-ready') },
+    /* Not a numbered phase: the software offer runs alongside the journey
+       rather than being a step on it, so it carries no number and no ™. */
+    { name: 'QHSE Control software', to: href('/services/qhse-control') },
   ];
 
   return (

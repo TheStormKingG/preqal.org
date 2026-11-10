@@ -65,8 +65,9 @@ Defined in `components/AnimatedRoutes.tsx`. Transitions animate forward/backward
 
 | Path | Component | Notes |
 |---|---|---|
-| `/` | `Home` | 5-phase journey (Business Plan → Risk Scan → Systems Builder → Certified Care → Export-Ready); services live here |
-| `/services` | redirect → `/` | Services page retired 2026-07-04 |
+| `/` | `Home` | 5-phase journey (Business Plan → Risk Scan → Systems Builder → Certified Care → Export-Ready); the five journey services live here |
+| `/services` | `ServicesIndex` | The services hub — all **six** offers. No longer a redirect; the 2026-07-04 retirement was reversed |
+| `/services/:slug` | `ServiceLanding` | `business-plan`, `risk-scan`, `systems-builder`, `certified-care`, `export-ready`, `qhse-control`. QHSE Control is a service but **not** a journey phase, so it is absent from the home deck by design |
 | `/case-studies` | redirect → `/` | Case Studies retired 2026-07-04 |
 | `/resources` | `Resources` | "Templates" in nav — direct downloads, no lead-capture form |
 | `/templates` | redirect → `/resources` | |
