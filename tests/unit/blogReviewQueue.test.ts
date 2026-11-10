@@ -7,7 +7,9 @@ import {
   findPending,
   shouldCheck,
   decideWeeklyRun,
+  weeklyOutcomeLine,
   MAX_PENDING,
+  DAILY_SLOT_HOUR,
   STALE_AFTER_DAYS,
   RELEASE_AFTER_DAYS,
 } from '../../scripts/blog-review-state.mjs';
@@ -114,14 +116,54 @@ describe('which pending posts this tick should check', () => {
 
   it('checks the hot post even when an older one has gone quiet', () => {
     /* The mixed case the single slot could not express: one post past the hot
-       window and one just sent. The tick must still act on the new one. */
-    const cold = new Date('2026-11-10T12:00:00Z'); // not the daily slot hour
+       window and one just sent. The tick must still act on the new one.
+
+       The clock matters and used to be accidental. `now` has to be outside the
+       DAILY_SLOT_HOUR window or the old post lands in cold-daily and is also
+       due. This read 12:00Z, which is hour 12 here and at UTC — and hour 9 at
+       UTC-3, where this test failed. vitest.config.ts now pins TZ=UTC, so the
+       hour below is the hour the code sees. */
+    const quietHour = new Date('2026-11-10T12:00:00Z');
+    expect(quietHour.getHours(), 'the fixture must not sit in the daily slot').not.toBe(
+      DAILY_SLOT_HOUR,
+    );
     const mixed = addPendingTo(addPendingTo({ awaiting: null }, post('old', 9)), post('new', 0.1));
-    const d = shouldCheck(mixed, cold);
+    const d = shouldCheck(mixed, quietHour);
     expect(d.check, 'the tick must act').toBe(true);
     const byslug = Object.fromEntries(d.posts.map((p: { slug: string }) => [p.slug, p]));
     expect(byslug.new.check).toBe(true);
     expect(byslug.old.check).toBe(false);
+    /* The loudest phase must surface, or a hot post hides behind a quiet one
+       in everything that reads the top-level decision. Reversing PHASE_RANK
+       left the whole suite green before this line existed. */
+    expect(d.phase, 'the summary phase is the loudest, not the first').toBe('hot');
+  });
+
+  it('a post with an unageable timestamp outranks a merely hot one', () => {
+    const mixed = addPendingTo(addPendingTo({ awaiting: null }, post('fine', 0.1)), {
+      ...post('broken', 0),
+      sentAt: 'whenever',
+    });
+    expect(shouldCheck(mixed, NOW).phase).toBe('bad-timestamp');
+  });
+
+  it('keeps checking a cold post once a day, in the daily slot', () => {
+    /* The only thing keeping a post alive past the 48h hot window. Deleting
+       this branch from the module left the entire suite green, which meant
+       nothing was pinning the one mechanism that stops a cold post going
+       unread forever — the exact silent failure this pipeline already had. */
+    const inSlot = new Date(`2026-11-10T0${DAILY_SLOT_HOUR}:05:00Z`);
+    expect(inSlot.getHours()).toBe(DAILY_SLOT_HOUR);
+    const cold = addPendingTo({ awaiting: null }, post('cold', 9));
+    const due = shouldCheck(cold, inSlot);
+    expect(due.check, 'a cold post is checked in the slot').toBe(true);
+    expect(due.phase).toBe('cold-daily');
+
+    /* And the slot is ten minutes wide, not the whole hour. */
+    const pastSlot = new Date(`2026-11-10T0${DAILY_SLOT_HOUR}:10:00Z`);
+    const quiet = shouldCheck(cold, pastSlot);
+    expect(quiet.check).toBe(false);
+    expect(quiet.phase).toBe('cold-quiet');
   });
 
   it('still surfaces a corrupt state file', () => {
@@ -166,7 +208,50 @@ describe('what Monday does with a queue', () => {
     const d = decideWeeklyRun(s, NOW);
     expect(d.action, 'must not add a fourth').not.toBe('release');
     expect(d.action).toBe('escalate');
-    expect(d.reason).toMatch(/capacity|full|3/);
+    /* Was /capacity|full|3/, which the "3 awaiting" suffix satisfies on any
+       three-post queue — it passed without the capacity branch existing. */
+    expect(d.reason).toContain('capacity');
+  });
+
+  it('a full queue of FRESH posts still skips, and says it is full', () => {
+    /* The capacity escalation only fires once the oldest is past RELEASE, so
+       this is the other full-queue case. Producing nothing is the right
+       action; the point of the test is that it is deliberate, and that the
+       outcome line distinguishes a full queue from a single pending post. */
+    let s: { awaiting: unknown } = { awaiting: null };
+    for (let i = 0; i < MAX_PENDING; i += 1) s = addPendingTo(s, post(`p${i}`, i + 1));
+    const d = decideWeeklyRun(s, NOW);
+    expect(d.action).toBe('skip');
+    expect(d.pendingCount).toBe(MAX_PENDING);
+    expect(weeklyOutcomeLine(d)).toContain('at capacity');
+  });
+
+  it('gives every decision shape its own outcome line', () => {
+    /* weeklyOutcomeLine exists so a run that produced nothing cannot be
+       reported in the same words as one that produced a post. It was only
+       ever asserted for PRODUCE against SKIP, so the shapes this change added
+       were unpinned. */
+    const fresh = addPendingTo({ awaiting: null }, post('a', 1));
+    const stale = addPendingTo({ awaiting: null }, post('a', STALE_AFTER_DAYS + 1));
+    const released = addPendingTo({ awaiting: null }, post('a', RELEASE_AFTER_DAYS + 1));
+    let full: { awaiting: unknown } = { awaiting: null };
+    for (let i = 0; i < MAX_PENDING; i += 1) {
+      full = addPendingTo(full, post(`p${i}`, RELEASE_AFTER_DAYS + 1 + i));
+    }
+    const unageable = addPendingTo({ awaiting: null }, { ...post('a', 0), sentAt: 'whenever' });
+
+    const lines = [
+      { awaiting: [] },
+      fresh,
+      stale,
+      released,
+      full,
+      unageable,
+      { awaiting: [], corrupt: true },
+    ].map((s) => weeklyOutcomeLine(decideWeeklyRun(s, NOW)));
+
+    expect(new Set(lines).size, `duplicate outcome lines:\n${lines.join('\n')}`).toBe(lines.length);
+    expect(lines.every((l) => l.startsWith('OUTCOME: '))).toBe(true);
   });
 
   it(`still releases at ${RELEASE_AFTER_DAYS} days when there is room`, () => {
@@ -179,9 +264,25 @@ describe('what Monday does with a queue', () => {
     expect(decideWeeklyRun(one, NOW).action).toBe('escalate');
   });
 
-  it('escalates when any queued post has an unageable timestamp', () => {
-    const bad = addPendingTo({ awaiting: null }, { ...post('a', 0), sentAt: 'whenever' });
-    expect(decideWeeklyRun(bad, NOW).action).toBe('escalate');
+  it('escalates when ANY queued post has an unageable timestamp, not just the first', () => {
+    /* A one-post fixture cannot tell `pending.find(...)` from
+       `[pending[0]].find(...)`. With a good post first and the broken one
+       second, the first-only version returns skip and the bad entry ages
+       forever unnoticed. */
+    const mixed = addPendingTo(addPendingTo({ awaiting: null }, post('good', 1)), {
+      ...post('corrupt', 0),
+      sentAt: 'whenever',
+    });
+    const d = decideWeeklyRun(mixed, NOW);
+    expect(d.action).toBe('escalate');
+    expect(d.reason).toContain('corrupt');
+
+    // And the symmetric case, so neither end of the queue is privileged.
+    const flipped = addPendingTo(
+      addPendingTo({ awaiting: null }, { ...post('corrupt', 0), sentAt: 'whenever' }),
+      post('good', 1),
+    );
+    expect(decideWeeklyRun(flipped, NOW).action).toBe('escalate');
   });
 });
 

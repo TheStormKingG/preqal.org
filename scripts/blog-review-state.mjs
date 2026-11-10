@@ -266,7 +266,16 @@ export function decideWeeklyRun(state, now) {
   const oldest = pending.reduce((a, b) => (new Date(a.sentAt) <= new Date(b.sentAt) ? a : b));
   const ageDays =
     Math.round(((now.getTime() - new Date(oldest.sentAt).getTime()) / 86_400_000) * 10) / 10;
-  const queue = pendingCount === 1 ? '' : ` (${pendingCount} awaiting: ${slugs.join(', ')})`;
+  /* A full queue must never be reportable in the same words as a one-post
+     queue, including on the branches that are not the capacity escalation. A
+     queue of three FRESH posts correctly returns skip — producing nothing is
+     right — but "waiting on one" and "waiting on the maximum" are different
+     situations for whoever reads the outcome line. */
+  const atCapacity = pendingCount >= MAX_PENDING;
+  const queue =
+    pendingCount === 1
+      ? ''
+      : ` (${pendingCount} awaiting${atCapacity ? `, at capacity of ${MAX_PENDING}` : ''}: ${slugs.join(', ')})`;
 
   if (ageDays < STALE_AFTER_DAYS) {
     return {
