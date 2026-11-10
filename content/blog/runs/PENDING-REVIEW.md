@@ -1,49 +1,39 @@
-# Two posts are out for review, and only one of them is watched
+# One post out for review
 
-Both review emails were sent on 2026-11-10 from an interactive session, after
-the permission fix. `UNDELIVERED.md` is gone: nothing is undelivered now.
+`how-long-iso-9001-certification-takes` was approved on 2026-11-10 and
+published by the watcher unassisted: it classified the reply, flipped the
+status, committed `74ad2cb` and pushed. That was the first delivery either
+scheduled task had made in over a week.
 
-| Post | Thread | Sent | Watched |
+The watcher is now pointed at the remaining draft.
+
+| Post | Thread | Sent | State |
 |---|---|---|---|
-| `how-long-iso-9001-certification-takes` | `1a1c616385adf0bb` | 2026-11-10 | **yes** |
-| `what-an-iso-9001-auditor-opens-first`  | `1a1c61587c009f19` | 2026-11-10 | **no** |
+| `what-an-iso-9001-auditor-opens-first` | `1a1c61587c009f19` | 2026-11-10 | **awaiting review, watched** |
+| `how-long-iso-9001-certification-takes` | `1a1c616385adf0bb` | 2026-11-10 | published |
 
-## Why only one
+Reply APPROVE on that thread and the next tick publishes it, within 30 minutes.
 
-`review-state.json` holds a single `awaiting` object, not a list, and every
-consumer reads `state.awaiting` as one post: `shouldCheck`, `decideWeeklyRun`,
-and the watcher's own classify step. So the state machine cannot express a
-two-post backlog, and arming it for both is not possible without changing
-`scripts/blog-review-state.mjs` and the watcher task together.
+## Two things a later reader should know
 
-The newer post is the watched one, on the reasoning that it is the email most
-likely to be answered first. That is a guess about behaviour, not a rule.
+**The state file holds one post, not a list.** `awaiting` is a single object
+and every consumer — `shouldCheck`, `decideWeeklyRun`, the watcher's classify
+step — reads it as one. While both posts were out, only one could be watched.
+The weekly task's own `release` state already describes leaving an older draft
+pending while a newer one goes out on its own thread, so the prose contemplates
+a backlog the data structure cannot represent. Making `awaiting` an array is
+the fix; it touches the state module and both scheduled tasks together.
 
-## What that means in practice
-
-A reply on the watched thread is picked up within 30 minutes and acted on.
-
-**A reply on the auditor thread will not be noticed by anything.** If that one
-is approved first, it needs a human to say so, or to re-point the state file at
-its thread id:
+**While a post is awaiting review, Monday holds.** With this one armed and
+sent today, `decideWeeklyRun` returns `hold` on 16 November — six days, inside
+`STALE_AFTER_DAYS`. So answering this thread also unblocks next week's post. If
+it is going to go unanswered, clearing the state is better than leaving it:
 
 ```
 node --input-type=module -e "
 import { writeState } from './scripts/blog-review-state.mjs';
-writeState({ awaiting: { slug: 'what-an-iso-9001-auditor-opens-first', threadId: '1a1c61587c009f19', sentAt: '2026-11-10T15:30:00.000Z', revision: 1 } });
+writeState({ awaiting: null });
 "
 ```
 
-## The underlying gap
-
-A review queue that can hold two items and a state file that can hold one is a
-mismatch that only shows up the first time delivery falls behind — which is
-exactly when it is least welcome. The weekly task already anticipates two
-outstanding posts in its `release` state ("send it on a NEW thread of its own,
-leaving the older draft pending"), so the prose contemplates a backlog the data
-structure cannot represent.
-
-Making `awaiting` an array is the fix, and it touches the state module, the
-weekly task and the watcher task together. Not done here, because it is a
-change to a scheduled task's control flow and was not what the session was
-asked for. Delete this file once both posts are resolved.
+Delete this file once the draft is resolved.
