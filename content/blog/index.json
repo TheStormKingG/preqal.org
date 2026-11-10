@@ -1,6 +1,21 @@
 {
   "posts": [
     {
+      "slug": "how-long-iso-9001-certification-takes",
+      "title": "How long ISO 9001 certification takes in Guyana | Preqal",
+      "description": "Six to twelve months is what the national standards bureau tells companies to expect. Here is where those months go, and what stretches them to three years.",
+      "published": "2026-11-09",
+      "updated": "2026-11-10",
+      "status": "draft",
+      "topic": "quality-management",
+      "readMinutes": 6,
+      "ogImage": "/blog-photos/how-long-iso-9001-certification-takes/recording.2db28383-og.jpg",
+      "thumbnail": {
+        "src": "blog-photos/how-long-iso-9001-certification-takes/recording.2db28383",
+        "alt": "A woman in a blue coat and hairnet writing on a form at a workstation, with a production floor behind her."
+      }
+    },
+    {
       "slug": "what-an-iso-9001-auditor-opens-first",
       "title": "What an ISO 9001 auditor opens first in Guyana | Preqal",
       "description": "An ISO 9001 audit does not begin on your factory floor. It begins with four records, read in a settled order, and they decide how the rest of the week goes.",

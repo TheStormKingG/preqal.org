@@ -1,0 +1,289 @@
+{
+  "slug": "how-long-iso-9001-certification-takes",
+  "hero": {
+    "kicker": "QUALITY MANAGEMENT",
+    "h1": "How long ISO 9001 certification takes in Guyana",
+    "standfirst": "Six to twelve months is what the national standards bureau tells companies to expect. The audit at the end is the short part. What takes the time is building enough working history for an auditor to have something to read."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Six to twelve months is the figure your own standards bureau uses",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s1p1",
+          "text": "The standards body in Guyana puts a number on this. The Guyana National Bureau of Standards says its implementation support usually runs six to twelve months and follows a step-by-step approach. That spread is not padding. It depends on how much of a working system you already have, and on whether the work keeps moving after the first enthusiastic month."
+        },
+        {
+          "kind": "figure",
+          "id": "s1f1",
+          "src": "blog-figures/how-long-iso-9001-certification-takes/fig-1.svg",
+          "alt": "A timeline showing six to twelve months of building before the certification audit, then a three-year certificate cycle with a two-day surveillance audit in the first year.",
+          "caption": "The build is the long bar. The audit is the thin one.",
+          "placement": "inline",
+          "claimIds": ["c1", "c2", "c3", "c4", "c10", "c11"]
+        },
+        {
+          "kind": "p",
+          "id": "s1p2",
+          "text": "The plan behind that number is not mysterious. The Bureau opens with a gap analysis to work out what has to be built and what only needs changing. After that come set periods for training on the requirements, for documentation, for hands-on implementation and finally for a pre-assessment. Each block rests on the one below it, which is why the order cannot be rearranged to save a month."
+        },
+        {
+          "kind": "p",
+          "id": "s1p3",
+          "text": "You will find pages online offering ISO 9001 in thirty days. What those pages sell is a document pack with your company name typed into the header. A certificate mill can write your quality manual in a fortnight, and it still cannot make your management review happen, because that meeting has to be held and minuted before anybody can audit it. The paperwork was never the slow part."
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "The build is long because the system has to run before it can be audited",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s2p1",
+          "text": "Start with what is quick. Training courses at the Bureau are short, lasting between one and four days. In a single year it ran fifty-seven courses and trained about seven hundred people. So the teaching is not what holds anyone up."
+        },
+        {
+          "kind": "p",
+          "id": "s2p2",
+          "text": "What holds you up is evidence. An internal audit needs something to audit, which means records that have piled up over months of ordinary work. A management review needs a quarter of figures in front of it before the meeting is worth holding. Those two records are the ones an auditor opens early, and neither of them can be manufactured in the week before the visit."
+        },
+        {
+          "kind": "p",
+          "id": "s2p3",
+          "text": "Think of it as a driving test. The test itself takes about an hour. Nobody passes it by reading the highway code on the morning, because what is being measured is the hours already logged behind the wheel. Your quality system is sat the same way, and the logbook is the part that takes the months."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "A Guyanese company took about eighteen months from first help to certificate",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s3p1",
+          "text": "There is a local case with dates on it. The Bureau worked with the team at Metro Office and Computer Supplies through 2021 on implementing the requirements of a quality management system. The certificate was presented on 12 July 2022. Count that and you get about eighteen months from the start of real help to paper in hand."
+        },
+        {
+          "kind": "p",
+          "id": "s3p2",
+          "text": "The wider picture is slower, and it is the more honest one. Metro came up through a regional trade project launched in 2019, under which six private sector organisations across the region committed to achieve certification. Metro was the first of the six. That still took three years from the start of the project."
+        },
+        {
+          "kind": "p",
+          "id": "s3p3",
+          "text": "So the honest spread for a first ISO 9001 certificate is roughly eighteen months at the quick end and three to five years at the slow end. The project that carried Metro ran on across sixteen states in the region and closed only in 2024. That range is not set by the standard. It is set by whether somebody senior owns the work, and by whether the records keep being made in the months when nothing is being audited."
+        },
+        {
+          "kind": "p",
+          "id": "s3p4",
+          "text": "You could do this without us. Yes, and some companies do, and a few of them pass first time. What a consultant mainly buys you is speed and a much lower chance of spending a second year closing findings you could have closed in the first."
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "heading": "The clock does not stop when the certificate arrives",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s4p1",
+          "text": "An ISO 9001 certificate runs on a three-year cycle, with a surveillance audit in the first year after it is issued. When the Saint Lucia Bureau of Standards sat its own first-year surveillance audit, the visit took two days. Two days is nothing. Staying ready for those two days, across the three years between certificates, is the whole job."
+        },
+        {
+          "kind": "p",
+          "id": "s4p2",
+          "text": "A second clock is running too. The International Organization for Standardization has published a new edition of ISO 9001, and organisations certified to the 2015 edition have three years to move to it. The move is described as five steps rather than one event. Start any new build against the new edition."
+        },
+        {
+          "kind": "p",
+          "id": "s4p3",
+          "text": "One number says how thin the certified population here still is. The Bureau reported a total of eighty-five certified stakeholders after its most recent round. That is the whole certified market you would be standing in, across every sector and every scheme the Bureau runs. In a tender, scarcity works for you."
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "heading": "What to do in the first fortnight so the twelve months does not become three years",
+      "blocks": [
+        {
+          "kind": "p",
+          "id": "s5p1",
+          "text": "None of the early work needs a budget. It needs somebody senior to own the five decisions below."
+        },
+        {
+          "kind": "list",
+          "id": "s5l1",
+          "ordered": true,
+          "items": [
+            "Write down the scope in one paragraph, naming the sites and the products it covers, before anybody writes a procedure.",
+            "Ask the Bureau for a gap analysis, and treat the output as the project plan rather than as a report.",
+            "Put a date in the diary now for the first management review, far enough out that there are figures to review.",
+            "Decide who will run the internal audit, and make sure it is not the person who wrote the procedures.",
+            "Ask your certification body, in writing, which edition of ISO 9001 your audit will be run against."
+          ]
+        },
+        {
+          "kind": "p",
+          "id": "s5p2",
+          "text": "There is a smaller rung first. The Bureau runs a national quality management system certification for smaller companies, valid for two years and monitored in between. It exists because ISO 9001 was written with more complex organisations in mind and asks for extensive documentation, formal review systems and real resources. For a firm of twelve people that rung is usually the sensible first move."
+        },
+        {
+          "kind": "p",
+          "id": "s5p3",
+          "text": "A quality system is not a document you buy. It is a crop. You put the work in during months when nothing visible is happening, and the certificate is simply the week somebody comes to weigh what grew."
+        }
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "id": "f1",
+      "q": "How long does ISO 9001 certification take in Guyana?",
+      "a": "Six to twelve months is the published figure. The Guyana National Bureau of Standards gives that range for its implementation support. A local company certified in July 2022 took about eighteen months, and three to five years is common where the work stalls between audits."
+    },
+    {
+      "id": "f2",
+      "q": "Why does it take months rather than weeks?",
+      "a": "Training is not the bottleneck. Courses run one to four days, but an internal audit and a management review both need records built up over months. The time goes on accumulating the working history an auditor can read."
+    },
+    {
+      "id": "f3",
+      "q": "How long is the certificate valid, and what happens after?",
+      "a": "The certification cycle runs three years, with a surveillance audit in the first year after issue. One national bureau completed its first-year surveillance audit in a two-day visit. Recertification comes at the end of the three-year cycle and is a fuller audit than a surveillance visit."
+    },
+    {
+      "id": "f4",
+      "q": "Is there a faster route for a small Guyanese business?",
+      "a": "Yes. The Bureau runs a national quality management system certification aimed at smaller companies, valid for two years and monitored in between. It is lighter than ISO 9001, which was written with more complex organisations in mind, and it works as a step towards the international standard."
+    }
+  ],
+  "closing": {
+    "text": "The difference is made in the first fortnight. Naming an owner and putting the first management review in the diary is what separates the six-to-twelve-month version from the three-year one. Systems Builder™ sets that up and gets the records being made. Certified Care™ keeps them coming in the quiet months, which is what decides your first surveillance audit.",
+    "ctaLabel": "Talk to Dr. Gravesande about a certification timeline",
+    "ctaHref": "/contact"
+  },
+  "sources": [
+    {
+      "claimId": "c1",
+      "url": "https://gnbsgy.com/gnbs-technical-assistance-programme-a-crucial-support-for-local-business-development/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "the duration usually ranges from six to twelve months and follows a step-by-step approach",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c2",
+      "url": "https://gnbsgy.com/gnbs-technical-assistance-programme-a-crucial-support-for-local-business-development/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "Included in the implementation plan are periods set aside for training on the requirements of the standard, documentation, hands-on implementation, and finally a preassessment of the system developed.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c3",
+      "url": "https://gnbsgy.com/gnbs-technical-assistance-programme-a-crucial-support-for-local-business-development/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "The GNBS then undertakes a gap analysis of the company to assess what systems need to be developed or what needs to be modified.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c4",
+      "url": "https://gnbsgy.com/affordable-effective-and-comprehensive-gnbs-trainings-empower-local-industries/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "Usually, GNBS training courses are short, lasting between one to four days",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c5",
+      "url": "https://gnbsgy.com/affordable-effective-and-comprehensive-gnbs-trainings-empower-local-industries/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "So far for the year, the GNBS has conducted a total of 57 training courses and trained a whopping 700 persons.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c6",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "The Bureau, during 2021 worked with the Metro Team providing Technical Assistance towards the implementation of the Quality Management System requirements.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c7",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "under the Technical Barriers to Trade (TBT) project launched in 2019, six (6) private sector organisations from across the region (including Metro) were committed to achieve certification",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c8",
+      "url": "https://website.crosq.org/guyana-company-gains-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "presented in an elegant ceremony at the Grand Coastal Hotel, East Coast Demerara on July 12, 2022.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c9",
+      "url": "https://website.crosq.org/crosq-celebrates-milestone-in-regional-quality-infrastructure-development/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "Funded by the EU, the programme started in 2019 and involved 16 CARIFORUM states.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c10",
+      "url": "https://website.crosq.org/slbs-aces-surveillance-audit-for-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "The Saint Lucia Bureau of Standards has successfully completed the first year surveillance audit for the three-year certification to the ISO 9001:2015 Quality Management System standard.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c11",
+      "url": "https://website.crosq.org/slbs-aces-surveillance-audit-for-iso-90012015-certification/",
+      "publisher": "CARICOM Regional Organisation for Standards and Quality",
+      "quote": "The surveillance audit was conducted over two days by the independent accredited registrar company",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c12",
+      "url": "https://www.iso.org/quality-management/iso-9001-2026",
+      "publisher": "International Organization for Standardization",
+      "quote": "Organizations certified to ISO 9001:2015 will have three years to move to ISO 9001:2026.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c13",
+      "url": "https://www.iso.org/quality-management/iso-9001-2026",
+      "publisher": "International Organization for Standardization",
+      "quote": "A successful transition typically involves five steps",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c14",
+      "url": "https://gnbsgy.com/gnbs-records-several-certifications-in-2023-anticipates-more-in-the-new-year/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "As a result of the new certifications, the GNBS now has a total of eighty-five (85) certified stakeholders.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c15",
+      "url": "https://gnbsgy.com/certification/gnbs-901-quality-certification/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "Certification is valid for 2 year and is monitored.",
+      "retrieved": "2026-11-09"
+    },
+    {
+      "claimId": "c16",
+      "url": "https://gnbsgy.com/gys-901-guyanas-local-qms-standard-for-msmes/",
+      "publisher": "Guyana National Bureau of Standards",
+      "quote": "ISO 9001, though globally recognised, was created with more complex organisations in mind, often demanding extensive documentation, formal review systems, and significant resources.",
+      "retrieved": "2026-11-09"
+    }
+  ],
+  "relatedGuides": [
+    "iso-9001-cost-guyana"
+  ],
+  "relatedServices": [
+    "systems-builder",
+    "certified-care"
+  ]
+}

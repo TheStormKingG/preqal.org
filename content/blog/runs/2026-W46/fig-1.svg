@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" role="img" aria-labelledby="t1">
+  <title id="t1">A timeline showing six to twelve months of building before the certification audit, then a three-year certificate cycle with a two-day surveillance audit in the first year.</title>
+  <rect x="0" y="0" width="640" height="300" fill="#e0e5ec"/>
+
+  <text x="32" y="38" font-family="Rubik, sans-serif" font-size="13" font-weight="700" fill="#55657a" letter-spacing="1.2">BEFORE THE AUDIT</text>
+  <text x="392" y="38" font-family="Rubik, sans-serif" font-size="13" font-weight="700" fill="#55657a" letter-spacing="1.2">AFTER THE CERTIFICATE</text>
+
+  <!-- The build bar: the long part -->
+  <rect x="32" y="56" width="328" height="46" rx="10" fill="#f59e0b"/>
+  <text x="48" y="78" font-family="Rubik, sans-serif" font-size="17" font-weight="700" fill="#0f172a">6 to 12 months</text>
+  <text x="48" y="95" font-family="Rubik, sans-serif" font-size="12" font-weight="400" fill="#0f172a">building, and running, the system</text>
+
+  <!-- The certificate moment: the short part -->
+  <rect x="368" y="56" width="18" height="46" rx="4" fill="#b45309"/>
+  <text x="396" y="78" font-family="Rubik, sans-serif" font-size="17" font-weight="700" fill="#0f172a">3 years</text>
+  <text x="396" y="95" font-family="Rubik, sans-serif" font-size="12" font-weight="400" fill="#475569">the certificate cycle</text>
+  <rect x="392" y="56" width="216" height="46" rx="10" fill="none" stroke="#a3b1c6" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- Stage labels under the build bar -->
+  <line x1="32" y1="118" x2="360" y2="118" stroke="#a3b1c6" stroke-width="1.5"/>
+  <circle cx="54" cy="118" r="4" fill="#d97706"/>
+  <circle cx="136" cy="118" r="4" fill="#d97706"/>
+  <circle cx="218" cy="118" r="4" fill="#d97706"/>
+  <circle cx="300" cy="118" r="4" fill="#d97706"/>
+  <text x="54" y="138" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">gap</text>
+  <text x="54" y="151" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">analysis</text>
+  <text x="136" y="138" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">training</text>
+  <text x="136" y="151" font-family="Rubik, sans-serif" font-size="11" fill="#55657a" text-anchor="middle">1 to 4 days</text>
+  <text x="218" y="138" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">documents and</text>
+  <text x="218" y="151" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">implementation</text>
+  <text x="300" y="138" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">pre</text>
+  <text x="300" y="151" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">assessment</text>
+
+  <!-- Surveillance in year one -->
+  <line x1="392" y1="118" x2="608" y2="118" stroke="#a3b1c6" stroke-width="1.5"/>
+  <circle cx="464" cy="118" r="4" fill="#d97706"/>
+  <text x="464" y="138" font-family="Rubik, sans-serif" font-size="11" fill="#475569" text-anchor="middle">year 1 surveillance</text>
+  <text x="464" y="151" font-family="Rubik, sans-serif" font-size="11" fill="#55657a" text-anchor="middle">2 days on site</text>
+
+  <!-- The spread, stated -->
+  <rect x="32" y="186" width="576" height="78" rx="12" fill="#ffffff"/>
+  <text x="52" y="212" font-family="Rubik, sans-serif" font-size="12" font-weight="700" fill="#0f172a">THE SPREAD, AND WHY</text>
+  <text x="52" y="234" font-family="Rubik, sans-serif" font-size="13" fill="#475569">Quick end: about 18 months from first help to certificate.</text>
+  <text x="52" y="253" font-family="Rubik, sans-serif" font-size="13" fill="#475569">Slow end: 3 to 5 years, where records stop being made between audits.</text>
+
+  <text x="32" y="286" font-family="Rubik, sans-serif" font-size="11" fill="#55657a">Durations published by the Guyana National Bureau of Standards. Cycle and surveillance from CARICOM Regional Organisation for Standards and Quality.</text>
+</svg>
