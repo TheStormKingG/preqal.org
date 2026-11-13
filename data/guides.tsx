@@ -110,17 +110,33 @@ export const GUIDES: Guide[] = [
       src: 'guide-photos/iso-9001-cost-guyana/shopfront.800aaf08',
       alt: 'A shop owner behind her counter, with the shelves of her business stocked behind her.',
     },
-    title: 'What ISO 9001 Certification Costs in Guyana (Honest Guide) | Preqal',
+    title: 'ISO 9001 Certification Cost in Guyana: GY$450,000 to GY$2.1M | Preqal',
     description:
-      'The real cost of ISO 9001 certification for a Guyanese business. The three costs to separate, what drives price, and how to avoid paying for paper.',
+      'ISO 9001 in Guyana costs GY$450,000 to GY$2.1 million to build, by team size, paid monthly over nine months. The audit fee is separate.',
     h1: <>What ISO 9001 certification really costs in <em style={{ color: '#b45309' }}>Guyana</em></>,
     intro:
-      'Everyone asks the price first and the answer is usually vague. Here is an honest breakdown of what a Guyanese business actually pays for ISO 9001 certification, and where the money goes.',
+      'Everyone asks the price first and the answer is usually vague. So here are the numbers. Building an ISO 9001 system with Preqal costs between GY$450,000 and about GY$2.1 million, depending on the size of your team, and the certification body charges its own audit fee on top.',
     published: '2026-07-07',
     serviceSlug: 'systems-builder',
     serviceName: 'Systems Builder™',
     waKey: 'systems-builder',
     sections: [
+      {
+        /* The guide ranked for twenty phrasings of "how much does ISO 9001
+           cost" and did not contain a single price. In Guyana it sat at
+           position 3.8 for three months and earned no clicks at all (Search
+           Console, 2026-11-12, content/seo/). These are the live programme
+           rates from STEP_RATES in pages/BusinessGrowthAssessment.tsx, which
+           the assessment already shows to anyone who picks a team size. If
+           those rates change, this section changes with them. */
+        h2: 'The short answer, in figures',
+        paras: [
+          'Building an ISO 9001 system with Preqal costs between GY$450,000 and about GY$2.1 million in total. The figure is set by the size of your team. It is paid monthly across the nine-month programme, not up front.',
+          'A solo founder pays GY$50,000 a month, which comes to GY$450,000. A team of two to five pays GY$70,000 a month, or GY$630,000. Six to fifteen staff pay GY$90,000 a month, or GY$810,000. Sixteen to forty pay GY$120,000 a month, or GY$1,080,000. Forty-one to a hundred pay GY$180,000 a month, or GY$1,620,000. Above a hundred staff the fee is GY$233,333 a month, about GY$2.1 million in all.',
+          'Two things sit beside those figures. The Risk Scan that starts the work is also sold on its own, for a flat GY$100,000, to a business that wants the diagnosis before it commits to the build. And the certification body charges its own fee for the audit, paid to the auditor you choose. That one is not ours to quote.',
+          'For readers outside Guyana, GY$100,000 is roughly US$480. So the programme runs from about US$2,160 for a solo founder to about US$10,080 for a company of more than a hundred.',
+        ],
+      },
       {
         h2: 'Separate the three costs first',
         paras: [
@@ -153,7 +169,11 @@ export const GUIDES: Guide[] = [
     faqs: [
       {
         q: 'How much does ISO 9001 cost for a small business in Guyana?',
-        a: 'Preqal prices by team size with monthly payments over nine months, so a small business pays a small-business price. Message us on WhatsApp at +592 633 5874 and we will confirm your tier within a day.',
+        a: 'A solo founder pays GY$50,000 a month for nine months, GY$450,000 in total. A team of two to five pays GY$70,000 a month, and six to fifteen staff pay GY$90,000 a month. The certification body charges its own audit fee separately. Message us on WhatsApp at +592 633 5874 and we will confirm your tier within a day.',
+      },
+      {
+        q: 'Does that price include the certificate itself?',
+        a: 'No. A consultant builds the system and prepares you for the audit. The certificate comes from an independent certification body, which charges its own fee for the audit. Any quote that folds the two into one number is hiding which one it covers.',
       },
       {
         q: 'How long does ISO 9001 certification take?',

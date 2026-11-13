@@ -81,8 +81,8 @@ export const routeMeta = {
     ogType: 'article',
   },
   '/guides/iso-9001-cost-guyana': {
-    title: 'What ISO 9001 Certification Costs in Guyana (Honest Guide) | Preqal',
-    description: 'The real cost of ISO 9001 certification for a Guyanese business. The three costs to separate, what drives price, and how to avoid paying for paper.',
+    title: 'ISO 9001 Certification Cost in Guyana: GY$450,000 to GY$2.1M | Preqal',
+    description: 'ISO 9001 in Guyana costs GY$450,000 to GY$2.1 million to build, by team size, paid monthly over nine months. The audit fee is separate.',
     canonical: `${BASE_URL}/guides/iso-9001-cost-guyana/`,
     ogImage: `${BASE_URL}/og/resources.png`,
     ogType: 'article',
